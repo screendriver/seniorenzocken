@@ -26,7 +26,8 @@
 		"target": "ES2021",
 		"tsBuildInfoFile": "./target/.tsbuildinfo",
 		"useDefineForClassFields": true,
-		"useUnknownInCatchVariables": true
+		"useUnknownInCatchVariables": true,
+		"types": ["svelte", "vite/client"]
 	},
 	"include": ["vite.config.ts", "src/**/*", "test/**/*"]
 }
