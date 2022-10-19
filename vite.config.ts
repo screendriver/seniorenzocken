@@ -27,6 +27,14 @@ export default defineConfig({
 	],
 	test: {
 		environment: "happy-dom",
+		coverage: {
+			provider: "c8",
+			all: true,
+			extension: [".ts"],
+			include: ["src/**/*"],
+			reporter: ["lcov", "text-summary", "clover"],
+			reportsDirectory: "./target/coverage"
+		},
 		threads: false
 	}
 });
