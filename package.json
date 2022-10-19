@@ -8,6 +8,9 @@
 	"scripts": {
 		"lint": "eslint . --ext '.ts,.tsx' --cache --cache-location './target/.eslintcache'"
 	},
+	"dependencies": {
+		"tslib": "2.4.0"
+	},
 	"devDependencies": {
 		"@sveltejs/vite-plugin-svelte": "1.0.9",
 		"@tsconfig/svelte": "3.0.0",
