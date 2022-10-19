@@ -26,6 +26,7 @@ export default defineConfig({
 		})
 	],
 	test: {
-		environment: "happy-dom"
+		environment: "happy-dom",
+		threads: false
 	}
 });
