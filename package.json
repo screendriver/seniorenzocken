@@ -13,6 +13,7 @@
 		"@tsconfig/svelte": "3.0.0",
 		"autoprefixer": "10.4.12",
 		"eslint": "8.25.0",
+		"eslint-config-prettier": "8.5.0",
 		"happy-dom": "7.6.0",
 		"postcss": "8.4.18",
 		"prettier": "2.7.1",
