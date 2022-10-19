@@ -8,6 +8,9 @@ export default defineConfig({
 		port: 3000,
 		strictPort: true
 	},
+	build: {
+		outDir: "./target/dist"
+	},
 	plugins: [
 		svelte({
 			preprocess: [
