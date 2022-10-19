@@ -6,6 +6,7 @@
 	"author": "Christian Rackerseder <git@echooff.de>",
 	"license": "MIT",
 	"scripts": {
+		"lint": "eslint . --ext '.ts,.tsx' --cache --cache-location './target/.eslintcache'",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"devDependencies": {
