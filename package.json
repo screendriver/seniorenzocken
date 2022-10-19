@@ -5,6 +5,9 @@
 	"version": "1.0.0",
 	"author": "Christian Rackerseder <git@echooff.de>",
 	"license": "MIT",
+	"engines": {
+		"node": "18.x"
+	},
 	"scripts": {
 		"lint": "eslint . --ext '.ts' --cache --cache-location './target/.eslintcache' && svelte-check && ls-lint",
 		"compile": "tsc",
