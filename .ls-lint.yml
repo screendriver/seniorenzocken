@@ -1,0 +1,13 @@
+ls:
+    src:
+        .dir: kebab-case
+        .ts: kebab-case
+        .d.ts: kebab-case
+        .json: kebab-case
+        .svelte: PascalCase
+    test:
+        .dir: kebab-case
+        .ts: kebab-case
+        .d.ts: kebab-case
+        .json: kebab-case
+        .test.ts: PascalCase | kebab-case
