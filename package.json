@@ -6,7 +6,7 @@
 	"author": "Christian Rackerseder <git@echooff.de>",
 	"license": "MIT",
 	"scripts": {
-		"lint": "eslint . --ext '.ts,.tsx' --cache --cache-location './target/.eslintcache'",
+		"lint": "eslint . --ext '.ts,.tsx' --cache --cache-location './target/.eslintcache' && ls-lint",
 		"check:svelte": "svelte-check",
 		"compile": "tsc",
 		"develop": "vite"
