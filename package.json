@@ -11,7 +11,8 @@
 		"compile": "tsc",
 		"develop": "vite",
 		"build": "vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"test:unit": "vitest"
 	},
 	"dependencies": {
 		"tslib": "2.4.0"
