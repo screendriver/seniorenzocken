@@ -1,14 +1,14 @@
 {
-  "name": "watten",
-  "type": "module",
-  "private": "true",
-  "version": "1.0.0",
-  "author": "Christian Rackerseder <git@echooff.de>",
-  "license": "MIT",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "devDependencies": {
-    "prettier": "2.7.1"
-  }
+	"name": "watten",
+	"type": "module",
+	"private": "true",
+	"version": "1.0.0",
+	"author": "Christian Rackerseder <git@echooff.de>",
+	"license": "MIT",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"devDependencies": {
+		"prettier": "2.7.1"
+	}
 }
