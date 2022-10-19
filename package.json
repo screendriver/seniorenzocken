@@ -10,7 +10,8 @@
 		"check:svelte": "svelte-check",
 		"compile": "tsc",
 		"develop": "vite",
-		"build": "vite build"
+		"build": "vite build",
+		"preview": "vite preview"
 	},
 	"dependencies": {
 		"tslib": "2.4.0"
