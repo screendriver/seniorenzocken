@@ -27,17 +27,16 @@
 				"allowTypedFunctionExpressions": true
 			}
 		],
-		"@typescript-eslint/prefer-readonly-parameter-types": ["error"]
-	},
-	"overrides": [
-		{
-			"files": "src/**/*.ts",
-			"excludedFiles": ["src/main.ts"],
-			"extends": [
-				"plugin:functional/external-recommended",
-				"plugin:functional/recommended",
-				"plugin:functional/stylistic"
-			]
-		}
-	]
+		"functional/prefer-readonly-type": [
+			"error",
+			{
+				"allowLocalMutation": true,
+				"allowMutableReturnType": true,
+				"checkImplicit": false,
+				"ignoreClass": false,
+				"ignoreInterface": false,
+				"ignoreCollections": false
+			}
+		]
+	}
 }
