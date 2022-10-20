@@ -19,7 +19,8 @@
 	},
 	"dependencies": {
 		"true-myth": "6.2.0",
-		"tslib": "2.4.0"
+		"tslib": "2.4.0",
+		"zod": "3.19.1"
 	},
 	"devDependencies": {
 		"@ls-lint/ls-lint": "1.11.2",
