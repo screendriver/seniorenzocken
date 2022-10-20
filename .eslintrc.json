@@ -25,6 +25,7 @@
 				"allowExpressions": true,
 				"allowTypedFunctionExpressions": true
 			}
-		]
+		],
+		"@typescript-eslint/prefer-readonly-parameter-types": ["error"]
 	}
 }
