@@ -19,6 +19,7 @@
 		"test:integration": "playwright test --config=test/integration/playwright.config.ts"
 	},
 	"dependencies": {
+		"@sindresorhus/is": "5.3.0",
 		"svelte-feather-icons": "4.0.0",
 		"true-myth": "6.2.0",
 		"tslib": "2.4.0",
