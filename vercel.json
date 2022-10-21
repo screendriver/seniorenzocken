@@ -1,0 +1,8 @@
+{
+	"buildCommand": "npm run build",
+	"devCommand": "npm run development",
+	"framework": "svelte",
+	"cleanUrls": true,
+	"public": false,
+	"outputDirectory": "target/dist/"
+}
