@@ -27,6 +27,7 @@
 		"@ls-lint/ls-lint": "1.11.2",
 		"@sveltejs/vite-plugin-svelte": "1.0.9",
 		"@testing-library/svelte": "3.2.2",
+		"@testing-library/user-event": "14.4.3",
 		"@tsconfig/svelte": "3.0.0",
 		"@typescript-eslint/eslint-plugin": "5.40.1",
 		"@typescript-eslint/parser": "5.40.1",
