@@ -9,6 +9,7 @@ ls:
         .dir: kebab-case
         .ts: kebab-case
         .d.ts: kebab-case
+        .config.ts: kebab-case
         .json: kebab-case
         .test.ts: kebab-case
         .svelte.test.ts: PascalCase
