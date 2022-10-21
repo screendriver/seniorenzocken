@@ -1,11 +1,17 @@
 <script lang="ts">
+	import { createEventDispatcher } from "svelte";
 	import Team from "./Team.svelte";
 	import { areTeamsFilled } from "./teams-store";
 
-	function startGame(): void {}
+	const dispatch = createEventDispatcher();
+
+	function startGame(): void {
+		dispatch("gamestarted");
+	}
 </script>
 
 <form
+	name="teams"
 	on:submit|preventDefault={startGame}
 	class="bg-slate-800 rounded-lg mx-36 py-8 flex flex-col items-center gap-3 m-auto"
 >
