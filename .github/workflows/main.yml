@@ -12,7 +12,7 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
-                  node-version: 18
+                  node-version: 16
             - name: Install dependencies
               run: npm clean-install
             - name: Check source code
@@ -31,10 +31,35 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
-                  node-version: 18
+                  node-version: 16
             - name: Install dependencies
               run: npm clean-install
             - name: Install Playwright
               run: npx playwright install chromium firefox
             - name: Run Playwright tests
               run: npm run test:integration
+
+    deploy-to-vercel:
+        name: Deploy to Vercel
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main'
+        needs: [tests, integration-tests]
+        concurrency:
+            group: deploy-to-vercel
+        env:
+            VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+            VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+            VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+            - name: Pull Vercel Environment Information
+              run: npx vercel pull --yes --environment=production --token=${VERCEL_TOKEN}
+            - name: Build Project Artifacts
+              run: npx vercel build --prod --token=${VERCEL_TOKEN}
+            - name: Deploy Project Artifacts to Vercel
+              run: npx vercel deploy --prebuilt --prod --token=${VERCEL_TOKEN}
