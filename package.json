@@ -15,7 +15,8 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"test:unit": "vitest",
-		"test:unit:coverage": "vitest run --coverage"
+		"test:unit:coverage": "vitest run --coverage",
+		"test:integration": "playwright test --config=test/integration/playwright.config.ts"
 	},
 	"dependencies": {
 		"svelte-feather-icons": "4.0.0",
