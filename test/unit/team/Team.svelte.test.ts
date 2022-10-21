@@ -2,7 +2,8 @@ import { assert, test, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import Team from "../../../src/team/Team.svelte";
-import { teamsStore } from "../../../src/team/teams-store";
+import { teams } from "../../../src/team/teams-store";
+import { get } from "svelte/store";
 
 afterEach(cleanup);
 
@@ -32,22 +33,14 @@ test("<Team /> renders an input with a correct name", () => {
 });
 
 test("<Team /> saves entered text in teams store", async () => {
-	let teamsFromStore: unknown;
+	const user = userEvent.setup();
+	render(Team, { teamNumber: 42 });
+	const inputElement = screen.getByPlaceholderText<HTMLInputElement>("Team 42");
 
-	const unsubscribe = teamsStore.subscribe((teams) => {
-		teamsFromStore = teams;
-	});
+	await user.click(inputElement);
+	await user.keyboard("test");
 
-	try {
-		const user = userEvent.setup();
-		render(Team, { teamNumber: 42 });
-		const inputElement = screen.getByPlaceholderText<HTMLInputElement>("Team 42");
+	const teamsFromStore = get(teams);
 
-		await user.click(inputElement);
-		await user.keyboard("test");
-
-		assert.deepStrictEqual(teamsFromStore, new Map([[42, { teamName: "test", teamNumber: 42 }]]));
-	} finally {
-		unsubscribe();
-	}
+	assert.deepStrictEqual(teamsFromStore, new Map([[42, { teamName: "test", teamNumber: 42 }]]));
 });

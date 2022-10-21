@@ -1,3 +1,4 @@
+import { get } from "svelte/store";
 import { assert, test, vi, type TestFunction } from "vitest";
 import { createTeamsStore, type Team } from "../../../src/team/teams-store-factory";
 
@@ -20,14 +21,8 @@ function testStoreValue(testOptions: TestStoreValueOptions): TestFunction {
 		const fakeStorage = createFakeStorage({ getItem });
 		const teamStore = createTeamsStore(fakeStorage);
 
-		let assertionCalled = false;
-
-		teamStore.subscribe((teamMap) => {
-			assert.deepStrictEqual(teamMap, expectedStoreValue);
-			assertionCalled = true;
-		});
-
-		assert.isTrue(assertionCalled);
+		const teamsFromStore = get(teamStore);
+		assert.deepStrictEqual(teamsFromStore, expectedStoreValue);
 	};
 }
 
