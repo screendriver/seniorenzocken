@@ -10,4 +10,5 @@ ls:
         .ts: kebab-case
         .d.ts: kebab-case
         .json: kebab-case
-        .test.ts: PascalCase | kebab-case
+        .test.ts: kebab-case
+        .svelte.test.ts: PascalCase
