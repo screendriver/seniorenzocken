@@ -19,6 +19,7 @@
 		"test:integration": "playwright test --config=test/integration/playwright.config.ts"
 	},
 	"dependencies": {
+		"@sindresorhus/is": "5.3.0",
 		"svelte-feather-icons": "4.0.0",
 		"true-myth": "6.2.0",
 		"tslib": "2.4.0",
@@ -39,6 +40,7 @@
 		"eslint-config-prettier": "8.5.0",
 		"eslint-plugin-functional": "4.4.1",
 		"eslint-plugin-prettier": "4.2.1",
+		"fishery": "2.2.2",
 		"happy-dom": "7.6.0",
 		"playwright": "1.27.1",
 		"postcss": "8.4.18",
