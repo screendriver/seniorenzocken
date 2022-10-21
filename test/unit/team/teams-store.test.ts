@@ -1,7 +1,7 @@
 import { assert, test } from "vitest";
 import { get } from "svelte/store";
 import { Factory } from "fishery";
-import { teamsStore, areTeamsFilled } from "../../../src/team/teams-store";
+import { teams, areTeamsFilled } from "../../../src/team/teams-store";
 import type { Team } from "../../../src/team/teams-store-factory";
 
 const teamFactory = Factory.define<Team>(() => {
@@ -12,7 +12,7 @@ const teamFactory = Factory.define<Team>(() => {
 });
 
 test("areTeamsFilled store returns false when teams store is empty", () => {
-	teamsStore.set(new Map());
+	teams.set(new Map());
 
 	const filled = get(areTeamsFilled);
 
@@ -20,7 +20,7 @@ test("areTeamsFilled store returns false when teams store is empty", () => {
 });
 
 test('areTeamsFilled store returns false when teams store has one item with an empty "teamName"', () => {
-	teamsStore.set(new Map([[1, teamFactory.build()]]));
+	teams.set(new Map([[1, teamFactory.build()]]));
 
 	const filled = get(areTeamsFilled);
 
@@ -28,7 +28,7 @@ test('areTeamsFilled store returns false when teams store has one item with an e
 });
 
 test('areTeamsFilled store returns false when teams store has two items with an empty "teamName"', () => {
-	teamsStore.set(
+	teams.set(
 		new Map([
 			[1, teamFactory.build()],
 			[2, teamFactory.build({ teamNumber: 1 })]
@@ -41,7 +41,7 @@ test('areTeamsFilled store returns false when teams store has two items with an 
 });
 
 test('areTeamsFilled store returns true when teams store has one item with a non empty "teamName"', () => {
-	teamsStore.set(new Map([[1, teamFactory.build({ teamName: "test" })]]));
+	teams.set(new Map([[1, teamFactory.build({ teamName: "test" })]]));
 
 	const filled = get(areTeamsFilled);
 
@@ -49,7 +49,7 @@ test('areTeamsFilled store returns true when teams store has one item with a non
 });
 
 test('areTeamsFilled store returns true when teams store has two items with a non empty "teamName"', () => {
-	teamsStore.set(
+	teams.set(
 		new Map([
 			[1, teamFactory.build({ teamName: "test" })],
 			[1, teamFactory.build({ teamName: "test2", teamNumber: 1 })]
@@ -62,7 +62,7 @@ test('areTeamsFilled store returns true when teams store has two items with a no
 });
 
 test('areTeamsFilled store returns false when teams store has two items where one item has a non empty "teamName"', () => {
-	teamsStore.set(
+	teams.set(
 		new Map([
 			[1, teamFactory.build({ teamName: "test" })],
 			[1, teamFactory.build({ teamNumber: 1 })]

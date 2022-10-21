@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { UsersIcon } from "svelte-feather-icons";
-	import { teamsStore } from "./teams-store";
+	import { teams } from "./teams-store";
 
 	export let teamNumber: number;
 
-	let teamName = $teamsStore.get(teamNumber)?.teamName ?? "";
+	let teamName = $teams.get(teamNumber)?.teamName ?? "";
 
-	$: teamsStore.update((teams) => {
+	$: teams.update((teams) => {
 		return teams.set(teamNumber, {
 			teamName,
 			teamNumber
