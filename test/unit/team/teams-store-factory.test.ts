@@ -1,5 +1,5 @@
 import { assert, test, vi, type TestFunction } from "vitest";
-import { createTeamsStore, type Team } from "../../src/team/teams-store-factory";
+import { createTeamsStore, type Team } from "../../../src/team/teams-store-factory";
 
 function createFakeStorage(overrides: Partial<Storage> = {}): Storage {
 	return {
