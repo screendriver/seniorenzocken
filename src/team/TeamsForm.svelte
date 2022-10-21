@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Team from "./Team.svelte";
+	import { areTeamsFilled } from "./teams-store";
 
 	function startGame(): void {}
 </script>
@@ -11,9 +12,11 @@
 	{#each [1, 2] as teamNumber}
 		<Team {teamNumber} />
 	{/each}
+
 	<input
 		type="submit"
 		value="Spiel starten"
-		class="bg-sky-500 text-white rounded-lg p-3 cursor-pointer hover:bg-sky-400"
+		disabled={!$areTeamsFilled}
+		class="bg-sky-500 text-white rounded-lg p-3 cursor-pointer hover:bg-sky-400 disabled:cursor-default disabled:hover:bg-sky-500 disabled:opacity-50"
 	/>
 </form>
