@@ -9,7 +9,8 @@ assert.domElement(htmlBodyElement);
 assert.string(imageKitBaseUrl);
 
 const imageKit = new ImageKit({
-	urlEndpoint: imageKitBaseUrl
+	urlEndpoint: imageKitBaseUrl,
+	transformationPosition: "query"
 });
 
 new App({
