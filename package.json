@@ -22,7 +22,7 @@
 		"@sindresorhus/is": "5.3.0",
 		"imagekit-javascript": "1.5.4",
 		"svelte-feather-icons": "4.0.0",
-		"true-myth": "5.4.0",
+		"true-myth": "6.2.0",
 		"tslib": "2.4.0",
 		"zod": "3.19.1"
 	},
