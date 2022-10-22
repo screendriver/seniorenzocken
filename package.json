@@ -11,7 +11,7 @@
 	"scripts": {
 		"lint": "eslint . --ext '.ts' --cache --cache-location './target/.eslintcache' && svelte-check && ls-lint",
 		"compile": "tsc",
-		"develop": "vite",
+		"develop": "tsx ./src/start-develop.ts",
 		"build": "vite build",
 		"preview": "vite preview",
 		"test:unit": "vitest",
