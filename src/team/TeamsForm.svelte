@@ -13,7 +13,7 @@
 <form
 	name="teams"
 	on:submit|preventDefault={startGame}
-	class="bg-slate-800 rounded-lg mx-36 py-8 flex flex-col items-center gap-3 m-auto"
+	class="bg-slate-800 rounded-lg mx-5 sm:mx-auto sm:max-w-xl py-8 flex flex-col items-center gap-3 m-auto"
 >
 	{#each [1, 2] as teamNumber}
 		<Team {teamNumber} />
