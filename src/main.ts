@@ -1,14 +1,15 @@
 import ImageKit from "imagekit-javascript";
+import { assert } from "@sindresorhus/is";
 import App from "./App.svelte";
 
 const htmlBodyElement = document.querySelector("body");
+const imageKitBaseUrl = import.meta.env.VITE_IMAGEKIT_BASE_URL;
 
-if (htmlBodyElement === null) {
-	throw new Error('Element with id "app" could not be found');
-}
+assert.domElement(htmlBodyElement);
+assert.string(imageKitBaseUrl);
 
 const imageKit = new ImageKit({
-	urlEndpoint: "https://ik.imagekit.io/qi52orkcz"
+	urlEndpoint: imageKitBaseUrl
 });
 
 new App({
