@@ -33,6 +33,7 @@ export default defineConfig({
 			all: true,
 			extension: [".ts"],
 			include: ["src/**/*"],
+			exclude: ["src/start-develop.ts", "src/env.d.ts", "src/main.ts", "src/static-server/static-server.ts"],
 			reporter: ["lcov", "text-summary", "clover"],
 			reportsDirectory: "./target/coverage"
 		},
