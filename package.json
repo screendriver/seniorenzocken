@@ -20,9 +20,9 @@
 	},
 	"dependencies": {
 		"@sindresorhus/is": "5.3.0",
+		"imagekit-javascript": "1.5.4",
 		"svelte-feather-icons": "4.0.0",
 		"true-myth": "5.4.0",
-		"imagekit-javascript": "1.5.4",
 		"tslib": "2.4.0",
 		"zod": "3.19.1"
 	},
@@ -41,6 +41,7 @@
 		"eslint-config-prettier": "8.5.0",
 		"eslint-plugin-functional": "4.4.1",
 		"eslint-plugin-prettier": "4.2.1",
+		"fastify": "4.9.2",
 		"fishery": "2.2.2",
 		"happy-dom": "7.6.0",
 		"playwright": "1.27.1",
