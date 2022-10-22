@@ -1,13 +1,19 @@
+import ImageKit from "imagekit-javascript";
 import App from "./App.svelte";
 
-const appHtmlElement = document.getElementById("app");
+const htmlBodyElement = document.querySelector("body");
 
-if (appHtmlElement === null) {
+if (htmlBodyElement === null) {
 	throw new Error('Element with id "app" could not be found');
 }
 
-const app = new App({
-	target: appHtmlElement
+const imageKit = new ImageKit({
+	urlEndpoint: "https://ik.imagekit.io/qi52orkcz"
 });
 
-export default app;
+new App({
+	target: htmlBodyElement,
+	props: {
+		imageKit
+	}
+});
