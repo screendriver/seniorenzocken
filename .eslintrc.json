@@ -13,7 +13,7 @@
 		"plugin:@typescript-eslint/recommended-requiring-type-checking",
 		"plugin:prettier/recommended"
 	],
-	"plugins": ["@typescript-eslint", "functional"],
+	"plugins": ["@typescript-eslint", "functional", "unicorn"],
 	"env": {
 		"browser": true,
 		"node": true
@@ -37,6 +37,7 @@
 				"ignoreInterface": false,
 				"ignoreCollections": false
 			}
-		]
+		],
+		"unicorn/prefer-node-protocol": "error"
 	}
 }
