@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
+	import Button from "../Button.svelte";
 	import Team from "./Team.svelte";
 	import { areTeamsFilled } from "./teams-store";
 
@@ -19,10 +20,5 @@
 		<Team {teamNumber} />
 	{/each}
 
-	<input
-		type="submit"
-		value="Spiel starten"
-		disabled={!$areTeamsFilled}
-		class="bg-sky-500 text-white rounded-lg p-3 cursor-pointer hover:bg-sky-400 disabled:cursor-default disabled:hover:bg-sky-500 disabled:opacity-50"
-	/>
+	<Button buttonType="submit" value="Spiel starten" disabled={!$areTeamsFilled} />
 </form>
