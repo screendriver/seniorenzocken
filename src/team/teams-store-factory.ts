@@ -1,6 +1,6 @@
 import { writable, type Writable } from "svelte/store";
 import { z } from "zod";
-import { Maybe } from "true-myth";
+import { Maybe } from "true-myth/maybe";
 
 const teamSchema = z
 	.object({
