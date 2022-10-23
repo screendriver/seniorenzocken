@@ -1,36 +1,38 @@
-import { test, expect } from "@playwright/test";
+import Maybe from "true-myth/maybe";
+import { test, expect } from "../playwright/test.js";
 
-test("saves entered team names into session storage", async ({ page }) => {
+test("saves entered team names into session storage", async ({ page, gamePage }) => {
 	await page.goto("/");
-	const inputElement = page.getByPlaceholder("Team 1");
-	await inputElement.focus();
-	await inputElement.type("Test team");
+	await gamePage.fillOutTeamsForm();
 
 	const teamsFromSessionStorage = await page.evaluate(() => {
 		return window.sessionStorage.getItem("teams");
 	});
 
 	expect(teamsFromSessionStorage).toStrictEqual(
-		'[[1,{"teamName":"Test team","teamNumber":1}],[2,{"teamName":"","teamNumber":2}]]'
+		'[[1,{"teamName":"Test team 1","teamNumber":1}],[2,{"teamName":"Test team 2","teamNumber":2}]]'
 	);
 });
 
-test("saves if is game started into session storage", async ({ page }) => {
+test("saves if is game started into session storage", async ({ page, gamePage }) => {
 	await page.goto("/");
-	const inputElementTeam1 = page.getByPlaceholder("Team 1");
-	await inputElementTeam1.focus();
-	await inputElementTeam1.type("Test team 1");
+	await gamePage.fillOutTeamsForm();
+	await gamePage.submitTeamsForm();
 
-	const inputElementTeam2 = page.getByPlaceholder("Team 2");
-	await inputElementTeam2.focus();
-	await inputElementTeam2.type("Test team 2");
+	const isGameStartedFromSessionStorage = await gamePage.getItemFromSessionStorage("is-game-started");
 
-	const submitButton = page.getByText("Spiel starten");
-	await submitButton.click();
+	expect(isGameStartedFromSessionStorage).toStrictEqual(Maybe.just("true"));
+});
 
-	const isGameStartedFromSessionStorage = await page.evaluate(() => {
-		return window.sessionStorage.getItem("is-game-started");
-	});
+test('sets is game started to "false" when clicking on cancel game button', async ({ page, gamePage }) => {
+	await page.goto("/");
+	await gamePage.fillOutTeamsForm();
+	await gamePage.submitTeamsForm();
 
-	expect(isGameStartedFromSessionStorage).toStrictEqual("true");
+	const cancelGameButton = page.getByText("Spiel abbrechen");
+	await cancelGameButton.click();
+
+	const isGameStartedFromSessionStorage = await gamePage.getItemFromSessionStorage("is-game-started");
+
+	expect(isGameStartedFromSessionStorage).toStrictEqual(Maybe.just("false"));
 });
