@@ -10,7 +10,6 @@ const config: PlaywrightTestConfig = {
 		command: "npm run develop",
 		port: 3000
 	},
-	retries: 2,
 	projects: [
 		{
 			name: "Chromium",
