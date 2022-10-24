@@ -4,7 +4,7 @@
 	import Team from "./Team.svelte";
 	import { areTeamsFilled } from "./teams-store";
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{ gamestarted: undefined }>();
 
 	function startGame(): void {
 		dispatch("gamestarted");
