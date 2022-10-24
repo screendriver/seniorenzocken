@@ -4,8 +4,7 @@ import { Maybe } from "true-myth/maybe";
 
 const teamSchema = z
 	.object({
-		teamName: z.string(),
-		teamNumber: z.number().nonnegative()
+		teamName: z.string()
 	})
 	.strict();
 

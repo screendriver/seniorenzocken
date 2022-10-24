@@ -93,7 +93,7 @@ test(
 test(
 	"createTeamsStore() sets store value to an empty Map when storage returns a filled Array with additional unknown properties",
 	testStoreValue({
-		storageValue: '[[1, { "teamName": "", "teamNumber": 1, "foo": 42 }]]',
+		storageValue: '[[1, { "teamName": "", "foo": 42 }]]',
 		expectedStoreValue: new Map()
 	})
 );
@@ -101,34 +101,27 @@ test(
 test(
 	"createTeamsStore() sets store value to an empty Map when storage returns an invalid 'teamName'",
 	testStoreValue({
-		storageValue: '[[1, { "teamName": {}, "teamNumber": 1 }]]',
+		storageValue: '[[1, { "teamName": {} }]]',
 		expectedStoreValue: new Map()
 	})
 );
 
-test(
-	"createTeamsStore() sets store value to an empty Map when storage returns an invalid 'teamNumber'",
-	testStoreValue({
-		storageValue: '[[1, { "teamName": "", "teamNumber": "not-a-number" }]]',
-		expectedStoreValue: new Map()
-	})
-);
 
 test(
 	"createTeamsStore() sets store value correctly when storage returns one single team",
 	testStoreValue({
-		storageValue: '[[1, { "teamName": "", "teamNumber": 42 }]]',
-		expectedStoreValue: new Map([[1, { teamName: "", teamNumber: 42 }]])
+		storageValue: '[[1, { "teamName": "" }]]',
+		expectedStoreValue: new Map([[1, { teamName: "" }]])
 	})
 );
 
 test(
 	"createTeamsStore() sets store value correctly when storage returns more than one team",
 	testStoreValue({
-		storageValue: '[[1, { "teamName": "one", "teamNumber": 42 }], [2, { "teamName": "two", "teamNumber": 24 }]]',
+		storageValue: '[[1, { "teamName": "one" }], [2, { "teamName": "two" }]]',
 		expectedStoreValue: new Map([
-			[1, { teamName: "one", teamNumber: 42 }],
-			[2, { teamName: "two", teamNumber: 24 }]
+			[1, { teamName: "one" }],
+			[2, { teamName: "two" }]
 		])
 	})
 );
@@ -138,11 +131,11 @@ test("createTeamsStore() sets item in storage when setting an item in the store"
 	const fakeStorage = createFakeStorage({ setItem });
 	const teamsStore = createTeamsStore(fakeStorage);
 
-	teamsStore.set(new Map([[1, { teamName: "one", teamNumber: 42 }]]));
+	teamsStore.set(new Map([[1, { teamName: "one" }]]));
 
 	assert.strictEqual(setItem.mock.calls.length, 2);
 	assert.deepStrictEqual(setItem.mock.calls[0], ["teams", "[]"]);
-	assert.deepStrictEqual(setItem.mock.calls[1], ["teams", '[[1,{"teamName":"one","teamNumber":42}]]']);
+	assert.deepStrictEqual(setItem.mock.calls[1], ["teams", '[[1,{"teamName":"one"}]]']);
 });
 
 test("createTeamsStore() sets item in storage when updating an item in the store", () => {
@@ -152,12 +145,11 @@ test("createTeamsStore() sets item in storage when updating an item in the store
 
 	teamsStore.update((teams) => {
 		return teams.set(1, {
-			teamName: "one",
-			teamNumber: 42
+			teamName: "one"
 		});
 	});
 
 	assert.strictEqual(setItem.mock.calls.length, 2);
 	assert.deepStrictEqual(setItem.mock.calls[0], ["teams", "[]"]);
-	assert.deepStrictEqual(setItem.mock.calls[1], ["teams", '[[1,{"teamName":"one","teamNumber":42}]]']);
+	assert.deepStrictEqual(setItem.mock.calls[1], ["teams", '[[1,{"teamName":"one"}]]']);
 });

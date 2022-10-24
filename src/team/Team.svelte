@@ -8,8 +8,7 @@
 
 	$: teams.update((teams) => {
 		return teams.set(teamNumber, {
-			teamName,
-			teamNumber
+			teamName
 		});
 	});
 </script>

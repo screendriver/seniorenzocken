@@ -42,5 +42,5 @@ test("<Team /> saves entered text in teams store", async () => {
 
 	const teamsFromStore = get(teams);
 
-	assert.deepStrictEqual(teamsFromStore, new Map([[42, { teamName: "test", teamNumber: 42 }]]));
+	assert.deepStrictEqual(teamsFromStore, new Map([[42, { teamName: "test" }]]));
 });
