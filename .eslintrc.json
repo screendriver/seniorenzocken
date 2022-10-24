@@ -38,7 +38,8 @@
 				"ignoreCollections": false
 			}
 		],
-		"unicorn/prefer-node-protocol": "error"
+		"unicorn/prefer-node-protocol": "error",
+		"unicorn/prefer-ternary": "error"
 	},
 	"overrides": [
 		{
