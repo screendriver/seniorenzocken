@@ -16,9 +16,8 @@
 	on:submit|preventDefault={startGame}
 	class="relative top-20 bg-slate-800 bg-opacity-90 rounded-lg shadow-md mx-5 sm:mx-auto sm:max-w-xl py-8 flex flex-col items-center gap-3 m-auto"
 >
-	{#each [1, 2] as teamNumber}
-		<Team {teamNumber} />
-	{/each}
+	<Team teamNumber={1} />
+	<Team teamNumber={2} />
 
 	<Button buttonType="submit" value="Spiel starten" disabled={!$areTeamsFilled} />
 </form>
