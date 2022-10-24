@@ -1,13 +1,14 @@
 import { assert, test } from "vitest";
 import { get } from "svelte/store";
 import { Factory } from "fishery";
+import { Maybe } from "true-myth/maybe";
 import { teams, areTeamsFilled } from "../../../src/team/teams-store";
 import type { Team } from "../../../src/team/teams-store-factory";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {
 		teamName: "",
-		teamNumber: 0
+		gamePoints: Maybe.nothing()
 	};
 });
 
@@ -31,7 +32,7 @@ test('areTeamsFilled store returns false when teams store has two items with an 
 	teams.set(
 		new Map([
 			[1, teamFactory.build()],
-			[2, teamFactory.build({ teamNumber: 1 })]
+			[2, teamFactory.build()]
 		])
 	);
 
@@ -52,7 +53,7 @@ test('areTeamsFilled store returns true when teams store has two items with a no
 	teams.set(
 		new Map([
 			[1, teamFactory.build({ teamName: "test" })],
-			[1, teamFactory.build({ teamName: "test2", teamNumber: 1 })]
+			[1, teamFactory.build({ teamName: "test2" })]
 		])
 	);
 
@@ -65,7 +66,7 @@ test('areTeamsFilled store returns false when teams store has two items where on
 	teams.set(
 		new Map([
 			[1, teamFactory.build({ teamName: "test" })],
-			[1, teamFactory.build({ teamNumber: 1 })]
+			[1, teamFactory.build()]
 		])
 	);
 

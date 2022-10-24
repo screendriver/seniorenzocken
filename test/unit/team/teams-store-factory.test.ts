@@ -1,4 +1,5 @@
 import { get } from "svelte/store";
+import { Maybe } from "true-myth/maybe";
 import { assert, test, vi, type TestFunction } from "vitest";
 import { createTeamsStore, type Team } from "../../../src/team/teams-store-factory";
 
@@ -25,6 +26,14 @@ function testStoreValue(testOptions: TestStoreValueOptions): TestFunction {
 		assert.deepStrictEqual(teamsFromStore, expectedStoreValue);
 	};
 }
+
+test('createTeamsStore() uses the correct storage key "teams"', () => {
+	const getItem = vi.fn().mockReturnValue(null);
+	const fakeStorage = createFakeStorage({ getItem });
+	createTeamsStore(fakeStorage);
+
+	assert.strictEqual(getItem.mock.calls[0]?.[0], "teams");
+});
 
 test(
 	"createTeamsStore() sets store value to an empty Map when storage returns null",
@@ -106,32 +115,79 @@ test(
 	})
 );
 
+test(
+	'createTeamsStore() sets store value correctly when storage returns one single team without "gamePoints" property set',
+	testStoreValue({
+		storageValue: '[[1, { "teamName": "" }]]',
+		expectedStoreValue: new Map([[1, { teamName: "", gamePoints: Maybe.nothing() }]])
+	})
+);
 
 test(
 	"createTeamsStore() sets store value correctly when storage returns one single team",
 	testStoreValue({
-		storageValue: '[[1, { "teamName": "" }]]',
-		expectedStoreValue: new Map([[1, { teamName: "" }]])
+		storageValue: '[[1, { "teamName": "", "gamePoints": 42 }]]',
+		expectedStoreValue: new Map([[1, { teamName: "", gamePoints: Maybe.just(42) }]])
+	})
+);
+
+test(
+	'createTeamsStore() sets store value correctly when storage returns more than one team without "gamePoints" property set',
+	testStoreValue({
+		storageValue: '[[1, { "teamName": "one" }], [2, { "teamName": "two" }]]',
+		expectedStoreValue: new Map([
+			[1, { teamName: "one", gamePoints: Maybe.nothing() }],
+			[2, { teamName: "two", gamePoints: Maybe.nothing() }]
+		])
 	})
 );
 
 test(
 	"createTeamsStore() sets store value correctly when storage returns more than one team",
 	testStoreValue({
-		storageValue: '[[1, { "teamName": "one" }], [2, { "teamName": "two" }]]',
+		storageValue: '[[1, { "teamName": "one", "gamePoints": 2 }], [2, { "teamName": "two", "gamePoints": 0 }]]',
 		expectedStoreValue: new Map([
-			[1, { teamName: "one" }],
-			[2, { teamName: "two" }]
+			[1, { teamName: "one", gamePoints: Maybe.just(2) }],
+			[2, { teamName: "two", gamePoints: Maybe.just(0) }]
 		])
 	})
 );
+
+test('createTeamsStore() sets item in storage when setting an item without "gamePoints" in the store', () => {
+	const setItem = vi.fn();
+	const fakeStorage = createFakeStorage({ setItem });
+	const teamsStore = createTeamsStore(fakeStorage);
+
+	teamsStore.set(new Map([[1, { teamName: "one", gamePoints: Maybe.nothing() }]]));
+
+	assert.strictEqual(setItem.mock.calls.length, 2);
+	assert.deepStrictEqual(setItem.mock.calls[0], ["teams", "[]"]);
+	assert.deepStrictEqual(setItem.mock.calls[1], ["teams", '[[1,{"teamName":"one"}]]']);
+});
 
 test("createTeamsStore() sets item in storage when setting an item in the store", () => {
 	const setItem = vi.fn();
 	const fakeStorage = createFakeStorage({ setItem });
 	const teamsStore = createTeamsStore(fakeStorage);
 
-	teamsStore.set(new Map([[1, { teamName: "one" }]]));
+	teamsStore.set(new Map([[1, { teamName: "one", gamePoints: Maybe.just(2) }]]));
+
+	assert.strictEqual(setItem.mock.calls.length, 2);
+	assert.deepStrictEqual(setItem.mock.calls[0], ["teams", "[]"]);
+	assert.deepStrictEqual(setItem.mock.calls[1], ["teams", '[[1,{"teamName":"one","gamePoints":2}]]']);
+});
+
+test('createTeamsStore() sets item in storage when updating an item without "gamePoints" in the store', () => {
+	const setItem = vi.fn();
+	const fakeStorage = createFakeStorage({ setItem });
+	const teamsStore = createTeamsStore(fakeStorage);
+
+	teamsStore.update((teams) => {
+		return teams.set(1, {
+			teamName: "one",
+			gamePoints: Maybe.nothing()
+		});
+	});
 
 	assert.strictEqual(setItem.mock.calls.length, 2);
 	assert.deepStrictEqual(setItem.mock.calls[0], ["teams", "[]"]);
@@ -145,11 +201,12 @@ test("createTeamsStore() sets item in storage when updating an item in the store
 
 	teamsStore.update((teams) => {
 		return teams.set(1, {
-			teamName: "one"
+			teamName: "one",
+			gamePoints: Maybe.just(4)
 		});
 	});
 
 	assert.strictEqual(setItem.mock.calls.length, 2);
 	assert.deepStrictEqual(setItem.mock.calls[0], ["teams", "[]"]);
-	assert.deepStrictEqual(setItem.mock.calls[1], ["teams", '[[1,{"teamName":"one"}]]']);
+	assert.deepStrictEqual(setItem.mock.calls[1], ["teams", '[[1,{"teamName":"one","gamePoints":4}]]']);
 });
