@@ -38,13 +38,20 @@
 				"ignoreCollections": false
 			}
 		],
-		"unicorn/prefer-node-protocol": "error"
+		"unicorn/prefer-node-protocol": "error",
+		"unicorn/prefer-ternary": "error"
 	},
 	"overrides": [
 		{
 			"files": "src/start-develop.ts",
 			"rules": {
 				"no-console": "off"
+			}
+		},
+		{
+			"files": "test/unit/game/GamePoint.svelte.test.ts",
+			"rules": {
+				"@typescript-eslint/no-unsafe-member-access": "off"
 			}
 		}
 	]

@@ -5,7 +5,7 @@ import { Maybe } from "true-myth/maybe";
 const teamSchema = z
 	.object({
 		teamName: z.string(),
-		teamNumber: z.number().nonnegative()
+		gamePoints: z.number().nonnegative().optional().transform(Maybe.of)
 	})
 	.strict();
 
@@ -15,11 +15,11 @@ export type Team = z.infer<typeof teamSchema>;
 
 const storageKey = "teams";
 
-function mapTeamFromStorageToTeamMap(teamFromStorage: string): Map<number, Team> {
+function mapTeamsFromStorageToTeamMap(teamsFromStorage: string): Map<number, Team> {
 	const emptyMap = new Map<number, Team>();
 
 	try {
-		const parseResult = allTeamsSchema.parse(JSON.parse(teamFromStorage));
+		const parseResult = allTeamsSchema.parse(JSON.parse(teamsFromStorage));
 
 		return new Map(parseResult);
 	} catch {
@@ -30,13 +30,21 @@ function mapTeamFromStorageToTeamMap(teamFromStorage: string): Map<number, Team>
 export function createTeamsStore(storage: Storage): Writable<Map<number, Team>> {
 	const initialStoreValue = Maybe.of(storage.getItem(storageKey)).mapOr(
 		new Map<number, Team>(),
-		mapTeamFromStorageToTeamMap
+		mapTeamsFromStorageToTeamMap
 	);
 
 	const { set, subscribe, update } = writable(initialStoreValue);
 
 	subscribe((teams) => {
-		const teamsAsString = JSON.stringify(Array.from(teams.entries()));
+		const teamsWithoutMaybes = Array.from(teams.entries()).map(([teamNumber, team]) => {
+			const mappedTeam = {
+				teamName: team.teamName,
+				gamePoints: team.gamePoints.unwrapOr(undefined)
+			};
+
+			return [teamNumber, mappedTeam];
+		});
+		const teamsAsString = JSON.stringify(teamsWithoutMaybes);
 
 		storage.setItem(storageKey, teamsAsString);
 	});

@@ -3,7 +3,7 @@
 	import Head from "./Header.svelte";
 	import TeamsForm from "./team/TeamsForm.svelte";
 	import { isGameStarted } from "./game/game-store";
-	import CancelGame from "./game/CancelGame.svelte";
+	import Game from "./game/Game.svelte";
 
 	export let imageKit: ImageKit;
 
@@ -15,7 +15,7 @@
 <Head {imageKit} />
 
 {#if $isGameStarted}
-	<CancelGame />
+	<Game />
 {:else}
 	<TeamsForm on:gamestarted={startGame} />
 {/if}

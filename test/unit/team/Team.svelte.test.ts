@@ -1,9 +1,10 @@
 import { assert, test, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
+import { get } from "svelte/store";
+import { Maybe } from "true-myth/maybe";
 import Team from "../../../src/team/Team.svelte";
 import { teams } from "../../../src/team/teams-store";
-import { get } from "svelte/store";
 
 afterEach(cleanup);
 
@@ -42,5 +43,5 @@ test("<Team /> saves entered text in teams store", async () => {
 
 	const teamsFromStore = get(teams);
 
-	assert.deepStrictEqual(teamsFromStore, new Map([[42, { teamName: "test", teamNumber: 42 }]]));
+	assert.deepStrictEqual(teamsFromStore, new Map([[42, { teamName: "test", gamePoints: Maybe.nothing<number>() }]]));
 });
