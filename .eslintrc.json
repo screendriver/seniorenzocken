@@ -47,6 +47,12 @@
 			"rules": {
 				"no-console": "off"
 			}
+		},
+		{
+			"files": "test/unit/game/GamePoint.svelte.test.ts",
+			"rules": {
+				"@typescript-eslint/no-unsafe-member-access": "off"
+			}
 		}
 	]
 }
