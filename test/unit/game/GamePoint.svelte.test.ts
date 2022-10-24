@@ -31,7 +31,7 @@ test('<GamePoint /> renders an input of type "range"', () => {
 	assert.strictEqual(inputElement.type, "range");
 });
 
-test('<GamePoint /> does not dispatch "gamepointchange" when value is 0', async () => {
+test('<GamePoint /> does not dispatch "gamepointchange" after initial rendering', () => {
 	const props = componentPropsFactory.build({
 		team: {
 			teamName: "foo"
@@ -43,9 +43,6 @@ test('<GamePoint /> does not dispatch "gamepointchange" when value is 0', async 
 	component.$on("gamepointchange", () => {
 		gamePointChangeCalled = true;
 	});
-
-	const inputElement = screen.getByLabelText<HTMLInputElement>("foo:");
-	await fireEvent.change(inputElement, { target: { value: 0 } });
 
 	assert.isFalse(gamePointChangeCalled);
 });
@@ -64,7 +61,8 @@ test("<GamePoint /> does not allow setting the value to 1 and therefore immediat
 	});
 
 	const inputElement = screen.getByLabelText<HTMLInputElement>("foo:");
-	await fireEvent.change(inputElement, { target: { value: 1 } });
+	await fireEvent.input(inputElement, { target: { value: "1" } });
+	await fireEvent.change(inputElement, { target: { value: "2" } });
 
 	assert.deepStrictEqual(gamePoint, Maybe.just(2));
 });

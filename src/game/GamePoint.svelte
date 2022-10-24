@@ -19,12 +19,12 @@
 	const rangeInputId = `team-${teamNumber}`;
 
 	let gamePoint = 0;
-
 	$: if (gamePoint === 1) {
 		gamePoint = 2;
 	}
+	$: step = gamePoint >= 2 ? 1 : 2;
 
-	$: if (gamePoint !== 1) {
+	function dispatchGamePointChangeEvent(): void {
 		dispatch("gamepointchange", {
 			gamePoint,
 			teamNumber,
@@ -38,6 +38,16 @@
 		<UsersIcon size="40" class="rounded-l-lg border-r-2 border-r-sky-600 bg-sky-700 p-2" />
 		{team.teamName}:
 	</label>
-	<input type="range" min="0" max="4" id={rangeInputId} bind:value={gamePoint} {disabled} class="w-11/12 m-auto" />
+	<input
+		type="range"
+		min="0"
+		max="4"
+		id={rangeInputId}
+		{step}
+		bind:value={gamePoint}
+		on:change={dispatchGamePointChangeEvent}
+		{disabled}
+		class="w-11/12 m-auto"
+	/>
 	<output class="block text-center text-xl font" for={rangeInputId}>{gamePoint}</output>
 </section>

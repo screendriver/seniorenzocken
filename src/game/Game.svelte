@@ -12,10 +12,12 @@
 		teamNumberEnabled = gamePoint === 0 ? Maybe.nothing() : Maybe.just(teamNumber);
 
 		teams.update((teamsMap) => {
-			return teamsMap.set(teamNumber, {
+			teamsMap.set(teamNumber, {
 				teamName: team.teamName,
 				gamePoints: Maybe.just(gamePoint)
 			});
+
+			return new Map(teamsMap);
 		});
 	}
 </script>
