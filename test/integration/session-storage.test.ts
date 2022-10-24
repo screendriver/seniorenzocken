@@ -9,9 +9,7 @@ test("saves entered team names into session storage", async ({ page, gamePage })
 		return window.sessionStorage.getItem("teams");
 	});
 
-	expect(teamsFromSessionStorage).toStrictEqual(
-		'[[1,{"teamName":"Test team 1","teamNumber":1}],[2,{"teamName":"Test team 2","teamNumber":2}]]'
-	);
+	expect(teamsFromSessionStorage).toStrictEqual('[[1,{"teamName":"Test team 1"}],[2,{"teamName":"Test team 2"}]]');
 });
 
 test("saves if is game started into session storage", async ({ page, gamePage }) => {
