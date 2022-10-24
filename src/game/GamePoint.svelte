@@ -36,7 +36,7 @@
 <section class="w-full pb-2 flex flex-col gap-3 bg-slate-600 rounded-lg">
 	<label for={rangeInputId} class="flex items-center gap-2 bg-sky-700 rounded-lg">
 		<UsersIcon size="40" class="rounded-l-lg border-r-2 border-r-sky-600 bg-sky-700 p-2" />
-		{team.teamName}:
+		{team.teamName} ({team.gamePoints.unwrapOr(0)})
 	</label>
 	<input
 		type="range"
