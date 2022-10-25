@@ -22,7 +22,7 @@
 	$: if (gamePoint === 1) {
 		gamePoint = 2;
 	}
-	$: step = gamePoint >= 2 ? 1 : 2;
+	$: rangeStep = gamePoint >= 2 ? 1 : 2;
 
 	function dispatchGamePointChangeEvent(): void {
 		dispatch("gamepointchange", {
@@ -43,7 +43,7 @@
 		min="0"
 		max="4"
 		id={rangeInputId}
-		{step}
+		step={rangeStep}
 		bind:value={gamePoint}
 		on:change={dispatchGamePointChangeEvent}
 		{disabled}
