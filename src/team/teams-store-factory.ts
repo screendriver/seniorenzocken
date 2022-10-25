@@ -5,7 +5,7 @@ import { Maybe } from "true-myth/maybe";
 const teamSchema = z
 	.object({
 		teamName: z.string(),
-		gamePoints: z.number().nonnegative().optional().transform(Maybe.of)
+		gamePoints: z.number().nonnegative()
 	})
 	.strict();
 
@@ -39,7 +39,7 @@ export function createTeamsStore(storage: Storage): Writable<Map<number, Team>> 
 		const teamsWithoutMaybes = Array.from(teams.entries()).map(([teamNumber, team]) => {
 			const mappedTeam = {
 				teamName: team.teamName,
-				gamePoints: team.gamePoints.unwrapOr(undefined)
+				gamePoints: team.gamePoints
 			};
 
 			return [teamNumber, mappedTeam];

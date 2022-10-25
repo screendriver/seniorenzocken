@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { UsersIcon } from "svelte-feather-icons";
-	import { Maybe } from "true-myth/maybe";
 	import { teams } from "./teams-store";
 
 	export let teamNumber: number;
@@ -10,7 +9,7 @@
 	$: teams.update((teams) => {
 		return teams.set(teamNumber, {
 			teamName,
-			gamePoints: Maybe.nothing()
+			gamePoints: 0
 		});
 	});
 </script>

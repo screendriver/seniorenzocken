@@ -1,14 +1,13 @@
 import { assert, test } from "vitest";
 import { get } from "svelte/store";
 import { Factory } from "fishery";
-import { Maybe } from "true-myth/maybe";
 import { teams, areTeamsFilled } from "../../../src/team/teams-store";
 import type { Team } from "../../../src/team/teams-store-factory";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {
 		teamName: "",
-		gamePoints: Maybe.nothing()
+		gamePoints: 0
 	};
 });
 
