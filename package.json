@@ -27,7 +27,7 @@
 		"zod": "3.19.1"
 	},
 	"devDependencies": {
-		"@fastify/cors": "8.1.0",
+		"@fastify/cors": "8.1.1",
 		"@fastify/static": "6.5.0",
 		"@ls-lint/ls-lint": "1.11.2",
 		"@playwright/test": "1.27.1",
