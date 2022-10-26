@@ -1,7 +1,7 @@
 import { assert, test, afterEach } from "vitest";
 import { render, screen, cleanup, fireEvent } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
-import TeamsForm from "../../../src/team/TeamsForm.svelte";
+import TeamsForm from "./TeamsForm.svelte";
 
 afterEach(cleanup);
 

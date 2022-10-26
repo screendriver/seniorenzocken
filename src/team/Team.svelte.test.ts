@@ -2,8 +2,8 @@ import { assert, test, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import { get } from "svelte/store";
-import Team from "../../../src/team/Team.svelte";
-import { teams } from "../../../src/team/teams-store";
+import Team from "./Team.svelte";
+import { teams } from "./teams-store";
 
 afterEach(() => {
 	cleanup();

@@ -3,8 +3,8 @@ import type { ComponentProps } from "svelte";
 import { Factory } from "fishery";
 import { Maybe } from "true-myth/maybe";
 import { cleanup, render, screen, fireEvent } from "@testing-library/svelte";
-import { teams, type Team } from "../../../src/team/teams-store";
-import GamePoint from "../../../src/game/GamePoint.svelte";
+import { teams, type Team } from "../team/teams-store";
+import GamePoint from "./GamePoint.svelte";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {

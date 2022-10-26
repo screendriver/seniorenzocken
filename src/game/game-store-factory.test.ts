@@ -1,6 +1,6 @@
 import { get } from "svelte/store";
 import { assert, test, vi, type TestFunction } from "vitest";
-import { createIsGameStartedStore } from "../../../src/game/game-store-factory";
+import { createIsGameStartedStore } from "./game-store-factory";
 
 function createFakeStorage(overrides: Partial<Storage> = {}): Storage {
 	return {
