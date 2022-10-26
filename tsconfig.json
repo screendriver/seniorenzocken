@@ -3,6 +3,7 @@
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
+		"exactOptionalPropertyTypes": true,
 		"forceConsistentCasingInFileNames": true,
 		"importHelpers": true,
 		"incremental": true,
@@ -20,8 +21,8 @@
 		"strict": true,
 		"target": "ES2021",
 		"tsBuildInfoFile": "./target/.tsbuildinfo",
-		"useDefineForClassFields": true,
-		"types": ["svelte", "vite/client"]
+		"types": ["svelte", "vite/client"],
+		"useDefineForClassFields": true
 	},
 	"include": ["vite.config.ts", "src/**/*", "test/**/*"]
 }
