@@ -1,6 +1,6 @@
 import { get } from "svelte/store";
 import { assert, test } from "vitest";
-import { isGameStarted } from "../../../src/game/game-store";
+import { isGameStarted } from "./game-store";
 
 test("isGameStarted returns false by default", () => {
 	const started = get(isGameStarted);

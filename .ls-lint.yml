@@ -2,14 +2,13 @@ ls:
     src:
         .dir: kebab-case
         .ts: kebab-case
+        .test.ts: kebab-case
         .d.ts: kebab-case
-        .json: kebab-case
+        .jpg: kebab-case
         .svelte: PascalCase
+        .svelte.test.ts: PascalCase
     test:
         .dir: kebab-case
         .ts: kebab-case
-        .d.ts: kebab-case
-        .config.ts: kebab-case
-        .json: kebab-case
         .test.ts: kebab-case
-        .svelte.test.ts: PascalCase
+        .config.ts: kebab-case

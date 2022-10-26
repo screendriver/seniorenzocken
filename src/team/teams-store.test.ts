@@ -1,8 +1,8 @@
 import { assert, test } from "vitest";
 import { get } from "svelte/store";
 import { Factory } from "fishery";
-import { teams, areTeamsFilled } from "../../../src/team/teams-store";
-import type { Team } from "../../../src/team/teams-store-factory";
+import { teams, areTeamsFilled } from "./teams-store";
+import type { Team } from "./teams-store-factory";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {

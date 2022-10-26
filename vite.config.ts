@@ -26,7 +26,7 @@ export default defineConfig({
 		})
 	],
 	test: {
-		dir: "./test/unit/",
+		dir: "./src/",
 		environment: "happy-dom",
 		coverage: {
 			provider: "c8",

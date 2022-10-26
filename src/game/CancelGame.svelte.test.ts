@@ -2,8 +2,8 @@ import { cleanup, render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import { afterEach, assert, test } from "vitest";
 import { get } from "svelte/store";
-import { isGameStarted } from "../../../src/game/game-store";
-import CancelGame from "../../../src/game/CancelGame.svelte";
+import { isGameStarted } from "./game-store";
+import CancelGame from "./CancelGame.svelte";
 
 afterEach(cleanup);
 

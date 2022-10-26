@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import { afterEach, assert, test, type TestFunction } from "vitest";
-import Button from "../../src/Button.svelte";
+import Button from "./Button.svelte";
 
 afterEach(cleanup);
 
