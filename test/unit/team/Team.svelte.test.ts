@@ -5,7 +5,10 @@ import { get } from "svelte/store";
 import Team from "../../../src/team/Team.svelte";
 import { teams } from "../../../src/team/teams-store";
 
-afterEach(cleanup);
+afterEach(() => {
+	cleanup();
+	teams.set(new Map());
+});
 
 test("<Team /> renders a label for the correct input id", () => {
 	const { container } = render(Team, { teamNumber: 42 });
