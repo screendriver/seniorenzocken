@@ -140,7 +140,7 @@ test("<GamePoint /> shows value changes in the output element", async () => {
 	assert.isNotNull(outputElement);
 });
 
-test.only("<GamePoint /> resets game points when calling reset()", async () => {
+test("<GamePoint /> resets game points when calling reset()", async () => {
 	teams.set(new Map([[1, teamFactory.build()]]));
 	const props = componentPropsFactory.build();
 	const { component } = render(GamePoint, props);
