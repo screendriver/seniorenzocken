@@ -3,28 +3,76 @@ import type { ComponentProps } from "svelte";
 import { Factory } from "fishery";
 import { Maybe } from "true-myth/maybe";
 import { cleanup, render, screen, fireEvent } from "@testing-library/svelte";
+import { teams, type Team } from "../../../src/team/teams-store";
 import GamePoint from "../../../src/game/GamePoint.svelte";
-import type { Team } from "../../../src/team/teams-store";
+
+const teamFactory = Factory.define<Team>(() => {
+	return {
+		teamName: "foo",
+		gamePoints: 0
+	};
+});
 
 const componentPropsFactory = Factory.define<ComponentProps<GamePoint>>(() => {
 	return {
 		teamNumber: 1,
-		team: {
-			teamName: "",
-			gamePoints: Maybe.nothing()
-		},
 		disabled: false
 	};
 });
 
 afterEach(cleanup);
 
-test('<GamePoint /> renders an input of type "range"', () => {
-	const props = componentPropsFactory.build({
-		team: {
-			teamName: "foo"
-		}
+test("<GamePoint /> shows game points nearby team name", async () => {
+	teams.set(
+		new Map([
+			[
+				1,
+				teamFactory.build({
+					gamePoints: 3
+				})
+			]
+		])
+	);
+	const props = componentPropsFactory.build();
+	render(GamePoint, props);
+
+	const labelElement = await screen.findByText<HTMLLabelElement>("foo (3)");
+
+	assert.isNotNull(labelElement);
+});
+
+test("<GamePoint /> updates game points nearby team name when teams store gets updated", async () => {
+	teams.set(
+		new Map([
+			[
+				1,
+				teamFactory.build({
+					gamePoints: 0
+				})
+			]
+		])
+	);
+	const props = componentPropsFactory.build();
+	render(GamePoint, props);
+
+	teams.update((teamsMap) => {
+		teamsMap.set(
+			1,
+			teamFactory.build({
+				gamePoints: 4
+			})
+		);
+		return new Map(teamsMap);
 	});
+
+	const labelElement = await screen.findByText<HTMLLabelElement>("foo (4)");
+
+	assert.isNotNull(labelElement);
+});
+
+test('<GamePoint /> renders an input of type "range"', () => {
+	teams.set(new Map([[1, teamFactory.build()]]));
+	const props = componentPropsFactory.build();
 	render(GamePoint, props);
 
 	const inputElement = screen.getByLabelText<HTMLInputElement>("foo (0)");
@@ -33,11 +81,8 @@ test('<GamePoint /> renders an input of type "range"', () => {
 });
 
 test('<GamePoint /> does not dispatch "gamepointchange" after initial rendering', () => {
-	const props = componentPropsFactory.build({
-		team: {
-			teamName: "foo"
-		}
-	});
+	teams.set(new Map([[1, teamFactory.build()]]));
+	const props = componentPropsFactory.build();
 	const { component } = render(GamePoint, props);
 
 	let gamePointChangeCalled = false;
@@ -48,12 +93,25 @@ test('<GamePoint /> does not dispatch "gamepointchange" after initial rendering'
 	assert.isFalse(gamePointChangeCalled);
 });
 
-test("<GamePoint /> does not allow setting the value to 1 and therefore immediately sets 2", async () => {
-	const props = componentPropsFactory.build({
-		team: {
-			teamName: "foo"
-		}
+test('<GamePoint /> dispatches "gamepointchange" when value changed', async () => {
+	teams.set(new Map([[1, teamFactory.build()]]));
+	const props = componentPropsFactory.build();
+	const { component } = render(GamePoint, props);
+
+	let gamePointChangeCalled = false;
+	component.$on("gamepointchange", () => {
+		gamePointChangeCalled = true;
 	});
+
+	const inputElement = screen.getByLabelText<HTMLInputElement>("foo (0)");
+	await fireEvent.change(inputElement, { target: { value: "4" } });
+
+	assert.isTrue(gamePointChangeCalled);
+});
+
+test("<GamePoint /> does not allow setting the value to 1 and therefore immediately sets 2", async () => {
+	teams.set(new Map([[1, teamFactory.build()]]));
+	const props = componentPropsFactory.build();
 	const { component } = render(GamePoint, props);
 
 	let gamePoint: Maybe<number> = Maybe.nothing();
@@ -68,39 +126,9 @@ test("<GamePoint /> does not allow setting the value to 1 and therefore immediat
 	assert.deepStrictEqual(gamePoint, Maybe.just(2));
 });
 
-test("<GamePoint /> shows game point changes nearby team name", async () => {
-	const props = componentPropsFactory.build({
-		team: {
-			teamName: "foo"
-		}
-	});
-	const { component } = render(GamePoint, props);
-
-	component.$on("gamepointchange", (event) => {
-		const team: Team = {
-			teamName: event.detail.team.teamName,
-			gamePoints: Maybe.just(event.detail.gamePoint)
-		};
-
-		component.$set({
-			team
-		});
-	});
-
-	const inputElement = screen.getByLabelText<HTMLInputElement>("foo (0)");
-	await fireEvent.change(inputElement, { target: { value: 4 } });
-
-	const labelElement = await screen.findByText<HTMLLabelElement>("foo (4)");
-
-	assert.isNotNull(labelElement);
-});
-
 test("<GamePoint /> shows value changes in the output element", async () => {
-	const props = componentPropsFactory.build({
-		team: {
-			teamName: "foo"
-		}
-	});
+	teams.set(new Map([[1, teamFactory.build()]]));
+	const props = componentPropsFactory.build();
 	render(GamePoint, props);
 
 	const inputElement = screen.getByLabelText<HTMLInputElement>("foo (0)");
@@ -109,5 +137,19 @@ test("<GamePoint /> shows value changes in the output element", async () => {
 	const outputElement = await screen.findByText<HTMLOutputElement>("4");
 
 	assert.strictEqual(outputElement.nodeName, "OUTPUT");
+	assert.isNotNull(outputElement);
+});
+
+test.only("<GamePoint /> resets game points when calling reset()", async () => {
+	teams.set(new Map([[1, teamFactory.build()]]));
+	const props = componentPropsFactory.build();
+	const { component } = render(GamePoint, props);
+
+	const inputElement = screen.getByLabelText<HTMLInputElement>("foo (0)");
+	await fireEvent.change(inputElement, { target: { value: "4" } });
+	component.reset();
+
+	const outputElement = screen.queryByLabelText<HTMLInputElement>("foo (0)");
+
 	assert.isNotNull(outputElement);
 });

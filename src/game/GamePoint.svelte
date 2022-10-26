@@ -2,17 +2,16 @@
 	export interface GamePointChangeEvent {
 		readonly gamePoint: number;
 		readonly teamNumber: number;
-		readonly team: Team;
 	}
 </script>
 
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
 	import { UsersIcon } from "svelte-feather-icons";
-	import type { Team } from "../team/teams-store";
+	import Maybe from "true-myth/maybe";
+	import { teams } from "../team/teams-store";
 
 	export let teamNumber: number;
-	export let team: Team;
 	export let disabled: boolean;
 
 	const dispatch = createEventDispatcher<{ gamepointchange: GamePointChangeEvent }>();
@@ -23,20 +22,26 @@
 		gamePoint = 2;
 	}
 	$: rangeStep = gamePoint >= 2 ? 1 : 2;
+	$: team = Maybe.of($teams.get(teamNumber));
 
 	function dispatchGamePointChangeEvent(): void {
 		dispatch("gamepointchange", {
 			gamePoint,
-			teamNumber,
-			team
+			teamNumber
 		});
+	}
+
+	export function reset(): void {
+		gamePoint = 0;
 	}
 </script>
 
 <section class="w-full pb-2 flex flex-col gap-3 bg-slate-600 rounded-lg">
 	<label for={rangeInputId} class="flex items-center gap-2 bg-sky-700 rounded-lg">
 		<UsersIcon size="40" class="rounded-l-lg border-r-2 border-r-sky-600 bg-sky-700 p-2" />
-		{team.teamName} ({team.gamePoints.unwrapOr(0)})
+		{#if team.isJust}
+			{team.value.teamName} ({team.value.gamePoints})
+		{/if}
 	</label>
 	<input
 		type="range"
