@@ -27,6 +27,7 @@
 				"allowTypedFunctionExpressions": true
 			}
 		],
+		"@typescript-eslint/consistent-type-imports": "error",
 		"functional/prefer-readonly-type": [
 			"error",
 			{
