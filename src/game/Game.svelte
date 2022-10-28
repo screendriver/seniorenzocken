@@ -1,10 +1,11 @@
 <script lang="ts">
 	import Maybe, { transposeArray } from "true-myth/maybe";
-	import Unit from "true-myth/unit";
 	import CancelGame from "./CancelGame.svelte";
 	import GamePoint, { type GamePointChangeEvent } from "./GamePoint.svelte";
-	import { teams } from "../team/teams-store";
+	import { teams, updateStoreTeamGamePoints, type Teams } from "../team/teams-store";
+	import { isGameOver } from "./game-store";
 	import Button from "../Button.svelte";
+	import { checkIfGameIsOver } from "./rules";
 
 	let gamePointComponents: GamePoint[] = [];
 	let enabledTeamNumber: Maybe<number> = Maybe.nothing();
@@ -24,42 +25,33 @@
 		}
 	}
 
-	function nextRound(): void {
+	function nextRound(): Maybe<Teams> {
 		function updateTeam(teamNumber: number) {
-			return (gamePoint: number): Unit => {
-				teams.update((teamsMap) => {
-					const team = Maybe.of(teamsMap.get(teamNumber));
-
-					if (team.isNothing) {
-						return teamsMap;
-					}
-
-					teamsMap.set(teamNumber, {
-						teamName: team.value.teamName,
-						gamePoints: team.value.gamePoints + gamePoint
-					});
-
-					return new Map(teamsMap);
-				});
-
-				return Unit;
+			return (gamePoint: number): Teams => {
+				return updateStoreTeamGamePoints(teamNumber, gamePoint, teams);
 			};
 		}
 
-		Maybe.just(updateTeam).ap(enabledTeamNumber).ap(desiredTeamGamePoint);
+		const updatedTeams = Maybe.just(updateTeam).ap(enabledTeamNumber).ap(desiredTeamGamePoint);
 
 		enabledTeamNumber = Maybe.nothing();
 		desiredTeamGamePoint = Maybe.nothing();
 		gamePointComponents.forEach((gamePointComponent) => {
 			gamePointComponent.reset();
 		});
+
+		return updatedTeams;
+	}
+
+	function exitGameWhenFinished(isGameReallyOver: boolean): void {
+		$isGameOver = isGameReallyOver;
 	}
 </script>
 
 <form
 	class="relative top-16 m-10 p-8 bg-slate-800 bg-opacity-90 rounded-lg shadow-md flex flex-col items-center gap-6 sm:max-w-lg sm:mx-auto"
 >
-	{#each Array.from($teams.keys()) as teamNumber, index}
+	{#each Array.from($teams.keys()) as teamNumber, index (teamNumber)}
 		{@const disabled = enabledTeamNumber.mapOr(false, (enabledTeamNumberValue) => {
 			return enabledTeamNumberValue !== teamNumber;
 		})}
@@ -72,6 +64,13 @@
 		/>
 	{/each}
 
-	<Button buttonType="button" value="Nächste Runde" disabled={nextRoundDisabled} on:click={nextRound} />
+	<Button
+		buttonType="button"
+		value="Nächste Runde"
+		disabled={nextRoundDisabled}
+		on:click={() => {
+			exitGameWhenFinished(checkIfGameIsOver(nextRound()));
+		}}
+	/>
 	<CancelGame />
 </form>

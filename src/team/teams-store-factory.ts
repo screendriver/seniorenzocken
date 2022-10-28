@@ -12,10 +12,11 @@ const teamSchema = z
 const allTeamsSchema = z.array(z.tuple([z.number(), teamSchema]));
 
 export type Team = z.infer<typeof teamSchema>;
+export type Teams = ReadonlyMap<number, Team>;
 
 const storageKey = "teams";
 
-function mapTeamsFromStorageToTeamMap(teamsFromStorage: string): Map<number, Team> {
+function mapTeamsFromStorageToTeamMap(teamsFromStorage: string): Teams {
 	const emptyMap = new Map<number, Team>();
 
 	try {
@@ -27,7 +28,7 @@ function mapTeamsFromStorageToTeamMap(teamsFromStorage: string): Map<number, Tea
 	}
 }
 
-export function createTeamsStore(storage: Storage): Writable<Map<number, Team>> {
+export function createTeamsStore(storage: Storage): Writable<Teams> {
 	const initialStoreValue = Maybe.of(storage.getItem(storageKey)).mapOr(
 		new Map<number, Team>(),
 		mapTeamsFromStorageToTeamMap
