@@ -37,10 +37,11 @@
 </script>
 
 <section class="w-full pb-4 flex flex-col gap-3 bg-slate-600 rounded-lg">
-	<label for={rangeInputId} class="flex items-center gap-2 bg-sky-700 rounded-lg">
+	<label for={rangeInputId} class="flex justify-between items-center gap-2 bg-sky-700 rounded-lg">
 		<UsersIcon size="40" class="rounded-l-lg border-r-2 border-r-sky-600 bg-sky-700 p-2" />
 		{#if team.isJust}
-			{team.value.teamName} ({team.value.gamePoints})
+			<cite class="flex-grow not-italic">{team.value.teamName}</cite>
+			<mark class="px-2 mr-2 rounded-full bg-sky-600 text-slate-200 shadow">{team.value.gamePoints}</mark>
 		{/if}
 	</label>
 	<output class="block text-center text-xl" for={rangeInputId}>{gamePoint}</output>

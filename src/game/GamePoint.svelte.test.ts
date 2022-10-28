@@ -22,7 +22,26 @@ const componentPropsFactory = Factory.define<ComponentProps<GamePoint>>(() => {
 
 afterEach(cleanup);
 
-test("<GamePoint /> shows game points nearby team name", async () => {
+test("<GamePoint /> shows the team name", async () => {
+	teams.set(
+		new Map([
+			[
+				1,
+				teamFactory.build({
+					teamName: "test team"
+				})
+			]
+		])
+	);
+	const props = componentPropsFactory.build();
+	render(GamePoint, props);
+
+	const citeElement = await screen.findByText("test team");
+
+	assert.isNotNull(citeElement);
+});
+
+test("<GamePoint /> shows game points", async () => {
 	teams.set(
 		new Map([
 			[
@@ -36,12 +55,12 @@ test("<GamePoint /> shows game points nearby team name", async () => {
 	const props = componentPropsFactory.build();
 	render(GamePoint, props);
 
-	const labelElement = await screen.findByText<HTMLLabelElement>("foo (3)");
+	const labelElement = await screen.findByLabelText<HTMLLabelElement>("foo 3");
 
 	assert.isNotNull(labelElement);
 });
 
-test("<GamePoint /> updates game points nearby team name when teams store gets updated", async () => {
+test("<GamePoint /> updates game points when teams store gets updated", async () => {
 	teams.set(
 		new Map([
 			[
@@ -68,7 +87,7 @@ test("<GamePoint /> updates game points nearby team name when teams store gets u
 		return updatedTeams;
 	});
 
-	const labelElement = await screen.findByText<HTMLLabelElement>("foo (4)");
+	const labelElement = await screen.findByLabelText<HTMLLabelElement>("foo 4");
 
 	assert.isNotNull(labelElement);
 });
@@ -78,7 +97,7 @@ test('<GamePoint /> renders an input of type "range"', () => {
 	const props = componentPropsFactory.build();
 	render(GamePoint, props);
 
-	const inputElement = screen.getByLabelText<HTMLInputElement>("foo (0)");
+	const inputElement = screen.getByLabelText<HTMLInputElement>("foo 0");
 
 	assert.strictEqual(inputElement.type, "range");
 });
@@ -106,7 +125,7 @@ test('<GamePoint /> dispatches "gamepointchange" when value changed', async () =
 		gamePointChangeCalled = true;
 	});
 
-	const inputElement = screen.getByLabelText<HTMLInputElement>("foo (0)");
+	const inputElement = screen.getByLabelText<HTMLInputElement>("foo 0");
 	await fireEvent.change(inputElement, { target: { value: "4" } });
 
 	assert.isTrue(gamePointChangeCalled);
@@ -122,7 +141,7 @@ test("<GamePoint /> does not allow setting the value to 1 and therefore immediat
 		gamePoint = Maybe.just(event.detail.gamePoint);
 	});
 
-	const inputElement = screen.getByLabelText<HTMLInputElement>("foo (0)");
+	const inputElement = screen.getByLabelText<HTMLInputElement>("foo 0");
 	await fireEvent.input(inputElement, { target: { value: "1" } });
 	await fireEvent.change(inputElement, { target: { value: "2" } });
 
@@ -134,7 +153,7 @@ test("<GamePoint /> shows value changes in the output element", async () => {
 	const props = componentPropsFactory.build();
 	render(GamePoint, props);
 
-	const inputElement = screen.getByLabelText<HTMLInputElement>("foo (0)");
+	const inputElement = screen.getByLabelText<HTMLInputElement>("foo 0");
 	await fireEvent.change(inputElement, { target: { value: 4 } });
 
 	const outputElement = await screen.findByText<HTMLOutputElement>("4");
@@ -148,11 +167,11 @@ test("<GamePoint /> resets game points when calling reset()", async () => {
 	const props = componentPropsFactory.build();
 	const { component } = render(GamePoint, props);
 
-	const inputElement = screen.getByLabelText<HTMLInputElement>("foo (0)");
+	const inputElement = screen.getByLabelText<HTMLInputElement>("foo 0");
 	await fireEvent.change(inputElement, { target: { value: "4" } });
 	component.reset();
 
-	const outputElement = screen.queryByLabelText<HTMLInputElement>("foo (0)");
+	const outputElement = screen.queryByLabelText<HTMLInputElement>("foo 0");
 
 	assert.isNotNull(outputElement);
 });
