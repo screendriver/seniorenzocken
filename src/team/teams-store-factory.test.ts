@@ -151,10 +151,14 @@ test("createTeamsStore() sets item in storage when updating an item in the store
 	const teamsStore = createTeamsStore(fakeStorage);
 
 	teamsStore.update((teams) => {
-		return teams.set(1, {
+		const updatedTeams = new Map(teams);
+
+		updatedTeams.set(1, {
 			teamName: "one",
 			gamePoints: 0
 		});
+
+		return updatedTeams;
 	});
 
 	assert.strictEqual(setItem.mock.calls.length, 2);

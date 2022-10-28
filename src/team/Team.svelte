@@ -10,10 +10,14 @@
 	});
 
 	$: teams.update((teams) => {
-		return teams.set(teamNumber, {
+		const updatedTeams = new Map(teams);
+
+		updatedTeams.set(teamNumber, {
 			teamName,
 			gamePoints: 0
 		});
+
+		return updatedTeams;
 	});
 </script>
 
