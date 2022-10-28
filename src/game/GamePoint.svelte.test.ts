@@ -56,13 +56,16 @@ test("<GamePoint /> updates game points nearby team name when teams store gets u
 	render(GamePoint, props);
 
 	teams.update((teamsMap) => {
-		teamsMap.set(
+		const updatedTeams = new Map(teamsMap);
+
+		updatedTeams.set(
 			1,
 			teamFactory.build({
 				gamePoints: 4
 			})
 		);
-		return new Map(teamsMap);
+
+		return updatedTeams;
 	});
 
 	const labelElement = await screen.findByText<HTMLLabelElement>("foo (4)");
