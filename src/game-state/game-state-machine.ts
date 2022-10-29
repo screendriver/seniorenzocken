@@ -1,4 +1,4 @@
-import { createMachine } from "@xstate/fsm";
+import { createMachine, type StateMachine, type Typestate } from "@xstate/fsm";
 
 export interface Team {
 	readonly teamName: string;
@@ -11,16 +11,40 @@ interface GameStateMachineContext {
 	readonly teams: Teams;
 }
 
-export function createGameStateMachine() {
-	return createMachine<GameStateMachineContext>({
+interface StartGameEvent {
+	readonly type: "START_GAME";
+}
+
+interface StartNewGameEvent {
+	readonly type: "START_NEW_GAME";
+}
+
+type GameStateMachineEvent = StartGameEvent | StartNewGameEvent;
+
+export type GameStateMachine = StateMachine.Machine<
+	GameStateMachineContext,
+	GameStateMachineEvent,
+	Typestate<GameStateMachineContext>
+>;
+
+export function createGameStateMachine(): GameStateMachine {
+	return createMachine<GameStateMachineContext, GameStateMachineEvent>({
 		id: "gameState",
-		initial: "gameNotStarted",
+		initial: "gameNotRunning",
 		context: {
 			teams: new Map()
 		},
 		states: {
-			gameNotStarted: {},
-			gameStarted: {}
+			gameNotRunning: {
+				on: {
+					START_GAME: "gameRunning"
+				}
+			},
+			gameRunning: {
+				on: {
+					START_NEW_GAME: "gameNotRunning"
+				}
+			}
 		}
 	});
 }
