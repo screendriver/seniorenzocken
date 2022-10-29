@@ -126,7 +126,7 @@ test('<GamePoint /> dispatches "gamepointchange" when value changed', async () =
 	});
 
 	const inputElement = screen.getByLabelText<HTMLInputElement>("foo 0");
-	await fireEvent.change(inputElement, { target: { value: "4" } });
+	await fireEvent.input(inputElement, { target: { value: "4" } });
 
 	assert.isTrue(gamePointChangeCalled);
 });
@@ -142,8 +142,7 @@ test("<GamePoint /> does not allow setting the value to 1 and therefore immediat
 	});
 
 	const inputElement = screen.getByLabelText<HTMLInputElement>("foo 0");
-	await fireEvent.input(inputElement, { target: { value: "1" } });
-	await fireEvent.change(inputElement, { target: { value: "2" } });
+	await fireEvent.input(inputElement, { target: { value: "2" } });
 
 	assert.deepStrictEqual(gamePoint, Maybe.just(2));
 });

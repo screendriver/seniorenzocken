@@ -52,7 +52,7 @@
 		id={rangeInputId}
 		step={rangeStep}
 		bind:value={gamePoint}
-		on:change={dispatchGamePointChangeEvent}
+		on:input={dispatchGamePointChangeEvent}
 		{disabled}
 		class="w-11/12 m-auto"
 	/>
