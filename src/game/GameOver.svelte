@@ -1,11 +1,14 @@
 <script lang="ts">
+	import { createEventDispatcher } from "svelte";
 	import Button from "../Button.svelte";
 	import { winnerTeam } from "../team/teams-store.js";
-	import { isGameStarted, isGameOver } from "./game-store.js";
+	import { isGameOver } from "./game-store.js";
 	import { teams } from "../team/teams-store.js";
 
+	const dispatch = createEventDispatcher();
+
 	function resetGame(): void {
-		$isGameStarted = false;
+		dispatch("startnewgame");
 		$isGameOver = false;
 		$teams = new Map();
 	}
