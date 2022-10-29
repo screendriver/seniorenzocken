@@ -15,11 +15,15 @@ interface StartGameEvent {
 	readonly type: "START_GAME";
 }
 
+interface GameOverEvent {
+	readonly type: "GAME_OVER";
+}
+
 interface StartNewGameEvent {
 	readonly type: "START_NEW_GAME";
 }
 
-type GameStateMachineEvent = StartGameEvent | StartNewGameEvent;
+type GameStateMachineEvent = StartGameEvent | GameOverEvent | StartNewGameEvent;
 
 export type GameStateMachine = StateMachine.Machine<
 	GameStateMachineContext,
@@ -41,6 +45,11 @@ export function createGameStateMachine(): GameStateMachine {
 				}
 			},
 			gameRunning: {
+				on: {
+					GAME_OVER: "gameOver"
+				}
+			},
+			gameOver: {
 				on: {
 					START_NEW_GAME: "gameNotRunning"
 				}
