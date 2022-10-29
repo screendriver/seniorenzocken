@@ -3,7 +3,6 @@
 	import { useMachine } from "@xstate/svelte/es/fsm";
 	import Head from "./Header.svelte";
 	import TeamsForm from "./team/TeamsForm.svelte";
-	import { isGameOver } from "./game/game-store.js";
 	import Game from "./game/Game.svelte";
 	import GameOver from "./game/GameOver.svelte";
 	import type { GameStateMachine } from "./game-state/game-state-machine.js";
@@ -17,6 +16,10 @@
 		send("START_GAME");
 	}
 
+	function gameOver(): void {
+		send("GAME_OVER");
+	}
+
 	function startNewGame(): void {
 		send("START_NEW_GAME");
 	}
@@ -24,10 +27,10 @@
 
 <Head {imageKit} />
 
-{#if $isGameOver}
+{#if $state.value === "gameOver"}
 	<GameOver on:startnewgame={startNewGame} />
 {:else if $state.value === "gameRunning"}
-	<Game />
+	<Game on:gameover={gameOver} />
 {:else}
 	<TeamsForm on:gamestarted={startGame} />
 {/if}

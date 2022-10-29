@@ -1,14 +1,16 @@
 <script lang="ts">
+	import { createEventDispatcher } from "svelte";
 	import Maybe, { transposeArray } from "true-myth/maybe";
 	import GamePoint, { type GamePointChangeEvent } from "./GamePoint.svelte";
 	import { teams, updateStoreTeamGamePoints, type Teams } from "../team/teams-store.js";
-	import { isGameOver } from "./game-store.js";
 	import Button from "../Button.svelte";
 	import { checkIfGameIsOver } from "./rules.js";
 
 	let gamePointComponents: GamePoint[] = [];
 	let enabledTeamNumber: Maybe<number> = Maybe.nothing();
 	let desiredTeamGamePoint: Maybe<number> = Maybe.nothing();
+
+	const dispatch = createEventDispatcher();
 
 	$: nextRoundDisabled = transposeArray([enabledTeamNumber, desiredTeamGamePoint]).isNothing;
 
@@ -42,8 +44,10 @@
 		return updatedTeams;
 	}
 
-	function exitGameWhenFinished(isGameReallyOver: boolean): void {
-		$isGameOver = isGameReallyOver;
+	function dispatchGameOver(isGameReallyOver: boolean): void {
+		if (isGameReallyOver) {
+			dispatch("gameover");
+		}
 	}
 </script>
 
@@ -68,7 +72,7 @@
 		value="Nächste Runde"
 		disabled={nextRoundDisabled}
 		on:click={() => {
-			exitGameWhenFinished(checkIfGameIsOver(nextRound()));
+			dispatchGameOver(checkIfGameIsOver(nextRound()));
 		}}
 	/>
 </form>
