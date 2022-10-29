@@ -1,12 +1,16 @@
-import { derived, get, type Writable } from "svelte/store";
+import { derived, get, writable, type Writable } from "svelte/store";
 import is from "@sindresorhus/is";
 import Maybe from "true-myth/maybe";
 import Result from "true-myth/result";
-import { createTeamsStore, type Team, type Teams } from "./teams-store-factory";
 
-export type { Team, Teams } from "./teams-store-factory";
+export interface Team {
+	readonly teamName: string;
+	readonly gamePoints: number;
+}
 
-export const teams = createTeamsStore(window.sessionStorage);
+export type Teams = ReadonlyMap<number, Team>;
+
+export const teams = writable(new Map<number, Team>());
 
 export const areTeamsFilled = derived(teams, ($teamsStore) => {
 	if (is.emptyMap($teamsStore)) {
