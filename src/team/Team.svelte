@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { UsersIcon } from "svelte-feather-icons";
 	import Maybe from "true-myth/maybe";
-	import { teams } from "./teams-store";
+	import { teams } from "./teams-store.js";
 
 	export let teamNumber: number;
 

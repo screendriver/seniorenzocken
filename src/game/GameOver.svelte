@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Button from "../Button.svelte";
-	import { winnerTeam } from "../team/teams-store";
-	import { isGameStarted, isGameOver } from "./game-store";
-	import { teams } from "../team/teams-store";
+	import { winnerTeam } from "../team/teams-store.js";
+	import { isGameStarted, isGameOver } from "./game-store.js";
+	import { teams } from "../team/teams-store.js";
 
 	function resetGame(): void {
 		$isGameStarted = false;
