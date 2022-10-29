@@ -9,7 +9,7 @@
 	import { createEventDispatcher } from "svelte";
 	import { UsersIcon } from "svelte-feather-icons";
 	import Maybe from "true-myth/maybe";
-	import { teams } from "../team/teams-store";
+	import { teams } from "../team/teams-store.js";
 
 	export let teamNumber: number;
 	export let disabled: boolean;

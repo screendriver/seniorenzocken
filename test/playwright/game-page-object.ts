@@ -1,10 +1,8 @@
 import type { Page } from "@playwright/test";
-import Maybe from "true-myth/maybe";
 
 export interface GamePageObject {
 	fillOutTeamsForm(): Promise<void>;
 	submitTeamsForm(): Promise<void>;
-	getItemFromSessionStorage(key: string): Promise<Maybe<string>>;
 }
 
 export function createGamePage(page: Page): GamePageObject {
@@ -21,13 +19,6 @@ export function createGamePage(page: Page): GamePageObject {
 		async submitTeamsForm() {
 			const submitButton = page.getByText("Spiel starten");
 			await submitButton.click();
-		},
-		async getItemFromSessionStorage(key) {
-			const itemValue = await page.evaluate((itemKey) => {
-				return window.sessionStorage.getItem(itemKey);
-			}, key);
-
-			return Maybe.of(itemValue);
 		}
 	};
 }

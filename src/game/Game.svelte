@@ -1,11 +1,10 @@
 <script lang="ts">
 	import Maybe, { transposeArray } from "true-myth/maybe";
-	import CancelGame from "./CancelGame.svelte";
 	import GamePoint, { type GamePointChangeEvent } from "./GamePoint.svelte";
-	import { teams, updateStoreTeamGamePoints, type Teams } from "../team/teams-store";
-	import { isGameOver } from "./game-store";
+	import { teams, updateStoreTeamGamePoints, type Teams } from "../team/teams-store.js";
+	import { isGameOver } from "./game-store.js";
 	import Button from "../Button.svelte";
-	import { checkIfGameIsOver } from "./rules";
+	import { checkIfGameIsOver } from "./rules.js";
 
 	let gamePointComponents: GamePoint[] = [];
 	let enabledTeamNumber: Maybe<number> = Maybe.nothing();
@@ -72,5 +71,4 @@
 			exitGameWhenFinished(checkIfGameIsOver(nextRound()));
 		}}
 	/>
-	<CancelGame />
 </form>

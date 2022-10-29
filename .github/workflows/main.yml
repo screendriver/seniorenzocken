@@ -18,24 +18,11 @@ jobs:
             - name: Run unit tests
               run: npm run test:unit:coverage
 
-    integration-tests:
-        name: Integration tests
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
-            - name: Setup Node.js
-              uses: ./.github/actions/setup-nodejs
-            - name: Install Playwright
-              run: npx playwright install chromium firefox
-            - name: Run Playwright tests
-              run: npm run test:integration
-
     deploy-to-vercel:
         name: Deploy to Vercel
         runs-on: ubuntu-latest
         if: github.ref == 'refs/heads/main'
-        needs: [tests, integration-tests]
+        needs: [tests]
         concurrency:
             group: deploy-to-vercel
         env:

@@ -2,7 +2,7 @@
 	import type ImageKit from "imagekit-javascript";
 	import Head from "./Header.svelte";
 	import TeamsForm from "./team/TeamsForm.svelte";
-	import { isGameStarted, isGameOver } from "./game/game-store";
+	import { isGameStarted, isGameOver } from "./game/game-store.js";
 	import Game from "./game/Game.svelte";
 	import GameOver from "./game/GameOver.svelte";
 

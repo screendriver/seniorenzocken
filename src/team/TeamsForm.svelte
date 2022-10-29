@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from "svelte";
 	import Button from "../Button.svelte";
 	import Team from "./Team.svelte";
-	import { areTeamsFilled } from "./teams-store";
+	import { areTeamsFilled } from "./teams-store.js";
 
 	const dispatch = createEventDispatcher<{ gamestarted: undefined }>();
 
