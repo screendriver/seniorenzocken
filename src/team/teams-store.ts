@@ -1,7 +1,8 @@
 import { derived, get, type Writable } from "svelte/store";
 import is from "@sindresorhus/is";
 import Maybe from "true-myth/maybe";
-import { createTeamsStore, type Teams } from "./teams-store-factory";
+import Result from "true-myth/result";
+import { createTeamsStore, type Team, type Teams } from "./teams-store-factory";
 
 export type { Team, Teams } from "./teams-store-factory";
 
@@ -37,3 +38,19 @@ export function updateStoreTeamGamePoints(teamNumber: number, gamePoint: number,
 
 	return get(teamsStore);
 }
+
+export const winnerTeam = derived(teams, ($teamsStore) => {
+	if (is.emptyMap($teamsStore)) {
+		return Result.err<Team, string>("There are no teams set");
+	}
+
+	const winnerTeam = Array.from($teamsStore.values()).reduce((previousTeam, currentTeam) => {
+		if (previousTeam.gamePoints > currentTeam.gamePoints) {
+			return previousTeam;
+		}
+
+		return currentTeam;
+	});
+
+	return Result.ok<Team, string>(winnerTeam);
+});
