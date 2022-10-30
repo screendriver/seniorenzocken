@@ -3,21 +3,34 @@
 	import { useMachine } from "@xstate/svelte/es/fsm";
 	import Head from "./Header.svelte";
 	import TeamsForm from "./team/TeamsForm.svelte";
-	import Game from "./game/Game.svelte";
+	import Game, { type NextRoundEvent } from "./game/Game.svelte";
 	import GameOver from "./game/GameOver.svelte";
 	import type { GameStateMachine } from "./game-state/game-state-machine.js";
+	import type { TeamNameChangeEvent } from "./team/Team.svelte";
 
 	export let imageKit: ImageKit;
 	export let gameStateMachine: GameStateMachine;
 
 	const { state, send } = useMachine(gameStateMachine);
 
+	function updateTeamName(event: CustomEvent<TeamNameChangeEvent>): void {
+		send({
+			type: "UPDATE_TEAM_NAME",
+			teamNumber: event.detail.teamNumber,
+			teamName: event.detail.teamName
+		});
+	}
+
 	function startGame(): void {
 		send("START_GAME");
 	}
 
-	function gameOver(): void {
-		send("GAME_OVER");
+	function updateGamePoint(event: CustomEvent<NextRoundEvent>): void {
+		send({
+			type: "UPDATE_GAME_POINT",
+			teamNumber: event.detail.teamNumber,
+			gamePoints: event.detail.gamePoints
+		});
 	}
 
 	function startNewGame(): void {
@@ -28,9 +41,13 @@
 <Head {imageKit} />
 
 {#if $state.value === "gameOver"}
-	<GameOver on:startnewgame={startNewGame} />
+	<GameOver teams={$state.context.teams} on:startnewgame={startNewGame} />
 {:else if $state.value === "gameRunning"}
-	<Game on:gameover={gameOver} />
+	<Game teams={$state.context.teams} on:nextround={updateGamePoint} />
 {:else}
-	<TeamsForm on:gamestarted={startGame} />
+	<TeamsForm
+		canGameBeStarted={$state.context.canGameBeStarted}
+		on:teamnamechange={updateTeamName}
+		on:startgame={startGame}
+	/>
 {/if}

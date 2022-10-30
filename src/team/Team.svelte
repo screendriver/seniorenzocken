@@ -1,23 +1,23 @@
+<script lang="ts" context="module">
+	export interface TeamNameChangeEvent {
+		readonly teamNumber: number;
+		readonly teamName: string;
+	}
+</script>
+
 <script lang="ts">
+	import { createEventDispatcher } from "svelte";
 	import { UsersIcon } from "svelte-feather-icons";
-	import Maybe from "true-myth/maybe";
-	import { teams } from "./teams-store.js";
 
 	export let teamNumber: number;
 
-	let teamName = Maybe.of($teams.get(teamNumber)).mapOr("", (team) => {
-		return team.teamName;
-	});
+	const dispatch = createEventDispatcher<{ teamnamechange: TeamNameChangeEvent }>();
 
-	$: teams.update((teams) => {
-		const updatedTeams = new Map(teams);
+	let teamName = "";
 
-		updatedTeams.set(teamNumber, {
-			teamName,
-			gamePoints: 0
-		});
-
-		return updatedTeams;
+	$: dispatch("teamnamechange", {
+		teamNumber,
+		teamName
 	});
 </script>
 
