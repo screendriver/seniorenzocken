@@ -1,6 +1,6 @@
 import { test, assert } from "vitest";
 import { Factory } from "fishery";
-import { areTeamsFilled, type Team } from "./teams";
+import { areTeamsFilled, updateTeamGamePoint, type Team, type Teams } from "./teams";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {
@@ -62,4 +62,41 @@ test('areTeamsFilled() returns false when teams Map has two items where one item
 	const filled = areTeamsFilled(teams);
 
 	assert.isFalse(filled);
+});
+
+test("updateTeamGamePoint() does not update anything when the team is empty", () => {
+	const teams: Teams = new Map();
+	const updatedTeams = updateTeamGamePoint(teams, 0, 0);
+
+	assert.strictEqual(teams, updatedTeams);
+});
+
+test("updateTeamGamePoint() does not update the given team when the team number could not be found", () => {
+	const teams: Teams = new Map([[1, teamFactory.build()]]);
+	const updatedTeams = updateTeamGamePoint(teams, 42, 0);
+
+	assert.strictEqual(teams, updatedTeams);
+});
+
+test("updateTeamGamePoint() updates the given team with the given game point when the team number could be found", () => {
+	const teams: Teams = new Map([[1, teamFactory.build()]]);
+	const updatedTeams = updateTeamGamePoint(teams, 1, 4);
+
+	assert.deepStrictEqual(updatedTeams, new Map([[1, teamFactory.build({ gamePoints: 4 })]]));
+});
+
+test("updateTeamGamePoint() adds the given game point to the already existing game point", () => {
+	test("updateTeamGamePoint() updates the given team when the team number could be found", () => {
+		const teams: Teams = new Map([
+			[
+				1,
+				teamFactory.build({
+					gamePoints: 2
+				})
+			]
+		]);
+		const updatedTeams = updateTeamGamePoint(teams, 1, 4);
+
+		assert.deepStrictEqual(updatedTeams, new Map([[1, teamFactory.build({ gamePoints: 6 })]]));
+	});
 });
