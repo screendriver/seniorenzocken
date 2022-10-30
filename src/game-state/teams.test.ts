@@ -87,6 +87,20 @@ test("updateTeamGamePoint() updates the given team with the given game point whe
 	assert.deepStrictEqual(updatedTeams, new Map([[1, teamFactory.build({ gamePoints: 4 })]]));
 });
 
+test('updateTeamGamePoint() sets "isStretched" to true when team has reached 12 game points', () => {
+	const teams: Teams = new Map([[1, teamFactory.build()]]);
+	const updatedTeams = updateTeamGamePoint(teams, 1, 12);
+
+	assert.deepStrictEqual(updatedTeams, new Map([[1, teamFactory.build({ gamePoints: 12, isStretched: true })]]));
+});
+
+test('updateTeamGamePoint() sets "isStretched" to true when team has reached more than 12 game points', () => {
+	const teams: Teams = new Map([[1, teamFactory.build()]]);
+	const updatedTeams = updateTeamGamePoint(teams, 1, 13);
+
+	assert.deepStrictEqual(updatedTeams, new Map([[1, teamFactory.build({ gamePoints: 13, isStretched: true })]]));
+});
+
 test("updateTeamGamePoint() adds the given game point to the already existing game point", () => {
 	test("updateTeamGamePoint() updates the given team when the team number could be found", () => {
 		const teams: Teams = new Map([
