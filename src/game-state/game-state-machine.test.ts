@@ -142,6 +142,19 @@ test(
 );
 
 test(
+	'gameStateMachine sets context property "showConfetti" to true on "UPDATE_GAME_POINT" event when game points equals 4',
+	withGameStateMachineService((gameStateMachineService) => {
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
+		gameStateMachineService.send({ type: "START_GAME" });
+		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 });
+
+		assert.isTrue(gameStateMachineService.state.context.showConfetti);
+	})
+);
+
+test(
 	'gameStateMachine transits from "gameOver" to "emptyTeams" on "START_NEW_GAME" event',
 	withGameStateMachineService((gameStateMachineService) => {
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
@@ -167,7 +180,8 @@ test(
 
 		assert.deepStrictEqual(gameStateMachineService.state.context, {
 			teams: new Map(),
-			canGameBeStarted: false
+			canGameBeStarted: false,
+			showConfetti: false
 		});
 	})
 );
