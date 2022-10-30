@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type ImageKit from "imagekit-javascript";
 	import { useMachine } from "@xstate/svelte/es/fsm";
+	import canvasConfetti from "canvas-confetti";
 	import Head from "./Header.svelte";
 	import TeamsForm from "./team/TeamsForm.svelte";
 	import Game, { type NextRoundEvent } from "./game/Game.svelte";
@@ -35,6 +36,15 @@
 
 	function startNewGame(): void {
 		send("START_NEW_GAME");
+	}
+
+	$: if ($state.context.showConfetti) {
+		canvasConfetti({
+			particleCount: 100,
+			spread: 70,
+			origin: { y: 0.6 },
+			useWorker: true
+		});
 	}
 </script>
 

@@ -1,10 +1,12 @@
 import { assign, createMachine, type StateMachine } from "@xstate/fsm";
+import { shouldShowConfetti } from "./confetti";
 import { checkIfGameWouldBeOver } from "./game-over";
 import { areTeamsFilled, updateTeamGamePoint, type Team, type Teams } from "./teams";
 
 export interface GameStateMachineContext {
 	readonly teams: Teams;
 	readonly canGameBeStarted: boolean;
+	readonly showConfetti: boolean;
 }
 
 export type GameStateMachineEvent =
@@ -34,7 +36,8 @@ export function createGameStateMachine(): GameStateMachine {
 			initial: "emptyTeams",
 			context: {
 				teams: new Map(),
-				canGameBeStarted: false
+				canGameBeStarted: false,
+				showConfetti: false
 			},
 			states: {
 				emptyTeams: {
@@ -71,7 +74,7 @@ export function createGameStateMachine(): GameStateMachine {
 							},
 							{
 								target: "gameRunning",
-								actions: "updateTeamGamePoint"
+								actions: ["updateTeamGamePoint", "shouldShowConfetti"]
 							}
 						]
 					}
@@ -114,6 +117,15 @@ export function createGameStateMachine(): GameStateMachine {
 						}
 
 						return updateTeamGamePoint(context.teams, event.teamNumber, event.gamePoints);
+					}
+				}),
+				shouldShowConfetti: assign({
+					showConfetti(context, event) {
+						if (event.type !== "UPDATE_GAME_POINT") {
+							return context.showConfetti;
+						}
+
+						return shouldShowConfetti(event.gamePoints);
 					}
 				}),
 				resetContext: assign({
