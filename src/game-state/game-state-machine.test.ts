@@ -175,7 +175,8 @@ test(
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
 		gameStateMachineService.send({ type: "START_GAME" });
-		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 15 });
+		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 });
+		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 11 });
 		gameStateMachineService.send({ type: "START_NEW_GAME" });
 
 		assert.deepStrictEqual(gameStateMachineService.state.context, {

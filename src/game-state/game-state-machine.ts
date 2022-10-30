@@ -134,6 +134,9 @@ export function createGameStateMachine(): GameStateMachine {
 					},
 					canGameBeStarted() {
 						return false;
+					},
+					showConfetti() {
+						return false;
 					}
 				})
 			}
