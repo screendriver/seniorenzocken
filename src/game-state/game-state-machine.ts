@@ -66,7 +66,7 @@ export function createGameStateMachine(): GameStateMachine {
 								target: "gameOver",
 								actions: "updateTeamGamePoint",
 								cond(context, event) {
-									return checkIfGameWouldBeOver(context.teams, event.gamePoints);
+									return checkIfGameWouldBeOver(context.teams, event.teamNumber, event.gamePoints);
 								}
 							},
 							{

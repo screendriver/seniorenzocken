@@ -1,7 +1,11 @@
 import type { Teams } from "./teams";
 
-export function checkIfGameWouldBeOver(teams: Teams, gamePoints: number): boolean {
-	for (const team of teams.values()) {
+export function checkIfGameWouldBeOver(teams: Teams, teamNumber: number, gamePoints: number): boolean {
+	for (const [currentTeamNumber, team] of teams.entries()) {
+		if (currentTeamNumber !== teamNumber) {
+			continue;
+		}
+
 		if (team.gamePoints + gamePoints >= 15) {
 			return true;
 		}
