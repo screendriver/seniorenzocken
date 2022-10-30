@@ -5,6 +5,7 @@ import Result from "true-myth/result";
 export interface Team {
 	readonly teamName: string;
 	readonly gamePoints: number;
+	readonly isStretched: boolean;
 }
 
 export type Teams = ReadonlyMap<number, Team>;
@@ -26,11 +27,13 @@ export function updateTeamGamePoint(teams: Teams, teamNumber: number, gamePoint:
 		return teams;
 	}
 
+	const newGamePoints = foundTeam.value.gamePoints + gamePoint;
 	const updatedTeams = new Map(teams);
 
 	updatedTeams.set(teamNumber, {
 		teamName: foundTeam.value.teamName,
-		gamePoints: foundTeam.value.gamePoints + gamePoint
+		gamePoints: newGamePoints,
+		isStretched: newGamePoints >= 12
 	});
 
 	return updatedTeams;

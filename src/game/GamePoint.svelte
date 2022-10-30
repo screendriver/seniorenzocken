@@ -38,7 +38,12 @@
 </script>
 
 <section class="w-full pb-4 flex flex-col gap-3 bg-slate-600 rounded-lg">
-	<label for={rangeInputId} class="flex justify-between items-center gap-2 bg-sky-700 rounded-lg">
+	<label
+		for={rangeInputId}
+		class="flex justify-between items-center gap-2 rounded-lg {team.isJust && team.value.isStretched
+			? 'bg-red-400'
+			: 'bg-sky-700'}"
+	>
 		<UsersIcon size="40" class="rounded-l-lg border-r-2 border-r-sky-600 bg-sky-700 p-2" />
 		{#if team.isJust}
 			<cite class="flex-grow not-italic">{team.value.teamName}</cite>

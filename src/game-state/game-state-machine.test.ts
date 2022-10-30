@@ -50,7 +50,7 @@ test(
 
 		assert.deepStrictEqual(
 			gameStateMachineService.state.context.teams,
-			new Map([[1, { teamName: "Test team", gamePoints: 0 }]])
+			new Map([[1, { teamName: "Test team", gamePoints: 0, isStretched: false }]])
 		);
 	})
 );
@@ -64,7 +64,7 @@ test(
 
 		assert.deepStrictEqual(
 			gameStateMachineService.state.context.teams,
-			new Map([[1, { teamName: "foo", gamePoints: 0 }]])
+			new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 		);
 	})
 );
@@ -118,7 +118,7 @@ test(
 
 		assert.deepStrictEqual(
 			gameStateMachineService.state.context.teams,
-			new Map([[1, { teamName: "foo", gamePoints: 3 }]])
+			new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]])
 		);
 	})
 );
@@ -135,7 +135,7 @@ test(
 
 		assert.deepStrictEqual(
 			gameStateMachineService.state.context.teams,
-			new Map([[1, { teamName: "foo", gamePoints: 15 }]])
+			new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: true }]])
 		);
 		assert.strictEqual(gameStateMachineService.state.value, "gameOver");
 	})
