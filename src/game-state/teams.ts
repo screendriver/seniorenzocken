@@ -1,5 +1,6 @@
 import is from "@sindresorhus/is";
 import Maybe from "true-myth/maybe";
+import Result from "true-myth/result";
 
 export interface Team {
 	readonly teamName: string;
@@ -33,4 +34,20 @@ export function updateTeamGamePoint(teams: Teams, teamNumber: number, gamePoint:
 	});
 
 	return updatedTeams;
+}
+
+export function determineWinnerTeam(teams: Teams): Result<Team, string> {
+	if (is.emptyMap(teams)) {
+		return Result.err<Team, string>("There are no teams set");
+	}
+
+	const winnerTeam = Array.from(teams.values()).reduce((previousTeam, currentTeam) => {
+		if (previousTeam.gamePoints > currentTeam.gamePoints) {
+			return previousTeam;
+		}
+
+		return currentTeam;
+	});
+
+	return Result.ok<Team, string>(winnerTeam);
 }
