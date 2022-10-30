@@ -95,7 +95,8 @@ export function createGameStateMachine(): GameStateMachine {
 						const updatedTeams = new Map(context.teams);
 						updatedTeams.set(event.teamNumber, {
 							teamName: event.teamName,
-							gamePoints: 0
+							gamePoints: 0,
+							isStretched: false
 						});
 
 						return updatedTeams;

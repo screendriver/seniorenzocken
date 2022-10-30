@@ -6,7 +6,8 @@ import { areTeamsFilled, determineWinnerTeam, updateTeamGamePoint, type Team, ty
 const teamFactory = Factory.define<Team>(() => {
 	return {
 		teamName: "",
-		gamePoints: 0
+		gamePoints: 0,
+		isStretched: false
 	};
 });
 

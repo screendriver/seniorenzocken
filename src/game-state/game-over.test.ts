@@ -6,7 +6,8 @@ import type { Team, Teams } from "./teams";
 const teamFactory = Factory.define<Team>(() => {
 	return {
 		teamName: "",
-		gamePoints: 0
+		gamePoints: 0,
+		isStretched: false
 	};
 });
 

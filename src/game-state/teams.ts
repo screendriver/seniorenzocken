@@ -5,6 +5,7 @@ import Result from "true-myth/result";
 export interface Team {
 	readonly teamName: string;
 	readonly gamePoints: number;
+	readonly isStretched: boolean;
 }
 
 export type Teams = ReadonlyMap<number, Team>;

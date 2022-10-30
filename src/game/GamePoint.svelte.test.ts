@@ -9,7 +9,8 @@ import type { Team } from "../game-state/teams.js";
 const teamFactory = Factory.define<Team>(() => {
 	return {
 		teamName: "foo",
-		gamePoints: 0
+		gamePoints: 0,
+		isStretched: false
 	};
 });
 
