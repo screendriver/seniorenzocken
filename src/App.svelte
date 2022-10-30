@@ -8,6 +8,7 @@
 	import GameOver from "./game/GameOver.svelte";
 	import type { GameStateMachine } from "./game-state/game-state-machine.js";
 	import type { TeamNameChangeEvent } from "./team/Team.svelte";
+	import GitHub from "./GitHub.svelte";
 
 	export let imageKit: ImageKit;
 	export let gameStateMachine: GameStateMachine;
@@ -60,3 +61,9 @@
 		on:startgame={startGame}
 	/>
 {/if}
+
+<footer class="absolute bottom-5 right-5 flex justify-end w-full">
+	<a href="https://github.com/screendriver/seniorenzocken" title="GitHub">
+		<GitHub />
+	</a>
+</footer>
