@@ -1,13 +1,10 @@
 import { assert, test, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
-import { get } from "svelte/store";
 import Team from "./Team.svelte";
-import { teams } from "./teams-store";
 
 afterEach(() => {
 	cleanup();
-	teams.set(new Map());
 });
 
 test("<Team /> renders a label for the correct input id", () => {
@@ -35,15 +32,22 @@ test("<Team /> renders an input with a correct name", () => {
 	assert.strictEqual(inputElement.name, "team-42");
 });
 
-test("<Team /> saves entered text in teams store", async () => {
+test('<Team /> dispatches "teamnamechange" when team name changes', async () => {
 	const user = userEvent.setup();
-	render(Team, { teamNumber: 42 });
+	const { component } = render(Team, { teamNumber: 42 });
+
+	let teamNameChangeEvent: unknown;
+	component.$on("teamnamechange", (event) => {
+		teamNameChangeEvent = event.detail;
+	});
+
 	const inputElement = screen.getByPlaceholderText<HTMLInputElement>("Team 42");
 
 	await user.click(inputElement);
-	await user.keyboard("test");
+	await user.keyboard("Abc");
 
-	const teamsFromStore = get(teams);
-
-	assert.deepStrictEqual(teamsFromStore, new Map([[42, { teamName: "test", gamePoints: 0 }]]));
+	assert.deepStrictEqual(teamNameChangeEvent, {
+		teamName: "Abc",
+		teamNumber: 42
+	});
 });

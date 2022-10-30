@@ -50,7 +50,7 @@
 			}
 		},
 		{
-			"files": "src/game/GamePoint.svelte.test.ts",
+			"files": ["src/game/GamePoint.svelte.test.ts", "src/team/Team.svelte.test.ts"],
 			"rules": {
 				"@typescript-eslint/no-unsafe-member-access": "off",
 				"@typescript-eslint/no-unsafe-assignment": "off",

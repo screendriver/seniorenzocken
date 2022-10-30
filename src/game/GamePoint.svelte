@@ -9,9 +9,10 @@
 	import { createEventDispatcher } from "svelte";
 	import { UsersIcon } from "svelte-feather-icons";
 	import Maybe from "true-myth/maybe";
-	import { teams } from "../team/teams-store.js";
+	import type { Teams } from "../game-state/teams.js";
 
 	export let teamNumber: number;
+	export let teams: Teams;
 	export let disabled: boolean;
 
 	const dispatch = createEventDispatcher<{ gamepointchange: GamePointChangeEvent }>();
@@ -22,7 +23,7 @@
 		gamePoint = 2;
 	}
 	$: rangeStep = gamePoint >= 2 ? 1 : 2;
-	$: team = Maybe.of($teams.get(teamNumber));
+	$: team = Maybe.of(teams.get(teamNumber));
 
 	function dispatchGamePointChangeEvent(): void {
 		dispatch("gamepointchange", {

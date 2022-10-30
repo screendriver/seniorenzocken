@@ -6,7 +6,7 @@ import TeamsForm from "./TeamsForm.svelte";
 afterEach(cleanup);
 
 test("<TeamsForm /> renders two team input fields as long as game is not started", () => {
-	render(TeamsForm);
+	render(TeamsForm, { canGameBeStarted: true });
 
 	const inputElement1 = screen.queryByPlaceholderText<HTMLInputElement>("Team 1");
 	const inputElement2 = screen.queryByPlaceholderText<HTMLInputElement>("Team 2");
@@ -15,12 +15,12 @@ test("<TeamsForm /> renders two team input fields as long as game is not started
 	assert.isNotNull(inputElement2);
 });
 
-test('<TeamsForm /> dispatches "gamestarted" event when clicking on submit button', async () => {
+test('<TeamsForm /> dispatches "startgame" event when clicking on submit button', async () => {
 	const user = userEvent.setup();
-	const { component } = render(TeamsForm);
+	const { component } = render(TeamsForm, { canGameBeStarted: true });
 
 	let eventDispatched = false;
-	component.$on("gamestarted", () => {
+	component.$on("startgame", () => {
 		eventDispatched = true;
 	});
 

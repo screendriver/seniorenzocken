@@ -1,16 +1,24 @@
+<script lang="ts" context="module">
+	export interface NextRoundEvent {
+		readonly teamNumber: number;
+		readonly gamePoints: number;
+	}
+</script>
+
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
 	import Maybe, { transposeArray } from "true-myth/maybe";
 	import GamePoint, { type GamePointChangeEvent } from "./GamePoint.svelte";
-	import { teams, updateStoreTeamGamePoints, type Teams } from "../team/teams-store.js";
 	import Button from "../Button.svelte";
-	import { checkIfGameIsOver } from "./rules.js";
+	import type { Teams } from "../game-state/teams.js";
+
+	export let teams: Teams;
 
 	let gamePointComponents: GamePoint[] = [];
 	let enabledTeamNumber: Maybe<number> = Maybe.nothing();
 	let desiredTeamGamePoint: Maybe<number> = Maybe.nothing();
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{ nextround: NextRoundEvent }>();
 
 	$: nextRoundDisabled = transposeArray([enabledTeamNumber, desiredTeamGamePoint]).isNothing;
 
@@ -26,41 +34,39 @@
 		}
 	}
 
-	function nextRound(): Maybe<Teams> {
-		function updateTeam(teamNumber: number) {
-			return (gamePoint: number): Teams => {
-				return updateStoreTeamGamePoints(teamNumber, gamePoint, teams);
-			};
-		}
-
-		const updatedTeams = Maybe.just(updateTeam).ap(enabledTeamNumber).ap(desiredTeamGamePoint);
-
+	function resetState(): void {
 		enabledTeamNumber = Maybe.nothing();
 		desiredTeamGamePoint = Maybe.nothing();
 		gamePointComponents.forEach((gamePointComponent) => {
 			gamePointComponent.reset();
 		});
-
-		return updatedTeams;
 	}
 
-	function dispatchGameOver(isGameReallyOver: boolean): void {
-		if (isGameReallyOver) {
-			dispatch("gameover");
+	function dispatchNextRound(): void {
+		function updateTeam(teamNumber: number) {
+			return (gamePoints: number): boolean => {
+				return dispatch("nextround", {
+					teamNumber,
+					gamePoints
+				});
+			};
 		}
+
+		Maybe.just(updateTeam).ap(enabledTeamNumber).ap(desiredTeamGamePoint);
 	}
 </script>
 
 <form
 	class="relative top-16 m-10 p-8 bg-slate-800 bg-opacity-90 rounded-lg shadow-md flex flex-col items-center gap-6 sm:max-w-lg sm:mx-auto"
 >
-	{#each Array.from($teams.keys()) as teamNumber, index (teamNumber)}
+	{#each Array.from(teams.keys()) as teamNumber, index (teamNumber)}
 		{@const disabled = enabledTeamNumber.mapOr(false, (enabledTeamNumberValue) => {
 			return enabledTeamNumberValue !== teamNumber;
 		})}
 
 		<GamePoint
 			{teamNumber}
+			{teams}
 			{disabled}
 			bind:this={gamePointComponents[index]}
 			on:gamepointchange={disableGamePoint}
@@ -72,7 +78,8 @@
 		value="Nächste Runde"
 		disabled={nextRoundDisabled}
 		on:click={() => {
-			dispatchGameOver(checkIfGameIsOver(nextRound()));
+			dispatchNextRound();
+			resetState();
 		}}
 	/>
 </form>

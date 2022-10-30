@@ -1,32 +1,173 @@
-import { assert, test } from "vitest";
-import { createGameStateMachine } from "./game-state-machine";
+import { assert, test, type TestFunction } from "vitest";
+import { interpret, type StateMachine } from "@xstate/fsm";
+import {
+	createGameStateMachine,
+	type GameStateMachineContext,
+	type GameStateMachineEvent,
+	type GameStateMachineState
+} from "./game-state-machine";
 
-test('gameStateMachine has initial state "gameNotRunning"', () => {
-	const gameStateMachine = createGameStateMachine();
+function withGameStateMachineService(
+	testFunction: (
+		gameStateMachineService: StateMachine.Service<
+			GameStateMachineContext,
+			GameStateMachineEvent,
+			GameStateMachineState
+		>
+	) => void
+): TestFunction {
+	return () => {
+		const gameStateMachine = createGameStateMachine();
+		const gameStateMachineService = interpret(gameStateMachine);
+		gameStateMachineService.start();
 
-	assert.strictEqual(gameStateMachine.initialState.value, "gameNotRunning");
-});
+		testFunction(gameStateMachineService);
+	};
+}
 
-test('gameStateMachine transits from "gameNotRunning" to "gameRunning" on "START_GAME" event', () => {
-	const gameStateMachine = createGameStateMachine();
-	const gameRunningState = gameStateMachine.transition(gameStateMachine.initialState, "START_GAME");
+test(
+	'gameStateMachine has initial state "emptyTeams"',
+	withGameStateMachineService((gameStateMachineService) => {
+		assert.strictEqual(gameStateMachineService.state.value, "emptyTeams");
+	})
+);
 
-	assert.strictEqual(gameRunningState.value, "gameRunning");
-});
+test(
+	'gameStateMachine transits from "emptyTeams" to "teamsUpdating" on "UPDATE_TEAM_NAME" event',
+	withGameStateMachineService((gameStateMachineService) => {
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "" });
 
-test('gameStateMachine transits from "gameRunning" to "gameOver" on "GAME_OVER" event', () => {
-	const gameStateMachine = createGameStateMachine();
-	const gameRunningState = gameStateMachine.transition(gameStateMachine.initialState, "START_GAME");
-	const gameOverState = gameStateMachine.transition(gameRunningState, "GAME_OVER");
+		assert.strictEqual(gameStateMachineService.state.value, "teamsUpdating");
+	})
+);
 
-	assert.strictEqual(gameOverState.value, "gameOver");
-});
+test(
+	'gameStateMachine updates teams in context when transit from "emptyTeams" to "teamsUpdating"',
+	withGameStateMachineService((gameStateMachineService) => {
+		assert.deepStrictEqual(gameStateMachineService.state.context.teams, new Map());
 
-test('gameStateMachine transits from "gameOver" to "gameNotRunning" on "START_NEW_GAME" event', () => {
-	const gameStateMachine = createGameStateMachine();
-	const gameRunningState = gameStateMachine.transition(gameStateMachine.initialState, "START_GAME");
-	const gameOverState = gameStateMachine.transition(gameRunningState, "GAME_OVER");
-	const gameNotRunningState = gameStateMachine.transition(gameOverState, "START_NEW_GAME");
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "Test team" });
 
-	assert.strictEqual(gameNotRunningState.value, "gameNotRunning");
-});
+		assert.deepStrictEqual(
+			gameStateMachineService.state.context.teams,
+			new Map([[1, { teamName: "Test team", gamePoints: 0 }]])
+		);
+	})
+);
+
+test(
+	'gameStateMachine updates context property "teams" on "UPDATE_TEAM_NAME" event when current state is "teamsUpdating"',
+	withGameStateMachineService((gameStateMachineService) => {
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
+
+		assert.deepStrictEqual(
+			gameStateMachineService.state.context.teams,
+			new Map([[1, { teamName: "foo", gamePoints: 0 }]])
+		);
+	})
+);
+
+test(
+	'gameStateMachine sets context property "canGameBeStarted" to true on "UPDATE_TEAM_NAME" event when current state is "teamsUpdating" and team name is filled',
+	withGameStateMachineService((gameStateMachineService) => {
+		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
+
+		assert.isTrue(gameStateMachineService.state.context.canGameBeStarted);
+	})
+);
+
+test(
+	'gameStateMachine sets context property "canGameBeStarted" to false on "UPDATE_TEAM_NAME" event when current state is "teamsUpdating" and team name is empty',
+	withGameStateMachineService((gameStateMachineService) => {
+		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "" });
+
+		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+	})
+);
+
+test(
+	'gameStateMachine transits from "teamsUpdating" to "gameRunning" on "START_GAME" event when game can be started',
+	withGameStateMachineService((gameStateMachineService) => {
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
+		gameStateMachineService.send({ type: "START_GAME" });
+
+		assert.strictEqual(gameStateMachineService.state.value, "gameRunning");
+	})
+);
+
+test(
+	'gameStateMachine updates team game point on "UPDATE_GAME_POINT" event when current state is "gameRunning" and no team reached 15 game points',
+	withGameStateMachineService((gameStateMachineService) => {
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
+		gameStateMachineService.send({ type: "START_GAME" });
+		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 });
+
+		assert.deepStrictEqual(
+			gameStateMachineService.state.context.teams,
+			new Map([[1, { teamName: "foo", gamePoints: 3 }]])
+		);
+	})
+);
+
+test(
+	'gameStateMachine updates team game point on "UPDATE_GAME_POINT" event and transit to "gameOver" when current state is "gameRunning" and one team reached 15 game points',
+	withGameStateMachineService((gameStateMachineService) => {
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
+		gameStateMachineService.send({ type: "START_GAME" });
+		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 });
+		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 12 });
+
+		assert.deepStrictEqual(
+			gameStateMachineService.state.context.teams,
+			new Map([[1, { teamName: "foo", gamePoints: 15 }]])
+		);
+		assert.strictEqual(gameStateMachineService.state.value, "gameOver");
+	})
+);
+
+test(
+	'gameStateMachine transits from "gameOver" to "emptyTeams" on "START_NEW_GAME" event',
+	withGameStateMachineService((gameStateMachineService) => {
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
+		gameStateMachineService.send({ type: "START_GAME" });
+		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 16 });
+		gameStateMachineService.send({ type: "START_NEW_GAME" });
+
+		assert.strictEqual(gameStateMachineService.state.value, "emptyTeams");
+	})
+);
+
+test(
+	'gameStateMachine resets context when transit from "gameOver" to "emptyTeams" on "START_NEW_GAME" event',
+	withGameStateMachineService((gameStateMachineService) => {
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
+		gameStateMachineService.send({ type: "START_GAME" });
+		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 15 });
+		gameStateMachineService.send({ type: "START_NEW_GAME" });
+
+		assert.deepStrictEqual(gameStateMachineService.state.context, {
+			teams: new Map(),
+			canGameBeStarted: false
+		});
+	})
+);
