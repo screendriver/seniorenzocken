@@ -10,7 +10,7 @@ test("disables the submit button when both teams are not filled initially", asyn
 
 test("disables the submit button when something gets entered in first team", async ({ page, gamePage }) => {
 	await page.goto("/");
-	await gamePage.fillTeamOneInTeamsForm("Test team 1");
+	await gamePage.fillTeamOneInTeamsForm();
 
 	const isDisabled = await gamePage.isTeamsFormSubmitDisabled();
 
@@ -19,7 +19,7 @@ test("disables the submit button when something gets entered in first team", asy
 
 test("disables the submit button when something gets entered in second team", async ({ page, gamePage }) => {
 	await page.goto("/");
-	await gamePage.fillTeamTwoInTeamsForm("Test team 2");
+	await gamePage.fillTeamTwoInTeamsForm();
 
 	const isDisabled = await gamePage.isTeamsFormSubmitDisabled();
 
@@ -31,8 +31,8 @@ test("disables the submit button again when team one was already filled but clea
 	gamePage
 }) => {
 	await page.goto("/");
-	await gamePage.fillTeamOneInTeamsForm("Test team 1");
-	await gamePage.fillTeamOneInTeamsForm("");
+	await gamePage.fillTeamOneInTeamsForm();
+	await gamePage.clearTeamOneInTeamsForm();
 
 	const isDisabled = await gamePage.isTeamsFormSubmitDisabled();
 
@@ -44,8 +44,8 @@ test("disables the submit button again when team two was already filled but clea
 	gamePage
 }) => {
 	await page.goto("/");
-	await gamePage.fillTeamTwoInTeamsForm("Test team 2");
-	await gamePage.fillTeamTwoInTeamsForm("");
+	await gamePage.fillTeamTwoInTeamsForm();
+	await gamePage.clearTeamTwoInTeamsForm();
 
 	const isDisabled = await gamePage.isTeamsFormSubmitDisabled();
 
@@ -57,9 +57,9 @@ test("disables the submit button again when team one and two was filled but team
 	gamePage
 }) => {
 	await page.goto("/");
-	await gamePage.fillTeamOneInTeamsForm("Test team 1");
-	await gamePage.fillTeamTwoInTeamsForm("Test team 1");
-	await gamePage.fillTeamOneInTeamsForm("");
+	await gamePage.fillTeamOneInTeamsForm();
+	await gamePage.fillTeamTwoInTeamsForm();
+	await gamePage.clearTeamOneInTeamsForm();
 
 	const isDisabled = await gamePage.isTeamsFormSubmitDisabled();
 
@@ -71,9 +71,9 @@ test("disables the submit button again when team one and two was filled but team
 	gamePage
 }) => {
 	await page.goto("/");
-	await gamePage.fillTeamOneInTeamsForm("Test team 1");
-	await gamePage.fillTeamTwoInTeamsForm("Test team 1");
-	await gamePage.fillTeamTwoInTeamsForm("");
+	await gamePage.fillTeamOneInTeamsForm();
+	await gamePage.fillTeamTwoInTeamsForm();
+	await gamePage.clearTeamTwoInTeamsForm();
 
 	const isDisabled = await gamePage.isTeamsFormSubmitDisabled();
 
