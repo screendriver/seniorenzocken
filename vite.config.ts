@@ -52,7 +52,7 @@ export default defineConfig({
 		})
 	],
 	test: {
-		dir: "./src/",
+		include: ["src/**/*.test.ts"],
 		environment: "happy-dom",
 		coverage: {
 			provider: "c8",
