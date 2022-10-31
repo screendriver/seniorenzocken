@@ -4,5 +4,16 @@
 	"framework": "svelte",
 	"cleanUrls": true,
 	"public": false,
-	"outputDirectory": "target/dist/"
+	"outputDirectory": "target/dist/",
+	"headers": [
+		{
+			"source": "/manifest.webmanifest",
+			"headers": [
+				{
+					"key": "Content-Type",
+					"value": "application/manifest+json"
+				}
+			]
+		}
+	]
 }
