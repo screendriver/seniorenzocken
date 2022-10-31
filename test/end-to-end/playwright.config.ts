@@ -1,8 +1,11 @@
 import type { PlaywrightTestConfig } from "@playwright/test";
+import path from "node:path";
 
 function isRunningInContinuousIntegration(): boolean {
 	return typeof process.env.CI !== "undefined";
 }
+
+const testOutputDirectory = path.join("..", "..", "target", "test-output", "end-to-end");
 
 const config: PlaywrightTestConfig = {
 	forbidOnly: isRunningInContinuousIntegration(),
@@ -22,12 +25,19 @@ const config: PlaywrightTestConfig = {
 			use: {
 				browserName: "firefox"
 			}
+		},
+		{
+			name: "WebKit",
+			use: {
+				browserName: "webkit"
+			}
 		}
 	],
 	use: {
 		baseURL: "http://localhost:3000"
 	},
-	outputDir: "../../target/test-results/"
+	reporter: [["list"], ["html", { outputFolder: path.join(testOutputDirectory, "html-report") }]],
+	outputDir: path.join(testOutputDirectory, "test-results")
 };
 
 export default config;

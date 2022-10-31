@@ -27,9 +27,15 @@ jobs:
             - name: Setup Node.js
               uses: ./.github/actions/setup-nodejs
             - name: Install Playwright
-              run: npx playwright install chromium firefox
+              run: npx playwright install --with-deps chromium firefox webkit
             - name: Run tests
               run: npm run test:end-to-end
+            - uses: actions/upload-artifact@v3
+              if: ${{ failure() }}
+              with:
+                  name: playwright-html-report
+                  path: target/test-output/end-to-end/html-report/
+                  retention-days: 7
 
     deploy-to-vercel:
         name: Deploy to Vercel
