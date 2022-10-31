@@ -22,6 +22,12 @@ const config: PlaywrightTestConfig = {
 			use: {
 				browserName: "firefox"
 			}
+		},
+		{
+			name: "WebKit",
+			use: {
+				browserName: "webkit"
+			}
 		}
 	],
 	use: {
