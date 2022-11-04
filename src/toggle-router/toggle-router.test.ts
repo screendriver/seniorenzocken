@@ -1,5 +1,5 @@
 import { assert, test, type TestFunction } from "vitest";
-import { createToggleRouter, type FeatureName, type ToggleRouter } from "./toggle-router";
+import { createToggleRouter, type FeatureName, type ToggleRouter } from "./toggle-router.js";
 
 function withToggleRouter(testFunction: (toggleRouter: ToggleRouter) => void): TestFunction {
 	return () => {

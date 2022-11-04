@@ -1,8 +1,8 @@
 import { assign, createMachine, type StateMachine } from "@xstate/fsm";
-import type { ToggleRouter } from "../toggle-router/toggle-router";
-import { shouldShowConfetti } from "./confetti";
-import { checkIfGameWouldBeOver } from "./game-over";
-import { areTeamsFilled, updateTeamGamePoint, type Team, type Teams } from "./teams";
+import type { ToggleRouter } from "../toggle-router/toggle-router.js";
+import { shouldShowConfetti } from "./confetti.js";
+import { checkIfGameWouldBeOver } from "./game-over.js";
+import { areTeamsFilled, updateTeamGamePoint, type Team, type Teams } from "./teams.js";
 
 export interface GameStateMachineContext {
 	readonly teams: Teams;

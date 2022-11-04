@@ -1,8 +1,8 @@
 import ImageKit from "imagekit-javascript";
 import { assert } from "@sindresorhus/is";
 import App from "./App.svelte";
-import { createGameStateMachine } from "./game-state/game-state-machine";
-import { createToggleRouter } from "./toggle-router/toggle-router";
+import { createGameStateMachine } from "./game-state/game-state-machine.js";
+import { createToggleRouter } from "./toggle-router/toggle-router.js";
 
 const htmlBodyElement = document.querySelector("body");
 const imageKitBaseUrl = import.meta.env.VITE_IMAGEKIT_BASE_URL;

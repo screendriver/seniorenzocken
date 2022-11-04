@@ -1,6 +1,6 @@
 import { assert, test, vi, type Mock } from "vitest";
-import { createFeatureDecisions } from "./feature-decisions";
-import type { FeatureName, ToggleRouter } from "./toggle-router";
+import { createFeatureDecisions } from "./feature-decisions.js";
+import type { FeatureName, ToggleRouter } from "./toggle-router.js";
 
 function createToggleRouter(featureIsEnabled: Mock<FeatureName[], boolean>): ToggleRouter {
 	return {

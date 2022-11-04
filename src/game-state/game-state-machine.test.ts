@@ -6,7 +6,7 @@ import {
 	type GameStateMachineEvent,
 	type GameStateMachineState
 } from "./game-state-machine";
-import type { FeatureName, ToggleRouter } from "../toggle-router/toggle-router";
+import type { FeatureName, ToggleRouter } from "../toggle-router/toggle-router.js";
 
 function withGameStateMachineService(
 	testFunction: (
