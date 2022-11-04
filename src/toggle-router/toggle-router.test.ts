@@ -1,32 +1,48 @@
-import { assert, test } from "vitest";
-import { createToggleRouter, type FeatureName } from "./toggle-router";
+import { assert, test, type TestFunction } from "vitest";
+import { createToggleRouter, type FeatureName, type ToggleRouter } from "./toggle-router";
 
-test("featureIsEnabled() returns false when feature was never set", () => {
-	const toggleRouter = createToggleRouter();
-	const featureIsEnabled = toggleRouter.featureIsEnabled("game-point-buttons");
+function withToggleRouter(testFunction: (toggleRouter: ToggleRouter) => void): TestFunction {
+	return () => {
+		const toggleRouter = createToggleRouter();
 
-	assert.isFalse(featureIsEnabled);
-});
+		testFunction(toggleRouter);
+	};
+}
 
-test("featureIsEnabled() returns false when feature name is unknown", () => {
-	const toggleRouter = createToggleRouter();
-	const featureIsEnabled = toggleRouter.featureIsEnabled("foo" as FeatureName);
+test(
+	"featureIsEnabled() returns false when feature was never set",
+	withToggleRouter((toggleRouter) => {
+		const featureIsEnabled = toggleRouter.featureIsEnabled("game-point-buttons");
 
-	assert.isFalse(featureIsEnabled);
-});
+		assert.isFalse(featureIsEnabled);
+	})
+);
 
-test("setFeature() sets given feature name to true", () => {
-	const toggleRouter = createToggleRouter();
-	toggleRouter.setFeature("game-point-buttons", true);
-	const featureIsEnabled = toggleRouter.featureIsEnabled("game-point-buttons");
+test(
+	"featureIsEnabled() returns false when feature name is unknown",
+	withToggleRouter((toggleRouter) => {
+		const featureIsEnabled = toggleRouter.featureIsEnabled("foo" as FeatureName);
 
-	assert.isTrue(featureIsEnabled);
-});
+		assert.isFalse(featureIsEnabled);
+	})
+);
 
-test("setFeature() sets given feature name to false", () => {
-	const toggleRouter = createToggleRouter();
-	toggleRouter.setFeature("game-point-buttons", false);
-	const featureIsEnabled = toggleRouter.featureIsEnabled("game-point-buttons");
+test(
+	"setFeature() sets given feature name to true",
+	withToggleRouter((toggleRouter) => {
+		toggleRouter.setFeature("game-point-buttons", true);
+		const featureIsEnabled = toggleRouter.featureIsEnabled("game-point-buttons");
 
-	assert.isFalse(featureIsEnabled);
-});
+		assert.isTrue(featureIsEnabled);
+	})
+);
+
+test(
+	"setFeature() sets given feature name to false",
+	withToggleRouter((toggleRouter) => {
+		toggleRouter.setFeature("game-point-buttons", false);
+		const featureIsEnabled = toggleRouter.featureIsEnabled("game-point-buttons");
+
+		assert.isFalse(featureIsEnabled);
+	})
+);
