@@ -1,4 +1,4 @@
-import { assert, test, type TestFunction } from "vitest";
+import { assert, test, vi, type Mock, type TestFunction } from "vitest";
 import { interpret, type StateMachine } from "@xstate/fsm";
 import {
 	createGameStateMachine,
@@ -6,6 +6,7 @@ import {
 	type GameStateMachineEvent,
 	type GameStateMachineState
 } from "./game-state-machine";
+import type { FeatureName, ToggleRouter } from "../toggle-router/toggle-router";
 
 function withGameStateMachineService(
 	testFunction: (
@@ -13,15 +14,20 @@ function withGameStateMachineService(
 			GameStateMachineContext,
 			GameStateMachineEvent,
 			GameStateMachineState
-		>
+		>,
+		setFeature: Mock<FeatureName[], boolean>
 	) => void
 ): TestFunction {
 	return () => {
-		const gameStateMachine = createGameStateMachine();
+		const setFeature = vi.fn<FeatureName[], boolean>();
+		const toggleRouter = {
+			setFeature
+		} as unknown as ToggleRouter;
+		const gameStateMachine = createGameStateMachine(toggleRouter);
 		const gameStateMachineService = interpret(gameStateMachine);
 		gameStateMachineService.start();
 
-		testFunction(gameStateMachineService);
+		testFunction(gameStateMachineService, setFeature);
 	};
 }
 
@@ -52,6 +58,30 @@ test(
 			gameStateMachineService.state.context.teams,
 			new Map([[1, { teamName: "Test team", gamePoints: 0, isStretched: false }]])
 		);
+	})
+);
+
+test(
+	'gameStateMachine sets feature "game-point-buttons" to false when transit from "emptyTeams" to "teamsUpdating" and team name is not "ratze"',
+	withGameStateMachineService((gameStateMachineService, setFeature) => {
+		assert.deepStrictEqual(gameStateMachineService.state.context.teams, new Map());
+
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "Test team" });
+
+		assert.strictEqual(setFeature.mock.calls.length, 1);
+		assert.deepStrictEqual(setFeature.mock.lastCall, ["game-point-buttons", false]);
+	})
+);
+
+test(
+	'gameStateMachine sets feature "game-point-buttons" to true when transit from "emptyTeams" to "teamsUpdating" and team name is "ratze"',
+	withGameStateMachineService((gameStateMachineService, setFeature) => {
+		assert.deepStrictEqual(gameStateMachineService.state.context.teams, new Map());
+
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "ratze" });
+
+		assert.strictEqual(setFeature.mock.calls.length, 1);
+		assert.deepStrictEqual(setFeature.mock.lastCall, ["game-point-buttons", true]);
 	})
 );
 

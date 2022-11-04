@@ -1,4 +1,5 @@
 import { assign, createMachine, type StateMachine } from "@xstate/fsm";
+import type { ToggleRouter } from "../toggle-router/toggle-router";
 import { shouldShowConfetti } from "./confetti";
 import { checkIfGameWouldBeOver } from "./game-over";
 import { areTeamsFilled, updateTeamGamePoint, type Team, type Teams } from "./teams";
@@ -29,7 +30,7 @@ export type GameStateMachine = StateMachine.Machine<
 	GameStateMachineState
 >;
 
-export function createGameStateMachine(): GameStateMachine {
+export function createGameStateMachine(toggleRouter: ToggleRouter): GameStateMachine {
 	return createMachine<GameStateMachineContext, GameStateMachineEvent, GameStateMachineState>(
 		{
 			id: "gameState",
@@ -44,7 +45,7 @@ export function createGameStateMachine(): GameStateMachine {
 					on: {
 						UPDATE_TEAM_NAME: {
 							target: "teamsUpdating",
-							actions: "updateTeam"
+							actions: ["updateTeam", "setGamePointButtonsFeatureToggle"]
 						}
 					}
 				},
@@ -105,6 +106,15 @@ export function createGameStateMachine(): GameStateMachine {
 						return updatedTeams;
 					}
 				}),
+				setGamePointButtonsFeatureToggle(_context, event) {
+					if (event.type !== "UPDATE_TEAM_NAME") {
+						return;
+					}
+
+					const showGamePointButtons = event.teamName === "ratze";
+
+					toggleRouter.setFeature("game-point-buttons", showGamePointButtons);
+				},
 				setCanGameBeStarted: assign({
 					canGameBeStarted(context) {
 						return areTeamsFilled(context.teams);

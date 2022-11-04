@@ -57,6 +57,12 @@
 				"@typescript-eslint/no-unsafe-assignment": "off",
 				"@typescript-eslint/no-unsafe-call": "off"
 			}
+		},
+		{
+			"files": ["src/toggle-router/feature-decisions.test.ts", "src/game-state/game-state-machine.test.ts"],
+			"rules": {
+				"functional/prefer-readonly-type": "off"
+			}
 		}
 	]
 }
