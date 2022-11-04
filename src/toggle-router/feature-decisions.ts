@@ -1,6 +1,6 @@
 import type { ToggleRouter } from "./toggle-router";
 
-interface FeatureDecisions {
+export interface FeatureDecisions {
 	showGamePointButtonsInsteadOfRangeInput(): boolean;
 }
 
