@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
-	import { createEventDispatcher } from "svelte";
+	import { createEventDispatcher, onMount } from "svelte";
 	import { UsersIcon } from "svelte-feather-icons";
 
 	export let teamNumber: number;
@@ -14,6 +14,13 @@
 	const dispatch = createEventDispatcher<{ teamnamechange: TeamNameChangeEvent }>();
 
 	let teamName = "";
+
+	onMount(() => {
+		dispatch("teamnamechange", {
+			teamNumber,
+			teamName
+		});
+	});
 
 	$: dispatch("teamnamechange", {
 		teamNumber,
