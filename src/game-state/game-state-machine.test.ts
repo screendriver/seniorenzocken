@@ -126,6 +126,38 @@ test(
 );
 
 test(
+	'gameStateMachine sets context property "canGameBeStarted" to false on "UPDATE_TEAM_NAME" event when current state is "teamsUpdating" and team one team name is empty but another one is filled',
+	withGameStateMachineService((gameStateMachineService) => {
+		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
+
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "" });
+
+		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+	})
+);
+
+test(
+	'gameStateMachine sets context property "canGameBeStarted" to false on "UPDATE_TEAM_NAME" event when current state is "teamsUpdating" and team one team name was filled but is empty again and another one is filled',
+	withGameStateMachineService((gameStateMachineService) => {
+		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
+
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "b" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "ba" });
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "" });
+
+		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+	})
+);
+
+test(
 	'gameStateMachine transits from "teamsUpdating" to "gameRunning" on "START_GAME" event when game can be started',
 	withGameStateMachineService((gameStateMachineService) => {
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
