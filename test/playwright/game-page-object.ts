@@ -27,7 +27,8 @@ export function createGamePage(page: Page): GamePageObject {
 	return {
 		async fillTeamOneInTeamsForm() {
 			const inputElementTeam1 = page.getByPlaceholder(selectors.placeholderTeam1);
-			await inputElementTeam1.fill("Test team 1");
+			await inputElementTeam1.fill("Test team ");
+			await inputElementTeam1.press("1");
 		},
 		async clearTeamOneInTeamsForm() {
 			const inputElementTeam1 = page.getByPlaceholder(selectors.placeholderTeam1);
@@ -35,7 +36,8 @@ export function createGamePage(page: Page): GamePageObject {
 		},
 		async fillTeamTwoInTeamsForm() {
 			const inputElementTeam2 = page.getByPlaceholder(selectors.placeholderTeam2);
-			await inputElementTeam2.fill("Test team 2");
+			await inputElementTeam2.fill("Test team ");
+			await inputElementTeam2.press("2");
 		},
 		async clearTeamTwoInTeamsForm() {
 			const inputElementTeam2 = page.getByPlaceholder(selectors.placeholderTeam2);
