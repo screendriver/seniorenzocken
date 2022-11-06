@@ -20,7 +20,6 @@
 	},
 	"dependencies": {
 		"@sindresorhus/is": "5.3.0",
-		"@xstate/fsm": "2.0.0",
 		"@xstate/svelte": "2.0.0",
 		"canvas-confetti": "1.6.0",
 		"imagekit-javascript": "1.5.4",
