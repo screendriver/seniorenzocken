@@ -3,11 +3,17 @@ import { interpret, type InterpreterFrom } from "xstate";
 import Maybe from "true-myth/maybe";
 import { createWakeLockStateMachine, type WakeLockStateMachine } from "./wake-lock-state-machine.js";
 
+function createWakeLock(): WakeLock {
+	return {} as unknown as WakeLock;
+}
+
 function withWakeLockStateMachineService(
-	testFunction: (wakeLockStateMachineService: InterpreterFrom<WakeLockStateMachine>) => void
+	testFunction: (wakeLockStateMachineService: InterpreterFrom<WakeLockStateMachine>) => void,
+	wakeLock: WakeLock
 ): TestFunction {
 	return () => {
-		const wakeLockStateMachine = createWakeLockStateMachine();
+		const navigator = { wakeLock } as unknown as Navigator;
+		const wakeLockStateMachine = createWakeLockStateMachine(navigator);
 		const wakeLockStateMachineService = interpret(wakeLockStateMachine);
 		wakeLockStateMachineService.start();
 
@@ -15,18 +21,25 @@ function withWakeLockStateMachineService(
 	};
 }
 
+test('wakeLockStateMachine has initial state "wakeLockNotSupported" when navigator does not have a "wakeLock" property', () => {
+	const navigator = {} as unknown as Navigator;
+	const wakeLockStateMachine = createWakeLockStateMachine(navigator);
+
+	assert.strictEqual(wakeLockStateMachine.initialState.value, "wakeLockNotSupported");
+});
+
 test(
-	'wakeLockStateMachine has initial state "notAcquired"',
+	'wakeLockStateMachine has initial state "wakeLockSupported" when navigator does have a "wakeLock" property',
 	withWakeLockStateMachineService((wakeLockStateMachineService) => {
-		assert.strictEqual(wakeLockStateMachineService.getSnapshot().value, "notAcquired");
-	})
+		assert.strictEqual(wakeLockStateMachineService.getSnapshot().value, "wakeLockSupported");
+	}, createWakeLock())
 );
 
 test(
-	"gameStateMachine has an initial context set",
+	"wakeLockStateMachine has an initial context set",
 	withWakeLockStateMachineService((notAcquired) => {
 		assert.deepStrictEqual(notAcquired.getSnapshot().context, {
 			wakeLockSentinel: Maybe.nothing<WakeLockSentinel>()
 		});
-	})
+	}, createWakeLock())
 );
