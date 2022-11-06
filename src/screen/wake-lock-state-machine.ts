@@ -27,6 +27,10 @@ export type WakeLockStateMachineState =
 	| {
 			readonly value: "acquired";
 			readonly context: WakeLockStateMachineContext & { readonly wakeLockSentinel: Just<WakeLockSentinel> };
+	  }
+	| {
+			readonly value: "acquisitionError";
+			readonly context: WakeLockStateMachineContext & { readonly wakeLockSentinel: Nothing<WakeLockSentinel> };
 	  };
 
 export type WakeLockStateMachine = StateMachine<
@@ -59,17 +63,23 @@ export function createWakeLockStateMachine(navigator: Navigator): WakeLockStateM
 					invoke: {
 						id: "requestWakeLock",
 						src: "requestWakeLock",
-						onDone: {
-							target: "acquired",
-							actions: "setWakeLockSentinel"
-						},
-						onError: {}
+						onDone: [
+							{
+								target: "acquired",
+								cond: "wasRequestWakeLockSuccessful",
+								actions: "setWakeLockSentinel"
+							},
+							{
+								target: "acquisitionError"
+							}
+						]
 					}
 				},
 				wakeLockNotSupported: {
 					type: "final"
 				},
-				acquired: {}
+				acquired: {},
+				acquisitionError: {}
 			}
 		},
 		{
@@ -87,6 +97,13 @@ export function createWakeLockStateMachine(navigator: Navigator): WakeLockStateM
 			guards: {
 				isWakeLockSupported() {
 					return isWakeLockSupported(navigator);
+				},
+				wasRequestWakeLockSuccessful(_context, event) {
+					if (event.type !== "done.invoke.requestWakeLock") {
+						return false;
+					}
+
+					return event.data.isOk;
 				}
 			},
 			services: {

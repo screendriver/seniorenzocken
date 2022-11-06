@@ -71,3 +71,13 @@ test("wakeLockStateMachine sets wake lock sentinel in context when requestWakeLo
 
 	assert.deepStrictEqual(service.getSnapshot().context.wakeLockSentinel, Maybe.just(wakeLockSentinel));
 });
+
+test('wakeLockStateMachine invokes requestWakeLock when entering "wakeLockSupported" and transit to "acquisitionError" when request was not successful', async () => {
+	const request = vi.fn().mockRejectedValue(new Error("Not allowed"));
+	const wakeLock = createWakeLock(request);
+	const service = createAndStartWakeLockStateMachine(wakeLock);
+
+	await timers.setImmediate();
+
+	assert.strictEqual(service.getSnapshot().value, "acquisitionError");
+});
