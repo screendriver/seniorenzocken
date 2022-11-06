@@ -60,7 +60,11 @@
 			}
 		},
 		{
-			"files": ["src/toggle-router/feature-decisions.test.ts", "src/game-state/game-state-machine.test.ts"],
+			"files": [
+				"src/toggle-router/feature-decisions.test.ts",
+				"src/game-state/game-state-machine.test.ts",
+				"src/screen/wake-lock-state-machine.test.ts"
+			],
 			"rules": {
 				"functional/prefer-readonly-type": "off"
 			}
