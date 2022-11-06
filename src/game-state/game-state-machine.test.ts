@@ -1,20 +1,11 @@
 import { assert, test, vi, type Mock, type TestFunction } from "vitest";
-import { interpret, type StateMachine } from "@xstate/fsm";
-import {
-	createGameStateMachine,
-	type GameStateMachineContext,
-	type GameStateMachineEvent,
-	type GameStateMachineState
-} from "./game-state-machine";
+import { interpret, type InterpreterFrom } from "xstate";
+import { createGameStateMachine, type GameStateMachine } from "./game-state-machine.js";
 import type { FeatureName, ToggleRouter } from "../toggle-router/toggle-router.js";
 
 function withGameStateMachineService(
 	testFunction: (
-		gameStateMachineService: StateMachine.Service<
-			GameStateMachineContext,
-			GameStateMachineEvent,
-			GameStateMachineState
-		>,
+		gameStateMachineService: InterpreterFrom<GameStateMachine>,
 		setFeature: Mock<FeatureName[], boolean>
 	) => void
 ): TestFunction {
@@ -32,9 +23,20 @@ function withGameStateMachineService(
 }
 
 test(
+	"gameStateMachine has an initial context set",
+	withGameStateMachineService((gameStateMachineService) => {
+		assert.deepStrictEqual(gameStateMachineService.getSnapshot().context, {
+			teams: new Map(),
+			canGameBeStarted: false,
+			showConfetti: false
+		});
+	})
+);
+
+test(
 	'gameStateMachine has initial state "emptyTeams"',
 	withGameStateMachineService((gameStateMachineService) => {
-		assert.strictEqual(gameStateMachineService.state.value, "emptyTeams");
+		assert.strictEqual(gameStateMachineService.getSnapshot().value, "emptyTeams");
 	})
 );
 
@@ -43,19 +45,19 @@ test(
 	withGameStateMachineService((gameStateMachineService) => {
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "" });
 
-		assert.strictEqual(gameStateMachineService.state.value, "teamsUpdating");
+		assert.strictEqual(gameStateMachineService.getSnapshot().value, "teamsUpdating");
 	})
 );
 
 test(
 	'gameStateMachine updates teams in context when transit from "emptyTeams" to "teamsUpdating"',
 	withGameStateMachineService((gameStateMachineService) => {
-		assert.deepStrictEqual(gameStateMachineService.state.context.teams, new Map());
+		assert.deepStrictEqual(gameStateMachineService.getSnapshot().context.teams, new Map());
 
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "Test team" });
 
 		assert.deepStrictEqual(
-			gameStateMachineService.state.context.teams,
+			gameStateMachineService.getSnapshot().context.teams,
 			new Map([[1, { teamName: "Test team", gamePoints: 0, isStretched: false }]])
 		);
 	})
@@ -64,7 +66,7 @@ test(
 test(
 	'gameStateMachine sets feature "game-point-buttons" to false when transit from "emptyTeams" to "teamsUpdating" and team name is not "ratze"',
 	withGameStateMachineService((gameStateMachineService, setFeature) => {
-		assert.deepStrictEqual(gameStateMachineService.state.context.teams, new Map());
+		assert.deepStrictEqual(gameStateMachineService.getSnapshot().context.teams, new Map());
 
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "Test team" });
 
@@ -76,7 +78,7 @@ test(
 test(
 	'gameStateMachine sets feature "game-point-buttons" to true when transit from "emptyTeams" to "teamsUpdating" and team name is "ratze"',
 	withGameStateMachineService((gameStateMachineService, setFeature) => {
-		assert.deepStrictEqual(gameStateMachineService.state.context.teams, new Map());
+		assert.deepStrictEqual(gameStateMachineService.getSnapshot().context.teams, new Map());
 
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "ratze" });
 
@@ -93,7 +95,7 @@ test(
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
 
 		assert.deepStrictEqual(
-			gameStateMachineService.state.context.teams,
+			gameStateMachineService.getSnapshot().context.teams,
 			new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 		);
 	})
@@ -102,33 +104,33 @@ test(
 test(
 	'gameStateMachine sets context property "canGameBeStarted" to true on "UPDATE_TEAM_NAME" event when current state is "teamsUpdating" and team name is filled',
 	withGameStateMachineService((gameStateMachineService) => {
-		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+		assert.isFalse(gameStateMachineService.getSnapshot().context.canGameBeStarted);
 
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
 
-		assert.isTrue(gameStateMachineService.state.context.canGameBeStarted);
+		assert.isTrue(gameStateMachineService.getSnapshot().context.canGameBeStarted);
 	})
 );
 
 test(
 	'gameStateMachine sets context property "canGameBeStarted" to false on "UPDATE_TEAM_NAME" event when current state is "teamsUpdating" and team name is empty',
 	withGameStateMachineService((gameStateMachineService) => {
-		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+		assert.isFalse(gameStateMachineService.getSnapshot().context.canGameBeStarted);
 
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "" });
 
-		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+		assert.isFalse(gameStateMachineService.getSnapshot().context.canGameBeStarted);
 	})
 );
 
 test(
 	'gameStateMachine sets context property "canGameBeStarted" to false on "UPDATE_TEAM_NAME" event when current state is "teamsUpdating" and team one team name is empty but another one is filled',
 	withGameStateMachineService((gameStateMachineService) => {
-		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+		assert.isFalse(gameStateMachineService.getSnapshot().context.canGameBeStarted);
 
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
@@ -136,14 +138,14 @@ test(
 
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "" });
 
-		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+		assert.isFalse(gameStateMachineService.getSnapshot().context.canGameBeStarted);
 	})
 );
 
 test(
 	'gameStateMachine sets context property "canGameBeStarted" to false on "UPDATE_TEAM_NAME" event when current state is "teamsUpdating" and team one team name was filled but is empty again and another one is filled',
 	withGameStateMachineService((gameStateMachineService) => {
-		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+		assert.isFalse(gameStateMachineService.getSnapshot().context.canGameBeStarted);
 
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "f" });
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "fo" });
@@ -153,7 +155,7 @@ test(
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "ba" });
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "" });
 
-		assert.isFalse(gameStateMachineService.state.context.canGameBeStarted);
+		assert.isFalse(gameStateMachineService.getSnapshot().context.canGameBeStarted);
 	})
 );
 
@@ -165,7 +167,7 @@ test(
 		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" });
 		gameStateMachineService.send({ type: "START_GAME" });
 
-		assert.strictEqual(gameStateMachineService.state.value, "gameRunning");
+		assert.strictEqual(gameStateMachineService.getSnapshot().value, "gameRunning");
 	})
 );
 
@@ -179,7 +181,7 @@ test(
 		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 });
 
 		assert.deepStrictEqual(
-			gameStateMachineService.state.context.teams,
+			gameStateMachineService.getSnapshot().context.teams,
 			new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]])
 		);
 	})
@@ -196,10 +198,10 @@ test(
 		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 12 });
 
 		assert.deepStrictEqual(
-			gameStateMachineService.state.context.teams,
+			gameStateMachineService.getSnapshot().context.teams,
 			new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: true }]])
 		);
-		assert.strictEqual(gameStateMachineService.state.value, "gameOver");
+		assert.strictEqual(gameStateMachineService.getSnapshot().value, "gameOver");
 	})
 );
 
@@ -212,7 +214,7 @@ test(
 		gameStateMachineService.send({ type: "START_GAME" });
 		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 });
 
-		assert.isTrue(gameStateMachineService.state.context.showConfetti);
+		assert.isTrue(gameStateMachineService.getSnapshot().context.showConfetti);
 	})
 );
 
@@ -226,7 +228,7 @@ test(
 		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 16 });
 		gameStateMachineService.send({ type: "START_NEW_GAME" });
 
-		assert.strictEqual(gameStateMachineService.state.value, "emptyTeams");
+		assert.strictEqual(gameStateMachineService.getSnapshot().value, "emptyTeams");
 	})
 );
 
@@ -241,7 +243,7 @@ test(
 		gameStateMachineService.send({ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 11 });
 		gameStateMachineService.send({ type: "START_NEW_GAME" });
 
-		assert.deepStrictEqual(gameStateMachineService.state.context, {
+		assert.deepStrictEqual(gameStateMachineService.getSnapshot().context, {
 			teams: new Map(),
 			canGameBeStarted: false,
 			showConfetti: false

@@ -21,7 +21,6 @@
 		"strict": true,
 		"target": "ES2021",
 		"tsBuildInfoFile": "./target/.tsbuildinfo",
-		"types": ["svelte", "vite/client"],
 		"useDefineForClassFields": true
 	},
 	"include": ["vite.config.ts", "src/**/*", "test/**/*"]
