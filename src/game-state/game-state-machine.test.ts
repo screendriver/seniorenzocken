@@ -1,6 +1,6 @@
 import { assert, test, vi, type Mock, type TestFunction } from "vitest";
 import { interpret, type InterpreterFrom } from "xstate";
-import { createGameStateMachine, type GameStateMachine } from "./game-state-machine";
+import { createGameStateMachine, type GameStateMachine } from "./game-state-machine.js";
 import type { FeatureName, ToggleRouter } from "../toggle-router/toggle-router.js";
 
 function withGameStateMachineService(
@@ -26,6 +26,17 @@ test(
 	'gameStateMachine has initial state "emptyTeams"',
 	withGameStateMachineService((gameStateMachineService) => {
 		assert.strictEqual(gameStateMachineService.getSnapshot().value, "emptyTeams");
+	})
+);
+
+test(
+	"gameStateMachine has an initial context set",
+	withGameStateMachineService((gameStateMachineService) => {
+		assert.deepStrictEqual(gameStateMachineService.getSnapshot().context, {
+			teams: new Map(),
+			canGameBeStarted: false,
+			showConfetti: false
+		});
 	})
 );
 
