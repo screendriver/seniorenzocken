@@ -23,13 +23,6 @@ function withGameStateMachineService(
 }
 
 test(
-	'gameStateMachine has initial state "emptyTeams"',
-	withGameStateMachineService((gameStateMachineService) => {
-		assert.strictEqual(gameStateMachineService.getSnapshot().value, "emptyTeams");
-	})
-);
-
-test(
 	"gameStateMachine has an initial context set",
 	withGameStateMachineService((gameStateMachineService) => {
 		assert.deepStrictEqual(gameStateMachineService.getSnapshot().context, {
@@ -37,6 +30,13 @@ test(
 			canGameBeStarted: false,
 			showConfetti: false
 		});
+	})
+);
+
+test(
+	'gameStateMachine has initial state "emptyTeams"',
+	withGameStateMachineService((gameStateMachineService) => {
+		assert.strictEqual(gameStateMachineService.getSnapshot().value, "emptyTeams");
 	})
 );
 
