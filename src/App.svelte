@@ -6,14 +6,17 @@
 	import TeamsForm from "./team/TeamsForm.svelte";
 	import Game, { type NextRoundEvent } from "./game/Game.svelte";
 	import GameOver from "./game/GameOver.svelte";
-	import type { GameStateMachine } from "./game-state/game-state-machine.js";
 	import type { TeamNameChangeEvent } from "./team/Team.svelte";
 	import GitHub from "./GitHub.svelte";
+	import type { GameStateMachine } from "./game-state/game-state-machine.js";
+	import type { WakeLockStateMachine } from "./screen/wake-lock-state-machine.js";
 
 	export let imageKit: ImageKit;
 	export let gameStateMachine: GameStateMachine;
+	export let wakeLockStateMachine: WakeLockStateMachine;
 
 	const { state, send } = useMachine(gameStateMachine);
+	useMachine(wakeLockStateMachine);
 
 	function updateTeamName(event: CustomEvent<TeamNameChangeEvent>): void {
 		send({

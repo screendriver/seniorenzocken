@@ -3,6 +3,7 @@ import { assert } from "@sindresorhus/is";
 import App from "./App.svelte";
 import { createGameStateMachine } from "./game-state/game-state-machine.js";
 import { createToggleRouter } from "./toggle-router/toggle-router.js";
+import { createWakeLockStateMachine } from "./screen/wake-lock-state-machine";
 
 const htmlBodyElement = document.querySelector("body");
 const imageKitBaseUrl = import.meta.env.VITE_IMAGEKIT_BASE_URL;
@@ -18,11 +19,13 @@ const imageKit = new ImageKit({
 const toggleRouter = createToggleRouter();
 
 const gameStateMachine = createGameStateMachine(toggleRouter);
+const wakeLockStateMachine = createWakeLockStateMachine(globalThis.navigator, globalThis.document);
 
 new App({
 	target: htmlBodyElement,
 	props: {
 		imageKit,
-		gameStateMachine
+		gameStateMachine,
+		wakeLockStateMachine
 	}
 });
