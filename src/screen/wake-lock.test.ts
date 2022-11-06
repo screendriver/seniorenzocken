@@ -14,6 +14,12 @@ test('isWakeLockSupported() returns false when property "wakeLock" does not exis
 	assert.isFalse(isSupported);
 });
 
+test('isWakeLockSupported() returns false when property "wakeLock" exists in navigator but value is undefined', () => {
+	const isSupported = isWakeLockSupported({ wakeLock: undefined } as unknown as Navigator);
+
+	assert.isFalse(isSupported);
+});
+
 test('isWakeLockSupported() returns true when property "wakeLock" exists in navigator', () => {
 	const isSupported = isWakeLockSupported(createNavigator());
 

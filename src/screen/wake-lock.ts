@@ -2,7 +2,7 @@ import Result from "true-myth/result";
 import is from "@sindresorhus/is";
 
 export function isWakeLockSupported(navigator: Navigator): boolean {
-	return "wakeLock" in navigator;
+	return "wakeLock" in navigator && is.object(navigator.wakeLock);
 }
 
 export async function requestWakeLock(navigator: Navigator): Promise<Result<WakeLockSentinel, string>> {
