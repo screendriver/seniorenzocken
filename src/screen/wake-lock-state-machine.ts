@@ -43,7 +43,9 @@ export function createWakeLockStateMachine(navigator: Navigator): WakeLockStateM
 					]
 				},
 				wakeLockSupported: {},
-				wakeLockNotSupported: {}
+				wakeLockNotSupported: {
+					type: "final"
+				}
 			}
 		},
 		{

@@ -9,7 +9,7 @@ function createWakeLock(): WakeLock {
 
 function withWakeLockStateMachineService(
 	testFunction: (wakeLockStateMachineService: InterpreterFrom<WakeLockStateMachine>) => void,
-	wakeLock: WakeLock
+	wakeLock?: WakeLock
 ): TestFunction {
 	return () => {
 		const navigator = { wakeLock } as unknown as Navigator;
@@ -21,11 +21,20 @@ function withWakeLockStateMachineService(
 	};
 }
 
-test('wakeLockStateMachine has initial state "wakeLockNotSupported" when navigator does not have a "wakeLock" property', () => {
+test('wakeLockStateMachine has initial state "wakeLockNotSupported" when navigator does not have a "wakeLock" property set and defines it as a final state node', () => {
 	const navigator = {} as unknown as Navigator;
 	const wakeLockStateMachine = createWakeLockStateMachine(navigator);
+	const wakeLockStateMachineService = interpret(wakeLockStateMachine);
 
-	assert.strictEqual(wakeLockStateMachine.initialState.value, "wakeLockNotSupported");
+	let isFinalStateNode = false;
+	wakeLockStateMachineService.onDone(() => {
+		isFinalStateNode = true;
+	});
+
+	wakeLockStateMachineService.start();
+
+	assert.strictEqual(wakeLockStateMachineService.getSnapshot().value, "wakeLockNotSupported");
+	assert.isTrue(isFinalStateNode);
 });
 
 test(
