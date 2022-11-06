@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type ImageKit from "imagekit-javascript";
-	import { useMachine } from "@xstate/svelte/es/fsm";
+	import { useMachine } from "@xstate/svelte";
 	import canvasConfetti from "canvas-confetti";
 	import Head from "./Header.svelte";
 	import TeamsForm from "./team/TeamsForm.svelte";

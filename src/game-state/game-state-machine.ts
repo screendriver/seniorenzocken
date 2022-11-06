@@ -1,4 +1,4 @@
-import { assign, createMachine, type StateMachine } from "@xstate/fsm";
+import { assign, createMachine, type StateMachine, type StateSchema } from "xstate";
 import type { ToggleRouter } from "../toggle-router/toggle-router.js";
 import { shouldShowConfetti } from "./confetti.js";
 import { checkIfGameWouldBeOver } from "./game-over.js";
@@ -24,8 +24,9 @@ export type GameStateMachineState =
 	  })
 	| { readonly value: "gameOver"; readonly context: GameStateMachineContext };
 
-export type GameStateMachine = StateMachine.Machine<
+export type GameStateMachine = StateMachine<
 	GameStateMachineContext,
+	StateSchema<GameStateMachineContext>,
 	GameStateMachineEvent,
 	GameStateMachineState
 >;
@@ -35,6 +36,7 @@ export function createGameStateMachine(toggleRouter: ToggleRouter): GameStateMac
 		{
 			id: "gameState",
 			initial: "emptyTeams",
+			predictableActionArguments: true,
 			context: {
 				teams: new Map(),
 				canGameBeStarted: false,
@@ -57,9 +59,7 @@ export function createGameStateMachine(toggleRouter: ToggleRouter): GameStateMac
 						},
 						START_GAME: {
 							target: "gameRunning",
-							cond(context) {
-								return context.canGameBeStarted;
-							}
+							cond: "canGameBeStarted"
 						}
 					}
 				},
@@ -69,9 +69,7 @@ export function createGameStateMachine(toggleRouter: ToggleRouter): GameStateMac
 							{
 								target: "gameOver",
 								actions: "updateTeamGamePoint",
-								cond(context, event) {
-									return checkIfGameWouldBeOver(context.teams, event.teamNumber, event.gamePoints);
-								}
+								cond: "checkIfGameWouldBeOver"
 							},
 							{
 								target: "gameRunning",
@@ -149,7 +147,19 @@ export function createGameStateMachine(toggleRouter: ToggleRouter): GameStateMac
 						return false;
 					}
 				})
+			},
+			guards: {
+				canGameBeStarted(context) {
+					return context.canGameBeStarted;
+				},
+				checkIfGameWouldBeOver(context, event) {
+					if (event.type !== "UPDATE_GAME_POINT") {
+						return false;
+					}
+
+					return checkIfGameWouldBeOver(context.teams, event.teamNumber, event.gamePoints);
+				}
 			}
 		}
-	);
+	) as GameStateMachine;
 }

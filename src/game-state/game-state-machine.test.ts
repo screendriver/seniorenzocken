@@ -1,20 +1,11 @@
 import { assert, test, vi, type Mock, type TestFunction } from "vitest";
-import { interpret, type StateMachine } from "@xstate/fsm";
-import {
-	createGameStateMachine,
-	type GameStateMachineContext,
-	type GameStateMachineEvent,
-	type GameStateMachineState
-} from "./game-state-machine";
+import { interpret, type InterpreterFrom } from "xstate";
+import { createGameStateMachine, type GameStateMachine } from "./game-state-machine";
 import type { FeatureName, ToggleRouter } from "../toggle-router/toggle-router.js";
 
 function withGameStateMachineService(
 	testFunction: (
-		gameStateMachineService: StateMachine.Service<
-			GameStateMachineContext,
-			GameStateMachineEvent,
-			GameStateMachineState
-		>,
+		gameStateMachineService: InterpreterFrom<GameStateMachine>,
 		setFeature: Mock<FeatureName[], boolean>
 	) => void
 ): TestFunction {
