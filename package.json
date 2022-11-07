@@ -41,7 +41,7 @@
 		"@types/dom-screen-wake-lock": "1.0.0",
 		"@typescript-eslint/eslint-plugin": "5.42.0",
 		"@typescript-eslint/parser": "5.42.0",
-		"@vitest/coverage-c8": "0.24.5",
+		"@vitest/coverage-c8": "0.25.0",
 		"autoprefixer": "10.4.13",
 		"esbuild": "0.15.13",
 		"eslint": "8.27.0",
@@ -67,6 +67,6 @@
 		"vercel": "28.4.14",
 		"vite": "3.2.3",
 		"vite-plugin-pwa": "0.13.3",
-		"vitest": "0.24.5"
+		"vitest": "0.25.0"
 	}
 }
