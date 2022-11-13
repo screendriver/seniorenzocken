@@ -2,11 +2,27 @@ import { assert, test, vi, type Mock, type TestFunction } from "vitest";
 import { interpret, type InterpreterFrom } from "xstate";
 import { createGameStateMachine, type GameStateMachine } from "./game-state-machine.js";
 import type { FeatureName, ToggleRouter } from "../toggle-router/toggle-router.js";
+import type { GameWebStorage } from "../storage/game-web-storage.js";
+import type { Team } from "../team/team-schema.js";
+
+function createFakeGameWebStorage(): GameWebStorage {
+	let localTeams: ReadonlyMap<number, Team> = new Map();
+
+	return {
+		get teams() {
+			return localTeams;
+		},
+		set teams(teams: ReadonlyMap<number, Team>) {
+			localTeams = teams;
+		}
+	} as unknown as GameWebStorage;
+}
 
 function withGameStateMachineService(
 	testFunction: (
 		gameStateMachineService: InterpreterFrom<GameStateMachine>,
-		setFeature: Mock<FeatureName[], boolean>
+		setFeature: Mock<FeatureName[], boolean>,
+		gameWebStorage: GameWebStorage
 	) => void
 ): TestFunction {
 	return () => {
@@ -14,11 +30,12 @@ function withGameStateMachineService(
 		const toggleRouter = {
 			setFeature
 		} as unknown as ToggleRouter;
-		const gameStateMachine = createGameStateMachine(toggleRouter);
+		const gameWebStorage = createFakeGameWebStorage();
+		const gameStateMachine = createGameStateMachine(toggleRouter, gameWebStorage);
 		const gameStateMachineService = interpret(gameStateMachine);
 		gameStateMachineService.start();
 
-		testFunction(gameStateMachineService, setFeature);
+		testFunction(gameStateMachineService, setFeature, gameWebStorage);
 	};
 }
 
@@ -58,6 +75,18 @@ test(
 
 		assert.deepStrictEqual(
 			gameStateMachineService.getSnapshot().context.teams,
+			new Map([[1, { teamName: "Test team", gamePoints: 0, isStretched: false }]])
+		);
+	})
+);
+
+test(
+	'gameStateMachine updates teams in game web storage when transit from "emptyTeams" to "teamsUpdating"',
+	withGameStateMachineService((gameStateMachineService, _setFeature, gameWebStorage) => {
+		gameStateMachineService.send({ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "Test team" });
+
+		assert.deepStrictEqual(
+			gameWebStorage.teams,
 			new Map([[1, { teamName: "Test team", gamePoints: 0, isStretched: false }]])
 		);
 	})
