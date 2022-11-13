@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
 	import Button from "../Button.svelte";
-	import { determineWinnerTeam, type Teams } from "../game-state/teams.js";
+	import { determineWinnerTeam } from "../game-state/teams.js";
+	import type { Teams } from "../team/team-schema.js";
 
 	export let teams: Teams;
 

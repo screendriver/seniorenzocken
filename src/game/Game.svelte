@@ -10,7 +10,7 @@
 	import Maybe, { transposeArray } from "true-myth/maybe";
 	import GamePoint, { type GamePointChangeEvent } from "./GamePoint.svelte";
 	import Button from "../Button.svelte";
-	import type { Teams } from "../game-state/teams.js";
+	import type { Teams } from "../team/team-schema.js";
 
 	export let teams: Teams;
 

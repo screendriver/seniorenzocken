@@ -1,8 +1,7 @@
 import { Factory } from "fishery";
 import { test, assert } from "vitest";
-import type { Team } from "../team/team-schema.js";
+import type { Team, Teams } from "../team/team-schema.js";
 import { checkIfGameWouldBeOver } from "./game-over.js";
-import type { Teams } from "./teams.js";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {

@@ -1,5 +1,5 @@
 import is from "@sindresorhus/is";
-import type { Teams } from "../game-state/teams.js";
+import type { Teams } from "./team-schema.js";
 
 export function areTeamsFilled(teams: Teams): boolean {
 	if (is.emptyMap(teams)) {
