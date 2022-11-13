@@ -1,12 +1,23 @@
-import { assign, createMachine, type StateMachine, type StateSchema } from "xstate";
-import type { GameWebStorage } from "../storage/game-web-storage.js";
-import type { Team } from "../team/team-schema.js";
+import {
+	assign,
+	createMachine,
+	spawn,
+	type StateMachine,
+	type StateSchema,
+	type ActorRefFrom,
+	send,
+	forwardTo
+} from "xstate";
+import Maybe from "true-myth/maybe";
+import type { Teams } from "../team/team-schema.js";
+import type { TeamStateMachine, TeamStateMachineSentEvent } from "../team/team-state-machine.js";
 import type { ToggleRouter } from "../toggle-router/toggle-router.js";
 import { shouldShowConfetti } from "./confetti.js";
 import { checkIfGameWouldBeOver } from "./game-over.js";
-import { areTeamsFilled, updateTeamGamePoint, type Teams } from "./teams.js";
+import { updateTeamGamePoint } from "./teams.js";
 
 export interface GameStateMachineContext {
+	readonly teamStateMachineActor: Maybe<ActorRefFrom<TeamStateMachine>>;
 	readonly teams: Teams;
 	readonly canGameBeStarted: boolean;
 	readonly showConfetti: boolean;
@@ -14,15 +25,22 @@ export interface GameStateMachineContext {
 
 export type GameStateMachineEvent =
 	| { readonly type: "UPDATE_TEAM_NAME"; readonly teamNumber: number; readonly teamName: string }
+	| TeamStateMachineSentEvent
 	| { readonly type: "START_GAME" }
 	| { readonly type: "UPDATE_GAME_POINT"; readonly teamNumber: number; readonly gamePoints: number }
 	| { readonly type: "START_NEW_GAME" };
 
 export type GameStateMachineState =
-	| { readonly value: "emptyTeams"; readonly context: GameStateMachineContext & { readonly canGameBeStarted: false } }
-	| { readonly value: "teamsUpdating"; readonly context: GameStateMachineContext }
+	| {
+			readonly value: "gameNotRunning";
+			readonly context: GameStateMachineContext & {
+				readonly canGameBeStarted: false;
+				readonly showConfetti: false;
+			};
+	  }
 	| ({ readonly value: "gameRunning"; readonly context: GameStateMachineContext } & {
 			readonly canGameBeStarted: true;
+			readonly showConfetti: false;
 	  })
 	| { readonly value: "gameOver"; readonly context: GameStateMachineContext };
 
@@ -33,31 +51,41 @@ export type GameStateMachine = StateMachine<
 	GameStateMachineState
 >;
 
-export function createGameStateMachine(toggleRouter: ToggleRouter, gameWebStorage: GameWebStorage): GameStateMachine {
+interface GameStateMachineDependencies {
+	readonly toggleRouter: ToggleRouter;
+	readonly teamStateMachine: TeamStateMachine;
+}
+
+export function createGameStateMachine(dependencies: GameStateMachineDependencies): GameStateMachine {
+	const { toggleRouter, teamStateMachine } = dependencies;
+
 	return createMachine<GameStateMachineContext, GameStateMachineEvent, GameStateMachineState>(
 		{
 			id: "gameState",
-			initial: "emptyTeams",
+			initial: "gameNotRunning",
 			predictableActionArguments: true,
+			preserveActionOrder: true,
 			context: {
+				teamStateMachineActor: Maybe.nothing<ActorRefFrom<TeamStateMachine>>(),
 				teams: new Map(),
 				canGameBeStarted: false,
 				showConfetti: false
 			},
 			states: {
-				emptyTeams: {
+				gameNotRunning: {
+					entry: "spawnTeamStateMachine",
 					on: {
 						UPDATE_TEAM_NAME: {
-							target: "teamsUpdating",
-							actions: ["updateTeam", "saveTeamsInStorage", "setGamePointButtonsFeatureToggle"]
-						}
-					}
-				},
-				teamsUpdating: {
-					on: {
-						UPDATE_TEAM_NAME: {
-							target: "teamsUpdating",
-							actions: ["updateTeam", "saveTeamsInStorage", "setCanGameBeStarted"]
+							actions: "updateTeamName"
+						},
+						TEAMS_EMPTY: {
+							actions: ["setTeams", "setGameCannotBeStarted"]
+						},
+						PARTIALLY_FILLED_TEAMS: {
+							actions: ["setTeams", "setGameCannotBeStarted"]
+						},
+						FULLY_FILLED_TEAMS: {
+							actions: ["setTeams", "setGameCanBeStarted"]
 						},
 						START_GAME: {
 							target: "gameRunning",
@@ -81,34 +109,48 @@ export function createGameStateMachine(toggleRouter: ToggleRouter, gameWebStorag
 					}
 				},
 				gameOver: {
-					exit: "resetContext",
+					exit: ["resetContext", "resetTeamStateMachineActor"],
 					on: {
-						START_NEW_GAME: "emptyTeams"
+						START_NEW_GAME: "gameNotRunning"
 					}
 				}
 			}
 		},
 		{
 			actions: {
-				updateTeam: assign({
-					teams(context, event) {
-						if (event.type !== "UPDATE_TEAM_NAME") {
-							return new Map<number, Team>();
-						}
+				spawnTeamStateMachine: assign({
+					teamStateMachineActor(_context) {
+						const actorReference = spawn(teamStateMachine);
 
-						const updatedTeams = new Map(context.teams);
-						updatedTeams.set(event.teamNumber, {
-							teamName: event.teamName,
-							gamePoints: 0,
-							isStretched: false
-						});
-
-						return updatedTeams;
+						return Maybe.just(actorReference);
 					}
 				}),
-				saveTeamsInStorage(context) {
-					gameWebStorage.teams = context.teams;
-				},
+				updateTeamName: forwardTo((context) => {
+					return context.teamStateMachineActor.unwrapOr("");
+				}),
+				setTeams: assign({
+					teams(context, event) {
+						if (event.type === "TEAMS_EMPTY") {
+							return new Map();
+						}
+
+						if (event.type === "PARTIALLY_FILLED_TEAMS" || event.type === "FULLY_FILLED_TEAMS") {
+							return event.teams;
+						}
+
+						return context.teams;
+					}
+				}),
+				setGameCannotBeStarted: assign({
+					canGameBeStarted(_context) {
+						return false;
+					}
+				}),
+				setGameCanBeStarted: assign({
+					canGameBeStarted(_context) {
+						return true;
+					}
+				}),
 				setGamePointButtonsFeatureToggle(_context, event) {
 					if (event.type !== "UPDATE_TEAM_NAME") {
 						return;
@@ -118,11 +160,6 @@ export function createGameStateMachine(toggleRouter: ToggleRouter, gameWebStorag
 
 					toggleRouter.setFeature("game-point-buttons", showGamePointButtons);
 				},
-				setCanGameBeStarted: assign({
-					canGameBeStarted(context) {
-						return areTeamsFilled(context.teams);
-					}
-				}),
 				updateTeamGamePoint: assign({
 					teams(context, event) {
 						if (event.type !== "UPDATE_GAME_POINT") {
@@ -151,7 +188,15 @@ export function createGameStateMachine(toggleRouter: ToggleRouter, gameWebStorag
 					showConfetti() {
 						return false;
 					}
-				})
+				}),
+				resetTeamStateMachineActor: send(
+					{ type: "RESET" },
+					{
+						to(context) {
+							return context.teamStateMachineActor.unwrapOr("");
+						}
+					}
+				)
 			},
 			guards: {
 				canGameBeStarted(context) {
