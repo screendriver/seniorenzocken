@@ -7,11 +7,13 @@ export interface TeamStateMachineContext {
 	readonly teams: Teams;
 }
 
-export type TeamStateMachineEvent = {
-	readonly type: "UPDATE_TEAM_NAME";
-	readonly teamNumber: number;
-	readonly teamName: string;
-};
+export type TeamStateMachineEvent =
+	| {
+			readonly type: "UPDATE_TEAM_NAME";
+			readonly teamNumber: number;
+			readonly teamName: string;
+	  }
+	| { readonly type: "RESET" };
 
 export const possibleSentEventNames = ["TEAMS_EMPTY", "PARTIALLY_FILLED_TEAMS", "FULLY_FILLED_TEAMS"] as const;
 
@@ -57,8 +59,8 @@ export function createTeamStateMachine(gameWebStorage: GameWebStorage): TeamStat
 			on: {
 				UPDATE_TEAM_NAME: [
 					{
-						target: "teamNameUpdating",
-						actions: ["updateTeamName", "saveTeamsInStorage"]
+						actions: ["updateTeamName", "saveTeamsInStorage"],
+						target: "teamNameUpdating"
 					}
 				]
 			},
@@ -81,7 +83,13 @@ export function createTeamStateMachine(gameWebStorage: GameWebStorage): TeamStat
 					entry: "sendPartiallyFilledTeamsToParent"
 				},
 				fullyFilledTeams: {
-					entry: "sendFullyFilledTeamsToParent"
+					entry: "sendFullyFilledTeamsToParent",
+					on: {
+						RESET: {
+							actions: "resetContext",
+							target: "teamsEmpty"
+						}
+					}
 				}
 			}
 		},
@@ -130,6 +138,11 @@ export function createTeamStateMachine(gameWebStorage: GameWebStorage): TeamStat
 						type: "FULLY_FILLED_TEAMS",
 						teams: context.teams
 					};
+				}),
+				resetContext: assign({
+					teams(_context) {
+						return new Map();
+					}
 				})
 			},
 			guards: {

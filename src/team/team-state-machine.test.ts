@@ -251,3 +251,21 @@ test(
 		]
 	})
 );
+
+test(
+	'gameStateMachine transit from "fullyFilledTeams" to "teamsEmpty" on "RESET" event',
+	testTeamStateMachine({
+		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }, { type: "RESET" }],
+		expectedStateValue: "teamsEmpty"
+	})
+);
+
+test(
+	'gameStateMachine resets context on "RESET" event',
+	testTeamStateMachine({
+		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }, { type: "RESET" }],
+		expectedContext: {
+			teams: new Map()
+		}
+	})
+);
