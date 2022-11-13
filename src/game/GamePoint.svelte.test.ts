@@ -4,7 +4,7 @@ import { Factory } from "fishery";
 import { Maybe } from "true-myth/maybe";
 import { cleanup, render, screen, fireEvent } from "@testing-library/svelte";
 import GamePoint from "./GamePoint.svelte";
-import type { Team } from "../game-state/teams.js";
+import type { Team } from "../team/team-schema.js";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {

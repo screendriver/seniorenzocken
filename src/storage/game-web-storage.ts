@@ -1,15 +1,33 @@
-import type { Team } from "../game-state/teams.js";
+import Maybe from "true-myth/maybe";
+import { z } from "zod";
+import type { Team } from "../team/team-schema";
+
+const teamsFromWebStorageSchema = z.array(z.tuple([z.number(), z.unknown()]));
 
 export interface GameWebStorage {
-	setTeams(teams: ReadonlyMap<number, Team>): void;
+	get teams(): ReadonlyMap<number, Team>;
+	set teams(teams: ReadonlyMap<number, Team>);
 }
 
 export function createGameWebStorage(webStorage: Storage): GameWebStorage {
-	return {
-		setTeams(teams) {
-			const teamsRecord = Object.fromEntries(teams);
+	const emptyTeams = new Map();
 
-			webStorage.setItem("teams", JSON.stringify(teamsRecord));
+	return {
+		get teams() {
+			return Maybe.of(webStorage.getItem("teams")).mapOr(emptyTeams, (teamsFromWebStorage) => {
+				const teamsFromWebStorageJsonParsed = teamsFromWebStorageSchema.safeParse(
+					JSON.parse(teamsFromWebStorage)
+				);
+
+				if (teamsFromWebStorageJsonParsed.success) {
+					return new Map(teamsFromWebStorageJsonParsed.data);
+				}
+
+				return emptyTeams;
+			});
+		},
+		set teams(teams: ReadonlyMap<number, Team>) {
+			webStorage.setItem("teams", JSON.stringify([...teams]));
 		}
 	};
 }

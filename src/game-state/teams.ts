@@ -1,12 +1,7 @@
 import is from "@sindresorhus/is";
 import Maybe from "true-myth/maybe";
 import Result from "true-myth/result";
-
-export interface Team {
-	readonly teamName: string;
-	readonly gamePoints: number;
-	readonly isStretched: boolean;
-}
+import type { Team } from "../team/team-schema.js";
 
 export type Teams = ReadonlyMap<number, Team>;
 

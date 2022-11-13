@@ -2,7 +2,7 @@ import { cleanup, render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import { Factory } from "fishery";
 import { afterEach, assert, test } from "vitest";
-import type { Team } from "../game-state/teams";
+import type { Team } from "../team/team-schema.js";
 import GameOver from "./GameOver.svelte";
 
 const teamFactory = Factory.define<Team>(() => {
