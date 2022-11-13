@@ -4,6 +4,7 @@ import App from "./App.svelte";
 import { createGameStateMachine } from "./game-state/game-state-machine.js";
 import { createToggleRouter } from "./toggle-router/toggle-router.js";
 import { createWakeLockStateMachine } from "./screen/wake-lock-state-machine";
+import { createGameWebStorage } from "./storage/game-web-storage";
 
 const htmlBodyElement = document.querySelector("body");
 const imageKitBaseUrl = import.meta.env.VITE_IMAGEKIT_BASE_URL;
@@ -16,9 +17,10 @@ const imageKit = new ImageKit({
 	transformationPosition: "query"
 });
 
+const gameWebStorage = createGameWebStorage(globalThis.sessionStorage);
 const toggleRouter = createToggleRouter();
 
-const gameStateMachine = createGameStateMachine(toggleRouter);
+const gameStateMachine = createGameStateMachine(toggleRouter, gameWebStorage);
 const wakeLockStateMachine = createWakeLockStateMachine(globalThis.navigator, globalThis.document);
 
 new App({
