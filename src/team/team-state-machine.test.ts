@@ -1,106 +1,253 @@
+import is from "@sindresorhus/is";
+import Maybe from "true-myth/maybe";
 import { assert, test, type TestFunction } from "vitest";
-import { interpret, type InterpreterFrom } from "xstate";
-import type { GameWebStorage } from "../storage/game-web-storage.js";
+import {
+	assign,
+	createMachine,
+	interpret,
+	spawn,
+	type ActorRefFrom,
+	type AnyEventObject,
+	type StateMachine,
+	type StateSchema,
+	type Typestate
+} from "xstate";
 import { createInMemoryGameWebStorage } from "../storage/test-lib/in-memory-game-web-storage.js";
-import { createTeamStateMachine, type TeamStateMachine } from "./team-state-machine.js";
+import {
+	createTeamStateMachine,
+	type TeamStateMachine,
+	type TeamStateMachineContext,
+	type TeamStateMachineEvent,
+	type TeamStateMachineState,
+	possibleSentEventNames,
+	type PossibleSentEventNames,
+	type TeamStateMachineSentEvent
+} from "./team-state-machine.js";
 
-function withTeamStateMachineService(
-	testFunction: (teamStateMachineService: InterpreterFrom<TeamStateMachine>, gameWebStorage: GameWebStorage) => void
-): TestFunction {
+interface TestStateMachineContext {
+	readonly teamStateMachineActor: Maybe<ActorRefFrom<TeamStateMachine>>;
+}
+
+type TestStateMachine = StateMachine<
+	TestStateMachineContext,
+	StateSchema,
+	AnyEventObject,
+	Typestate<TestStateMachineContext>
+>;
+
+function createParentStateMachine(teamStateMachine: TeamStateMachine): TestStateMachine {
+	return createMachine({
+		id: "parentMachine",
+		initial: "test",
+		predictableActionArguments: true,
+		preserveActionOrder: true,
+		context: {
+			teamStateMachineActor: Maybe.nothing()
+		},
+		states: {
+			test: {
+				entry: assign({
+					teamStateMachineActor() {
+						const actorReference = spawn(teamStateMachine, { autoForward: true });
+
+						return Maybe.just(actorReference);
+					}
+				})
+			}
+		}
+	}) as TestStateMachine;
+}
+
+interface TestTeamStateMachineOptions {
+	readonly expectedContext?: TeamStateMachineContext;
+	readonly expectedStateValue?: TeamStateMachineState["value"];
+	readonly eventsToSend?: readonly TeamStateMachineEvent[];
+	readonly expectedSentEvents?: readonly TeamStateMachineSentEvent[];
+}
+
+function testTeamStateMachine(options: TestTeamStateMachineOptions): TestFunction {
+	const { expectedContext, expectedStateValue, eventsToSend = [], expectedSentEvents } = options;
+
 	return () => {
 		const inMemoryGameWebStorage = createInMemoryGameWebStorage();
 		const teamStateMachine = createTeamStateMachine(inMemoryGameWebStorage);
-		const teamStateMachineService = interpret(teamStateMachine);
-		teamStateMachineService.start();
+		const parentTestMachine = createParentStateMachine(teamStateMachine);
+		const parentTestMachineService = interpret(parentTestMachine);
 
-		testFunction(teamStateMachineService, inMemoryGameWebStorage);
+		let contextValue: unknown;
+		let stateValue: unknown;
+		const sentEventsFromChild: unknown[] = [];
+
+		parentTestMachineService.onChange((context) => {
+			contextValue = context.teamStateMachineActor
+				.andThen((teamStateMachineActor) => {
+					return Maybe.of(teamStateMachineActor.getSnapshot()?.context);
+				})
+				.unwrapOr(undefined);
+		});
+
+		parentTestMachineService.onEvent((event) => {
+			if (possibleSentEventNames.includes(event.type as PossibleSentEventNames)) {
+				sentEventsFromChild.push(event);
+			}
+		});
+
+		parentTestMachineService.onTransition((state) => {
+			stateValue = state.context.teamStateMachineActor
+				.andThen((teamStateMachineActor) => {
+					return Maybe.of(teamStateMachineActor.getSnapshot()?.value);
+				})
+				.unwrapOr(undefined);
+		});
+
+		parentTestMachineService.start();
+
+		eventsToSend.forEach((eventToSend) => {
+			parentTestMachineService.send(eventToSend);
+		});
+
+		if (is.object(expectedContext)) {
+			assert.deepStrictEqual(expectedContext, contextValue);
+		} else if (is.string(expectedStateValue)) {
+			assert.strictEqual(expectedStateValue, stateValue);
+		} else if (is.array(expectedSentEvents)) {
+			assert.deepStrictEqual(sentEventsFromChild, expectedSentEvents);
+		}
 	};
 }
 
 test(
 	"gameStateMachine has an initial context set",
-	withTeamStateMachineService((teamStateMachineService) => {
-		assert.deepStrictEqual(teamStateMachineService.getSnapshot().context, {
+	testTeamStateMachine({
+		expectedContext: {
 			teams: new Map()
-		});
+		}
 	})
 );
 
 test(
 	'gameStateMachine has initial state "teamsEmpty"',
-	withTeamStateMachineService((teamStateMachineService) => {
-		assert.strictEqual(teamStateMachineService.getSnapshot().value, "teamsEmpty");
+	testTeamStateMachine({
+		expectedStateValue: "teamsEmpty"
 	})
 );
 
 test(
 	'gameStateMachine transit from "teamsEmpty" to "partiallyFilledTeams" on "UPDATE_TEAM_NAME" event when just one team without a name is given',
-	withTeamStateMachineService((teamStateMachineService) => {
-		teamStateMachineService.send([{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "" }]);
-
-		assert.strictEqual(teamStateMachineService.getSnapshot().value, "partiallyFilledTeams");
+	testTeamStateMachine({
+		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "" }],
+		expectedStateValue: "partiallyFilledTeams"
 	})
 );
 
 test(
 	'gameStateMachine transit from "teamsEmpty" to "partiallyFilledTeams" on "UPDATE_TEAM_NAME" event when just one of two teams have a name filled',
-	withTeamStateMachineService((teamStateMachineService) => {
-		teamStateMachineService.send([
+	testTeamStateMachine({
+		eventsToSend: [
 			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
 			{ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "" }
-		]);
-
-		assert.strictEqual(teamStateMachineService.getSnapshot().value, "partiallyFilledTeams");
+		],
+		expectedStateValue: "partiallyFilledTeams"
 	})
 );
 
 test(
 	'gameStateMachine transit from "teamsEmpty" to "fullyFilledTeams" on "UPDATE_TEAM_NAME" event when just one team with a name is given',
-	withTeamStateMachineService((teamStateMachineService) => {
-		teamStateMachineService.send([{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }]);
-
-		assert.strictEqual(teamStateMachineService.getSnapshot().value, "fullyFilledTeams");
+	testTeamStateMachine({
+		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }],
+		expectedStateValue: "fullyFilledTeams"
 	})
 );
 
 test(
 	'gameStateMachine transit from "teamsEmpty" to "fullyFilledTeams" on "UPDATE_TEAM_NAME" event when just two teams with a name are given',
-	withTeamStateMachineService((teamStateMachineService) => {
-		teamStateMachineService.send([
+	testTeamStateMachine({
+		eventsToSend: [
 			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
 			{ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "bar" }
-		]);
-
-		assert.strictEqual(teamStateMachineService.getSnapshot().value, "fullyFilledTeams");
+		],
+		expectedStateValue: "fullyFilledTeams"
 	})
 );
 
 test(
 	'gameStateMachine sets given teams in context when transit from "teamsEmpty" to "partiallyFilledTeams" on "UPDATE_TEAM_NAME" event when one of two teams does not have a name set',
-	withTeamStateMachineService((teamStateMachineService) => {
-		teamStateMachineService.send([
+	testTeamStateMachine({
+		eventsToSend: [
 			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
 			{ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "" }
-		]);
-
-		assert.deepStrictEqual(
-			teamStateMachineService.getSnapshot().context.teams,
-			new Map([
+		],
+		expectedContext: {
+			teams: new Map([
 				[1, { gamePoints: 0, isStretched: false, teamName: "foo" }],
 				[2, { gamePoints: 0, isStretched: false, teamName: "" }]
 			])
-		);
+		}
 	})
 );
 
 test(
 	'gameStateMachine sets given team in context when transit from "teamsEmpty" to "fullyFilledTeams" on "UPDATE_TEAM_NAME" event when given team has a name',
-	withTeamStateMachineService((teamStateMachineService) => {
-		teamStateMachineService.send([{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }]);
+	testTeamStateMachine({
+		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }],
+		expectedContext: {
+			teams: new Map([[1, { gamePoints: 0, isStretched: false, teamName: "foo" }]])
+		}
+	})
+);
 
-		assert.deepStrictEqual(
-			teamStateMachineService.getSnapshot().context.teams,
-			new Map([[1, { gamePoints: 0, isStretched: false, teamName: "foo" }]])
-		);
+test(
+	'gameStateMachine sends to parent "TEAMS_EMPTY" event when entering "teamsEmpty" state',
+	testTeamStateMachine({
+		expectedSentEvents: [{ type: "TEAMS_EMPTY" }]
+	})
+);
+
+test(
+	'gameStateMachine sends to parent "PARTIALLY_FILLED_TEAMS" event when transit from "teamsEmpty" to "partiallyFilledTeams"',
+	testTeamStateMachine({
+		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "" }],
+		expectedSentEvents: [
+			{ type: "TEAMS_EMPTY" },
+			{
+				type: "PARTIALLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "", gamePoints: 0, isStretched: false }]])
+			}
+		]
+	})
+);
+
+test(
+	'gameStateMachine sends to parent "FULLY_FILLED_TEAMS" event when transit from "teamsEmpty" to "fullyFilledTeams"',
+	testTeamStateMachine({
+		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }],
+		expectedSentEvents: [
+			{ type: "TEAMS_EMPTY" },
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			}
+		]
+	})
+);
+
+test(
+	'gameStateMachine sends to parent first "FULLY_FILLED_TEAMS" and after that "PARTIALLY_FILLED_TEAMS" when team name gets empty again',
+	testTeamStateMachine({
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "" }
+		],
+		expectedSentEvents: [
+			{ type: "TEAMS_EMPTY" },
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			},
+			{
+				type: "PARTIALLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "", gamePoints: 0, isStretched: false }]])
+			}
+		]
 	})
 );
