@@ -1,19 +1,7 @@
 import is from "@sindresorhus/is";
 import Maybe from "true-myth/maybe";
 import Result from "true-myth/result";
-import type { Team } from "../team/team-schema.js";
-
-export type Teams = ReadonlyMap<number, Team>;
-
-export function areTeamsFilled(teams: Teams): boolean {
-	if (is.emptyMap(teams)) {
-		return false;
-	}
-
-	return Array.from(teams.values()).every((team) => {
-		return is.nonEmptyString(team.teamName);
-	});
-}
+import type { Team, Teams } from "../team/team-schema.js";
 
 export function updateTeamGamePoint(teams: Teams, teamNumber: number, gamePoint: number): Teams {
 	const foundTeam = Maybe.of(teams.get(teamNumber));
