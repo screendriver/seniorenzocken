@@ -1,4 +1,4 @@
-import type { Teams } from "./teams";
+import type { Teams } from "../team/team-schema.js";
 
 const pointsWhenGameIsOver = 15;
 

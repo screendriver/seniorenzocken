@@ -9,3 +9,5 @@ export const teamSchema = z
 	.strict();
 
 export type Team = z.infer<typeof teamSchema>;
+
+export type Teams = ReadonlyMap<number, Team>;
