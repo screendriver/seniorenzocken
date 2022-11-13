@@ -1,8 +1,10 @@
 import { assign, createMachine, type StateMachine, type StateSchema } from "xstate";
+import type { GameWebStorage } from "../storage/game-web-storage.js";
+import type { Team } from "../team/team-schema.js";
 import type { ToggleRouter } from "../toggle-router/toggle-router.js";
 import { shouldShowConfetti } from "./confetti.js";
 import { checkIfGameWouldBeOver } from "./game-over.js";
-import { areTeamsFilled, updateTeamGamePoint, type Team, type Teams } from "./teams.js";
+import { areTeamsFilled, updateTeamGamePoint, type Teams } from "./teams.js";
 
 export interface GameStateMachineContext {
 	readonly teams: Teams;
@@ -31,7 +33,7 @@ export type GameStateMachine = StateMachine<
 	GameStateMachineState
 >;
 
-export function createGameStateMachine(toggleRouter: ToggleRouter): GameStateMachine {
+export function createGameStateMachine(toggleRouter: ToggleRouter, gameWebStorage: GameWebStorage): GameStateMachine {
 	return createMachine<GameStateMachineContext, GameStateMachineEvent, GameStateMachineState>(
 		{
 			id: "gameState",
@@ -47,7 +49,7 @@ export function createGameStateMachine(toggleRouter: ToggleRouter): GameStateMac
 					on: {
 						UPDATE_TEAM_NAME: {
 							target: "teamsUpdating",
-							actions: ["updateTeam", "setGamePointButtonsFeatureToggle"]
+							actions: ["updateTeam", "saveTeamsInStorage", "setGamePointButtonsFeatureToggle"]
 						}
 					}
 				},
@@ -55,7 +57,7 @@ export function createGameStateMachine(toggleRouter: ToggleRouter): GameStateMac
 					on: {
 						UPDATE_TEAM_NAME: {
 							target: "teamsUpdating",
-							actions: ["updateTeam", "setCanGameBeStarted"]
+							actions: ["updateTeam", "saveTeamsInStorage", "setCanGameBeStarted"]
 						},
 						START_GAME: {
 							target: "gameRunning",
@@ -104,6 +106,9 @@ export function createGameStateMachine(toggleRouter: ToggleRouter): GameStateMac
 						return updatedTeams;
 					}
 				}),
+				saveTeamsInStorage(context) {
+					gameWebStorage.teams = context.teams;
+				},
 				setGamePointButtonsFeatureToggle(_context, event) {
 					if (event.type !== "UPDATE_TEAM_NAME") {
 						return;

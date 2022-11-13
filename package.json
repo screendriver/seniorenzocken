@@ -26,7 +26,8 @@
 		"svelte-feather-icons": "4.0.0",
 		"true-myth": "5.4.0",
 		"tslib": "2.4.1",
-		"xstate": "4.34.0"
+		"xstate": "4.34.0",
+		"zod": "3.19.1"
 	},
 	"devDependencies": {
 		"@fastify/cors": "8.2.0",
@@ -43,6 +44,7 @@
 		"@typescript-eslint/parser": "5.42.1",
 		"@vitest/coverage-c8": "0.25.1",
 		"autoprefixer": "10.4.13",
+		"dot-prop-immutable": "2.1.1",
 		"esbuild": "0.15.13",
 		"eslint": "8.27.0",
 		"eslint-config-prettier": "8.5.0",
