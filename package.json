@@ -42,7 +42,7 @@
 		"@types/dom-screen-wake-lock": "1.0.0",
 		"@typescript-eslint/eslint-plugin": "5.42.1",
 		"@typescript-eslint/parser": "5.42.1",
-		"@vitest/coverage-c8": "0.25.1",
+		"@vitest/coverage-c8": "0.25.2",
 		"autoprefixer": "10.4.13",
 		"dot-prop-immutable": "2.1.1",
 		"esbuild": "0.15.13",
@@ -69,6 +69,6 @@
 		"typescript": "4.8.4",
 		"vite": "3.2.3",
 		"vite-plugin-pwa": "0.13.3",
-		"vitest": "0.25.1"
+		"vitest": "0.25.2"
 	}
 }
