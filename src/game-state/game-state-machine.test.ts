@@ -200,6 +200,29 @@ test(
 );
 
 test(
+	'gameStateMachine updates team game point on "GAME_POINT_UPDATED" event when current state is "gameRunning"',
+	testGameStateMachine({
+		eventsToSend: [
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			},
+			{ type: "START_GAME" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 },
+			{
+				type: "GAME_POINT_UPDATED",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]])
+			}
+		],
+		expectedContext: {
+			canGameBeStarted: true,
+			showConfetti: false,
+			teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]])
+		}
+	})
+);
+
+test(
 	'gameStateMachine updates team game point on "UPDATE_GAME_POINT" event when current state is "gameRunning" and no team reached 15 game points',
 	testGameStateMachine({
 		eventsToSend: [

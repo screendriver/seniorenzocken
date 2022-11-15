@@ -27,6 +27,7 @@ export type GameStateMachineEvent =
 	| TeamStateMachineSentEvent
 	| { readonly type: "START_GAME" }
 	| { readonly type: "UPDATE_GAME_POINT"; readonly teamNumber: number; readonly gamePoints: number }
+	| { readonly type: "GAME_POINT_UPDATED"; readonly teams: Teams }
 	| { readonly type: "START_NEW_GAME" };
 
 export type GameStateMachineState =
@@ -96,6 +97,9 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 					on: {
 						UPDATE_GAME_POINT: {
 							actions: "updateTeamGamePoint"
+						},
+						GAME_POINT_UPDATED: {
+							actions: "setTeams"
 						}
 					}
 				},
@@ -125,7 +129,11 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 							return new Map();
 						}
 
-						if (event.type === "PARTIALLY_FILLED_TEAMS" || event.type === "FULLY_FILLED_TEAMS") {
+						if (
+							event.type === "PARTIALLY_FILLED_TEAMS" ||
+							event.type === "FULLY_FILLED_TEAMS" ||
+							event.type === "GAME_POINT_UPDATED"
+						) {
 							return event.teams;
 						}
 
