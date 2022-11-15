@@ -38,7 +38,7 @@ export type TeamStateMachineSentEvent =
 	| TeamStateMachineSentEventObject<"TEAMS_EMPTY">
 	| (TeamStateMachineSentEventObject<"PARTIALLY_FILLED_TEAMS"> & { readonly teams: Teams })
 	| (TeamStateMachineSentEventObject<"FULLY_FILLED_TEAMS"> & { readonly teams: Teams })
-	| (TeamStateMachineSentEventObject<"GAME_POINT_UPDATED"> & { readonly teams: Teams });
+	| (TeamStateMachineSentEventObject<"GAME_POINT_UPDATED"> & { readonly gamePoints: number; readonly teams: Teams });
 
 interface StateWithContext<StateName extends string> {
 	readonly context: TeamStateMachineContext;
@@ -167,9 +167,14 @@ export function createTeamStateMachine(gameWebStorage: GameWebStorage): TeamStat
 					TeamStateMachineContext,
 					TeamStateMachineEvent,
 					TeamStateMachineSentEvent
-				>((context) => {
+				>((context, event) => {
+					if (event.type !== "UPDATE_GAME_POINT") {
+						throw new Error(`Invalid event received: "${event.type}"`);
+					}
+
 					return {
 						type: "GAME_POINT_UPDATED",
+						gamePoints: event.gamePoints,
 						teams: context.teams
 					};
 				}),
