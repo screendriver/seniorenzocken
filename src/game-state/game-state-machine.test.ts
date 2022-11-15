@@ -208,7 +208,6 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 },
 			{
 				type: "GAME_POINT_UPDATED",
 				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]])
@@ -223,7 +222,7 @@ test(
 );
 
 test(
-	'gameStateMachine updates team game point on "UPDATE_GAME_POINT" event when current state is "gameRunning" and no team reached 15 game points',
+	'gameStateMachine transit to "gameOver" on "GAME_POINT_UPDATED" event when current state is "gameRunning" and one team reached 15 game points',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -231,43 +230,10 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 }
-		],
-		expectedContext: {
-			canGameBeStarted: true,
-			showConfetti: false,
-			teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]])
-		}
-	})
-);
-
-test(
-	'gameStateMachine updates team game point on "UPDATE_GAME_POINT" event when current state is "gameRunning" and one team reached 15 game points',
-	testGameStateMachine({
-		eventsToSend: [
 			{
-				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
-			},
-			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 12 }
-		],
-		expectedStateValue: "gameOver"
-	})
-);
-
-test(
-	'gameStateMachine transit to "gameOver" on "UPDATE_GAME_POINT" event when current state is "gameRunning" and one team reached 15 game points',
-	testGameStateMachine({
-		eventsToSend: [
-			{
-				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
-			},
-			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 12 }
+				type: "GAME_POINT_UPDATED",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: true }]])
+			}
 		],
 		expectedContext: {
 			canGameBeStarted: true,
@@ -278,7 +244,7 @@ test(
 );
 
 test(
-	'gameStateMachine sets context property "showConfetti" to true on "UPDATE_GAME_POINT" event when game points equals 4',
+	'gameStateMachine sets context property "showConfetti" to true on "GAME_POINT_UPDATED" event when game points equals 4',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -286,7 +252,11 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 }
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 4,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 4, isStretched: false }]])
+			}
 		],
 		expectedContext: {
 			canGameBeStarted: true,

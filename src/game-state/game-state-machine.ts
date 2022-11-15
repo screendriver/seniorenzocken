@@ -27,7 +27,7 @@ export type GameStateMachineEvent =
 	| TeamStateMachineSentEvent
 	| { readonly type: "START_GAME" }
 	| { readonly type: "UPDATE_GAME_POINT"; readonly teamNumber: number; readonly gamePoints: number }
-	| { readonly type: "GAME_POINT_UPDATED"; readonly teams: Teams }
+	| { readonly type: "GAME_POINT_UPDATED"; readonly gamePoints: number; readonly teams: Teams }
 	| { readonly type: "START_NEW_GAME" };
 
 export type GameStateMachineState =
@@ -98,9 +98,17 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 						UPDATE_GAME_POINT: {
 							actions: "updateTeamGamePoint"
 						},
-						GAME_POINT_UPDATED: {
-							actions: "setTeams"
-						}
+						GAME_POINT_UPDATED: [
+							{
+								target: "gameOver",
+								actions: "setTeams",
+								cond: "checkIfGameWouldBeOver"
+							},
+							{
+								target: "gameRunning",
+								actions: ["setTeams", "shouldShowConfetti"]
+							}
+						]
 					}
 				},
 				gameOver: {
@@ -164,7 +172,7 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 				}),
 				shouldShowConfetti: assign({
 					showConfetti(context, event) {
-						if (event.type !== "UPDATE_GAME_POINT") {
+						if (event.type !== "GAME_POINT_UPDATED") {
 							return context.showConfetti;
 						}
 
