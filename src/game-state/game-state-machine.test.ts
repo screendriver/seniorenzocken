@@ -55,7 +55,7 @@ function testGameStateMachine(options: TestGameStateMachineOptions): TestFunctio
 		teamStateMachineActor.value.subscribe((state) => {
 			const eventType = state.event.type;
 
-			if (eventType === "UPDATE_TEAM_NAME" || eventType === "RESET") {
+			if (eventType === "UPDATE_TEAM_NAME" || eventType === "UPDATE_GAME_POINT" || eventType === "RESET") {
 				teamStateMachineActorEvents.push(state.event);
 			}
 		});
@@ -185,7 +185,7 @@ test(
 );
 
 test(
-	'gameStateMachine updates team game point on "UPDATE_GAME_POINT" event when current state is "gameRunning" and no team reached 15 game points',
+	'gameStateMachine forwards "UPDATE_GAME_POINT" event to team state machine',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -193,7 +193,27 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 }
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 }
+		],
+		expectedForwardedEvents: [{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 }]
+	})
+);
+
+test(
+	'gameStateMachine updates team game point on "GAME_POINT_UPDATED" event when current state is "gameRunning"',
+	testGameStateMachine({
+		eventsToSend: [
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			},
+			{ type: "START_GAME" },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 3,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]]),
+				teamNumber: 1
+			}
 		],
 		expectedContext: {
 			canGameBeStarted: true,
@@ -204,7 +224,7 @@ test(
 );
 
 test(
-	'gameStateMachine updates team game point on "UPDATE_GAME_POINT" event when current state is "gameRunning" and one team reached 15 game points',
+	'gameStateMachine transit to "gameOver" on "GAME_POINT_UPDATED" event when current state is "gameRunning" and one team reached 15 game points',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -212,24 +232,12 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 12 }
-		],
-		expectedStateValue: "gameOver"
-	})
-);
-
-test(
-	'gameStateMachine transit to "gameOver" on "UPDATE_GAME_POINT" event when current state is "gameRunning" and one team reached 15 game points',
-	testGameStateMachine({
-		eventsToSend: [
 			{
-				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
-			},
-			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 12 }
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 15,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: true }]]),
+				teamNumber: 1
+			}
 		],
 		expectedContext: {
 			canGameBeStarted: true,
@@ -240,7 +248,7 @@ test(
 );
 
 test(
-	'gameStateMachine sets context property "showConfetti" to true on "UPDATE_GAME_POINT" event when game points equals 4',
+	'gameStateMachine sets context property "showConfetti" to true on "GAME_POINT_UPDATED" event when game points equals 4',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -248,7 +256,12 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 }
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 4,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 4, isStretched: false }]]),
+				teamNumber: 1
+			}
 		],
 		expectedContext: {
 			canGameBeStarted: true,
@@ -267,7 +280,12 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 16 },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 16,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 16, isStretched: false }]]),
+				teamNumber: 1
+			},
 			{ type: "START_NEW_GAME" }
 		],
 		expectedStateValue: "gameNotRunning"
@@ -283,8 +301,12 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 11 },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 15,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: false }]]),
+				teamNumber: 1
+			},
 			{ type: "START_NEW_GAME" }
 		],
 		expectedContext: {
@@ -304,8 +326,12 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 11 },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 15,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: false }]]),
+				teamNumber: 1
+			},
 			{ type: "START_NEW_GAME" }
 		],
 		expectedForwardedEvents: [{ type: "RESET" }]

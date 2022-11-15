@@ -279,6 +279,98 @@ test(
 );
 
 test(
+	'gameStateMachine updates team game point when in state "fullyFilledTeams" and "UPDATE_GAME_POINT" event is sent',
+	testTeamStateMachine({
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 }
+		],
+		expectedContext: {
+			teams: new Map([[1, { teamName: "foo", gamePoints: 4, isStretched: false }]])
+		}
+	})
+);
+
+test(
+	'gameStateMachine updates team game point when in state "fullyFilledTeams" and multiple "UPDATE_GAME_POINT" events are sent',
+	testTeamStateMachine({
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 }
+		],
+		expectedContext: {
+			teams: new Map([[1, { teamName: "foo", gamePoints: 5, isStretched: false }]])
+		}
+	})
+);
+
+test(
+	'gameStateMachine sets if a team is stretched when in state "fullyFilledTeams" and multiple "UPDATE_GAME_POINT" events are sent that lead to total game points of 12',
+	testTeamStateMachine({
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 }
+		],
+		expectedContext: {
+			teams: new Map([[1, { teamName: "foo", gamePoints: 12, isStretched: true }]])
+		}
+	})
+);
+
+test(
+	'gameStateMachine sets if a team is stretched when in state "fullyFilledTeams" and multiple "UPDATE_GAME_POINT" events are sent that lead to total game points more than 12',
+	testTeamStateMachine({
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 1 }
+		],
+		expectedContext: {
+			teams: new Map([[1, { teamName: "foo", gamePoints: 13, isStretched: true }]])
+		}
+	})
+);
+
+test(
+	'gameStateMachine saves teams in storage on "UPDATE_GAME_POINT" event',
+	testTeamStateMachine({
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 }
+		],
+		expectedTeamsInStorage: new Map([[1, { gamePoints: 2, isStretched: false, teamName: "foo" }]])
+	})
+);
+
+test(
+	'gameStateMachine sends to parent "GAME_POINT_UPDATED" event when game point gets updated',
+	testTeamStateMachine({
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 }
+		],
+		expectedSentEvents: [
+			{ type: "TEAMS_EMPTY" },
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			},
+			{
+				type: "GAME_POINT_UPDATED",
+				teamNumber: 1,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 2, isStretched: false }]]),
+				gamePoints: 2
+			}
+		]
+	})
+);
+
+test(
 	'gameStateMachine resets context on "RESET" event',
 	testTeamStateMachine({
 		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }, { type: "RESET" }],

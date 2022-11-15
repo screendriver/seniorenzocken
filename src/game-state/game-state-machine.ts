@@ -14,7 +14,6 @@ import type { TeamStateMachine, TeamStateMachineSentEvent } from "../team/team-s
 import type { ToggleRouter } from "../toggle-router/toggle-router.js";
 import { shouldShowConfetti } from "./confetti.js";
 import { checkIfGameWouldBeOver } from "./game-over.js";
-import { updateTeamGamePoint } from "./teams.js";
 
 export interface GameStateMachineContext {
 	readonly teamStateMachineActor: Maybe<ActorRefFrom<TeamStateMachine>>;
@@ -28,6 +27,12 @@ export type GameStateMachineEvent =
 	| TeamStateMachineSentEvent
 	| { readonly type: "START_GAME" }
 	| { readonly type: "UPDATE_GAME_POINT"; readonly teamNumber: number; readonly gamePoints: number }
+	| {
+			readonly type: "GAME_POINT_UPDATED";
+			readonly teamNumber: number;
+			readonly teams: Teams;
+			readonly gamePoints: number;
+	  }
 	| { readonly type: "START_NEW_GAME" };
 
 export type GameStateMachineState =
@@ -95,15 +100,18 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 				},
 				gameRunning: {
 					on: {
-						UPDATE_GAME_POINT: [
+						UPDATE_GAME_POINT: {
+							actions: "updateTeamGamePoint"
+						},
+						GAME_POINT_UPDATED: [
 							{
 								target: "gameOver",
-								actions: "updateTeamGamePoint",
+								actions: "setTeams",
 								cond: "checkIfGameWouldBeOver"
 							},
 							{
 								target: "gameRunning",
-								actions: ["updateTeamGamePoint", "shouldShowConfetti"]
+								actions: ["setTeams", "shouldShowConfetti"]
 							}
 						]
 					}
@@ -134,7 +142,11 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 							return new Map();
 						}
 
-						if (event.type === "PARTIALLY_FILLED_TEAMS" || event.type === "FULLY_FILLED_TEAMS") {
+						if (
+							event.type === "PARTIALLY_FILLED_TEAMS" ||
+							event.type === "FULLY_FILLED_TEAMS" ||
+							event.type === "GAME_POINT_UPDATED"
+						) {
 							return event.teams;
 						}
 
@@ -160,18 +172,12 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 
 					toggleRouter.setFeature("game-point-buttons", showGamePointButtons);
 				},
-				updateTeamGamePoint: assign({
-					teams(context, event) {
-						if (event.type !== "UPDATE_GAME_POINT") {
-							return context.teams;
-						}
-
-						return updateTeamGamePoint(context.teams, event.teamNumber, event.gamePoints);
-					}
+				updateTeamGamePoint: forwardTo((context) => {
+					return context.teamStateMachineActor.unwrapOr("");
 				}),
 				shouldShowConfetti: assign({
 					showConfetti(context, event) {
-						if (event.type !== "UPDATE_GAME_POINT") {
+						if (event.type !== "GAME_POINT_UPDATED") {
 							return context.showConfetti;
 						}
 
@@ -202,12 +208,12 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 				canGameBeStarted(context) {
 					return context.canGameBeStarted;
 				},
-				checkIfGameWouldBeOver(context, event) {
-					if (event.type !== "UPDATE_GAME_POINT") {
+				checkIfGameWouldBeOver(_context, event) {
+					if (event.type !== "GAME_POINT_UPDATED") {
 						return false;
 					}
 
-					return checkIfGameWouldBeOver(context.teams, event.teamNumber, event.gamePoints);
+					return checkIfGameWouldBeOver(event.teams, event.teamNumber);
 				}
 			}
 		}
