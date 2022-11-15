@@ -1,8 +1,8 @@
 import { test, assert } from "vitest";
 import { Factory } from "fishery";
 import Result from "true-myth/result";
-import { determineWinnerTeam, updateTeamGamePoint } from "./teams.js";
-import type { Team, Teams } from "../team/team-schema.js";
+import { determineWinnerTeam } from "./teams.js";
+import type { Team } from "../team/team-schema.js";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {

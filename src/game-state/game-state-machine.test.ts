@@ -210,7 +210,9 @@ test(
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]])
+				gamePoints: 3,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]]),
+				teamNumber: 1
 			}
 		],
 		expectedContext: {
@@ -232,7 +234,9 @@ test(
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: true }]])
+				gamePoints: 15,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: true }]]),
+				teamNumber: 1
 			}
 		],
 		expectedContext: {
@@ -255,7 +259,8 @@ test(
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 4,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 4, isStretched: false }]])
+				teams: new Map([[1, { teamName: "foo", gamePoints: 4, isStretched: false }]]),
+				teamNumber: 1
 			}
 		],
 		expectedContext: {
@@ -275,7 +280,12 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 16 },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 16,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 16, isStretched: false }]]),
+				teamNumber: 1
+			},
 			{ type: "START_NEW_GAME" }
 		],
 		expectedStateValue: "gameNotRunning"
@@ -291,8 +301,12 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 11 },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 15,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: false }]]),
+				teamNumber: 1
+			},
 			{ type: "START_NEW_GAME" }
 		],
 		expectedContext: {
@@ -312,8 +326,12 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
 			},
 			{ type: "START_GAME" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 11 },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 15,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: false }]]),
+				teamNumber: 1
+			},
 			{ type: "START_NEW_GAME" }
 		],
 		expectedForwardedEvents: [{ type: "RESET" }]

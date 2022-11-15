@@ -27,7 +27,12 @@ export type GameStateMachineEvent =
 	| TeamStateMachineSentEvent
 	| { readonly type: "START_GAME" }
 	| { readonly type: "UPDATE_GAME_POINT"; readonly teamNumber: number; readonly gamePoints: number }
-	| { readonly type: "GAME_POINT_UPDATED"; readonly gamePoints: number; readonly teams: Teams }
+	| {
+			readonly type: "GAME_POINT_UPDATED";
+			readonly teamNumber: number;
+			readonly teams: Teams;
+			readonly gamePoints: number;
+	  }
 	| { readonly type: "START_NEW_GAME" };
 
 export type GameStateMachineState =
@@ -203,12 +208,12 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 				canGameBeStarted(context) {
 					return context.canGameBeStarted;
 				},
-				checkIfGameWouldBeOver(context, event) {
-					if (event.type !== "UPDATE_GAME_POINT") {
+				checkIfGameWouldBeOver(_context, event) {
+					if (event.type !== "GAME_POINT_UPDATED") {
 						return false;
 					}
 
-					return checkIfGameWouldBeOver(context.teams, event.teamNumber, event.gamePoints);
+					return checkIfGameWouldBeOver(event.teams, event.teamNumber);
 				}
 			}
 		}

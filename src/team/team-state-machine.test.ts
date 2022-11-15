@@ -362,8 +362,9 @@ test(
 			},
 			{
 				type: "GAME_POINT_UPDATED",
-				gamePoints: 2,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 2, isStretched: false }]])
+				teamNumber: 1,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 2, isStretched: false }]]),
+				gamePoints: 2
 			}
 		]
 	})
