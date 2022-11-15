@@ -14,7 +14,6 @@ import type { TeamStateMachine, TeamStateMachineSentEvent } from "../team/team-s
 import type { ToggleRouter } from "../toggle-router/toggle-router.js";
 import { shouldShowConfetti } from "./confetti.js";
 import { checkIfGameWouldBeOver } from "./game-over.js";
-import { updateTeamGamePoint } from "./teams.js";
 
 export interface GameStateMachineContext {
 	readonly teamStateMachineActor: Maybe<ActorRefFrom<TeamStateMachine>>;
@@ -95,17 +94,9 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 				},
 				gameRunning: {
 					on: {
-						UPDATE_GAME_POINT: [
-							{
-								target: "gameOver",
-								actions: "updateTeamGamePoint",
-								cond: "checkIfGameWouldBeOver"
-							},
-							{
-								target: "gameRunning",
-								actions: ["updateTeamGamePoint", "shouldShowConfetti"]
-							}
-						]
+						UPDATE_GAME_POINT: {
+							actions: "updateTeamGamePoint"
+						}
 					}
 				},
 				gameOver: {
@@ -160,14 +151,8 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 
 					toggleRouter.setFeature("game-point-buttons", showGamePointButtons);
 				},
-				updateTeamGamePoint: assign({
-					teams(context, event) {
-						if (event.type !== "UPDATE_GAME_POINT") {
-							return context.teams;
-						}
-
-						return updateTeamGamePoint(context.teams, event.teamNumber, event.gamePoints);
-					}
+				updateTeamGamePoint: forwardTo((context) => {
+					return context.teamStateMachineActor.unwrapOr("");
 				}),
 				shouldShowConfetti: assign({
 					showConfetti(context, event) {

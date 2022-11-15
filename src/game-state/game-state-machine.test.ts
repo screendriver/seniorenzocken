@@ -55,7 +55,7 @@ function testGameStateMachine(options: TestGameStateMachineOptions): TestFunctio
 		teamStateMachineActor.value.subscribe((state) => {
 			const eventType = state.event.type;
 
-			if (eventType === "UPDATE_TEAM_NAME" || eventType === "RESET") {
+			if (eventType === "UPDATE_TEAM_NAME" || eventType === "UPDATE_GAME_POINT" || eventType === "RESET") {
 				teamStateMachineActorEvents.push(state.event);
 			}
 		});
@@ -181,6 +181,21 @@ test(
 			{ type: "START_GAME" }
 		],
 		expectedStateValue: "gameNotRunning"
+	})
+);
+
+test(
+	'gameStateMachine forwards "UPDATE_GAME_POINT" event to team state machine',
+	testGameStateMachine({
+		eventsToSend: [
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			},
+			{ type: "START_GAME" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 }
+		],
+		expectedForwardedEvents: [{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 }]
 	})
 );
 
