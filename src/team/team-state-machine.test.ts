@@ -348,6 +348,27 @@ test(
 );
 
 test(
+	'gameStateMachine sends to parent "GAME_POINT_UPDATED" event when game point gets updated',
+	testTeamStateMachine({
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 }
+		],
+		expectedSentEvents: [
+			{ type: "TEAMS_EMPTY" },
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			},
+			{
+				type: "GAME_POINT_UPDATED",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 2, isStretched: false }]])
+			}
+		]
+	})
+);
+
+test(
 	'gameStateMachine resets context on "RESET" event',
 	testTeamStateMachine({
 		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }, { type: "RESET" }],

@@ -21,7 +21,12 @@ export type TeamStateMachineEvent =
 	  }
 	| { readonly type: "RESET" };
 
-export const possibleSentEventNames = ["TEAMS_EMPTY", "PARTIALLY_FILLED_TEAMS", "FULLY_FILLED_TEAMS"] as const;
+export const possibleSentEventNames = [
+	"TEAMS_EMPTY",
+	"PARTIALLY_FILLED_TEAMS",
+	"FULLY_FILLED_TEAMS",
+	"GAME_POINT_UPDATED"
+] as const;
 
 export type PossibleSentEventNames = typeof possibleSentEventNames[number];
 
@@ -32,7 +37,8 @@ interface TeamStateMachineSentEventObject<T extends PossibleSentEventNames> exte
 export type TeamStateMachineSentEvent =
 	| TeamStateMachineSentEventObject<"TEAMS_EMPTY">
 	| (TeamStateMachineSentEventObject<"PARTIALLY_FILLED_TEAMS"> & { readonly teams: Teams })
-	| (TeamStateMachineSentEventObject<"FULLY_FILLED_TEAMS"> & { readonly teams: Teams });
+	| (TeamStateMachineSentEventObject<"FULLY_FILLED_TEAMS"> & { readonly teams: Teams })
+	| (TeamStateMachineSentEventObject<"GAME_POINT_UPDATED"> & { readonly teams: Teams });
 
 interface StateWithContext<StateName extends string> {
 	readonly context: TeamStateMachineContext;
@@ -92,7 +98,7 @@ export function createTeamStateMachine(gameWebStorage: GameWebStorage): TeamStat
 					entry: "sendFullyFilledTeamsToParent",
 					on: {
 						UPDATE_GAME_POINT: {
-							actions: ["updateGamePoint", "saveTeamsInStorage"]
+							actions: ["updateGamePoint", "saveTeamsInStorage", "sendGamePointUpdatedToParent"]
 						},
 						RESET: {
 							actions: "resetContext",
@@ -156,6 +162,16 @@ export function createTeamStateMachine(gameWebStorage: GameWebStorage): TeamStat
 
 						return updateTeamGamePoint(context.teams, event.teamNumber, event.gamePoints);
 					}
+				}),
+				sendGamePointUpdatedToParent: sendParent<
+					TeamStateMachineContext,
+					TeamStateMachineEvent,
+					TeamStateMachineSentEvent
+				>((context) => {
+					return {
+						type: "GAME_POINT_UPDATED",
+						teams: context.teams
+					};
 				}),
 				resetContext: assign({
 					teams(_context) {
