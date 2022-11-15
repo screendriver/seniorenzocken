@@ -337,6 +337,17 @@ test(
 );
 
 test(
+	'gameStateMachine saves teams in storage on "UPDATE_GAME_POINT" event',
+	testTeamStateMachine({
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 }
+		],
+		expectedTeamsInStorage: new Map([[1, { gamePoints: 2, isStretched: false, teamName: "foo" }]])
+	})
+);
+
+test(
 	'gameStateMachine resets context on "RESET" event',
 	testTeamStateMachine({
 		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }, { type: "RESET" }],

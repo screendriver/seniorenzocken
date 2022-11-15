@@ -92,7 +92,7 @@ export function createTeamStateMachine(gameWebStorage: GameWebStorage): TeamStat
 					entry: "sendFullyFilledTeamsToParent",
 					on: {
 						UPDATE_GAME_POINT: {
-							actions: "updateGamePoint"
+							actions: ["updateGamePoint", "saveTeamsInStorage"]
 						},
 						RESET: {
 							actions: "resetContext",
