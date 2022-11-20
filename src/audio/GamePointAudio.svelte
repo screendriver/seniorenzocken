@@ -8,7 +8,8 @@
 	export let teams: Teams;
 
 	let audioElement: HTMLAudioElement;
-	let sourceElement: HTMLSourceElement;
+	let sourceElementWebm: HTMLSourceElement;
+	let sourceElementAac: HTMLSourceElement;
 
 	const listToPlay = createPlaylist(teams, sample);
 	let indexToPlay = 0;
@@ -20,7 +21,8 @@
 			return;
 		}
 
-		sourceElement.src = source.value;
+		sourceElementWebm.src = `${source.value}.webm`;
+		sourceElementAac.src = `${source.value}.aac`;
 		audioElement.load();
 		audioElement.play();
 	}
@@ -51,5 +53,6 @@
 </script>
 
 <audio bind:this={audioElement}>
-	<source bind:this={sourceElement} type="audio/webm" />
+	<source bind:this={sourceElementWebm} type="audio/webm" />
+	<source bind:this={sourceElementAac} type="audio/aac" />
 </audio>
