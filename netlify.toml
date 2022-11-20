@@ -8,8 +8,9 @@
         Content-Type = "application/manifest+json"
 
 [[headers]]
-    for = "/audio/*"
+    for = "/audio/*.webm"
     [headers.values]
+        Content-Type = "audio/webm"
         Cache-Control = '''
         public,
         max-age=604800,
