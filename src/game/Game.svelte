@@ -13,6 +13,7 @@
 	import type { Teams } from "../team/team-schema.js";
 
 	export let teams: Teams;
+	export let disabled: boolean;
 
 	let gamePointComponents: GamePoint[] = [];
 	let enabledTeamNumber: Maybe<number> = Maybe.nothing();
@@ -76,7 +77,7 @@
 	<Button
 		buttonType="button"
 		value="Nächste Runde"
-		disabled={nextRoundDisabled}
+		disabled={disabled || nextRoundDisabled}
 		on:click={() => {
 			dispatchNextRound();
 			resetState();

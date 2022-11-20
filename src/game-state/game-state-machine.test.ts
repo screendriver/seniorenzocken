@@ -71,7 +71,7 @@ function testGameStateMachine(options: TestGameStateMachineOptions): TestFunctio
 
 			assert.deepStrictEqual(expectedContext, contextWithoutTeamStateMachineActor);
 		} else if (is.string(expectedStateValue)) {
-			assert.strictEqual(expectedStateValue, serviceSnapshot.value);
+			assert.strictEqual(serviceSnapshot.matches(expectedStateValue), true);
 		} else if (is.array(expectedForwardedEvents)) {
 			assert.deepStrictEqual(teamStateMachineActorEvents, expectedForwardedEvents);
 		}
@@ -139,7 +139,7 @@ test(
 );
 
 test(
-	'gameStateMachine sets teams to an empty Map on "TEAMS_EMPTY" event',
+	'gameStateMachine sets teams to an empty Map and canGameBeStarted to false on "TEAMS_EMPTY" event',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -157,7 +157,7 @@ test(
 );
 
 test(
-	'gameStateMachine transit to "gameRunning" on "START_GAME" event when game can be started',
+	'gameStateMachine transit to "gameRunning.audioNotPlaying" on "START_GAME" event when game can be started',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -166,7 +166,7 @@ test(
 			},
 			{ type: "START_GAME" }
 		],
-		expectedStateValue: "gameRunning"
+		expectedStateValue: "gameRunning.audioNotPlaying"
 	})
 );
 
@@ -200,7 +200,7 @@ test(
 );
 
 test(
-	'gameStateMachine updates team game point on "GAME_POINT_UPDATED" event when current state is "gameRunning"',
+	'gameStateMachine updates team game point on "GAME_POINT_UPDATED" event when current state is "gameRunning.audioNotPlaying"',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -224,7 +224,78 @@ test(
 );
 
 test(
-	'gameStateMachine transit to "gameOver" on "GAME_POINT_UPDATED" event when current state is "gameRunning" and one team reached 15 game points',
+	'gameStateMachine does not update team game point on "GAME_POINT_UPDATED" event when current state is "gameRunning.audioPlaying"',
+	testGameStateMachine({
+		eventsToSend: [
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			},
+			{ type: "START_GAME" },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 3,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]]),
+				teamNumber: 1
+			},
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 3,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 6, isStretched: false }]]),
+				teamNumber: 1
+			}
+		],
+		expectedContext: {
+			canGameBeStarted: true,
+			showConfetti: false,
+			teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]])
+		}
+	})
+);
+
+test(
+	'gameStateMachine transit from "gameRunning.audioNotPlaying" to "gameRunning.audioPlaying" on "GAME_POINT_UPDATED" event',
+	testGameStateMachine({
+		eventsToSend: [
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			},
+			{ type: "START_GAME" },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 3,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]]),
+				teamNumber: 1
+			}
+		],
+		expectedStateValue: "gameRunning.audioPlaying"
+	})
+);
+
+test(
+	'gameStateMachine transit from "gameRunning.audioPlaying" to "gameRunning.audioNotPlaying" on "AUDIO_ENDED" event',
+	testGameStateMachine({
+		eventsToSend: [
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			},
+			{ type: "START_GAME" },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 3,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]]),
+				teamNumber: 1
+			},
+			{ type: "AUDIO_ENDED" }
+		],
+		expectedStateValue: "gameRunning.audioNotPlaying"
+	})
+);
+
+test(
+	'gameStateMachine transit to "gameOver" on "GAME_POINT_UPDATED" event when current state is "gameRunning.audioNotPlaying" and one team reached 15 game points',
 	testGameStateMachine({
 		eventsToSend: [
 			{

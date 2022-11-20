@@ -8,6 +8,7 @@
 	import GameOver from "./game/GameOver.svelte";
 	import type { TeamNameChangeEvent } from "./team/Team.svelte";
 	import GitHub from "./GitHub.svelte";
+	import GamePointAudio from "./audio/GamePointAudio.svelte";
 	import type { GameStateMachine } from "./game-state/game-state-machine.js";
 	import type { WakeLockStateMachine } from "./screen/wake-lock-state-machine.js";
 
@@ -38,6 +39,10 @@
 		});
 	}
 
+	function sendAudioEnded(): void {
+		send({ type: "AUDIO_ENDED" });
+	}
+
 	function startNewGame(): void {
 		send("START_NEW_GAME");
 	}
@@ -49,14 +54,22 @@
 			origin: { y: 0.6 }
 		});
 	}
+
+	$: teams = $state.context.teams;
 </script>
 
 <Head {imageKit} />
 
 {#if $state.value === "gameOver"}
-	<GameOver teams={$state.context.teams} on:startnewgame={startNewGame} />
-{:else if $state.value === "gameRunning"}
-	<Game teams={$state.context.teams} on:nextround={updateGamePoint} />
+	<GameOver {teams} on:startnewgame={startNewGame} />
+{:else if $state.matches("gameRunning")}
+	{@const audioPlaying = $state.matches("gameRunning.audioPlaying")}
+
+	<Game {teams} disabled={audioPlaying} on:nextround={updateGamePoint} />
+
+	{#if audioPlaying}
+		<GamePointAudio {teams} on:audioended={sendAudioEnded} />
+	{/if}
 {:else}
 	<TeamsForm
 		canGameBeStarted={$state.context.canGameBeStarted}
