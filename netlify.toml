@@ -15,3 +15,12 @@
         public,
         max-age=604800,
         must-revalidate'''
+
+[[headers]]
+    for = "/audio/*.aac"
+    [headers.values]
+        Content-Type = "audio/aac"
+        Cache-Control = '''
+        public,
+        max-age=604800,
+        must-revalidate'''
