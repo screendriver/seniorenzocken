@@ -37,7 +37,7 @@ test(
 	"createPlaylist() calls given randomCollectionElement() function and returns the first found audio file",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 0,
-		expectedPlaylist: ["/audio/0_1.webm", "/audio/zu.webm", "/audio/0_1.webm"]
+		expectedPlaylist: ["/audio/0_1", "/audio/zu", "/audio/0_1"]
 	})
 );
 
@@ -45,7 +45,7 @@ test(
 	"createPlaylist() calls given randomCollectionElement() function and returns the second found audio file",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 1,
-		expectedPlaylist: ["/audio/0_2.webm", "/audio/zu.webm", "/audio/0_2.webm"]
+		expectedPlaylist: ["/audio/0_2", "/audio/zu", "/audio/0_2"]
 	})
 );
 
@@ -53,7 +53,7 @@ test(
 	"createPlaylist() calls given randomCollectionElement() function and returns the third found audio file",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 2,
-		expectedPlaylist: ["/audio/0_3.webm", "/audio/zu.webm", "/audio/0_3.webm"]
+		expectedPlaylist: ["/audio/0_3", "/audio/zu", "/audio/0_3"]
 	})
 );
 
@@ -61,7 +61,7 @@ test(
 	"createPlaylist() calls given randomCollectionElement() function and returns the fourth found audio file",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 3,
-		expectedPlaylist: ["/audio/0_4.webm", "/audio/zu.webm", "/audio/0_4.webm"]
+		expectedPlaylist: ["/audio/0_4", "/audio/zu", "/audio/0_4"]
 	})
 );
 
@@ -69,7 +69,7 @@ test(
 	"createPlaylist() calls given randomCollectionElement() function and returns the fifth found audio file",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 4,
-		expectedPlaylist: ["/audio/0_5.webm", "/audio/zu.webm", "/audio/0_5.webm"]
+		expectedPlaylist: ["/audio/0_5", "/audio/zu", "/audio/0_5"]
 	})
 );
 
@@ -77,7 +77,7 @@ test(
 	"createPlaylist() calls given randomCollectionElement() function and returns the sixth found audio file",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 5,
-		expectedPlaylist: ["/audio/0_6.webm", "/audio/zu.webm", "/audio/0_6.webm"]
+		expectedPlaylist: ["/audio/0_6", "/audio/zu", "/audio/0_6"]
 	})
 );
 
@@ -85,7 +85,7 @@ test(
 	'createPlaylist() calls given randomCollectionElement() function and returns "0_1" as fallback when index is out of bounds',
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 6,
-		expectedPlaylist: ["/audio/0_1.webm", "/audio/zu.webm", "/audio/0_1.webm"]
+		expectedPlaylist: ["/audio/0_1", "/audio/zu", "/audio/0_1"]
 	})
 );
 
@@ -104,7 +104,7 @@ test("createPlaylist() returns 3 paths when no team is stretched and sets the co
 	});
 	const playlist = createPlaylist(teams, randomCollectionElement);
 
-	assert.deepStrictEqual(playlist, ["/audio/0_1.webm", "/audio/zu.webm", "/audio/3.webm"]);
+	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/3"]);
 });
 
 test("createPlaylist() appends an audio file at the end when the first team is stretched", () => {
@@ -117,7 +117,7 @@ test("createPlaylist() appends an audio file at the end when the first team is s
 	});
 	const playlist = createPlaylist(teams, randomCollectionElement);
 
-	assert.deepStrictEqual(playlist, ["/audio/0_1.webm", "/audio/zu.webm", "/audio/0_1.webm", "/audio/gspannt.webm"]);
+	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
 });
 
 test("createPlaylist() appends an audio file at the end when the second team is stretched", () => {
@@ -135,7 +135,7 @@ test("createPlaylist() appends an audio file at the end when the second team is 
 	});
 	const playlist = createPlaylist(teams, randomCollectionElement);
 
-	assert.deepStrictEqual(playlist, ["/audio/0_1.webm", "/audio/zu.webm", "/audio/0_1.webm", "/audio/gspannt.webm"]);
+	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
 });
 
 test("createPlaylist() appends an audio file at the end when both teams are stretched", () => {
@@ -153,5 +153,5 @@ test("createPlaylist() appends an audio file at the end when both teams are stre
 	});
 	const playlist = createPlaylist(teams, randomCollectionElement);
 
-	assert.deepStrictEqual(playlist, ["/audio/0_1.webm", "/audio/zu.webm", "/audio/0_1.webm", "/audio/gspannt.webm"]);
+	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
 });

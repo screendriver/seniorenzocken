@@ -16,26 +16,26 @@ export function createPlaylist(teams: Teams, randomCollectionElement: typeof sam
 		}
 
 		if (index === 2) {
-			playlist.push("/audio/zu.webm");
+			playlist.push("/audio/zu");
 		}
 
 		if (gamePoints === 0) {
 			const randomZeroPointsAudioFile = randomCollectionElement(zeroPointsAudioFiles);
 
 			if (is.undefined(randomZeroPointsAudioFile)) {
-				playlist.push(`/audio/0_1.webm`);
+				playlist.push(`/audio/0_1`);
 			} else {
-				playlist.push(`/audio/${randomZeroPointsAudioFile}.webm`);
+				playlist.push(`/audio/${randomZeroPointsAudioFile}`);
 			}
 
 			return;
 		}
 
-		playlist.push(`/audio/${gamePoints}.webm`);
+		playlist.push(`/audio/${gamePoints}`);
 	});
 
 	if (stretched) {
-		playlist.push("/audio/gspannt.webm");
+		playlist.push("/audio/gspannt");
 	}
 
 	return playlist;
