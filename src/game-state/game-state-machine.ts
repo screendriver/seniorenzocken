@@ -33,6 +33,7 @@ export type GameStateMachineEvent =
 			readonly teams: Teams;
 			readonly gamePoints: number;
 	  }
+	| { readonly type: "AUDIO_ENDED" }
 	| { readonly type: "START_NEW_GAME" };
 
 export type GameStateMachineState =
@@ -43,7 +44,10 @@ export type GameStateMachineState =
 				readonly showConfetti: false;
 			};
 	  }
-	| ({ readonly value: "gameRunning"; readonly context: GameStateMachineContext } & {
+	| ({
+			readonly value: "gameRunning" | "gameRunning.audioNotPlaying" | "gameRunning.audioPlaying";
+			readonly context: GameStateMachineContext;
+	  } & {
 			readonly canGameBeStarted: true;
 			readonly showConfetti: false;
 	  })
@@ -70,6 +74,7 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 			initial: "gameNotRunning",
 			predictableActionArguments: true,
 			preserveActionOrder: true,
+			type: "compound",
 			context: {
 				teamStateMachineActor: Maybe.nothing<ActorRefFrom<TeamStateMachine>>(),
 				teams: new Map(),
@@ -93,27 +98,40 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 							actions: ["setTeams", "setGameCanBeStarted"]
 						},
 						START_GAME: {
-							target: "gameRunning",
-							cond: "canGameBeStarted"
+							cond: "canGameBeStarted",
+							target: "gameRunning"
 						}
 					}
 				},
 				gameRunning: {
-					on: {
-						UPDATE_GAME_POINT: {
-							actions: "updateTeamGamePoint"
-						},
-						GAME_POINT_UPDATED: [
-							{
-								target: "gameOver",
-								actions: "setTeams",
-								cond: "checkIfGameWouldBeOver"
-							},
-							{
-								target: "gameRunning",
-								actions: ["setTeams", "shouldShowConfetti"]
+					type: "compound",
+					initial: "audioNotPlaying",
+					states: {
+						audioNotPlaying: {
+							on: {
+								UPDATE_GAME_POINT: {
+									actions: "updateTeamGamePoint"
+								},
+								GAME_POINT_UPDATED: [
+									{
+										cond: "checkIfGameWouldBeOver",
+										target: "#gameState.gameOver",
+										actions: "setTeams"
+									},
+									{
+										target: "audioPlaying",
+										actions: ["setTeams", "shouldShowConfetti"]
+									}
+								]
 							}
-						]
+						},
+						audioPlaying: {
+							on: {
+								AUDIO_ENDED: {
+									target: "audioNotPlaying"
+								}
+							}
+						}
 					}
 				},
 				gameOver: {
