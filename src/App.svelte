@@ -9,6 +9,7 @@
 	import type { TeamNameChangeEvent } from "./team/Team.svelte";
 	import GitHub from "./GitHub.svelte";
 	import GamePointAudio from "./audio/GamePointAudio.svelte";
+	import GameOverAudio from "./audio/GameOverAudio.svelte";
 	import type { GameStateMachine } from "./game-state/game-state-machine.js";
 	import type { WakeLockStateMachine } from "./screen/wake-lock-state-machine.js";
 
@@ -62,6 +63,7 @@
 
 {#if $state.value === "gameOver"}
 	<GameOver {teams} on:startnewgame={startNewGame} />
+	<GameOverAudio />
 {:else if $state.matches("gameRunning")}
 	{@const audioPlaying = $state.matches("gameRunning.audioPlaying")}
 
