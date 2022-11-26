@@ -72,7 +72,7 @@
 	<Game {teams} disabled={audioPlaying} on:nextround={updateGamePoint} />
 
 	{#if audioPlaying}
-		<GamePointAudio {teams} on:audioended={sendAudioEnded} />
+		<GamePointAudio {teams} includeStretched={true} on:audioended={sendAudioEnded} />
 	{/if}
 {:else}
 	<TeamsForm

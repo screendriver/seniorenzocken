@@ -4,7 +4,11 @@ import type { Teams } from "../team/team-schema.js";
 
 const zeroPointsAudioFiles = ["0_1", "0_2", "0_3", "0_4", "0_5", "0_6"];
 
-export function createPlaylist(teams: Teams, randomCollectionElement: typeof sample): readonly string[] {
+export function createPlaylist(
+	teams: Teams,
+	includeStretched: boolean,
+	randomCollectionElement: typeof sample
+): readonly string[] {
 	const playlist: string[] = [];
 
 	let stretched = false;
@@ -34,7 +38,7 @@ export function createPlaylist(teams: Teams, randomCollectionElement: typeof sam
 		playlist.push(`/audio/${gamePoints}`);
 	});
 
-	if (stretched) {
+	if (includeStretched && stretched) {
 		playlist.push("/audio/gspannt");
 	}
 

@@ -6,12 +6,13 @@
 	import { createPlaylist } from "./playlist.js";
 
 	export let teams: Teams;
+	export let includeStretched: boolean;
 
 	let audioElement: HTMLAudioElement;
 	let sourceElementWebm: HTMLSourceElement;
 	let sourceElementAac: HTMLSourceElement;
 
-	const listToPlay = createPlaylist(teams, sample);
+	const listToPlay = createPlaylist(teams, includeStretched, sample);
 	let indexToPlay = 0;
 
 	const dispatch = createEventDispatcher<{ audioended: void }>();

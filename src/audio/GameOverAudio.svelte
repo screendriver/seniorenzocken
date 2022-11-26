@@ -1,12 +1,17 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import GamePointAudio from "./GamePointAudio.svelte";
+	import type { Teams } from "../team/team-schema";
+
+	export let teams: Teams;
 
 	let audioElement: HTMLAudioElement;
 
-	onMount(() => {
+	function playWinSound(): void {
 		audioElement.play();
-	});
+	}
 </script>
+
+<GamePointAudio {teams} includeStretched={false} on:audioended={playWinSound} />
 
 <audio bind:this={audioElement}>
 	<source src="/audio/gwonnen.webm" type="audio/webm" />
