@@ -65,14 +65,14 @@
 
 {#if $state.value === "gameOver"}
 	<GameOver {teams} on:startnewgame={startNewGame} />
-	<GameOverAudio />
+	<GameOverAudio {teams} />
 {:else if $state.matches("gameRunning")}
 	{@const audioPlaying = $state.matches("gameRunning.audio.playing")}
 
 	<Game {teams} disabled={audioPlaying} on:nextround={updateGamePoint} />
 
 	{#if audioPlaying}
-		<GamePointAudio {teams} on:audioended={sendAudioEnded} />
+		<GamePointAudio {teams} includeStretched={true} on:audioended={sendAudioEnded} />
 	{/if}
 {:else}
 	<TeamsForm
