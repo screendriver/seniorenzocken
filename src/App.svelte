@@ -65,7 +65,7 @@
 
 {#if $state.value === "gameOver"}
 	<GameOver {teams} on:startnewgame={startNewGame} />
-	<GameOverAudio />
+	<GameOverAudio {teams} />
 {:else if $state.matches("gameRunning")}
 	{@const audioPlaying = $state.matches("gameRunning.audio.playing")}
 
