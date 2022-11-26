@@ -48,7 +48,7 @@
 		send("START_NEW_GAME");
 	}
 
-	$: if ($state.context.showConfetti) {
+	$: if ($state.matches("gameRunning.audio.playing") && $state.matches("gameRunning.confetti.visible")) {
 		canvasConfetti({
 			particleCount: 100,
 			spread: 70,
@@ -65,7 +65,7 @@
 	<GameOver {teams} on:startnewgame={startNewGame} />
 	<GameOverAudio />
 {:else if $state.matches("gameRunning")}
-	{@const audioPlaying = $state.matches("gameRunning.audioPlaying")}
+	{@const audioPlaying = $state.matches("gameRunning.audio.playing")}
 
 	<Game {teams} disabled={audioPlaying} on:nextround={updateGamePoint} />
 
