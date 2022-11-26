@@ -19,7 +19,6 @@ export interface GameStateMachineContext {
 	readonly teamStateMachineActor: Maybe<ActorRefFrom<TeamStateMachine>>;
 	readonly teams: Teams;
 	readonly canGameBeStarted: boolean;
-	readonly showConfetti: boolean;
 }
 
 export type GameStateMachineEvent =
@@ -34,6 +33,7 @@ export type GameStateMachineEvent =
 			readonly gamePoints: number;
 	  }
 	| { readonly type: "AUDIO_ENDED" }
+	| { readonly type: "CONFETTI_HIDDEN" }
 	| { readonly type: "START_NEW_GAME" };
 
 export type GameStateMachineState =
@@ -41,15 +41,20 @@ export type GameStateMachineState =
 			readonly value: "gameNotRunning";
 			readonly context: GameStateMachineContext & {
 				readonly canGameBeStarted: false;
-				readonly showConfetti: false;
 			};
 	  }
 	| ({
-			readonly value: "gameRunning" | "gameRunning.audioNotPlaying" | "gameRunning.audioPlaying";
+			readonly value:
+				| "gameRunning"
+				| "gameRunning.audio"
+				| "gameRunning.audio.notPlaying"
+				| "gameRunning.audio.playing"
+				| "gameRunning.confetti"
+				| "gameRunning.confetti.hidden"
+				| "gameRunning.confetti.visible";
 			readonly context: GameStateMachineContext;
 	  } & {
 			readonly canGameBeStarted: true;
-			readonly showConfetti: false;
 	  })
 	| { readonly value: "gameOver"; readonly context: GameStateMachineContext };
 
@@ -78,8 +83,7 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 			context: {
 				teamStateMachineActor: Maybe.nothing<ActorRefFrom<TeamStateMachine>>(),
 				teams: new Map(),
-				canGameBeStarted: false,
-				showConfetti: false
+				canGameBeStarted: false
 			},
 			states: {
 				gameNotRunning: {
@@ -104,31 +108,62 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 					}
 				},
 				gameRunning: {
-					type: "compound",
-					initial: "audioNotPlaying",
+					on: {
+						UPDATE_GAME_POINT: {
+							actions: "updateTeamGamePoint"
+						},
+						GAME_POINT_UPDATED: [
+							{
+								cond: "checkIfGameWouldBeOver",
+								target: "#gameState.gameOver",
+								actions: "setTeams"
+							},
+							{
+								actions: "setTeams"
+							}
+						]
+					},
+					type: "parallel",
 					states: {
-						audioNotPlaying: {
-							on: {
-								UPDATE_GAME_POINT: {
-									actions: "updateTeamGamePoint"
-								},
-								GAME_POINT_UPDATED: [
-									{
-										cond: "checkIfGameWouldBeOver",
-										target: "#gameState.gameOver",
-										actions: "setTeams"
-									},
-									{
-										target: "audioPlaying",
-										actions: ["setTeams", "shouldShowConfetti"]
+						audio: {
+							type: "compound",
+							initial: "notPlaying",
+							states: {
+								notPlaying: {
+									on: {
+										GAME_POINT_UPDATED: {
+											target: "playing",
+											actions: "resendGamePointUpdatedEvent"
+										}
 									}
-								]
+								},
+								playing: {
+									on: {
+										AUDIO_ENDED: {
+											target: "notPlaying"
+										}
+									}
+								}
 							}
 						},
-						audioPlaying: {
-							on: {
-								AUDIO_ENDED: {
-									target: "audioNotPlaying"
+						confetti: {
+							type: "compound",
+							initial: "hidden",
+							states: {
+								hidden: {
+									on: {
+										GAME_POINT_UPDATED: {
+											target: "visible",
+											cond: "shouldShowConfetti"
+										}
+									}
+								},
+								visible: {
+									on: {
+										CONFETTI_HIDDEN: {
+											target: "hidden"
+										}
+									}
 								}
 							}
 						}
@@ -153,6 +188,9 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 				}),
 				updateTeamName: forwardTo((context) => {
 					return context.teamStateMachineActor.unwrapOr("");
+				}),
+				resendGamePointUpdatedEvent: send((_context, event) => {
+					return event;
 				}),
 				setTeams: assign({
 					teams(context, event) {
@@ -193,23 +231,11 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 				updateTeamGamePoint: forwardTo((context) => {
 					return context.teamStateMachineActor.unwrapOr("");
 				}),
-				shouldShowConfetti: assign({
-					showConfetti(context, event) {
-						if (event.type !== "GAME_POINT_UPDATED") {
-							return context.showConfetti;
-						}
-
-						return shouldShowConfetti(event.gamePoints);
-					}
-				}),
 				resetContext: assign({
 					teams(_context) {
 						return new Map();
 					},
 					canGameBeStarted() {
-						return false;
-					},
-					showConfetti() {
 						return false;
 					}
 				}),
@@ -225,6 +251,13 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 			guards: {
 				canGameBeStarted(context) {
 					return context.canGameBeStarted;
+				},
+				shouldShowConfetti(_context, event) {
+					if (event.type !== "GAME_POINT_UPDATED") {
+						return false;
+					}
+
+					return shouldShowConfetti(event.gamePoints);
 				},
 				checkIfGameWouldBeOver(_context, event) {
 					if (event.type !== "GAME_POINT_UPDATED") {
