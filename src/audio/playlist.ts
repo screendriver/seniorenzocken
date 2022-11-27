@@ -15,7 +15,8 @@ export function createPlaylist(
 
 	teams.forEach((team, index) => {
 		const { isStretched, gamePoints } = team;
-		if (isStretched) {
+
+		if (includeStretched && isStretched) {
 			stretched = true;
 		}
 
@@ -38,7 +39,7 @@ export function createPlaylist(
 		playlist.push(`/audio/${gamePoints}`);
 	});
 
-	if (includeStretched && stretched) {
+	if (stretched) {
 		playlist.push("/audio/gspannt");
 	}
 
