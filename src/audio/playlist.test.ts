@@ -49,50 +49,50 @@ function testRandomCollectionElement(options: TestRandomCollectionElementOptions
 }
 
 test(
-	"createPlaylist() calls given randomCollectionElement() function and returns the first found audio file",
+	"createPlaylist() calls given randomCollectionElement() function and returns the first found attention and audio files",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 0,
-		expectedPlaylist: ["/audio/0_1", "/audio/zu", "/audio/0_1"]
+		expectedPlaylist: ["/audio/attention_1", "/audio/0_1", "/audio/zu", "/audio/0_1"]
 	})
 );
 
 test(
-	"createPlaylist() calls given randomCollectionElement() function and returns the second found audio file",
+	"createPlaylist() calls given randomCollectionElement() function and returns the second found attention and audio files",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 1,
-		expectedPlaylist: ["/audio/0_2", "/audio/zu", "/audio/0_2"]
+		expectedPlaylist: ["/audio/attention_2", "/audio/0_2", "/audio/zu", "/audio/0_2"]
 	})
 );
 
 test(
-	"createPlaylist() calls given randomCollectionElement() function and returns the third found audio file",
+	"createPlaylist() calls given randomCollectionElement() function and returns the third found attention and audio files",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 2,
-		expectedPlaylist: ["/audio/0_3", "/audio/zu", "/audio/0_3"]
+		expectedPlaylist: ["/audio/attention_3", "/audio/0_3", "/audio/zu", "/audio/0_3"]
 	})
 );
 
 test(
-	"createPlaylist() calls given randomCollectionElement() function and returns the fourth found audio file",
+	"createPlaylist() calls given randomCollectionElement() function and returns the fourth found attention and audio files",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 3,
-		expectedPlaylist: ["/audio/0_4", "/audio/zu", "/audio/0_4"]
+		expectedPlaylist: ["/audio/attention_4", "/audio/0_4", "/audio/zu", "/audio/0_4"]
 	})
 );
 
 test(
-	"createPlaylist() calls given randomCollectionElement() function and returns the fifth found audio file",
+	"createPlaylist() calls given randomCollectionElement() function and returns the first attention but fifth found audio file",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 4,
-		expectedPlaylist: ["/audio/0_5", "/audio/zu", "/audio/0_5"]
+		expectedPlaylist: ["/audio/attention_1", "/audio/0_5", "/audio/zu", "/audio/0_5"]
 	})
 );
 
 test(
-	"createPlaylist() calls given randomCollectionElement() function and returns the sixth found audio file",
+	"createPlaylist() calls given randomCollectionElement() function and returns the first attention but sixth found audio file",
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 5,
-		expectedPlaylist: ["/audio/0_6", "/audio/zu", "/audio/0_6"]
+		expectedPlaylist: ["/audio/attention_1", "/audio/0_6", "/audio/zu", "/audio/0_6"]
 	})
 );
 
@@ -100,7 +100,7 @@ test(
 	'createPlaylist() calls given randomCollectionElement() function and returns "0_1" as fallback when index is out of bounds',
 	testRandomCollectionElement({
 		zeroPointsAudioFilesIndex: 6,
-		expectedPlaylist: ["/audio/0_1", "/audio/zu", "/audio/0_1"]
+		expectedPlaylist: ["/audio/attention_1", "/audio/0_1", "/audio/zu", "/audio/0_1"]
 	})
 );
 
@@ -119,7 +119,7 @@ test("createPlaylist() returns 3 paths when no team is stretched and sets the co
 	});
 	const playlist = createPlaylist(options);
 
-	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/3"]);
+	assert.deepStrictEqual(playlist, ["/audio/attention_1", "/audio/0_1", "/audio/zu", "/audio/3"]);
 });
 
 test("createPlaylist() appends an audio file at the end when the first team is stretched and stretched should be included", () => {
@@ -132,7 +132,7 @@ test("createPlaylist() appends an audio file at the end when the first team is s
 	});
 	const playlist = createPlaylist(options);
 
-	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
+	assert.deepStrictEqual(playlist, ["/audio/attention_1", "/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
 });
 
 test("createPlaylist() does not append an audio file at the end when the first team is stretched and stretched should not be included", () => {
@@ -144,7 +144,7 @@ test("createPlaylist() does not append an audio file at the end when the first t
 	});
 	const playlist = createPlaylist(options);
 
-	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1"]);
+	assert.deepStrictEqual(playlist, ["/audio/attention_1", "/audio/0_1", "/audio/zu", "/audio/0_1"]);
 });
 
 test("createPlaylist() appends an audio file at the end when the second team is stretched and stretched should be included", () => {
@@ -162,7 +162,7 @@ test("createPlaylist() appends an audio file at the end when the second team is 
 	});
 	const playlist = createPlaylist(options);
 
-	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
+	assert.deepStrictEqual(playlist, ["/audio/attention_1", "/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
 });
 
 test("createPlaylist() does not append an audio file at the end when the second team is stretched and stretched should not be included", () => {
@@ -179,7 +179,7 @@ test("createPlaylist() does not append an audio file at the end when the second 
 	});
 	const playlist = createPlaylist(options);
 
-	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1"]);
+	assert.deepStrictEqual(playlist, ["/audio/attention_1", "/audio/0_1", "/audio/zu", "/audio/0_1"]);
 });
 
 test("createPlaylist() appends an audio file at the end when both teams are stretched and stretched should be included", () => {
@@ -197,7 +197,7 @@ test("createPlaylist() appends an audio file at the end when both teams are stre
 	});
 	const playlist = createPlaylist(options);
 
-	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
+	assert.deepStrictEqual(playlist, ["/audio/attention_1", "/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
 });
 
 test("createPlaylist() does not append an audio file at the end when both teams are stretched and stretched should not be included", () => {
@@ -214,5 +214,5 @@ test("createPlaylist() does not append an audio file at the end when both teams 
 	});
 	const playlist = createPlaylist(options);
 
-	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1"]);
+	assert.deepStrictEqual(playlist, ["/audio/attention_1", "/audio/0_1", "/audio/zu", "/audio/0_1"]);
 });
