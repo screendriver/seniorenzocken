@@ -44,7 +44,7 @@ export function createPlaylist(options: CreatePlaylistOptions): readonly string[
 			stretched = true;
 		}
 
-		if (index === 2) {
+		if (index === 1) {
 			playlist.push("/audio/zu");
 		}
 

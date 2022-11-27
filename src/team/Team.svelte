@@ -12,6 +12,7 @@
 	export let teamNumber: number;
 
 	const dispatch = createEventDispatcher<{ teamnamechange: TeamNameChangeEvent }>();
+	const placeholder = `Team ${teamNumber + 1}`;
 
 	let teamName = "";
 
@@ -34,7 +35,7 @@
 	<input
 		type="text"
 		name="team-{teamNumber}"
-		placeholder="Team {teamNumber}"
+		{placeholder}
 		bind:value={teamName}
 		class="bg-slate-300 text-gray-900 w-60 rounded-r-lg p-2 focus-visible:outline-none"
 	/>

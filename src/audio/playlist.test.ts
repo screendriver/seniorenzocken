@@ -20,10 +20,7 @@ const createPlaylistOptionsFactory = Factory.define<CreatePlaylistOptions, Creat
 		const { zeroPointsAudioFilesIndex = 0 } = transientParams;
 
 		return {
-			teams: new Map([
-				[1, teamFactory.build()],
-				[2, teamFactory.build()]
-			]),
+			teams: [teamFactory.build(), teamFactory.build()],
 			includeStretched: false,
 			randomCollectionElement: vi.fn<[string[]]>((zeroPointsAudioFiles) => {
 				return zeroPointsAudioFiles[zeroPointsAudioFilesIndex];
@@ -106,15 +103,12 @@ test(
 
 test("createPlaylist() returns 3 paths when no team is stretched and sets the correct paths", () => {
 	const options = createPlaylistOptionsFactory.build({
-		teams: new Map([
-			[1, teamFactory.build()],
-			[
-				2,
-				teamFactory.build({
-					gamePoints: 3
-				})
-			]
-		]),
+		teams: [
+			teamFactory.build(),
+			teamFactory.build({
+				gamePoints: 3
+			})
+		],
 		includeStretched: true
 	});
 	const playlist = createPlaylist(options);
@@ -124,10 +118,7 @@ test("createPlaylist() returns 3 paths when no team is stretched and sets the co
 
 test("createPlaylist() appends an audio file at the end when the first team is stretched and stretched should be included", () => {
 	const options = createPlaylistOptionsFactory.build({
-		teams: new Map([
-			[1, teamFactory.build({ isStretched: true })],
-			[2, teamFactory.build()]
-		]),
+		teams: [teamFactory.build({ isStretched: true }), teamFactory.build()],
 		includeStretched: true
 	});
 	const playlist = createPlaylist(options);
@@ -137,10 +128,7 @@ test("createPlaylist() appends an audio file at the end when the first team is s
 
 test("createPlaylist() does not append an audio file at the end when the first team is stretched and stretched should not be included", () => {
 	const options = createPlaylistOptionsFactory.build({
-		teams: new Map([
-			[1, teamFactory.build({ isStretched: true })],
-			[2, teamFactory.build()]
-		])
+		teams: [teamFactory.build({ isStretched: true }), teamFactory.build()]
 	});
 	const playlist = createPlaylist(options);
 
@@ -149,15 +137,12 @@ test("createPlaylist() does not append an audio file at the end when the first t
 
 test("createPlaylist() appends an audio file at the end when the second team is stretched and stretched should be included", () => {
 	const options = createPlaylistOptionsFactory.build({
-		teams: new Map([
-			[1, teamFactory.build()],
-			[
-				2,
-				teamFactory.build({
-					isStretched: true
-				})
-			]
-		]),
+		teams: [
+			teamFactory.build(),
+			teamFactory.build({
+				isStretched: true
+			})
+		],
 		includeStretched: true
 	});
 	const playlist = createPlaylist(options);
@@ -167,15 +152,12 @@ test("createPlaylist() appends an audio file at the end when the second team is 
 
 test("createPlaylist() does not append an audio file at the end when the second team is stretched and stretched should not be included", () => {
 	const options = createPlaylistOptionsFactory.build({
-		teams: new Map([
-			[1, teamFactory.build()],
-			[
-				2,
-				teamFactory.build({
-					isStretched: true
-				})
-			]
-		])
+		teams: [
+			teamFactory.build(),
+			teamFactory.build({
+				isStretched: true
+			})
+		]
 	});
 	const playlist = createPlaylist(options);
 
@@ -184,15 +166,12 @@ test("createPlaylist() does not append an audio file at the end when the second 
 
 test("createPlaylist() appends an audio file at the end when both teams are stretched and stretched should be included", () => {
 	const options = createPlaylistOptionsFactory.build({
-		teams: new Map([
-			[1, teamFactory.build({ isStretched: true })],
-			[
-				2,
-				teamFactory.build({
-					isStretched: true
-				})
-			]
-		]),
+		teams: [
+			teamFactory.build({ isStretched: true }),
+			teamFactory.build({
+				isStretched: true
+			})
+		],
 		includeStretched: true
 	});
 	const playlist = createPlaylist(options);
@@ -202,15 +181,7 @@ test("createPlaylist() appends an audio file at the end when both teams are stre
 
 test("createPlaylist() does not append an audio file at the end when both teams are stretched and stretched should not be included", () => {
 	const options = createPlaylistOptionsFactory.build({
-		teams: new Map([
-			[1, teamFactory.build({ isStretched: true })],
-			[
-				2,
-				teamFactory.build({
-					isStretched: true
-				})
-			]
-		])
+		teams: [teamFactory.build({ isStretched: true }), teamFactory.build({ isStretched: true })]
 	});
 	const playlist = createPlaylist(options);
 
