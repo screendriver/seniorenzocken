@@ -10,6 +10,7 @@
 	import { UsersIcon } from "svelte-feather-icons";
 	import Maybe from "true-myth/maybe";
 	import type { Teams } from "../team/team-schema.js";
+	import Score from "./Score.svelte";
 
 	export let teamNumber: number;
 	export let teams: Teams;
@@ -50,7 +51,13 @@
 			<mark class="px-2 mr-2 rounded-full bg-sky-600 text-slate-200 shadow">{team.value.gamePoints}</mark>
 		{/if}
 	</label>
-	<output class="block text-center text-xl" for={rangeInputId}>{gamePoint}</output>
+	<output for={rangeInputId} class="w-11/12 m-auto px-0.5 flex justify-between text-xl">
+		<Score score={0} visible={true} />
+		<Score score={1} visible={false} />
+		<Score score={2} visible={true} />
+		<Score score={3} visible={true} />
+		<Score score={4} visible={true} />
+	</output>
 	<input
 		type="range"
 		min="0"
