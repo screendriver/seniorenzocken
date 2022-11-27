@@ -4,11 +4,14 @@ import type { Teams } from "../team/team-schema.js";
 
 const zeroPointsAudioFiles = ["0_1", "0_2", "0_3", "0_4", "0_5", "0_6"];
 
-export function createPlaylist(
-	teams: Teams,
-	includeStretched: boolean,
-	randomCollectionElement: typeof sample
-): readonly string[] {
+export interface CreatePlaylistOptions {
+	readonly teams: Teams;
+	readonly includeStretched: boolean;
+	readonly randomCollectionElement: typeof sample;
+}
+
+export function createPlaylist(options: CreatePlaylistOptions): readonly string[] {
+	const { teams, includeStretched, randomCollectionElement } = options;
 	const playlist: string[] = [];
 
 	let stretched = false;
