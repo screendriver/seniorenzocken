@@ -31,7 +31,6 @@ jobs:
             - name: Install Playwright
               run: npx playwright install --with-deps chromium
             - name: Run tests
-              continue-on-error: true
               run: npm run test:end-to-end
             - uses: actions/upload-artifact@v3
               if: ${{ failure() }}
