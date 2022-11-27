@@ -1,7 +1,7 @@
 import { Factory } from "fishery";
 import { test, assert, vi, type TestFunction } from "vitest";
 import type { Team } from "../team/team-schema.js";
-import { createPlaylist } from "./playlist.js";
+import { createPlaylist, type CreatePlaylistOptions } from "./playlist.js";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {
@@ -10,6 +10,27 @@ const teamFactory = Factory.define<Team>(() => {
 		isStretched: false
 	};
 });
+
+interface CreatePlaylistOptionsTransientParameters {
+	readonly zeroPointsAudioFilesIndex: number;
+}
+
+const createPlaylistOptionsFactory = Factory.define<CreatePlaylistOptions, CreatePlaylistOptionsTransientParameters>(
+	({ transientParams }) => {
+		const { zeroPointsAudioFilesIndex = 0 } = transientParams;
+
+		return {
+			teams: new Map([
+				[1, teamFactory.build()],
+				[2, teamFactory.build()]
+			]),
+			includeStretched: false,
+			randomCollectionElement: vi.fn<[string[]]>((zeroPointsAudioFiles) => {
+				return zeroPointsAudioFiles[zeroPointsAudioFilesIndex];
+			})
+		};
+	}
+);
 
 interface TestRandomCollectionElementOptions {
 	readonly zeroPointsAudioFilesIndex: number;
@@ -20,14 +41,8 @@ function testRandomCollectionElement(options: TestRandomCollectionElementOptions
 	const { zeroPointsAudioFilesIndex, expectedPlaylist } = options;
 
 	return () => {
-		const teams = new Map([
-			[1, teamFactory.build()],
-			[2, teamFactory.build()]
-		]);
-		const randomCollectionElement = vi.fn<[string[]]>((zeroPointsAudioFiles) => {
-			return zeroPointsAudioFiles[zeroPointsAudioFilesIndex];
-		});
-		const playlist = createPlaylist(teams, false, randomCollectionElement);
+		const options = createPlaylistOptionsFactory.build(undefined, { transient: { zeroPointsAudioFilesIndex } });
+		const playlist = createPlaylist(options);
 
 		assert.deepStrictEqual(playlist, expectedPlaylist);
 	};
@@ -90,117 +105,114 @@ test(
 );
 
 test("createPlaylist() returns 3 paths when no team is stretched and sets the correct paths", () => {
-	const teams = new Map([
-		[1, teamFactory.build()],
-		[
-			2,
-			teamFactory.build({
-				gamePoints: 3
-			})
-		]
-	]);
-	const randomCollectionElement = vi.fn<[string[]]>((zeroPointsAudioFiles) => {
-		return zeroPointsAudioFiles[0];
+	const options = createPlaylistOptionsFactory.build({
+		teams: new Map([
+			[1, teamFactory.build()],
+			[
+				2,
+				teamFactory.build({
+					gamePoints: 3
+				})
+			]
+		]),
+		includeStretched: true
 	});
-	const playlist = createPlaylist(teams, true, randomCollectionElement);
+	const playlist = createPlaylist(options);
 
 	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/3"]);
 });
 
 test("createPlaylist() appends an audio file at the end when the first team is stretched and stretched should be included", () => {
-	const teams = new Map([
-		[1, teamFactory.build({ isStretched: true })],
-		[2, teamFactory.build()]
-	]);
-	const randomCollectionElement = vi.fn<[string[]]>((zeroPointsAudioFiles) => {
-		return zeroPointsAudioFiles[0];
+	const options = createPlaylistOptionsFactory.build({
+		teams: new Map([
+			[1, teamFactory.build({ isStretched: true })],
+			[2, teamFactory.build()]
+		]),
+		includeStretched: true
 	});
-	const playlist = createPlaylist(teams, true, randomCollectionElement);
+	const playlist = createPlaylist(options);
 
 	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
 });
 
 test("createPlaylist() does not append an audio file at the end when the first team is stretched and stretched should not be included", () => {
-	const teams = new Map([
-		[1, teamFactory.build({ isStretched: true })],
-		[2, teamFactory.build()]
-	]);
-	const randomCollectionElement = vi.fn<[string[]]>((zeroPointsAudioFiles) => {
-		return zeroPointsAudioFiles[0];
+	const options = createPlaylistOptionsFactory.build({
+		teams: new Map([
+			[1, teamFactory.build({ isStretched: true })],
+			[2, teamFactory.build()]
+		])
 	});
-	const playlist = createPlaylist(teams, false, randomCollectionElement);
+	const playlist = createPlaylist(options);
 
 	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1"]);
 });
 
 test("createPlaylist() appends an audio file at the end when the second team is stretched and stretched should be included", () => {
-	const teams = new Map([
-		[1, teamFactory.build()],
-		[
-			2,
-			teamFactory.build({
-				isStretched: true
-			})
-		]
-	]);
-	const randomCollectionElement = vi.fn<[string[]]>((zeroPointsAudioFiles) => {
-		return zeroPointsAudioFiles[0];
+	const options = createPlaylistOptionsFactory.build({
+		teams: new Map([
+			[1, teamFactory.build()],
+			[
+				2,
+				teamFactory.build({
+					isStretched: true
+				})
+			]
+		]),
+		includeStretched: true
 	});
-	const playlist = createPlaylist(teams, true, randomCollectionElement);
+	const playlist = createPlaylist(options);
 
 	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
 });
 
 test("createPlaylist() does not append an audio file at the end when the second team is stretched and stretched should not be included", () => {
-	const teams = new Map([
-		[1, teamFactory.build()],
-		[
-			2,
-			teamFactory.build({
-				isStretched: true
-			})
-		]
-	]);
-	const randomCollectionElement = vi.fn<[string[]]>((zeroPointsAudioFiles) => {
-		return zeroPointsAudioFiles[0];
+	const options = createPlaylistOptionsFactory.build({
+		teams: new Map([
+			[1, teamFactory.build()],
+			[
+				2,
+				teamFactory.build({
+					isStretched: true
+				})
+			]
+		])
 	});
-	const playlist = createPlaylist(teams, false, randomCollectionElement);
+	const playlist = createPlaylist(options);
 
 	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1"]);
 });
 
 test("createPlaylist() appends an audio file at the end when both teams are stretched and stretched should be included", () => {
-	const teams = new Map([
-		[1, teamFactory.build({ isStretched: true })],
-		[
-			2,
-			teamFactory.build({
-				isStretched: true
-			})
-		]
-	]);
-	const randomCollectionElement = vi.fn<[string[]]>((zeroPointsAudioFiles) => {
-		return zeroPointsAudioFiles[0];
+	const options = createPlaylistOptionsFactory.build({
+		teams: new Map([
+			[1, teamFactory.build({ isStretched: true })],
+			[
+				2,
+				teamFactory.build({
+					isStretched: true
+				})
+			]
+		]),
+		includeStretched: true
 	});
-	const playlist = createPlaylist(teams, true, randomCollectionElement);
+	const playlist = createPlaylist(options);
 
 	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1", "/audio/gspannt"]);
 });
 
 test("createPlaylist() does not append an audio file at the end when both teams are stretched and stretched should not be included", () => {
-	const teams = new Map([
-		[1, teamFactory.build({ isStretched: true })],
-		[
-			2,
-			teamFactory.build({
-				isStretched: true
-			})
-		]
-	]);
-	const randomCollectionElement = vi.fn<[string[]]>((zeroPointsAudioFiles) => {
-		return zeroPointsAudioFiles[0];
+	const options = createPlaylistOptionsFactory.build({
+		teams: new Map([
+			[1, teamFactory.build({ isStretched: true })],
+			[
+				2,
+				teamFactory.build({
+					isStretched: true
+				})
+			]
+		])
 	});
-	const playlist = createPlaylist(teams, false, randomCollectionElement);
+	const playlist = createPlaylist(options);
 
 	assert.deepStrictEqual(playlist, ["/audio/0_1", "/audio/zu", "/audio/0_1"]);
 });

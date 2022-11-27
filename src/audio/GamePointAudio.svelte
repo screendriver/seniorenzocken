@@ -12,7 +12,11 @@
 	let sourceElementWebm: HTMLSourceElement;
 	let sourceElementAac: HTMLSourceElement;
 
-	const listToPlay = createPlaylist(teams, includeStretched, sample);
+	const listToPlay = createPlaylist({
+		teams,
+		includeStretched,
+		randomCollectionElement: sample
+	});
 	let indexToPlay = 0;
 
 	const dispatch = createEventDispatcher<{ audioended: void }>();
