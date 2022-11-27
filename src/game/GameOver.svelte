@@ -1,19 +1,29 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
+	import GameOverAudio from "../audio/GameOverAudio.svelte";
 	import Button from "../Button.svelte";
 	import { determineWinnerTeam } from "../game-state/teams.js";
 	import type { Teams } from "../team/team-schema.js";
 
+	export let playAudio: boolean;
 	export let teams: Teams;
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{ startnewgame: void; replayaudio: void }>();
 
 	const winnerTeam = determineWinnerTeam(teams);
 
 	function resetGame(): void {
 		dispatch("startnewgame");
 	}
+
+	function replayAudio(): void {
+		dispatch("replayaudio");
+	}
 </script>
+
+{#if playAudio}
+	<GameOverAudio {teams} on:audioended />
+{/if}
 
 {#if winnerTeam.isOk}
 	<section
@@ -21,7 +31,7 @@
 	>
 		<h1>Gewonnen hat: Team "{winnerTeam.value.teamName}"</h1>
 
-		<Button value="Neues Spiel" on:click={resetGame} />
-		<Button value="Punktestand" on:click={resetGame} />
+		<Button value="Neues Spiel" disabled={playAudio} on:click={resetGame} />
+		<Button value="Punktestand vorlesen" on:click={replayAudio} />
 	</section>
 {/if}
