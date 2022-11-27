@@ -58,36 +58,6 @@ test("<GamePoint /> shows game points", async () => {
 	assert.isNotNull(labelElement);
 });
 
-// test("<GamePoint /> updates game points when teams store gets updated", async () => {
-// 	const teams = new Map([
-// 		[
-// 			1,
-// 			teamFactory.build({
-// 				gamePoints: 0
-// 			})
-// 		]
-// 	]);
-// 	const props = componentPropsFactory.build({ teams });
-// 	render(GamePoint, props);
-
-// 	teams.update((teamsMap) => {
-// 		const updatedTeams = new Map(teamsMap);
-
-// 		updatedTeams.set(
-// 			1,
-// 			teamFactory.build({
-// 				gamePoints: 4
-// 			})
-// 		);
-
-// 		return updatedTeams;
-// 	});
-
-// 	const labelElement = await screen.findByLabelText<HTMLLabelElement>("foo 4");
-
-// 	assert.isNotNull(labelElement);
-// });
-
 test('<GamePoint /> renders an input of type "range"', () => {
 	const teams = new Map([[1, teamFactory.build()]]);
 	const props = componentPropsFactory.build({ teams });
@@ -143,18 +113,23 @@ test("<GamePoint /> does not allow setting the value to 1 and therefore immediat
 	assert.deepStrictEqual(gamePoint, Maybe.just(2));
 });
 
-test("<GamePoint /> shows value changes in the output element", async () => {
-	const teams = new Map([[1, teamFactory.build()]]);
+test("<GamePoint /> shows 5 different score markings", () => {
+	const teams = new Map([
+		[
+			1,
+			teamFactory.build({
+				gamePoints: 12
+			})
+		]
+	]);
 	const props = componentPropsFactory.build({ teams });
 	render(GamePoint, props);
 
-	const inputElement = screen.getByLabelText<HTMLInputElement>("foo 0");
-	await fireEvent.change(inputElement, { target: { value: 4 } });
-
-	const outputElement = await screen.findByText<HTMLOutputElement>("4");
-
-	assert.strictEqual(outputElement.nodeName, "OUTPUT");
-	assert.isNotNull(outputElement);
+	assert.isNotNull(screen.queryByText("0"));
+	assert.isNotNull(screen.queryByText("1"));
+	assert.isNotNull(screen.queryByText("2"));
+	assert.isNotNull(screen.queryByText("3"));
+	assert.isNotNull(screen.queryByText("4"));
 });
 
 test("<GamePoint /> resets game points when calling reset()", async () => {
