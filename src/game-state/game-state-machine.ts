@@ -16,7 +16,7 @@ import { checkIfGameWouldBeOver } from "./game-over.js";
 
 export interface GameStateMachineContext {
 	readonly teamStateMachineActor: Maybe<ActorRefFrom<TeamStateMachine>>;
-	readonly teams: Teams;
+	readonly teams: Maybe<Teams>;
 	readonly canGameBeStarted: boolean;
 }
 
@@ -84,7 +84,7 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 			type: "compound",
 			context: {
 				teamStateMachineActor: Maybe.nothing<ActorRefFrom<TeamStateMachine>>(),
-				teams: new Map(),
+				teams: Maybe.nothing(),
 				canGameBeStarted: false
 			},
 			states: {
@@ -209,7 +209,7 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 				setTeams: assign({
 					teams(context, event) {
 						if (event.type === "TEAMS_EMPTY") {
-							return new Map();
+							return Maybe.nothing();
 						}
 
 						if (
@@ -217,7 +217,7 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 							event.type === "FULLY_FILLED_TEAMS" ||
 							event.type === "GAME_POINT_UPDATED"
 						) {
-							return event.teams;
+							return Maybe.just(event.teams);
 						}
 
 						return context.teams;
@@ -238,7 +238,7 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 				}),
 				resetContext: assign({
 					teams(_context) {
-						return new Map();
+						return Maybe.nothing();
 					},
 					canGameBeStarted() {
 						return false;
@@ -269,7 +269,7 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 						return false;
 					}
 
-					return checkIfGameWouldBeOver(event.teams, event.teamNumber);
+					return checkIfGameWouldBeOver(event.teams);
 				}
 			}
 		}

@@ -1,13 +1,9 @@
-import { z } from "zod";
+export interface Team {
+	readonly teamName: string;
+	readonly gamePoints: number;
+	readonly isStretched: boolean;
+}
 
-export const teamSchema = z
-	.object({
-		teamName: z.string(),
-		gamePoints: z.number().nonnegative(),
-		isStretched: z.boolean()
-	})
-	.strict();
+export type Teams = readonly [Team, Team];
 
-export type Team = z.infer<typeof teamSchema>;
-
-export type Teams = ReadonlyMap<number, Team>;
+export type TeamNumber = 0 | 1;

@@ -1,21 +1,17 @@
-import Maybe from "true-myth/maybe";
-import type { Teams } from "./team-schema.js";
+import type { TeamNumber, Teams } from "./team-schema.js";
 
-export function updateTeamGamePoint(teams: Teams, teamNumber: number, gamePoint: number): Teams {
-	const foundTeam = Maybe.of(teams.get(teamNumber));
+export function updateTeamGamePoint(teams: Teams, teamNumber: TeamNumber, gamePoint: number): Teams {
+	return teams.map((team, index) => {
+		if (index !== teamNumber) {
+			return team;
+		}
 
-	if (foundTeam.isNothing) {
-		return teams;
-	}
+		const updatedGamePoints = team.gamePoints + gamePoint;
 
-	const newGamePoints = foundTeam.value.gamePoints + gamePoint;
-	const updatedTeams = new Map(teams);
-
-	updatedTeams.set(teamNumber, {
-		teamName: foundTeam.value.teamName,
-		gamePoints: newGamePoints,
-		isStretched: newGamePoints >= 12
-	});
-
-	return updatedTeams;
+		return {
+			teamName: team.teamName,
+			gamePoints: updatedGamePoints,
+			isStretched: updatedGamePoints >= 12
+		};
+	}) as unknown as Teams;
 }

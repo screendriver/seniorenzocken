@@ -1,4 +1,5 @@
 import is from "@sindresorhus/is";
+import { Factory } from "fishery";
 import Maybe from "true-myth/maybe";
 import { assert, test, type TestFunction } from "vitest";
 import {
@@ -12,6 +13,7 @@ import {
 	type StateSchema,
 	type Typestate
 } from "xstate";
+import type { Team } from "./team-schema.js";
 import {
 	createTeamStateMachine,
 	type TeamStateMachine,
@@ -22,6 +24,14 @@ import {
 	type PossibleSentEventNames,
 	type TeamStateMachineSentEvent
 } from "./team-state-machine.js";
+
+const teamFactory = Factory.define<Team>(() => {
+	return {
+		teamName: "",
+		gamePoints: 0,
+		isStretched: false
+	};
+});
 
 interface TestStateMachineContext {
 	readonly teamStateMachineActor: Maybe<ActorRefFrom<TeamStateMachine>>;
@@ -120,7 +130,7 @@ test(
 	"gameStateMachine has an initial context set",
 	testTeamStateMachine({
 		expectedContext: {
-			teams: new Map()
+			teams: [teamFactory.build(), teamFactory.build()]
 		}
 	})
 );
@@ -135,7 +145,7 @@ test(
 test(
 	'gameStateMachine transit from "teamsEmpty" to "partiallyFilledTeams" on "UPDATE_TEAM_NAME" event when just one team without a name is given',
 	testTeamStateMachine({
-		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "" }],
+		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "" }],
 		expectedStateValue: "partiallyFilledTeams"
 	})
 );
@@ -144,27 +154,19 @@ test(
 	'gameStateMachine transit from "teamsEmpty" to "partiallyFilledTeams" on "UPDATE_TEAM_NAME" event when just one of two teams have a name filled',
 	testTeamStateMachine({
 		eventsToSend: [
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "" }
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "" }
 		],
 		expectedStateValue: "partiallyFilledTeams"
 	})
 );
 
 test(
-	'gameStateMachine transit from "teamsEmpty" to "fullyFilledTeams" on "UPDATE_TEAM_NAME" event when just one team with a name is given',
-	testTeamStateMachine({
-		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }],
-		expectedStateValue: "fullyFilledTeams"
-	})
-);
-
-test(
-	'gameStateMachine transit from "teamsEmpty" to "fullyFilledTeams" on "UPDATE_TEAM_NAME" event when just two teams with a name are given',
+	'gameStateMachine transit from "teamsEmpty" to "fullyFilledTeams" on "UPDATE_TEAM_NAME" event when both teams have a name',
 	testTeamStateMachine({
 		eventsToSend: [
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "bar" }
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "bar" }
 		],
 		expectedStateValue: "fullyFilledTeams"
 	})
@@ -174,24 +176,24 @@ test(
 	'gameStateMachine sets given teams in context when transit from "teamsEmpty" to "partiallyFilledTeams" on "UPDATE_TEAM_NAME" event when one of two teams does not have a name set',
 	testTeamStateMachine({
 		eventsToSend: [
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 2, teamName: "" }
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "" }
 		],
 		expectedContext: {
-			teams: new Map([
-				[1, { gamePoints: 0, isStretched: false, teamName: "foo" }],
-				[2, { gamePoints: 0, isStretched: false, teamName: "" }]
-			])
+			teams: [teamFactory.build({ teamName: "foo" }), teamFactory.build()]
 		}
 	})
 );
 
 test(
-	'gameStateMachine sets given team in context when transit from "teamsEmpty" to "fullyFilledTeams" on "UPDATE_TEAM_NAME" event when given team has a name',
+	'gameStateMachine sets given team in context when transit from "teamsEmpty" to "fullyFilledTeams" on "UPDATE_TEAM_NAME"',
 	testTeamStateMachine({
-		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }],
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "bar" }
+		],
 		expectedContext: {
-			teams: new Map([[1, { gamePoints: 0, isStretched: false, teamName: "foo" }]])
+			teams: [teamFactory.build({ teamName: "foo" }), teamFactory.build({ teamName: "bar" })]
 		}
 	})
 );
@@ -206,12 +208,12 @@ test(
 test(
 	'gameStateMachine sends to parent "PARTIALLY_FILLED_TEAMS" event when transit from "teamsEmpty" to "partiallyFilledTeams"',
 	testTeamStateMachine({
-		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "" }],
+		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }],
 		expectedSentEvents: [
 			{ type: "TEAMS_EMPTY" },
 			{
 				type: "PARTIALLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "", gamePoints: 0, isStretched: false }]])
+				teams: [teamFactory.build(), teamFactory.build({ teamName: "foo" })]
 			}
 		]
 	})
@@ -220,12 +222,19 @@ test(
 test(
 	'gameStateMachine sends to parent "FULLY_FILLED_TEAMS" event when transit from "teamsEmpty" to "fullyFilledTeams"',
 	testTeamStateMachine({
-		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }],
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "bar" }
+		],
 		expectedSentEvents: [
 			{ type: "TEAMS_EMPTY" },
 			{
+				type: "PARTIALLY_FILLED_TEAMS",
+				teams: [teamFactory.build({ teamName: "foo" }), teamFactory.build()]
+			},
+			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [teamFactory.build({ teamName: "foo" }), teamFactory.build({ teamName: "bar" })]
 			}
 		]
 	})
@@ -235,18 +244,23 @@ test(
 	'gameStateMachine sends to parent first "FULLY_FILLED_TEAMS" and after that "PARTIALLY_FILLED_TEAMS" when team name gets empty again',
 	testTeamStateMachine({
 		eventsToSend: [
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "bar" },
 			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "" }
 		],
 		expectedSentEvents: [
 			{ type: "TEAMS_EMPTY" },
 			{
+				type: "PARTIALLY_FILLED_TEAMS",
+				teams: [teamFactory.build({ teamName: "foo" }), teamFactory.build()]
+			},
+			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [teamFactory.build({ teamName: "foo" }), teamFactory.build({ teamName: "bar" })]
 			},
 			{
 				type: "PARTIALLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "", gamePoints: 0, isStretched: false }]])
+				teams: [teamFactory.build({ teamName: "foo" }), teamFactory.build()]
 			}
 		]
 	})
@@ -255,7 +269,11 @@ test(
 test(
 	'gameStateMachine transit from "fullyFilledTeams" to "teamsEmpty" on "RESET" event',
 	testTeamStateMachine({
-		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }, { type: "RESET" }],
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "bar" },
+			{ type: "RESET" }
+		],
 		expectedStateValue: "teamsEmpty"
 	})
 );
@@ -264,11 +282,12 @@ test(
 	'gameStateMachine updates team game point when in state "fullyFilledTeams" and "UPDATE_GAME_POINT" event is sent',
 	testTeamStateMachine({
 		eventsToSend: [
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "bar" },
 			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 }
 		],
 		expectedContext: {
-			teams: new Map([[1, { teamName: "foo", gamePoints: 4, isStretched: false }]])
+			teams: [teamFactory.build({ teamName: "foo" }), teamFactory.build({ teamName: "bar", gamePoints: 4 })]
 		}
 	})
 );
@@ -277,12 +296,13 @@ test(
 	'gameStateMachine updates team game point when in state "fullyFilledTeams" and multiple "UPDATE_GAME_POINT" events are sent',
 	testTeamStateMachine({
 		eventsToSend: [
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 3 }
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "bar" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 0, gamePoints: 2 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 0, gamePoints: 3 }
 		],
 		expectedContext: {
-			teams: new Map([[1, { teamName: "foo", gamePoints: 5, isStretched: false }]])
+			teams: [teamFactory.build({ teamName: "foo", gamePoints: 5 }), teamFactory.build({ teamName: "bar" })]
 		}
 	})
 );
@@ -291,13 +311,17 @@ test(
 	'gameStateMachine sets if a team is stretched when in state "fullyFilledTeams" and multiple "UPDATE_GAME_POINT" events are sent that lead to total game points of 12',
 	testTeamStateMachine({
 		eventsToSend: [
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 }
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "bar" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 0, gamePoints: 4 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 0, gamePoints: 4 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 0, gamePoints: 4 }
 		],
 		expectedContext: {
-			teams: new Map([[1, { teamName: "foo", gamePoints: 12, isStretched: true }]])
+			teams: [
+				teamFactory.build({ teamName: "foo", gamePoints: 12, isStretched: true }),
+				teamFactory.build({ teamName: "bar" })
+			]
 		}
 	})
 );
@@ -306,14 +330,18 @@ test(
 	'gameStateMachine sets if a team is stretched when in state "fullyFilledTeams" and multiple "UPDATE_GAME_POINT" events are sent that lead to total game points more than 12',
 	testTeamStateMachine({
 		eventsToSend: [
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 4 },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 1 }
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "bar" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 0, gamePoints: 4 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 0, gamePoints: 4 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 0, gamePoints: 4 },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 0, gamePoints: 1 }
 		],
 		expectedContext: {
-			teams: new Map([[1, { teamName: "foo", gamePoints: 13, isStretched: true }]])
+			teams: [
+				teamFactory.build({ teamName: "foo", gamePoints: 13, isStretched: true }),
+				teamFactory.build({ teamName: "bar" })
+			]
 		}
 	})
 );
@@ -322,19 +350,24 @@ test(
 	'gameStateMachine sends to parent "GAME_POINT_UPDATED" event when game point gets updated',
 	testTeamStateMachine({
 		eventsToSend: [
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 }
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "bar" },
+			{ type: "UPDATE_GAME_POINT", teamNumber: 0, gamePoints: 2 }
 		],
 		expectedSentEvents: [
 			{ type: "TEAMS_EMPTY" },
 			{
+				type: "PARTIALLY_FILLED_TEAMS",
+				teams: [teamFactory.build({ teamName: "foo" }), teamFactory.build()]
+			},
+			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [teamFactory.build({ teamName: "foo" }), teamFactory.build({ teamName: "bar" })]
 			},
 			{
 				type: "GAME_POINT_UPDATED",
-				teamNumber: 1,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 2, isStretched: false }]]),
+				teamNumber: 0,
+				teams: [teamFactory.build({ teamName: "foo", gamePoints: 2 }), teamFactory.build({ teamName: "bar" })],
 				gamePoints: 2
 			}
 		]
@@ -344,9 +377,13 @@ test(
 test(
 	'gameStateMachine resets context on "RESET" event',
 	testTeamStateMachine({
-		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }, { type: "RESET" }],
+		eventsToSend: [
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 0, teamName: "foo" },
+			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "bar" },
+			{ type: "RESET" }
+		],
 		expectedContext: {
-			teams: new Map()
+			teams: [teamFactory.build(), teamFactory.build()]
 		}
 	})
 );

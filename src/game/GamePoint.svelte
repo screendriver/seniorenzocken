@@ -1,18 +1,17 @@
 <script lang="ts" context="module">
 	export interface GamePointChangeEvent {
 		readonly gamePoint: number;
-		readonly teamNumber: number;
+		readonly teamNumber: TeamNumber;
 	}
 </script>
 
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
 	import { UsersIcon } from "svelte-feather-icons";
-	import Maybe from "true-myth/maybe";
-	import type { Teams } from "../team/team-schema.js";
+	import type { TeamNumber, Teams } from "../team/team-schema.js";
 	import Score from "./Score.svelte";
 
-	export let teamNumber: number;
+	export let teamNumber: TeamNumber;
 	export let teams: Teams;
 	export let disabled: boolean;
 
@@ -24,7 +23,7 @@
 		gamePoint = 2;
 	}
 	$: rangeStep = gamePoint >= 2 ? 1 : 2;
-	$: team = Maybe.of(teams.get(teamNumber));
+	$: team = teams[teamNumber];
 
 	function dispatchGamePointChangeEvent(): void {
 		dispatch("gamepointchange", {
@@ -41,15 +40,11 @@
 <section class="w-full pb-4 flex flex-col gap-3 bg-slate-600 rounded-lg">
 	<label
 		for={rangeInputId}
-		class="flex justify-between items-center gap-2 rounded-lg {team.isJust && team.value.isStretched
-			? 'bg-red-400'
-			: 'bg-sky-700'}"
+		class="flex justify-between items-center gap-2 rounded-lg {team.isStretched ? 'bg-red-400' : 'bg-sky-700'}"
 	>
 		<UsersIcon size="40" class="rounded-l-lg border-r-2 border-r-sky-600 bg-sky-700 p-2" />
-		{#if team.isJust}
-			<cite class="flex-grow not-italic">{team.value.teamName}</cite>
-			<mark class="px-2 mr-2 rounded-full bg-sky-600 text-slate-200 shadow">{team.value.gamePoints}</mark>
-		{/if}
+		<cite class="flex-grow not-italic">{team.teamName}</cite>
+		<mark class="px-2 mr-2 rounded-full bg-sky-600 text-slate-200 shadow">{team.gamePoints}</mark>
 	</label>
 	<output for={rangeInputId} class="w-11/12 m-auto px-0.5 flex justify-between text-xl">
 		<Score score={0} visible={true} />

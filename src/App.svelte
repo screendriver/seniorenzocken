@@ -66,21 +66,21 @@
 
 <Head {imageKit} />
 
-{#if $state.matches("gameOver")}
+{#if $state.matches("gameOver") && teams.isJust}
 	<GameOver
-		{teams}
+		teams={teams.value}
 		playAudio={$state.matches("gameOver.audioPlaying")}
 		on:audioended={sendAudioEnded}
 		on:replayaudio={sendReplayAudio}
 		on:startnewgame={startNewGame}
 	/>
-{:else if $state.matches("gameRunning")}
+{:else if $state.matches("gameRunning") && teams.isJust}
 	{@const audioPlaying = $state.matches("gameRunning.audio.playing")}
 
-	<Game {teams} disabled={audioPlaying} on:nextround={updateGamePoint} />
+	<Game teams={teams.value} disabled={audioPlaying} on:nextround={updateGamePoint} />
 
 	{#if audioPlaying}
-		<GamePointAudio {teams} includeStretched={true} on:audioended={sendAudioEnded} />
+		<GamePointAudio teams={teams.value} includeStretched={true} on:audioended={sendAudioEnded} />
 	{/if}
 {:else}
 	<TeamsForm

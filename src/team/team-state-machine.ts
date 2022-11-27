@@ -1,6 +1,6 @@
 import { assign, createMachine, sendParent, type EventObject, type StateMachine, type StateSchema } from "xstate";
 import { updateTeamGamePoint } from "./game-point.js";
-import type { Team, Teams } from "./team-schema.js";
+import type { Team, TeamNumber, Teams } from "./team-schema.js";
 import { areTeamsFilled } from "./teams-filled.js";
 
 export interface TeamStateMachineContext {
@@ -10,12 +10,12 @@ export interface TeamStateMachineContext {
 export type TeamStateMachineEvent =
 	| {
 			readonly type: "UPDATE_TEAM_NAME";
-			readonly teamNumber: number;
+			readonly teamNumber: TeamNumber;
 			readonly teamName: string;
 	  }
 	| {
 			readonly type: "UPDATE_GAME_POINT";
-			readonly teamNumber: number;
+			readonly teamNumber: TeamNumber;
 			readonly gamePoints: number;
 	  }
 	| { readonly type: "RESET" };
@@ -38,7 +38,7 @@ export type TeamStateMachineSentEvent =
 	| (TeamStateMachineSentEventObject<"PARTIALLY_FILLED_TEAMS"> & { readonly teams: Teams })
 	| (TeamStateMachineSentEventObject<"FULLY_FILLED_TEAMS"> & { readonly teams: Teams })
 	| (TeamStateMachineSentEventObject<"GAME_POINT_UPDATED"> & {
-			readonly teamNumber: number;
+			readonly teamNumber: TeamNumber;
 			readonly teams: Teams;
 			readonly gamePoints: number;
 	  });
@@ -61,6 +61,12 @@ export type TeamStateMachine = StateMachine<
 	TeamStateMachineState
 >;
 
+const emptyTeam: Team = {
+	teamName: "",
+	gamePoints: 0,
+	isStretched: false
+};
+
 export function createTeamStateMachine(): TeamStateMachine {
 	return createMachine<TeamStateMachineContext, TeamStateMachineEvent, TeamStateMachineState>(
 		{
@@ -69,7 +75,7 @@ export function createTeamStateMachine(): TeamStateMachine {
 			predictableActionArguments: true,
 			preserveActionOrder: true,
 			context: {
-				teams: new Map()
+				teams: [emptyTeam, emptyTeam]
 			},
 			on: {
 				UPDATE_TEAM_NAME: [
@@ -116,17 +122,20 @@ export function createTeamStateMachine(): TeamStateMachine {
 				updateTeamName: assign({
 					teams(context, event) {
 						if (event.type !== "UPDATE_TEAM_NAME") {
-							return new Map<number, Team>();
+							return context.teams;
 						}
 
-						const updatedTeams = new Map(context.teams);
-						updatedTeams.set(event.teamNumber, {
-							teamName: event.teamName,
-							gamePoints: 0,
-							isStretched: false
-						});
+						return context.teams.map((team, index) => {
+							if (index === event.teamNumber) {
+								return {
+									teamName: event.teamName,
+									gamePoints: 0,
+									isStretched: false
+								};
+							}
 
-						return updatedTeams;
+							return team;
+						}) as unknown as Teams;
 					}
 				}),
 				sendTeamsEmptyToParent: sendParent<
@@ -181,7 +190,7 @@ export function createTeamStateMachine(): TeamStateMachine {
 				}),
 				resetContext: assign({
 					teams(_context) {
-						return new Map();
+						return [emptyTeam, emptyTeam];
 					}
 				})
 			},

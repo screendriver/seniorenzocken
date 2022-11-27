@@ -1,6 +1,7 @@
 import { assert, test, type TestFunction } from "vitest";
 import { createMachine, interpret } from "xstate";
 import is from "@sindresorhus/is";
+import Maybe from "true-myth/maybe";
 import {
 	createGameStateMachine,
 	type GameStateMachineContext,
@@ -76,7 +77,7 @@ test(
 	"gameStateMachine has an initial context set",
 	testGameStateMachine({
 		expectedContext: {
-			teams: new Map(),
+			teams: Maybe.nothing(),
 			canGameBeStarted: false
 		}
 	})
@@ -103,12 +104,18 @@ test(
 		eventsToSend: [
 			{
 				type: "PARTIALLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "", gamePoints: 0, isStretched: false }
+				]
 			}
 		],
 		expectedContext: {
 			canGameBeStarted: false,
-			teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			teams: Maybe.just([
+				{ teamName: "foo", gamePoints: 0, isStretched: false },
+				{ teamName: "", gamePoints: 0, isStretched: false }
+			])
 		}
 	})
 );
@@ -119,29 +126,38 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			}
 		],
 		expectedContext: {
 			canGameBeStarted: true,
-			teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			teams: Maybe.just([
+				{ teamName: "foo", gamePoints: 0, isStretched: false },
+				{ teamName: "bar", gamePoints: 0, isStretched: false }
+			])
 		}
 	})
 );
 
 test(
-	'gameStateMachine sets teams to an empty Map and canGameBeStarted to false on "TEAMS_EMPTY" event',
+	'gameStateMachine sets teams to a Nothing and canGameBeStarted to false on "TEAMS_EMPTY" event',
 	testGameStateMachine({
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "TEAMS_EMPTY" }
 		],
 		expectedContext: {
 			canGameBeStarted: false,
-			teams: new Map()
+			teams: Maybe.nothing()
 		}
 	})
 );
@@ -152,7 +168,10 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" }
 		],
@@ -171,7 +190,10 @@ test(
 		eventsToSend: [
 			{
 				type: "PARTIALLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "o", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" }
 		],
@@ -185,7 +207,10 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 }
@@ -200,19 +225,28 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 3,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]]),
-				teamNumber: 1
+				teams: [
+					{ teamName: "foo", gamePoints: 3, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				],
+				teamNumber: 0
 			}
 		],
 		expectedContext: {
 			canGameBeStarted: true,
-			teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]])
+			teams: Maybe.just([
+				{ teamName: "foo", gamePoints: 3, isStretched: false },
+				{ teamName: "bar", gamePoints: 0, isStretched: false }
+			])
 		}
 	})
 );
@@ -223,14 +257,20 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 3,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]]),
-				teamNumber: 1
+				teams: [
+					{ teamName: "foo", gamePoints: 3, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				],
+				teamNumber: 0
 			}
 		],
 		expectedStateValue: {
@@ -248,14 +288,20 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 3,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]]),
-				teamNumber: 1
+				teams: [
+					{ teamName: "foo", gamePoints: 3, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				],
+				teamNumber: 0
 			},
 			{ type: "AUDIO_ENDED" }
 		],
@@ -274,14 +320,20 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 4,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]]),
-				teamNumber: 1
+				teams: [
+					{ teamName: "foo", gamePoints: 4, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				],
+				teamNumber: 0
 			}
 		],
 		expectedStateValue: {
@@ -299,14 +351,20 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 4,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 3, isStretched: false }]]),
-				teamNumber: 1
+				teams: [
+					{ teamName: "foo", gamePoints: 4, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				],
+				teamNumber: 0
 			},
 			{ type: "CONFETTI_HIDDEN" }
 		],
@@ -325,14 +383,20 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 15,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: true }]]),
-				teamNumber: 1
+				teams: [
+					{ teamName: "foo", gamePoints: 15, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				],
+				teamNumber: 0
 			}
 		],
 		expectedStateValue: { gameOver: "audioPlaying" }
@@ -345,14 +409,20 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 15,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: true }]]),
-				teamNumber: 1
+				teams: [
+					{ teamName: "foo", gamePoints: 15, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				],
+				teamNumber: 0
 			},
 			{ type: "AUDIO_ENDED" }
 		],
@@ -366,14 +436,20 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 15,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: true }]]),
-				teamNumber: 1
+				teams: [
+					{ teamName: "foo", gamePoints: 15, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				],
+				teamNumber: 0
 			},
 			{ type: "AUDIO_ENDED" },
 			{ type: "REPLAY_AUDIO" }
@@ -388,14 +464,20 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 16,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 16, isStretched: false }]]),
-				teamNumber: 1
+				teams: [
+					{ teamName: "foo", gamePoints: 16, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				],
+				teamNumber: 0
 			},
 			{ type: "AUDIO_ENDED" },
 			{ type: "START_NEW_GAME" }
@@ -410,20 +492,26 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 15,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: false }]]),
-				teamNumber: 1
+				teams: [
+					{ teamName: "foo", gamePoints: 15, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				],
+				teamNumber: 0
 			},
 			{ type: "AUDIO_ENDED" },
 			{ type: "START_NEW_GAME" }
 		],
 		expectedContext: {
-			teams: new Map(),
+			teams: Maybe.nothing(),
 			canGameBeStarted: false
 		}
 	})
@@ -435,14 +523,20 @@ test(
 		eventsToSend: [
 			{
 				type: "FULLY_FILLED_TEAMS",
-				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+				teams: [
+					{ teamName: "foo", gamePoints: 0, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				]
 			},
 			{ type: "START_GAME" },
 			{
 				type: "GAME_POINT_UPDATED",
 				gamePoints: 15,
-				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: false }]]),
-				teamNumber: 1
+				teams: [
+					{ teamName: "foo", gamePoints: 15, isStretched: false },
+					{ teamName: "bar", gamePoints: 0, isStretched: false }
+				],
+				teamNumber: 0
 			},
 			{ type: "AUDIO_ENDED" },
 			{ type: "START_NEW_GAME" }
