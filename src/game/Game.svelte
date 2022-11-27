@@ -75,7 +75,6 @@
 	{/each}
 
 	<Button
-		buttonType="button"
 		value="Nächste Runde"
 		disabled={disabled || nextRoundDisabled}
 		on:click={() => {

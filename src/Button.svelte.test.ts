@@ -6,18 +6,16 @@ import Button from "./Button.svelte";
 afterEach(cleanup);
 
 interface TestClickEventOptions {
-	readonly buttonType: "submit" | "button";
 	readonly clickHandledExpected: boolean;
 	readonly disabled?: boolean;
 }
 
 function testClickEvent(testOptions: TestClickEventOptions): TestFunction {
-	const { buttonType, clickHandledExpected, disabled = false } = testOptions;
+	const { clickHandledExpected, disabled = false } = testOptions;
 
 	return async () => {
 		const user = userEvent.setup();
 		const { component } = render(Button, {
-			buttonType,
 			value: "Click me",
 			disabled
 		});
@@ -35,22 +33,9 @@ function testClickEvent(testOptions: TestClickEventOptions): TestFunction {
 	};
 }
 
-test(
-	'<Button /> listens to click events when button type is "button"',
-	testClickEvent({ buttonType: "button", clickHandledExpected: true })
-);
+test("<Button /> listens to click events", testClickEvent({ clickHandledExpected: true }));
 
 test(
-	'<Button /> listens to click events when button type is "submit"',
-	testClickEvent({ buttonType: "submit", clickHandledExpected: true })
-);
-
-test(
-	'<Button /> does not listen to click events when it is disabled and button type is "button"',
-	testClickEvent({ buttonType: "button", disabled: true, clickHandledExpected: false })
-);
-
-test(
-	'<Button /> does not listen to click events when it is disabled and button type is "submit"',
-	testClickEvent({ buttonType: "submit", disabled: true, clickHandledExpected: false })
+	"<Button /> does not listen to click events when it is disabled",
+	testClickEvent({ disabled: true, clickHandledExpected: false })
 );

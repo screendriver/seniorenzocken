@@ -25,7 +25,7 @@ test("<GameOver /> renders the winner team when there is one set", () => {
 		]
 	]);
 
-	render(GameOver, { teams });
+	render(GameOver, { playAudio: false, teams });
 
 	const headingElement = screen.queryByText<HTMLHeadingElement>('Gewonnen hat: Team "Winner team"');
 	assert.isNotNull(headingElement);
@@ -41,14 +41,37 @@ test('<GameOver /> dispatches "startnewgame" event when clicking on button', asy
 			})
 		]
 	]);
-	const { component } = render(GameOver, { teams });
+	const { component } = render(GameOver, { playAudio: false, teams });
 
 	let eventDispatched = false;
 	component.$on("startnewgame", () => {
 		eventDispatched = true;
 	});
 
-	const buttonElement = screen.getByDisplayValue<HTMLInputElement>("Neues Spiel");
+	const buttonElement = screen.getByText<HTMLButtonElement>("Neues Spiel");
+	await user.click(buttonElement);
+
+	assert.isTrue(eventDispatched);
+});
+
+test('<GameOver /> dispatches "replayaudio" event when clicking on button', async () => {
+	const user = userEvent.setup();
+	const teams = new Map([
+		[
+			1,
+			teamFactory.build({
+				teamName: "Winner team"
+			})
+		]
+	]);
+	const { component } = render(GameOver, { playAudio: false, teams });
+
+	let eventDispatched = false;
+	component.$on("replayaudio", () => {
+		eventDispatched = true;
+	});
+
+	const buttonElement = screen.getByText<HTMLButtonElement>("Punktestand vorlesen");
 	await user.click(buttonElement);
 
 	assert.isTrue(eventDispatched);
