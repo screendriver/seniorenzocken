@@ -48,7 +48,7 @@ test('<GameOver /> dispatches "startnewgame" event when clicking on button', asy
 		eventDispatched = true;
 	});
 
-	const buttonElement = screen.getByDisplayValue<HTMLInputElement>("Neues Spiel");
+	const buttonElement = screen.getByText<HTMLButtonElement>("Neues Spiel");
 	await user.click(buttonElement);
 
 	assert.isTrue(eventDispatched);

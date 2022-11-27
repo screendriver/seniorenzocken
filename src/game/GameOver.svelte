@@ -21,6 +21,7 @@
 	>
 		<h1>Gewonnen hat: Team "{winnerTeam.value.teamName}"</h1>
 
-		<Button buttonType="button" value="Neues Spiel" on:click={resetGame} />
+		<Button value="Neues Spiel" on:click={resetGame} />
+		<Button value="Punktestand" on:click={resetGame} />
 	</section>
 {/if}

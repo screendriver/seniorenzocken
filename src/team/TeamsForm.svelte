@@ -20,5 +20,5 @@
 	<Team teamNumber={1} on:teamnamechange />
 	<Team teamNumber={2} on:teamnamechange />
 
-	<Button buttonType="submit" value="Spiel starten" disabled={!canGameBeStarted} />
+	<Button value="Spiel starten" disabled={!canGameBeStarted} />
 </form>
