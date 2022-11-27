@@ -21,7 +21,8 @@
 		"strict": true,
 		"target": "ES2021",
 		"tsBuildInfoFile": "./target/.tsbuildinfo",
-		"useDefineForClassFields": true
+		"useDefineForClassFields": true,
+		"typeRoots": ["./typings", "./node_modules/@types"]
 	},
 	"include": ["vite.config.ts", "src/**/*", "test/**/*"]
 }
