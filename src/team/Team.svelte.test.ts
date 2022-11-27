@@ -19,7 +19,7 @@ test("<Team /> renders a label for the correct input id", () => {
 
 test('<Team /> renders an input of type "text"', () => {
 	render(Team, { teamNumber: 42 });
-	const inputElement = screen.getByPlaceholderText<HTMLInputElement>("Team 42");
+	const inputElement = screen.getByPlaceholderText<HTMLInputElement>("Team 43");
 
 	assert.strictEqual(inputElement.nodeName, "INPUT");
 	assert.strictEqual(inputElement.type, "text");
@@ -27,7 +27,7 @@ test('<Team /> renders an input of type "text"', () => {
 
 test("<Team /> renders an input with a correct name", () => {
 	render(Team, { teamNumber: 42 });
-	const inputElement = screen.getByPlaceholderText<HTMLInputElement>("Team 42");
+	const inputElement = screen.getByPlaceholderText<HTMLInputElement>("Team 43");
 
 	assert.strictEqual(inputElement.name, "team-42");
 });
@@ -41,7 +41,7 @@ test('<Team /> dispatches "teamnamechange" when team name changes', async () => 
 		teamNameChangeEvent = event.detail;
 	});
 
-	const inputElement = screen.getByPlaceholderText<HTMLInputElement>("Team 42");
+	const inputElement = screen.getByPlaceholderText<HTMLInputElement>("Team 43");
 
 	await user.click(inputElement);
 	await user.keyboard("Abc");

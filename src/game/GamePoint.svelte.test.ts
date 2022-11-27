@@ -4,7 +4,7 @@ import { Factory } from "fishery";
 import { Maybe } from "true-myth/maybe";
 import { cleanup, render, screen, fireEvent } from "@testing-library/svelte";
 import GamePoint from "./GamePoint.svelte";
-import type { Team } from "../team/team-schema.js";
+import type { Team, Teams } from "../team/team-schema.js";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {
@@ -16,8 +16,8 @@ const teamFactory = Factory.define<Team>(() => {
 
 const componentPropsFactory = Factory.define<ComponentProps<GamePoint>>(() => {
 	return {
-		teamNumber: 1,
-		teams: new Map(),
+		teamNumber: 0,
+		teams: [teamFactory.build(), teamFactory.build()],
 		disabled: false
 	};
 });
@@ -25,14 +25,14 @@ const componentPropsFactory = Factory.define<ComponentProps<GamePoint>>(() => {
 afterEach(cleanup);
 
 test("<GamePoint /> shows the team name", async () => {
-	const teams = new Map([
-		[
-			1,
-			teamFactory.build({
-				teamName: "test team"
-			})
-		]
-	]);
+	const teams: Teams = [
+		teamFactory.build({
+			teamName: "test team"
+		}),
+		teamFactory.build({
+			teamName: "test team 2"
+		})
+	];
 	const props = componentPropsFactory.build({ teams });
 	render(GamePoint, props);
 
@@ -42,14 +42,12 @@ test("<GamePoint /> shows the team name", async () => {
 });
 
 test("<GamePoint /> shows game points", async () => {
-	const teams = new Map([
-		[
-			1,
-			teamFactory.build({
-				gamePoints: 3
-			})
-		]
-	]);
+	const teams: Teams = [
+		teamFactory.build({
+			gamePoints: 3
+		}),
+		teamFactory.build()
+	];
 	const props = componentPropsFactory.build({ teams });
 	render(GamePoint, props);
 
@@ -59,7 +57,7 @@ test("<GamePoint /> shows game points", async () => {
 });
 
 test('<GamePoint /> renders an input of type "range"', () => {
-	const teams = new Map([[1, teamFactory.build()]]);
+	const teams: Teams = [teamFactory.build(), teamFactory.build()];
 	const props = componentPropsFactory.build({ teams });
 	render(GamePoint, props);
 
@@ -69,7 +67,7 @@ test('<GamePoint /> renders an input of type "range"', () => {
 });
 
 test('<GamePoint /> does not dispatch "gamepointchange" after initial rendering', () => {
-	const teams = new Map([[1, teamFactory.build()]]);
+	const teams: Teams = [teamFactory.build(), teamFactory.build()];
 	const props = componentPropsFactory.build({ teams });
 	const { component } = render(GamePoint, props);
 
@@ -82,7 +80,7 @@ test('<GamePoint /> does not dispatch "gamepointchange" after initial rendering'
 });
 
 test('<GamePoint /> dispatches "gamepointchange" when value changed', async () => {
-	const teams = new Map([[1, teamFactory.build()]]);
+	const teams: Teams = [teamFactory.build(), teamFactory.build()];
 	const props = componentPropsFactory.build({ teams });
 	const { component } = render(GamePoint, props);
 
@@ -98,7 +96,7 @@ test('<GamePoint /> dispatches "gamepointchange" when value changed', async () =
 });
 
 test("<GamePoint /> does not allow setting the value to 1 and therefore immediately sets 2", async () => {
-	const teams = new Map([[1, teamFactory.build()]]);
+	const teams: Teams = [teamFactory.build(), teamFactory.build()];
 	const props = componentPropsFactory.build({ teams });
 	const { component } = render(GamePoint, props);
 
@@ -114,14 +112,14 @@ test("<GamePoint /> does not allow setting the value to 1 and therefore immediat
 });
 
 test("<GamePoint /> shows 5 different score markings", () => {
-	const teams = new Map([
-		[
-			1,
-			teamFactory.build({
-				gamePoints: 12
-			})
-		]
-	]);
+	const teams: Teams = [
+		teamFactory.build({
+			gamePoints: 10
+		}),
+		teamFactory.build({
+			gamePoints: 12
+		})
+	];
 	const props = componentPropsFactory.build({ teams });
 	render(GamePoint, props);
 
@@ -133,7 +131,7 @@ test("<GamePoint /> shows 5 different score markings", () => {
 });
 
 test("<GamePoint /> resets game points when calling reset()", async () => {
-	const teams = new Map([[1, teamFactory.build()]]);
+	const teams: Teams = [teamFactory.build(), teamFactory.build()];
 	const props = componentPropsFactory.build({ teams });
 	const { component } = render(GamePoint, props);
 
