@@ -12,7 +12,7 @@ export interface CreatePlaylistOptions {
 	readonly randomCollectionElement: typeof sample;
 }
 
-function getAttentionAudioFile(randomCollectionElement: typeof sample): string {
+function findAttentionAudioFile(randomCollectionElement: typeof sample): string {
 	const randomAttentionAudioFile = Maybe.of(randomCollectionElement(attentionAudioFiles));
 
 	return randomAttentionAudioFile
@@ -34,7 +34,7 @@ function findZeroGamePointsAudioFile(randomCollectionElement: typeof sample): st
 
 export function createPlaylist(options: CreatePlaylistOptions): readonly string[] {
 	const { teams, includeStretched, randomCollectionElement } = options;
-	const playlist: string[] = [getAttentionAudioFile(randomCollectionElement)];
+	const playlist: string[] = [findAttentionAudioFile(randomCollectionElement)];
 
 	let stretched = false;
 
