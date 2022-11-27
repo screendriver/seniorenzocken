@@ -3,7 +3,6 @@ import { assert } from "@sindresorhus/is";
 import App from "./App.svelte";
 import { createGameStateMachine } from "./game-state/game-state-machine.js";
 import { createWakeLockStateMachine } from "./screen/wake-lock-state-machine";
-import { createGameWebStorage } from "./storage/game-web-storage";
 import { createTeamStateMachine } from "./team/team-state-machine";
 
 const htmlBodyElement = document.querySelector("body");
@@ -17,9 +16,7 @@ const imageKit = new ImageKit({
 	transformationPosition: "query"
 });
 
-const gameWebStorage = createGameWebStorage(globalThis.sessionStorage);
-
-const teamStateMachine = createTeamStateMachine(gameWebStorage);
+const teamStateMachine = createTeamStateMachine();
 const gameStateMachine = createGameStateMachine({ teamStateMachine });
 const wakeLockStateMachine = createWakeLockStateMachine(globalThis.navigator, globalThis.document);
 

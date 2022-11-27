@@ -1,5 +1,4 @@
 import { assign, createMachine, sendParent, type EventObject, type StateMachine, type StateSchema } from "xstate";
-import type { GameWebStorage } from "../storage/game-web-storage.js";
 import { updateTeamGamePoint } from "./game-point.js";
 import type { Team, Teams } from "./team-schema.js";
 import { areTeamsFilled } from "./teams-filled.js";
@@ -62,7 +61,7 @@ export type TeamStateMachine = StateMachine<
 	TeamStateMachineState
 >;
 
-export function createTeamStateMachine(gameWebStorage: GameWebStorage): TeamStateMachine {
+export function createTeamStateMachine(): TeamStateMachine {
 	return createMachine<TeamStateMachineContext, TeamStateMachineEvent, TeamStateMachineState>(
 		{
 			id: "teamState",
@@ -75,7 +74,7 @@ export function createTeamStateMachine(gameWebStorage: GameWebStorage): TeamStat
 			on: {
 				UPDATE_TEAM_NAME: [
 					{
-						actions: ["updateTeamName", "saveTeamsInStorage"],
+						actions: "updateTeamName",
 						target: "teamNameUpdating"
 					}
 				]
@@ -102,7 +101,7 @@ export function createTeamStateMachine(gameWebStorage: GameWebStorage): TeamStat
 					entry: "sendFullyFilledTeamsToParent",
 					on: {
 						UPDATE_GAME_POINT: {
-							actions: ["updateGamePoint", "saveTeamsInStorage", "sendGamePointUpdatedToParent"]
+							actions: ["updateGamePoint", "sendGamePointUpdatedToParent"]
 						},
 						RESET: {
 							actions: "resetContext",
@@ -130,9 +129,6 @@ export function createTeamStateMachine(gameWebStorage: GameWebStorage): TeamStat
 						return updatedTeams;
 					}
 				}),
-				saveTeamsInStorage(context) {
-					gameWebStorage.teams = context.teams;
-				},
 				sendTeamsEmptyToParent: sendParent<
 					TeamStateMachineContext,
 					TeamStateMachineEvent,
