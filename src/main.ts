@@ -2,7 +2,6 @@ import ImageKit from "imagekit-javascript";
 import { assert } from "@sindresorhus/is";
 import App from "./App.svelte";
 import { createGameStateMachine } from "./game-state/game-state-machine.js";
-import { createToggleRouter } from "./toggle-router/toggle-router.js";
 import { createWakeLockStateMachine } from "./screen/wake-lock-state-machine";
 import { createGameWebStorage } from "./storage/game-web-storage";
 import { createTeamStateMachine } from "./team/team-state-machine";
@@ -19,10 +18,9 @@ const imageKit = new ImageKit({
 });
 
 const gameWebStorage = createGameWebStorage(globalThis.sessionStorage);
-const toggleRouter = createToggleRouter();
 
 const teamStateMachine = createTeamStateMachine(gameWebStorage);
-const gameStateMachine = createGameStateMachine({ toggleRouter, teamStateMachine });
+const gameStateMachine = createGameStateMachine({ teamStateMachine });
 const wakeLockStateMachine = createWakeLockStateMachine(globalThis.navigator, globalThis.document);
 
 new App({

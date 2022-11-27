@@ -1,4 +1,4 @@
-import { assert, test, vi, type TestFunction } from "vitest";
+import { assert, test, type TestFunction } from "vitest";
 import { createMachine, interpret } from "xstate";
 import is from "@sindresorhus/is";
 import {
@@ -6,7 +6,6 @@ import {
 	type GameStateMachineContext,
 	type GameStateMachineEvent
 } from "./game-state-machine.js";
-import type { FeatureName, ToggleRouter } from "../toggle-router/toggle-router.js";
 import type { TeamStateMachine, TeamStateMachineEvent } from "../team/team-state-machine.js";
 
 function createFakeTeamStateMachine(): TeamStateMachine {
@@ -33,12 +32,8 @@ function testGameStateMachine(options: TestGameStateMachineOptions): TestFunctio
 	const { expectedContext, expectedStateValue, eventsToSend = [], expectedForwardedEvents } = options;
 
 	return () => {
-		const setFeature = vi.fn<FeatureName[], boolean>();
-		const toggleRouter = {
-			setFeature
-		} as unknown as ToggleRouter;
 		const fakeTeamStateMachine = createFakeTeamStateMachine();
-		const gameStateMachine = createGameStateMachine({ toggleRouter, teamStateMachine: fakeTeamStateMachine });
+		const gameStateMachine = createGameStateMachine({ teamStateMachine: fakeTeamStateMachine });
 		const gameStateMachineService = interpret(gameStateMachine);
 
 		gameStateMachineService.start();
