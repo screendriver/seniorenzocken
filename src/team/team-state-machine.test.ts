@@ -12,8 +12,6 @@ import {
 	type StateSchema,
 	type Typestate
 } from "xstate";
-import type { GameWebStorage } from "../storage/game-web-storage.js";
-import { createInMemoryGameWebStorage } from "../storage/test-lib/in-memory-game-web-storage.js";
 import {
 	createTeamStateMachine,
 	type TeamStateMachine,
@@ -64,21 +62,13 @@ interface TestTeamStateMachineOptions {
 	readonly expectedStateValue?: TeamStateMachineState["value"];
 	readonly eventsToSend?: readonly TeamStateMachineEvent[];
 	readonly expectedSentEvents?: readonly TeamStateMachineSentEvent[];
-	readonly expectedTeamsInStorage?: GameWebStorage["teams"];
 }
 
 function testTeamStateMachine(options: TestTeamStateMachineOptions): TestFunction {
-	const {
-		expectedContext,
-		expectedStateValue,
-		eventsToSend = [],
-		expectedSentEvents,
-		expectedTeamsInStorage
-	} = options;
+	const { expectedContext, expectedStateValue, eventsToSend = [], expectedSentEvents } = options;
 
 	return () => {
-		const inMemoryGameWebStorage = createInMemoryGameWebStorage();
-		const teamStateMachine = createTeamStateMachine(inMemoryGameWebStorage);
+		const teamStateMachine = createTeamStateMachine();
 		const parentTestMachine = createParentStateMachine(teamStateMachine);
 		const parentTestMachineService = interpret(parentTestMachine);
 
@@ -120,8 +110,8 @@ function testTeamStateMachine(options: TestTeamStateMachineOptions): TestFunctio
 			assert.strictEqual(expectedStateValue, stateValue);
 		} else if (is.array(expectedSentEvents)) {
 			assert.deepStrictEqual(sentEventsFromChild, expectedSentEvents);
-		} else if (is.map(expectedTeamsInStorage)) {
-			assert.deepStrictEqual(inMemoryGameWebStorage.teams, expectedTeamsInStorage);
+		} else {
+			assert.fail("No assertions used");
 		}
 	};
 }
@@ -203,14 +193,6 @@ test(
 		expectedContext: {
 			teams: new Map([[1, { gamePoints: 0, isStretched: false, teamName: "foo" }]])
 		}
-	})
-);
-
-test(
-	'gameStateMachine saves teams in storage on "UPDATE_TEAM_NAME" event',
-	testTeamStateMachine({
-		eventsToSend: [{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" }],
-		expectedTeamsInStorage: new Map([[1, { gamePoints: 0, isStretched: false, teamName: "foo" }]])
 	})
 );
 
@@ -333,17 +315,6 @@ test(
 		expectedContext: {
 			teams: new Map([[1, { teamName: "foo", gamePoints: 13, isStretched: true }]])
 		}
-	})
-);
-
-test(
-	'gameStateMachine saves teams in storage on "UPDATE_GAME_POINT" event',
-	testTeamStateMachine({
-		eventsToSend: [
-			{ type: "UPDATE_TEAM_NAME", teamNumber: 1, teamName: "foo" },
-			{ type: "UPDATE_GAME_POINT", teamNumber: 1, gamePoints: 2 }
-		],
-		expectedTeamsInStorage: new Map([[1, { gamePoints: 2, isStretched: false, teamName: "foo" }]])
 	})
 );
 
