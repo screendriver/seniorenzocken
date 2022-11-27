@@ -9,7 +9,6 @@
 	import type { TeamNameChangeEvent } from "./team/Team.svelte";
 	import GitHub from "./GitHub.svelte";
 	import GamePointAudio from "./audio/GamePointAudio.svelte";
-	import GameOverAudio from "./audio/GameOverAudio.svelte";
 	import type { GameStateMachine } from "./game-state/game-state-machine.js";
 	import type { WakeLockStateMachine } from "./screen/wake-lock-state-machine.js";
 
@@ -41,7 +40,11 @@
 	}
 
 	function sendAudioEnded(): void {
-		send({ type: "AUDIO_ENDED" });
+		send("AUDIO_ENDED");
+	}
+
+	function sendReplayAudio(): void {
+		send("REPLAY_AUDIO");
 	}
 
 	function startNewGame(): void {
@@ -63,9 +66,14 @@
 
 <Head {imageKit} />
 
-{#if $state.value === "gameOver"}
-	<GameOver {teams} on:startnewgame={startNewGame} />
-	<GameOverAudio {teams} />
+{#if $state.matches("gameOver")}
+	<GameOver
+		{teams}
+		playAudio={$state.matches("gameOver.audioPlaying")}
+		on:audioended={sendAudioEnded}
+		on:replayaudio={sendReplayAudio}
+		on:startnewgame={startNewGame}
+	/>
 {:else if $state.matches("gameRunning")}
 	{@const audioPlaying = $state.matches("gameRunning.audio.playing")}
 
