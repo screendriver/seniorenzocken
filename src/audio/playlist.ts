@@ -22,6 +22,16 @@ function getAttentionAudioFile(randomCollectionElement: typeof sample): string {
 		.unwrapOr("/audio/attention_1");
 }
 
+function findZeroGamePointsAudioFile(randomCollectionElement: typeof sample): string {
+	const randomZeroPointsAudioFile = Maybe.of(randomCollectionElement(zeroPointsAudioFiles));
+
+	return randomZeroPointsAudioFile
+		.map((randomZeroPointsAudioFileValue) => {
+			return `/audio/${randomZeroPointsAudioFileValue}`;
+		})
+		.unwrapOr("/audio/0_1");
+}
+
 export function createPlaylist(options: CreatePlaylistOptions): readonly string[] {
 	const { teams, includeStretched, randomCollectionElement } = options;
 	const playlist: string[] = [getAttentionAudioFile(randomCollectionElement)];
@@ -40,14 +50,9 @@ export function createPlaylist(options: CreatePlaylistOptions): readonly string[
 		}
 
 		if (gamePoints === 0) {
-			const randomZeroPointsAudioFile = randomCollectionElement(zeroPointsAudioFiles);
+			const zeroGamePointsAudioFile = findZeroGamePointsAudioFile(randomCollectionElement);
 
-			if (is.undefined(randomZeroPointsAudioFile)) {
-				playlist.push(`/audio/0_1`);
-			} else {
-				playlist.push(`/audio/${randomZeroPointsAudioFile}`);
-			}
-
+			playlist.push(zeroGamePointsAudioFile);
 			return;
 		}
 
