@@ -1,7 +1,8 @@
-import is from "@sindresorhus/is";
 import type sample from "lodash.sample";
+import Maybe from "true-myth/maybe";
 import type { Teams } from "../team/team-schema.js";
 
+const attentionAudioFiles = ["attention_1", "attention_2", "attention_3", "attention_4"];
 const zeroPointsAudioFiles = ["0_1", "0_2", "0_3", "0_4", "0_5", "0_6"];
 
 export interface CreatePlaylistOptions {
@@ -10,9 +11,29 @@ export interface CreatePlaylistOptions {
 	readonly randomCollectionElement: typeof sample;
 }
 
+function findAttentionAudioFile(randomCollectionElement: typeof sample): string {
+	const randomAttentionAudioFile = Maybe.of(randomCollectionElement(attentionAudioFiles));
+
+	return randomAttentionAudioFile
+		.map((randomAttentionAudioFileValue) => {
+			return `/audio/${randomAttentionAudioFileValue}`;
+		})
+		.unwrapOr("/audio/attention_1");
+}
+
+function findZeroGamePointsAudioFile(randomCollectionElement: typeof sample): string {
+	const randomZeroPointsAudioFile = Maybe.of(randomCollectionElement(zeroPointsAudioFiles));
+
+	return randomZeroPointsAudioFile
+		.map((randomZeroPointsAudioFileValue) => {
+			return `/audio/${randomZeroPointsAudioFileValue}`;
+		})
+		.unwrapOr("/audio/0_1");
+}
+
 export function createPlaylist(options: CreatePlaylistOptions): readonly string[] {
 	const { teams, includeStretched, randomCollectionElement } = options;
-	const playlist: string[] = [];
+	const playlist: string[] = [findAttentionAudioFile(randomCollectionElement)];
 
 	let stretched = false;
 
@@ -28,14 +49,9 @@ export function createPlaylist(options: CreatePlaylistOptions): readonly string[
 		}
 
 		if (gamePoints === 0) {
-			const randomZeroPointsAudioFile = randomCollectionElement(zeroPointsAudioFiles);
+			const zeroGamePointsAudioFile = findZeroGamePointsAudioFile(randomCollectionElement);
 
-			if (is.undefined(randomZeroPointsAudioFile)) {
-				playlist.push(`/audio/0_1`);
-			} else {
-				playlist.push(`/audio/${randomZeroPointsAudioFile}`);
-			}
-
+			playlist.push(zeroGamePointsAudioFile);
 			return;
 		}
 
