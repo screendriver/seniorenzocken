@@ -1,4 +1,3 @@
-import is from "@sindresorhus/is";
 import type sample from "lodash.sample";
 import Maybe from "true-myth/maybe";
 import type { Teams } from "../team/team-schema.js";
