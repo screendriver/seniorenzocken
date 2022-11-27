@@ -11,7 +11,6 @@ import {
 import Maybe from "true-myth/maybe";
 import type { Teams } from "../team/team-schema.js";
 import type { TeamStateMachine, TeamStateMachineSentEvent } from "../team/team-state-machine.js";
-import type { ToggleRouter } from "../toggle-router/toggle-router.js";
 import { shouldShowConfetti } from "./confetti.js";
 import { checkIfGameWouldBeOver } from "./game-over.js";
 
@@ -66,12 +65,11 @@ export type GameStateMachine = StateMachine<
 >;
 
 interface GameStateMachineDependencies {
-	readonly toggleRouter: ToggleRouter;
 	readonly teamStateMachine: TeamStateMachine;
 }
 
 export function createGameStateMachine(dependencies: GameStateMachineDependencies): GameStateMachine {
-	const { toggleRouter, teamStateMachine } = dependencies;
+	const { teamStateMachine } = dependencies;
 
 	return createMachine<GameStateMachineContext, GameStateMachineEvent, GameStateMachineState>(
 		{
@@ -219,15 +217,6 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 						return true;
 					}
 				}),
-				setGamePointButtonsFeatureToggle(_context, event) {
-					if (event.type !== "UPDATE_TEAM_NAME") {
-						return;
-					}
-
-					const showGamePointButtons = event.teamName === "ratze";
-
-					toggleRouter.setFeature("game-point-buttons", showGamePointButtons);
-				},
 				updateTeamGamePoint: forwardTo((context) => {
 					return context.teamStateMachineActor.unwrapOr("");
 				}),
