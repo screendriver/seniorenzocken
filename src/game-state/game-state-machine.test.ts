@@ -320,7 +320,7 @@ test(
 );
 
 test(
-	'gameStateMachine transit to "gameOver" on "GAME_POINT_UPDATED" event when current state is "gameRunning.audio.notPlaying" and one team reached 15 game points',
+	'gameStateMachine transit to "gameOver.audioPlaying" on "GAME_POINT_UPDATED" event when current state is "gameRunning.audio.notPlaying" and one team reached 15 game points',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -335,12 +335,55 @@ test(
 				teamNumber: 1
 			}
 		],
-		expectedStateValue: "gameOver"
+		expectedStateValue: { gameOver: "audioPlaying" }
 	})
 );
 
 test(
-	'gameStateMachine transits from "gameOver" to "gameNotRunning" on "START_NEW_GAME" event',
+	'gameStateMachine transit from "gameOver.audioPlaying" to "gameOver.audioNotPlaying" on "AUDIO_ENDED" event',
+	testGameStateMachine({
+		eventsToSend: [
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			},
+			{ type: "START_GAME" },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 15,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: true }]]),
+				teamNumber: 1
+			},
+			{ type: "AUDIO_ENDED" }
+		],
+		expectedStateValue: { gameOver: "audioNotPlaying" }
+	})
+);
+
+test(
+	'gameStateMachine transit from "gameOver.audioNotPlaying" to "gameOver.audioPlaying" on "REPLAY_AUDIO" event',
+	testGameStateMachine({
+		eventsToSend: [
+			{
+				type: "FULLY_FILLED_TEAMS",
+				teams: new Map([[1, { teamName: "foo", gamePoints: 0, isStretched: false }]])
+			},
+			{ type: "START_GAME" },
+			{
+				type: "GAME_POINT_UPDATED",
+				gamePoints: 15,
+				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: true }]]),
+				teamNumber: 1
+			},
+			{ type: "AUDIO_ENDED" },
+			{ type: "REPLAY_AUDIO" }
+		],
+		expectedStateValue: { gameOver: "audioPlaying" }
+	})
+);
+
+test(
+	'gameStateMachine transits from "gameOver.audioNotPlaying" to "gameNotRunning" on "START_NEW_GAME" event',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -354,6 +397,7 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 16, isStretched: false }]]),
 				teamNumber: 1
 			},
+			{ type: "AUDIO_ENDED" },
 			{ type: "START_NEW_GAME" }
 		],
 		expectedStateValue: "gameNotRunning"
@@ -361,7 +405,7 @@ test(
 );
 
 test(
-	'gameStateMachine resets context when transit from "gameOver" to "gameNotRunning" on "START_NEW_GAME" event',
+	'gameStateMachine resets context when transit from "gameOver.audioNotPlaying" to "gameNotRunning" on "START_NEW_GAME" event',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -375,6 +419,7 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: false }]]),
 				teamNumber: 1
 			},
+			{ type: "AUDIO_ENDED" },
 			{ type: "START_NEW_GAME" }
 		],
 		expectedContext: {
@@ -385,7 +430,7 @@ test(
 );
 
 test(
-	'gameStateMachine sends "RESET" event to team state machine when transit from "gameOver" to "gameNotRunning" on "START_NEW_GAME" event',
+	'gameStateMachine sends "RESET" event to team state machine when transit from "gameOver.audioNotPlaying" to "gameNotRunning" on "START_NEW_GAME" event',
 	testGameStateMachine({
 		eventsToSend: [
 			{
@@ -399,6 +444,7 @@ test(
 				teams: new Map([[1, { teamName: "foo", gamePoints: 15, isStretched: false }]]),
 				teamNumber: 1
 			},
+			{ type: "AUDIO_ENDED" },
 			{ type: "START_NEW_GAME" }
 		],
 		expectedForwardedEvents: [{ type: "RESET" }]

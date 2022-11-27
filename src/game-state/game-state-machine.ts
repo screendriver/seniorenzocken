@@ -33,7 +33,8 @@ export type GameStateMachineEvent =
 	  }
 	| { readonly type: "AUDIO_ENDED" }
 	| { readonly type: "CONFETTI_HIDDEN" }
-	| { readonly type: "START_NEW_GAME" };
+	| { readonly type: "START_NEW_GAME" }
+	| { readonly type: "REPLAY_AUDIO" };
 
 export type GameStateMachineState =
 	| {
@@ -55,7 +56,10 @@ export type GameStateMachineState =
 	  } & {
 			readonly canGameBeStarted: true;
 	  })
-	| { readonly value: "gameOver"; readonly context: GameStateMachineContext };
+	| {
+			readonly value: "gameOver" | "gameOver.audioPlaying" | "gameOver.audioNotPlaying";
+			readonly context: GameStateMachineContext;
+	  };
 
 export type GameStateMachine = StateMachine<
 	GameStateMachineContext,
@@ -169,8 +173,20 @@ export function createGameStateMachine(dependencies: GameStateMachineDependencie
 				},
 				gameOver: {
 					exit: ["resetContext", "resetTeamStateMachineActor"],
-					on: {
-						START_NEW_GAME: "gameNotRunning"
+					initial: "audioPlaying",
+					type: "compound",
+					states: {
+						audioPlaying: {
+							on: {
+								AUDIO_ENDED: "audioNotPlaying"
+							}
+						},
+						audioNotPlaying: {
+							on: {
+								START_NEW_GAME: "#gameState.gameNotRunning",
+								REPLAY_AUDIO: "audioPlaying"
+							}
+						}
 					}
 				}
 			}
