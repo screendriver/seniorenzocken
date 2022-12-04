@@ -31,7 +31,7 @@
 	},
 	"devDependencies": {
 		"@fastify/cors": "8.2.0",
-		"@fastify/static": "6.5.1",
+		"@fastify/static": "6.6.0",
 		"@ls-lint/ls-lint": "1.11.2",
 		"@playwright/test": "1.28.1",
 		"@sveltejs/vite-plugin-svelte": "1.4.0",
