@@ -9,7 +9,7 @@
 		"node": "18.x"
 	},
 	"scripts": {
-		"lint": "eslint . --ext '.ts' --cache --cache-location './target/.eslintcache' && svelte-check && ls-lint",
+		"lint": "eslint src test --ext '.ts' --cache --cache-location './target/.eslintcache' && svelte-check && ls-lint",
 		"compile": "tsc",
 		"develop": "tsx ./src/start-develop.ts",
 		"build": "vite build",
