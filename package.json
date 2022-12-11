@@ -34,7 +34,7 @@
 		"@fastify/static": "6.6.0",
 		"@ls-lint/ls-lint": "1.11.2",
 		"@playwright/test": "1.28.1",
-		"@sveltejs/vite-plugin-svelte": "2.0.0",
+		"@sveltejs/vite-plugin-svelte": "2.0.1",
 		"@testing-library/svelte": "3.2.2",
 		"@testing-library/user-event": "14.4.3",
 		"@tsconfig/svelte": "3.0.0",
