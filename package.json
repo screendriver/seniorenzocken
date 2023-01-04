@@ -56,7 +56,7 @@
 		"fastify": "4.11.0",
 		"fishery": "2.2.2",
 		"get-port": "6.1.2",
-		"happy-dom": "8.1.1",
+		"happy-dom": "8.1.2",
 		"netlify-cli": "12.5.0",
 		"playwright": "1.29.1",
 		"postcss": "8.4.20",
