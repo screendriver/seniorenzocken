@@ -60,7 +60,7 @@
 		"netlify-cli": "12.7.0",
 		"playwright": "1.29.2",
 		"postcss": "8.4.21",
-		"prettier": "2.8.1",
+		"prettier": "2.8.2",
 		"prettier-plugin-svelte": "2.9.0",
 		"svelte": "3.55.1",
 		"svelte-check": "3.0.2",
