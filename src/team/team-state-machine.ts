@@ -27,7 +27,7 @@ export const possibleSentEventNames = [
 	"GAME_POINT_UPDATED"
 ] as const;
 
-export type PossibleSentEventNames = typeof possibleSentEventNames[number];
+export type PossibleSentEventNames = (typeof possibleSentEventNames)[number];
 
 interface TeamStateMachineSentEventObject<T extends PossibleSentEventNames> extends EventObject {
 	readonly type: T;
