@@ -13,7 +13,10 @@
 		"compile": "tsc",
 		"prebuild": "svelte-kit sync",
 		"build": "vite build",
-		"start": "vite preview --port 4173 --strictPort"
+		"start": "vite preview --port 4173 --strictPort",
+		"pretest:unit": "npm run compile",
+		"test:unit": "ava",
+		"test:unit:coverage": "c8 npm run test:unit"
 	},
 	"devDependencies": {
 		"@ava/typescript": "4.1.0",
