@@ -12,6 +12,8 @@
 		"lint": "eslint --ext '.ts,.svelte' --cache --cache-location './target/.eslintcache' . && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && ls-lint",
 		"precompile": "svelte-kit sync",
 		"compile": "tsc",
+		"predevelop": "svelte-kit sync",
+		"develop": "tsx ./source/start-develop.ts",
 		"prebuild": "svelte-kit sync",
 		"build": "vite build",
 		"start": "vite preview --port 4173 --strictPort",
