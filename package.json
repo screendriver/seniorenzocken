@@ -9,7 +9,8 @@
 		"node": "20.x"
 	},
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"precompile": "svelte-kit sync",
+		"compile": "tsc"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "4.20231121.0",
