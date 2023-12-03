@@ -1,0 +1,14 @@
+{
+	"extends": ["./target/svelte-kit/tsconfig.json", "./tsconfig.base.json"],
+	"compilerOptions": {
+		"importHelpers": true,
+		"module": "ES2022",
+		"moduleResolution": "Bundler",
+		"skipLibCheck": true,
+		"target": "ES2022",
+		"outDir": "./target/build",
+		"types": ["@cloudflare/workers-types/2023-07-01"]
+	},
+	"include": ["source/**/*", "test/**/*", "vite.config.ts"],
+	"exclude": ["node_modules"]
+}
