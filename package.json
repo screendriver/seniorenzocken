@@ -19,6 +19,10 @@
 		"test:unit": "ava",
 		"test:unit:coverage": "c8 npm run test:unit"
 	},
+	"dependencies": {
+		"flowbite": "2.2.0",
+		"flowbite-svelte": "0.44.20"
+	},
 	"devDependencies": {
 		"@ava/typescript": "4.1.0",
 		"@cloudflare/workers-types": "4.20231121.0",
