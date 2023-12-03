@@ -10,7 +10,9 @@
 	},
 	"scripts": {
 		"precompile": "svelte-kit sync",
-		"compile": "tsc"
+		"compile": "tsc",
+		"prebuild": "svelte-kit sync",
+		"build": "vite build"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "4.20231121.0",
