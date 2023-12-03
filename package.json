@@ -22,6 +22,7 @@
 		"test:unit:coverage": "c8 npm run test:unit"
 	},
 	"dependencies": {
+		"@sindresorhus/is": "6.1.0",
 		"consola": "3.2.3",
 		"flowbite": "2.2.0",
 		"flowbite-svelte": "0.44.20",
