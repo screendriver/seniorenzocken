@@ -1,0 +1,16 @@
+ls:
+    source:
+        .dir: kebab-case
+        .ts: kebab-case
+        .test.ts: kebab-case
+        .d.ts: kebab-case
+        .jpg: kebab-case
+        .svelte: PascalCase
+        .svelte.test.ts: PascalCase
+    source/routes:
+        .svelte: lowercase
+    test:
+        .dir: kebab-case
+        .ts: kebab-case
+        .test.ts: kebab-case
+        .config.ts: kebab-case
