@@ -12,6 +12,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"devDependencies": {
+		"@cloudflare/workers-types": "4.20231121.0",
 		"@sveltejs/adapter-cloudflare": "2.3.3",
 		"@sveltejs/kit": "1.27.6",
 		"prettier": "3.1.0",
