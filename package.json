@@ -12,7 +12,8 @@
 		"precompile": "svelte-kit sync",
 		"compile": "tsc",
 		"prebuild": "svelte-kit sync",
-		"build": "vite build"
+		"build": "vite build",
+		"start": "vite preview --port 4173 --strictPort"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "4.20231121.0",
