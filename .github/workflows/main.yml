@@ -1,0 +1,70 @@
+name: Main
+
+on: [push]
+
+jobs:
+    tests:
+        name: Tests
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+            - name: Setup Node.js
+              uses: ./.github/actions/setup-nodejs
+            - name: Compile source code
+              run: npm run compile
+            - name: Lint source code
+              run: npm run lint
+            - name: Run unit tests
+              run: npm run test:unit:coverage
+
+    end-to-end-tests:
+        name: End-to-end tests
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  lfs: true
+            - name: Setup Node.js
+              uses: ./.github/actions/setup-nodejs
+            - name: Install Playwright
+              run: npx playwright install --with-deps firefox
+            - name: Run tests
+              run: npm run test:end-to-end
+            - uses: actions/upload-artifact@v3
+              if: ${{ failure() }}
+              with:
+                  name: playwright-report
+                  path: target/test-output/end-to-end/
+                  retention-days: 7
+
+    deploy-to-cloudflare:
+        name: Deploy to Cloudflare
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main'
+        permissions:
+            contents: read
+            deployments: write
+        needs: [tests, end-to-end-tests]
+        concurrency:
+            group: deploy-to-cloudflare
+        env:
+            VITE_IMAGEKIT_BASE_URL: ${{ secrets.VITE_IMAGEKIT_BASE_URL }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  lfs: true
+            - name: Setup Node.js
+              uses: ./.github/actions/setup-nodejs
+            - name: Build website
+              run: npm run build
+            - name: Publish to Cloudflare Pages
+              uses: cloudflare/pages-action@v1
+              with:
+                  apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+                  accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+                  projectName: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
+                  directory: ./target/svelte-kit/cloudflare
+                  wranglerVersion: "3"
