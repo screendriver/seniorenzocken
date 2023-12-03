@@ -1,0 +1,97 @@
+{
+	"extends": [
+		"prettier",
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:@typescript-eslint/recommended-requiring-type-checking",
+		"plugin:svelte/recommended",
+		"plugin:prettier/recommended",
+		"plugin:svelte/prettier",
+		"plugin:ava/recommended"
+	],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"sourceType": "module",
+		"ecmaVersion": 2021,
+		"project": "tsconfig.all.json",
+		"extraFileExtensions": [".svelte"]
+	},
+	"plugins": ["@typescript-eslint", "functional", "unicorn", "deprecation", "ava"],
+	"env": {
+		"browser": true,
+		"node": true
+	},
+	"rules": {
+		"no-console": "error",
+		"require-await": "error",
+		"deprecation/deprecation": "error",
+		"@typescript-eslint/no-unused-vars": "error",
+		"@typescript-eslint/explicit-function-return-type": [
+			"error",
+			{
+				"allowExpressions": true,
+				"allowTypedFunctionExpressions": true
+			}
+		],
+		"@typescript-eslint/consistent-type-imports": "error",
+		"@typescript-eslint/unbound-method": "off",
+		"@typescript-eslint/consistent-type-definitions": ["error", "type"],
+		"functional/prefer-readonly-type": [
+			"error",
+			{
+				"allowLocalMutation": true,
+				"allowMutableReturnType": true,
+				"checkImplicit": false,
+				"ignoreClass": false,
+				"ignoreInterface": false,
+				"ignoreCollections": false
+			}
+		],
+		"unicorn/prefer-node-protocol": "error",
+		"unicorn/prefer-ternary": "error",
+		"svelte/block-lang": [
+			"error",
+			{
+				"script": "ts",
+				"style": null
+			}
+		],
+		"svelte/button-has-type": "error",
+		"svelte/require-each-key": "error",
+		"svelte/require-event-dispatcher-types": "error"
+	},
+	"overrides": [
+		{
+			"files": ["*.svelte"],
+			"parser": "svelte-eslint-parser",
+			"parserOptions": {
+				"parser": "@typescript-eslint/parser"
+			}
+		},
+		{
+			"files": [
+				"source/start-develop.ts",
+				"source/lib/audio/GamePointAudio.svelte",
+				"source/lib/screen/WakeLock.svelte"
+			],
+			"rules": {
+				"no-console": "off"
+			}
+		},
+		{
+			"files": "source/**/*.test.ts",
+			"rules": {
+				"@typescript-eslint/no-floating-promises": "off",
+				"functional/prefer-readonly-type": "off"
+			}
+		},
+		{
+			"files": "source/lib/team/TeamsForm.svelte",
+			"rules": {
+				"@typescript-eslint/no-unsafe-argument": "off",
+				"@typescript-eslint/no-unsafe-member-access": "off"
+			}
+		}
+	]
+}
