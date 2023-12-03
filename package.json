@@ -28,6 +28,7 @@
 		"flowbite": "2.2.0",
 		"flowbite-svelte": "0.44.20",
 		"imagekit-javascript": "2.0.0",
+		"js-sdsl": "4.4.2",
 		"true-myth": "7.1.0",
 		"tslib": "2.6.2"
 	},
