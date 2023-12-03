@@ -33,7 +33,8 @@
 		"lodash.sample": "4.2.1",
 		"svelte-feather-icons": "4.0.1",
 		"true-myth": "7.1.0",
-		"tslib": "2.6.2"
+		"tslib": "2.6.2",
+		"valibot": "0.21.0"
 	},
 	"devDependencies": {
 		"@ava/typescript": "4.1.0",
