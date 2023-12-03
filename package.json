@@ -45,6 +45,7 @@
 		"@playwright/test": "1.40.1",
 		"@sveltejs/adapter-cloudflare": "2.3.3",
 		"@sveltejs/kit": "1.27.6",
+		"@types/canvas-confetti": "1.6.4",
 		"@types/lodash.sample": "4.2.9",
 		"@types/node": "20.10.2",
 		"@types/sinon": "17.0.2",
