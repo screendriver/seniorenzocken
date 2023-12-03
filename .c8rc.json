@@ -1,0 +1,10 @@
+{
+	"checkCoverage": false,
+	"all": true,
+	"extension": [".js"],
+	"src": "target/build/source",
+	"include": ["target/build/source/**/*"],
+	"exclude": [],
+	"reporter": ["lcov", "text-summary", "clover"],
+	"reportsDir": "./target/coverage"
+}
