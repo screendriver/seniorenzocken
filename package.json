@@ -19,7 +19,10 @@
 		"start": "vite preview --port 4173 --strictPort",
 		"pretest:unit": "npm run compile",
 		"test:unit": "ava",
-		"test:unit:coverage": "c8 npm run test:unit"
+		"test:unit:coverage": "c8 npm run test:unit",
+		"preview:end-to-end": "tsx ./source/preview-end-to-end.ts",
+		"pretest:end-to-end": "svelte-kit sync",
+		"test:end-to-end": "playwright test --config=test/end-to-end/playwright.config.ts"
 	},
 	"dependencies": {
 		"@sindresorhus/is": "6.1.0",
