@@ -23,6 +23,7 @@
 	},
 	"dependencies": {
 		"@sindresorhus/is": "6.1.0",
+		"canvas-confetti": "1.9.2",
 		"consola": "3.2.3",
 		"flowbite": "2.2.0",
 		"flowbite-svelte": "0.44.20",
