@@ -1,3 +1,4 @@
+import adapter from "@sveltejs/adapter-cloudflare";
 import { vitePreprocess } from "@sveltejs/kit/vite";
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -10,5 +11,6 @@ export default {
 			routes: "source/routes",
 			lib: "source/lib",
 		},
+		adapter: adapter(),
 	},
 };
