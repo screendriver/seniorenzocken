@@ -42,7 +42,7 @@
 	"devDependencies": {
 		"@ava/typescript": "4.1.0",
 		"@cloudflare/workers-types": "4.20231121.0",
-		"@fastify/cors": "8.4.1",
+		"@fastify/cors": "8.4.2",
 		"@fastify/static": "6.12.0",
 		"@ls-lint/ls-lint": "2.2.2",
 		"@playwright/test": "1.40.1",
