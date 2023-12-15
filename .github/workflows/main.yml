@@ -32,7 +32,7 @@ jobs:
               run: npx playwright install --with-deps firefox
             - name: Run tests
               run: npm run test:end-to-end
-            - uses: actions/upload-artifact@v3
+            - uses: actions/upload-artifact@v4
               if: ${{ failure() }}
               with:
                   name: playwright-report
