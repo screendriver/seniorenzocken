@@ -22,14 +22,14 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 
 	if (!includeStretchedParseResult.success || teamsParseResult.isNothing || !teamsParseResult.value.success) {
 		consola.error("Parsing of query string parameters failed");
-		throw error(400);
+		error(400);
 	}
 
 	const mediaBucket = Maybe.of(platform?.env?.MEDIA_BUCKET);
 
 	if (mediaBucket.isNothing) {
 		consola.error("Media bucket could not be found");
-		throw error(500);
+		error(500);
 	}
 
 	const playlistResult = await createPlaylist(
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 	return playlistResult.match({
 		Err(errorObject) {
 			consola.error("Playlist could not be created:", errorObject.message);
-			throw error(500);
+			error(500);
 		},
 		Ok(playlist) {
 			return json(playlist);
