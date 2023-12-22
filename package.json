@@ -47,7 +47,7 @@
 		"@ls-lint/ls-lint": "2.2.2",
 		"@playwright/test": "1.40.1",
 		"@sveltejs/adapter-cloudflare": "2.3.4",
-		"@sveltejs/kit": "1.30.3",
+		"@sveltejs/kit": "2.0.6",
 		"@types/canvas-confetti": "1.6.4",
 		"@types/dom-screen-wake-lock": "1.0.3",
 		"@types/lodash.sample": "4.2.9",
