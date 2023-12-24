@@ -68,7 +68,7 @@
 		"eslint-plugin-prettier": "5.1.2",
 		"eslint-plugin-svelte": "2.35.1",
 		"eslint-plugin-unicorn": "50.0.1",
-		"fastify": "4.25.1",
+		"fastify": "4.25.2",
 		"fishery": "2.2.2",
 		"get-port": "7.0.0",
 		"playwright": "1.40.1",
