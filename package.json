@@ -37,7 +37,7 @@
 		"svelte-feather-icons": "4.1.0",
 		"true-myth": "7.1.0",
 		"tslib": "2.6.2",
-		"valibot": "0.24.1"
+		"valibot": "0.25.0"
 	},
 	"devDependencies": {
 		"@ava/typescript": "4.1.0",
