@@ -52,7 +52,7 @@
 		"@types/canvas-confetti": "1.6.4",
 		"@types/dom-screen-wake-lock": "1.0.3",
 		"@types/lodash.sample": "4.2.9",
-		"@types/node": "20.10.8",
+		"@types/node": "20.11.0",
 		"@types/sinon": "17.0.3",
 		"@typescript-eslint/eslint-plugin": "6.18.1",
 		"@typescript-eslint/parser": "6.18.1",
