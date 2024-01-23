@@ -47,7 +47,7 @@
 		"@ls-lint/ls-lint": "2.2.2",
 		"@playwright/test": "1.41.1",
 		"@sveltejs/adapter-cloudflare": "3.0.2",
-		"@sveltejs/kit": "2.4.1",
+		"@sveltejs/kit": "2.4.3",
 		"@sveltejs/vite-plugin-svelte": "3.0.1",
 		"@types/canvas-confetti": "1.6.4",
 		"@types/dom-screen-wake-lock": "1.0.3",
