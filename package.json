@@ -30,7 +30,7 @@
 		"consola": "3.2.3",
 		"flowbite": "2.2.1",
 		"flowbite-svelte": "0.44.22",
-		"imagekit-javascript": "2.0.0",
+		"imagekit-javascript": "3.0.0",
 		"js-sdsl": "4.4.2",
 		"ky": "1.2.0",
 		"lodash.sample": "4.2.1",
