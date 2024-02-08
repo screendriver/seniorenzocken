@@ -24,7 +24,7 @@
 
 <form
 	on:submit|preventDefault
-	class="relative -top-20 mx-5 p-8 bg-slate-800 bg-opacity-90 rounded-lg shadow-md flex flex-col items-center gap-6 sm:max-w-lg sm:mx-auto"
+	class="flex relative -top-20 flex-col gap-6 items-center p-8 mx-5 bg-opacity-90 rounded-lg shadow-md sm:mx-auto sm:max-w-lg bg-slate-800"
 >
 	{#each $gameStore.teams as team (team.teamNumber)}
 		{@const enabled = (allTeamsAtZeroGamePoints || team.currentGamePoints > 0) && !$gameStore.audioPlaying}

@@ -33,11 +33,11 @@
 			disabled={!isWakeLockSupported}
 			checked={keepDisplayTurnedOn}
 			on:change={toggleKeepDisplayTurnedOn}
-			class="text-md text-white">Display aktiv</Toggle
+			class="text-white text-md">Display aktiv</Toggle
 		>
 	</li>
 	<li class="mt-4">
-		<Toggle checked={isAudioEnabled} on:change={toggleAudio} class="text-md text-white">Punktestand vorlesen</Toggle
+		<Toggle checked={isAudioEnabled} on:change={toggleAudio} class="text-white text-md">Punktestand vorlesen</Toggle
 		>
 	</li>
 </menu>

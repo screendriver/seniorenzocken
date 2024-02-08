@@ -36,7 +36,7 @@
 			{placeholder}
 			bind:value={teamName}
 			on:keyup={dispatchTeamNameChange}
-			class="bg-gray-50 border-gray-300 text-gray-900 focus:ring-transparent focus:border-gray-300"
+			class="text-gray-900 bg-gray-50 border-gray-300 focus:border-gray-300 focus:ring-transparent"
 		/>
 	</ButtonGroup>
 </Label>

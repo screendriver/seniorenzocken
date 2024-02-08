@@ -13,7 +13,7 @@
 <form
 	name="teams"
 	on:submit|preventDefault
-	class="relative -top-20 bg-slate-800 bg-opacity-90 rounded-lg shadow-md mx-5 sm:mx-auto sm:max-w-xl py-8 flex flex-col items-center gap-3 m-auto"
+	class="flex relative -top-20 flex-col gap-3 items-center py-8 m-auto mx-5 bg-opacity-90 rounded-lg shadow-md sm:mx-auto sm:max-w-xl bg-slate-800"
 >
 	<Team team={$gameStore.teams[0]} on:teamNameChange={updateChangedTeamName} />
 	<Team team={$gameStore.teams[1]} on:teamNameChange={updateChangedTeamName} />
