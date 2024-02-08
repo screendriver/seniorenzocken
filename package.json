@@ -9,7 +9,7 @@
 		"node": "20.x"
 	},
 	"scripts": {
-		"lint": "prettier --check . && eslint --ext '.ts,.svelte' --cache --cache-location './target/.eslintcache' . && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && ls-lint",
+		"lint": "prettier --check . && rustywind --check-formatted . && eslint --ext '.ts,.svelte' --cache --cache-location './target/.eslintcache' . && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && ls-lint",
 		"precompile": "svelte-kit sync",
 		"compile": "tsc",
 		"predevelop": "svelte-kit sync",
