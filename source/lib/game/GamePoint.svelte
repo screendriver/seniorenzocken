@@ -26,13 +26,13 @@
 	}`;
 </script>
 
-<section class="w-full pb-4 flex flex-col gap-3 bg-slate-600 rounded-lg">
+<section class="flex flex-col gap-3 pb-4 w-full rounded-lg bg-slate-600">
 	<Label for={rangeInputId} class={labelClassName}>
-		<UsersIcon size="40" class="rounded-l-lg border-r-2 border-r-sky-600 bg-sky-700 p-2" />
+		<UsersIcon size="40" class="p-2 rounded-l-lg border-r-2 border-r-sky-600 bg-sky-700" />
 		<cite class="flex-grow not-italic">{team.teamName}</cite>
-		<mark class="px-2 mr-2 rounded-full bg-sky-600 text-slate-200 shadow">{team.totalGamePoints}</mark>
+		<mark class="px-2 mr-2 rounded-full shadow bg-sky-600 text-slate-200">{team.totalGamePoints}</mark>
 	</Label>
-	<output for={rangeInputId} class="w-11/12 m-auto px-0.5 flex justify-between text-xl">
+	<output for={rangeInputId} class="flex justify-between px-0.5 m-auto w-11/12 text-xl">
 		<Score score={0} visible={true} />
 		<Score score={1} visible={false} />
 		<Score score={2} visible={true} />
@@ -47,6 +47,6 @@
 		value={team.currentGamePoints}
 		on:change={setGamePoint}
 		disabled={!enabled}
-		class="w-11/12 mx-auto my-2"
+		class="my-2 mx-auto w-11/12"
 	/>
 </section>

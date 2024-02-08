@@ -9,7 +9,7 @@
 		"node": "20.x"
 	},
 	"scripts": {
-		"lint": "prettier --check . && eslint --ext '.ts,.svelte' --cache --cache-location './target/.eslintcache' . && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && ls-lint",
+		"lint": "prettier --check . && rustywind --check-formatted . && eslint --ext '.ts,.svelte' --cache --cache-location './target/.eslintcache' . && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && ls-lint",
 		"precompile": "svelte-kit sync",
 		"compile": "tsc",
 		"predevelop": "svelte-kit sync",
@@ -75,6 +75,7 @@
 		"postcss": "8.4.35",
 		"prettier": "3.2.5",
 		"prettier-plugin-svelte": "3.1.2",
+		"rustywind": "0.21.0",
 		"sinon": "17.0.1",
 		"svelte": "4.2.10",
 		"svelte-check": "3.6.3",

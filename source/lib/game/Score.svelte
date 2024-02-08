@@ -4,7 +4,7 @@
 </script>
 
 {#if visible}
-	<mark class="text-slate-200 bg-transparent">{score.toString()}</mark>
+	<mark class="bg-transparent text-slate-200">{score.toString()}</mark>
 {:else}
 	<mark class="invisible">{score.toString()}</mark>
 {/if}
