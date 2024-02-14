@@ -28,7 +28,7 @@
 		"@sindresorhus/is": "6.1.0",
 		"canvas-confetti": "1.9.2",
 		"consola": "3.2.3",
-		"flowbite": "2.2.1",
+		"flowbite": "2.3.0",
 		"flowbite-svelte": "0.44.23",
 		"imagekit-javascript": "3.0.0",
 		"js-sdsl": "4.4.2",
