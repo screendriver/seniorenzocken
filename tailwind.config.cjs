@@ -4,7 +4,7 @@ module.exports = {
 	content: ["./source/app.html", "./source/**/*.svelte"],
 	plugins: [require("daisyui")],
 	daisyui: {
-		themes: ["dark"],
+		themes: ["business"],
 		logs: false,
 	},
 	theme: {
