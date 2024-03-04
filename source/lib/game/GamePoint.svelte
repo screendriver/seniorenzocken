@@ -7,10 +7,12 @@
 	export let enabled: boolean;
 
 	const availableGamePoints = [0, 2, 3, 4] as const;
-	let selectedGamePoint = 0;
 
-	function setGamePoint(): void {
-		gameStore.setCurrentGamePoints(team, selectedGamePoint);
+	function setGamePoint(changeEvent: Event): void {
+		const currentTarget = changeEvent.currentTarget as HTMLInputElement;
+		const gamePoint = parseInt(currentTarget.value, 10);
+
+		gameStore.setCurrentGamePoints(team, gamePoint);
 	}
 </script>
 
@@ -27,11 +29,11 @@
 	<div class="m-3 join">
 		{#each availableGamePoints as availableGamePoint (availableGamePoint)}
 			<input
-				bind:group={selectedGamePoint}
 				type="radio"
 				disabled={!enabled}
 				name={`game-point-${team.teamNumber}`}
 				value={availableGamePoint}
+				checked={team.currentGamePoints === availableGamePoint}
 				aria-label={`${availableGamePoint}`}
 				class="flex-grow join-item btn"
 				on:change={setGamePoint}
