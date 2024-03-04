@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Button } from "flowbite-svelte";
 	import GameOverAudio from "../audio/GameOverAudio.svelte";
 	import { settingsStore } from "../settings/settings-store.js";
 	import { gameStore } from "../game-store/game-store.js";
@@ -28,9 +27,9 @@
 >
 	<h1>{wonText}</h1>
 
-	<Button on:click={gameStore.startNewGame}>Neues Spiel</Button>
-	<Button disabled={isAudioPlaying || !$settingsStore.audioEnabled} on:click={replayAudio}
-		>Punktestand vorlesen</Button
+	<button on:click={gameStore.startNewGame} type="button" class="btn">Neues Spiel</button>
+	<button disabled={isAudioPlaying || !$settingsStore.audioEnabled} on:click={replayAudio} type="button" class="btn"
+		>Punktestand vorlesen</button
 	>
 
 	{#if $settingsStore.audioEnabled && isAudioPlaying}

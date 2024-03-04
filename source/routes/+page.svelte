@@ -47,31 +47,29 @@
 	{/if}
 </svelte:head>
 
-<main>
-	<WakeLock />
+<WakeLock />
 
-	<SettingsMenu />
+<SettingsMenu />
 
-	<header>
-		<img src={headerImageUrl} alt="Karten" class="object-cover w-full h-48 blur-sm" />
-	</header>
+<header class="hero">
+	<img src={headerImageUrl} alt="Karten" class="object-cover h-48 blur-sm" />
+</header>
 
-	<main>
-		{#if $gameStore.gameRunning}
-			<Game />
-			{#if $gameStore.audioPlaying}
-				<GamePointAudio {apiRouteBaseUrl} includeStretched={true} />
-			{/if}
-		{:else if $gameStore.isGameOver}
-			<GameOver {apiRouteBaseUrl} />
-		{:else}
-			<TeamsForm />
+<main class="flex-1">
+	{#if $gameStore.gameRunning}
+		<Game />
+		{#if $gameStore.audioPlaying}
+			<GamePointAudio {apiRouteBaseUrl} includeStretched={true} />
 		{/if}
-	</main>
-
-	<footer class="flex absolute right-5 bottom-5 justify-end w-full">
-		<a href="https://github.com/screendriver/seniorenzocken" title="GitHub">
-			<GithubIcon size="24" class="hover:text-sky-700" />
-		</a>
-	</footer>
+	{:else if $gameStore.isGameOver}
+		<GameOver {apiRouteBaseUrl} />
+	{:else}
+		<TeamsForm />
+	{/if}
 </main>
+
+<footer class="justify-end p-5 footer bg-base-300">
+	<a href="https://github.com/screendriver/seniorenzocken" title="GitHub">
+		<GithubIcon size="24" class="hover:link-info" />
+	</a>
+</footer>

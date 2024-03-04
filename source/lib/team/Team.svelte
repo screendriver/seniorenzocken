@@ -9,8 +9,6 @@
 
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
-	import { Label, ButtonGroup, Input, InputAddon } from "flowbite-svelte";
-	import { UsersIcon } from "svelte-feather-icons";
 
 	export let team: Team;
 
@@ -25,18 +23,14 @@
 	const placeholder = `Team ${team.teamNumber}`;
 </script>
 
-<Label>
-	<ButtonGroup>
-		<InputAddon>
-			<UsersIcon size="25" class="text-black" />
-		</InputAddon>
-		<Input
-			type="text"
-			id={`team-${team.teamNumber}`}
-			{placeholder}
-			bind:value={teamName}
-			on:keyup={dispatchTeamNameChange}
-			class="text-gray-900 bg-gray-50 border-gray-300 focus:border-gray-300 focus:ring-transparent"
-		/>
-	</ButtonGroup>
-</Label>
+<label class="flex gap-2 items-center input input-bordered">
+	{placeholder}
+	<input
+		type="text"
+		id={`team-${team.teamNumber}`}
+		bind:value={teamName}
+		on:keyup={dispatchTeamNameChange}
+		class="grow"
+		placeholder="Name"
+	/>
+</label>
