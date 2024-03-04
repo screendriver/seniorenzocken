@@ -29,7 +29,7 @@ jobs:
             - name: Setup Node.js
               uses: ./.github/actions/setup-nodejs
             - name: Install Playwright
-              run: npx playwright install --with-deps firefox
+              run: npx playwright install --with-deps chromium
             - name: Run tests
               run: npm run test:end-to-end
             - uses: actions/upload-artifact@v4
