@@ -14,6 +14,8 @@ const environmentFileName = ".env.local";
 await writeFile(environmentFileName, `VITE_IMAGEKIT_BASE_URL=${staticServerListeningAddress}`);
 await appendFile(environmentFileName, EOL);
 await appendFile(environmentFileName, `VITE_API_ROUTE_BASE_URL=${staticServerListeningAddress}`);
+await appendFile(environmentFileName, EOL);
+await appendFile(environmentFileName, `VITE_MEDIA_ASSETS_BASE_URL=${staticServerListeningAddress}`);
 
 const viteServer = await createServer();
 

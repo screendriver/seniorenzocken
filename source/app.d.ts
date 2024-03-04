@@ -4,6 +4,7 @@ declare global {
 	interface ImportMetaEnv {
 		readonly VITE_IMAGEKIT_BASE_URL?: string;
 		readonly VITE_API_ROUTE_BASE_URL?: string;
+		readonly VITE_MEDIA_ASSETS_BASE_URL?: string;
 	}
 
 	interface ImportMeta {

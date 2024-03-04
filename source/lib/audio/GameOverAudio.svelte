@@ -3,6 +3,7 @@
 	import GamePointAudio from "./GamePointAudio.svelte";
 
 	export let apiRouteBaseUrl: URL;
+	export let mediaAssetsRouteBaseUrl: URL;
 
 	let audioElementReference: HTMLAudioElement;
 
@@ -20,6 +21,5 @@
 <GamePointAudio {apiRouteBaseUrl} includeStretched={false} on:audioEnded={playWinSound} />
 
 <audio bind:this={audioElementReference} on:ended={dispatchAudioEnded}>
-	<source src="/audio/gwonnen.webm" type="audio/webm" />
-	<source src="/audio/gwonnen.aac" type="audio/aac" />
+	<source src={`${mediaAssetsRouteBaseUrl.toString()}gwonnen.m4a`} type="audio/webm" />
 </audio>

@@ -18,6 +18,12 @@
 	const apiRouteBaseUrl = Maybe.of(import.meta.env.VITE_API_ROUTE_BASE_URL).mapOr($page.url, (urlString) => {
 		return new URL(urlString);
 	});
+	const mediaAssetsRouteBaseUrl = Maybe.of(import.meta.env.VITE_MEDIA_ASSETS_BASE_URL).mapOr(
+		$page.url,
+		(urlString) => {
+			return new URL(urlString);
+		},
+	);
 
 	const imagekit = new ImageKit({
 		urlEndpoint: `${imageKitBaseUrl}/seniorenzocken/`,
@@ -62,7 +68,7 @@
 			<GamePointAudio {apiRouteBaseUrl} includeStretched={true} />
 		{/if}
 	{:else if $gameStore.isGameOver}
-		<GameOver {apiRouteBaseUrl} />
+		<GameOver {apiRouteBaseUrl} {mediaAssetsRouteBaseUrl} />
 	{:else}
 		<TeamsForm />
 	{/if}

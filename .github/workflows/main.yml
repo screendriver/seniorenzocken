@@ -51,6 +51,7 @@ jobs:
             group: deploy-to-cloudflare
         env:
             VITE_IMAGEKIT_BASE_URL: ${{ secrets.VITE_IMAGEKIT_BASE_URL }}
+            VITE_MEDIA_ASSETS_BASE_URL: ${{ secrets.VITE_MEDIA_ASSETS_BASE_URL }}
         steps:
             - name: Checkout code
               uses: actions/checkout@v4

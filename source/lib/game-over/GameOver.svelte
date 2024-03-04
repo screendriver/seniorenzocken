@@ -5,6 +5,7 @@
 	import { determineWinnerTeam } from "../team/teams.js";
 
 	export let apiRouteBaseUrl: URL;
+	export let mediaAssetsRouteBaseUrl: URL;
 
 	let isAudioPlaying = true;
 
@@ -33,6 +34,6 @@
 	>
 
 	{#if $settingsStore.audioEnabled && isAudioPlaying}
-		<GameOverAudio {apiRouteBaseUrl} on:audioEnded={onAudioEnded} />
+		<GameOverAudio {apiRouteBaseUrl} {mediaAssetsRouteBaseUrl} on:audioEnded={onAudioEnded} />
 	{/if}
 </section>
