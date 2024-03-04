@@ -14,10 +14,14 @@
 
 		gameStore.setCurrentGamePoints(team, gamePoint);
 	}
+
+	$: teamAreaClassName = `gap-2 items-center mx-3 mt-3 join bg-info text-info-content ${
+		team.isStretched ? "bg-error" : "bg-info"
+	}`;
 </script>
 
 <section class="flex flex-col gap-3 w-full rounded-lg bg-slate-600">
-	<div class="gap-2 items-center mx-3 mt-3 join bg-info text-info-content">
+	<div class={teamAreaClassName}>
 		<UsersIcon size="40" class="p-2 join-item" />
 		<cite class="flex-grow not-italic join-item">{team.teamName}</cite>
 		<mark class="self-stretch h-auto badge badge-accent join-item">
