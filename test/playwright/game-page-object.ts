@@ -19,9 +19,8 @@ export type GamePageObject = {
 	fillTeamsForm(): Promise<void>;
 	isTeamsFormSubmitDisabled(): Promise<boolean>;
 	submitTeamsForm(): Promise<void>;
-	isRangeInputDisabled(teamNumber: TeamNumber): Promise<boolean>;
-	changeRangeInputValue(teamNumber: TeamNumber, value: number): Promise<void>;
-	getRangeInputValue(teamNumber: TeamNumber): Promise<string>;
+	isRadioButtonGroupDisabled(teamNumber: TeamNumber): Promise<boolean>;
+	changeCheckedRadioButton(teamNumber: TeamNumber, value: number): Promise<void>;
 	clickNextRoundButton(): Promise<void>;
 };
 
@@ -43,21 +42,21 @@ export function createGamePage(page: Page): GamePageObject {
 		async fillTeamOneInTeamsForm() {
 			await page.waitForTimeout(500);
 
-			const inputElementTeam1 = page.getByPlaceholder(selectors.placeholderTeam1);
+			const inputElementTeam1 = page.getByLabel(selectors.placeholderTeam1);
 			await inputElementTeam1.pressSequentially("Test team 1", { delay: 20 });
 		},
 		async clearTeamOneInTeamsForm() {
-			const inputElementTeam1 = page.getByPlaceholder(selectors.placeholderTeam1);
+			const inputElementTeam1 = page.getByLabel(selectors.placeholderTeam1);
 			await inputElementTeam1.fill("");
 		},
 		async fillTeamTwoInTeamsForm() {
 			await page.waitForTimeout(500);
 
-			const inputElementTeam2 = page.getByPlaceholder(selectors.placeholderTeam2);
+			const inputElementTeam2 = page.getByLabel(selectors.placeholderTeam2);
 			await inputElementTeam2.pressSequentially("Test team 2", { delay: 20 });
 		},
 		async clearTeamTwoInTeamsForm() {
-			const inputElementTeam2 = page.getByPlaceholder(selectors.placeholderTeam2);
+			const inputElementTeam2 = page.getByLabel(selectors.placeholderTeam2);
 			await inputElementTeam2.fill("");
 		},
 		async fillTeamsForm() {
@@ -72,19 +71,21 @@ export function createGamePage(page: Page): GamePageObject {
 			const submitButton = page.getByText(selectors.startGame);
 			await submitButton.click();
 		},
-		isRangeInputDisabled(teamNumber) {
-			const inputElement = page.getByLabel(`Test team ${teamNumber.toString(10)}`);
+		isRadioButtonGroupDisabled(teamNumber) {
+			const inputElement = page
+				.locator("section")
+				.filter({ hasText: `Test team ${teamNumber}` })
+				.getByLabel("0");
 
 			return inputElement.isDisabled();
 		},
-		async changeRangeInputValue(teamNumber, value) {
-			const inputElement = page.getByLabel(`Test team ${teamNumber.toString(10)}`);
-			await inputElement.fill(value.toString(10));
-		},
-		getRangeInputValue(teamNumber) {
-			const inputElement = page.getByLabel(`Test team ${teamNumber.toString(10)}`);
+		async changeCheckedRadioButton(teamNumber, value) {
+			const inputElement = page
+				.locator("section")
+				.filter({ hasText: `Test team ${teamNumber}` })
+				.getByLabel(value.toString());
 
-			return inputElement.inputValue();
+			await inputElement.check();
 		},
 		clickNextRoundButton() {
 			const nextRoundButton = page.getByText(selectors.nextRound);

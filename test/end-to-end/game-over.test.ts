@@ -6,13 +6,13 @@ test("shows the winner game when game is over", async ({ page, gamePage }) => {
 
 	await gamePage.fillTeamsForm();
 	await gamePage.submitTeamsForm();
-	await gamePage.changeRangeInputValue(1, 4);
+	await gamePage.changeCheckedRadioButton(1, 4);
 	await gamePage.clickNextRoundButton();
-	await gamePage.changeRangeInputValue(1, 4);
+	await gamePage.changeCheckedRadioButton(1, 4);
 	await gamePage.clickNextRoundButton();
-	await gamePage.changeRangeInputValue(1, 4);
+	await gamePage.changeCheckedRadioButton(1, 4);
 	await gamePage.clickNextRoundButton();
-	await gamePage.changeRangeInputValue(1, 3);
+	await gamePage.changeCheckedRadioButton(1, 3);
 	await gamePage.clickNextRoundButton();
 
 	const headingElement = page.getByText('Gewonnen hat: Team "Test team 1"');
@@ -26,13 +26,13 @@ test("starts a new game when clicking on new game button", async ({ page, gamePa
 
 	await gamePage.fillTeamsForm();
 	await gamePage.submitTeamsForm();
-	await gamePage.changeRangeInputValue(1, 4);
+	await gamePage.changeCheckedRadioButton(1, 4);
 	await gamePage.clickNextRoundButton();
-	await gamePage.changeRangeInputValue(1, 4);
+	await gamePage.changeCheckedRadioButton(1, 4);
 	await gamePage.clickNextRoundButton();
-	await gamePage.changeRangeInputValue(1, 4);
+	await gamePage.changeCheckedRadioButton(1, 4);
 	await gamePage.clickNextRoundButton();
-	await gamePage.changeRangeInputValue(1, 3);
+	await gamePage.changeCheckedRadioButton(1, 3);
 	await gamePage.clickNextRoundButton();
 
 	const newGameButtonElement = page.getByText("Neues Spiel");
