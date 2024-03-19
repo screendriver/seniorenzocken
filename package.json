@@ -83,6 +83,6 @@
 		"type-fest": "4.13.0",
 		"typescript": "5.4.2",
 		"vite": "5.1.6",
-		"wrangler": "3.34.2"
+		"wrangler": "3.35.0"
 	}
 }
