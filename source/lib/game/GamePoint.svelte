@@ -15,7 +15,7 @@
 		gameStore.setCurrentGamePoints(team, gamePoint);
 	}
 
-	$: teamAreaClassName = `gap-2 items-center mx-3 mt-3 join bg-info text-info-content ${
+	$: teamAreaClassName = `gap-2 items-center mx-3 mt-3 join text-info-content ${
 		team.isStretched ? "bg-error" : "bg-info"
 	}`;
 </script>
