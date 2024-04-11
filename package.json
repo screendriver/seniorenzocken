@@ -46,7 +46,7 @@
 		"@playwright/test": "1.43.0",
 		"@sveltejs/adapter-cloudflare": "4.2.1",
 		"@sveltejs/kit": "2.5.5",
-		"@sveltejs/vite-plugin-svelte": "3.0.2",
+		"@sveltejs/vite-plugin-svelte": "3.1.0",
 		"@types/canvas-confetti": "1.6.4",
 		"@types/dom-screen-wake-lock": "1.0.3",
 		"@types/lodash.sample": "4.2.9",
