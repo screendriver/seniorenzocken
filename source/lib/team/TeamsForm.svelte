@@ -9,12 +9,12 @@
 	}
 </script>
 
-<div class="-top-20 items-center m-auto mx-5 shadow-md sm:mx-auto sm:max-w-xl card bg-base-200/90">
+<div class="card -top-20 m-auto mx-5 items-center bg-base-200/90 shadow-md sm:mx-auto sm:max-w-xl">
 	<form name="teams" on:submit|preventDefault class="card-body">
 		<Team team={$gameStore.teams[0]} on:teamNameChange={updateChangedTeamName} />
 		<Team team={$gameStore.teams[1]} on:teamNameChange={updateChangedTeamName} />
 
-		<div class="justify-center card-actions">
+		<div class="card-actions justify-center">
 			<button
 				type="button"
 				class="btn btn-primary"

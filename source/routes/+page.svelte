@@ -58,7 +58,7 @@
 <SettingsMenu />
 
 <header class="hero">
-	<img src={headerImageUrl} alt="Karten" class="object-cover h-48 blur-sm" />
+	<img src={headerImageUrl} alt="Karten" class="h-48 object-cover blur-sm" />
 </header>
 
 <main class="flex-1">
@@ -74,7 +74,7 @@
 	{/if}
 </main>
 
-<footer class="justify-end p-5 footer bg-base-300">
+<footer class="footer justify-end bg-base-300 p-5">
 	<a href="https://github.com/screendriver/seniorenzocken" title="GitHub">
 		<GithubIcon size="24" class="hover:link-info" />
 	</a>

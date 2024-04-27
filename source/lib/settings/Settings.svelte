@@ -26,9 +26,9 @@
 	}
 </script>
 
-<menu class="p-2 ml-1 w-max shadow menu dropdown-content z-[1] bg-base-100 rounded-box">
+<menu class="menu dropdown-content z-[1] ml-1 w-max rounded-box bg-base-100 p-2 shadow">
 	<li class="form-control">
-		<label class="cursor-pointer label">
+		<label class="label cursor-pointer">
 			<span class="label-text">Display aktiv</span>
 			<input
 				type="checkbox"
@@ -41,7 +41,7 @@
 	</li>
 	<li class="mt-4"></li>
 	<li class="form-control">
-		<label class="cursor-pointer label">
+		<label class="label cursor-pointer">
 			<span class="label-text">Punktestand vorlesen</span>
 			<input type="checkbox" checked={isAudioEnabled} on:change={toggleAudio} class="checkbox" />
 		</label>
