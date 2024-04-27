@@ -23,7 +23,7 @@
 	const placeholder = `Team ${team.teamNumber}`;
 </script>
 
-<label class="flex gap-2 items-center whitespace-nowrap input input-bordered">
+<label class="input input-bordered flex items-center gap-2 whitespace-nowrap">
 	{placeholder}
 	<input
 		type="text"

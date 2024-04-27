@@ -16,8 +16,8 @@
 	}
 </script>
 
-<details title="Menü" class="absolute z-10 dropdown">
-	<summary class="m-1 btn">
+<details title="Menü" class="dropdown absolute z-10">
+	<summary class="btn m-1">
 		<MenuIcon size="30" class="cursor-pointer" />
 	</summary>
 

@@ -11,9 +11,9 @@
 <!-- Copied from https://codepen.io/agalliat/pen/mdedZYK -->
 
 <main
-	class="box-border h-screen flex justify-center items-center font-normal p-2.5 bg-[#000084] text-[10px] text-[#bbb] sm:text-base lg:text-[24px] lg:font-normal !leading-none"
+	class="box-border flex h-screen items-center justify-center bg-[#000084] p-2.5 text-[10px] font-normal !leading-none text-[#bbb] sm:text-base lg:text-[24px] lg:font-normal"
 >
-	<div class="w-[70ch] h-[25ch]">
+	<div class="h-[25ch] w-[70ch]">
 		<div class="text-center">
 			<span class="bg-[#bbb] text-[#000084]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;
 		</div>

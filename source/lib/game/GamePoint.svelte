@@ -20,17 +20,17 @@
 	}`;
 </script>
 
-<section class="flex flex-col gap-3 w-full rounded-lg bg-slate-600">
+<section class="flex w-full flex-col gap-3 rounded-lg bg-slate-600">
 	<div class={teamAreaClassName}>
-		<UsersIcon size="40" class="p-2 join-item" />
-		<cite class="flex-grow not-italic join-item">{team.teamName}</cite>
-		<mark class="self-stretch h-auto badge badge-accent join-item">
+		<UsersIcon size="40" class="join-item p-2" />
+		<cite class="join-item flex-grow not-italic">{team.teamName}</cite>
+		<mark class="badge join-item badge-accent h-auto self-stretch">
 			<span class="countdown">
 				<span style={`--value: ${team.totalGamePoints};`} />
 			</span>
 		</mark>
 	</div>
-	<div class="m-3 join">
+	<div class="join m-3">
 		{#each availableGamePoints as availableGamePoint (availableGamePoint)}
 			<input
 				type="radio"
@@ -39,7 +39,7 @@
 				value={availableGamePoint}
 				checked={team.currentGamePoints === availableGamePoint}
 				aria-label={`${availableGamePoint}`}
-				class="flex-grow join-item btn"
+				class="btn join-item flex-grow"
 				on:change={setGamePoint}
 			/>
 		{/each}

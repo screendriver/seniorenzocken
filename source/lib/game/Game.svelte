@@ -23,7 +23,7 @@
 
 <form
 	on:submit|preventDefault
-	class="-top-20 gap-6 items-center p-8 mx-5 rounded-lg sm:mx-auto sm:max-w-lg card bg-base-200/90"
+	class="card -top-20 mx-5 items-center gap-6 rounded-lg bg-base-200/90 p-8 sm:mx-auto sm:max-w-lg"
 >
 	{#each $gameStore.teams as team (team.teamNumber)}
 		{@const enabled = (allTeamsAtZeroGamePoints || team.currentGamePoints > 0) && !$gameStore.audioPlaying}

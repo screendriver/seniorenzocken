@@ -24,7 +24,7 @@
 </script>
 
 <section
-	class="flex flex-col gap-6 items-center p-8 m-10 mt-16 bg-opacity-90 rounded-lg shadow-md sm:mx-auto sm:max-w-lg bg-slate-800"
+	class="m-10 mt-16 flex flex-col items-center gap-6 rounded-lg bg-slate-800 bg-opacity-90 p-8 shadow-md sm:mx-auto sm:max-w-lg"
 >
 	<h1>{wonText}</h1>
 
