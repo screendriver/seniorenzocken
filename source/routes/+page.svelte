@@ -41,18 +41,6 @@
 	});
 </script>
 
-<svelte:head>
-	{#if import.meta.env.MODE === "production"}
-		<script
-			async={true}
-			defer={true}
-			data-website-id="919705a2-2dee-42e9-8a2d-e24cbaaee0c1"
-			data-do-not-track="true"
-			src="https://statistics.echooff.de/tasty.js"
-		></script>
-	{/if}
-</svelte:head>
-
 <WakeLock />
 
 <SettingsMenu />
