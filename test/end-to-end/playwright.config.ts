@@ -11,7 +11,7 @@ export default defineConfig({
 	retries: 2,
 	forbidOnly: isRunningInContinuousIntegration(),
 	webServer: {
-		command: "npm run preview:end-to-end",
+		command: "just preview-end-to-end",
 		port: 4173,
 	},
 	projects: [
