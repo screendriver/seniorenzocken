@@ -11,22 +11,7 @@
 	"volta": {
 		"node": "20.14.0"
 	},
-	"scripts": {
-		"lint": "prettier --check . && eslint --ext '.ts,.svelte' --cache --cache-location './target/.eslintcache' . && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && ls-lint",
-		"precompile": "svelte-kit sync",
-		"compile": "tsc",
-		"predevelop": "svelte-kit sync",
-		"develop": "tsx ./source/start-develop.ts",
-		"prebuild": "svelte-kit sync",
-		"build": "vite build",
-		"start": "vite preview --port 4173 --strictPort",
-		"pretest:unit": "npm run compile",
-		"test:unit": "ava",
-		"test:unit:coverage": "c8 npm run test:unit",
-		"preview:end-to-end": "tsx ./source/preview-end-to-end.ts",
-		"pretest:end-to-end": "svelte-kit sync",
-		"test:end-to-end": "playwright test --config=test/end-to-end/playwright.config.ts"
-	},
+	"scripts": {},
 	"dependencies": {
 		"@sindresorhus/is": "6.2.0",
 		"canvas-confetti": "1.9.2",
