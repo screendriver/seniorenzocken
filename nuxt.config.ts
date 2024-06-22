@@ -8,6 +8,7 @@ export default defineNuxtConfig({
 				lang: "de",
 				"data-theme": "business",
 			},
+			title: "Seniorenzocken",
 		},
 	},
 });
