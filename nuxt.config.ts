@@ -2,6 +2,9 @@
 export default defineNuxtConfig({
 	devtools: { enabled: true },
 	modules: ["@nuxtjs/tailwindcss", "@nuxt/eslint"],
+	nitro: {
+		preset: "node-server",
+	},
 	app: {
 		head: {
 			htmlAttrs: {
