@@ -9,10 +9,10 @@ test:
 	npx nuxi typecheck
 
 build:
-	npx nuxt build
+	npx nuxi build
 
 develop:
-	npx nuxt dev
+	npx nuxi dev
 
 generate:
 	npx nuxt generate
