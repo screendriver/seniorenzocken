@@ -4,6 +4,9 @@ default:
 lint:
 	npx prettier --check .
 
+test:
+	npx nuxi typecheck
+
 build:
 	npx nuxt build
 
