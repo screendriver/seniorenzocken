@@ -3,6 +3,7 @@ default:
 
 lint:
 	npx prettier --check .
+	npx eslint .
 
 test:
 	npx nuxi typecheck
