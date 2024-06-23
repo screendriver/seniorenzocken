@@ -1,17 +1,16 @@
-default:
-  just --list
+default: develop
 
 lint:
 	npx prettier --check .
 	npx eslint .
 
-test:
+@test:
 	npx nuxi typecheck
 
-build:
+@build:
 	npx nuxi build
 
-develop:
+@develop:
 	npx nuxi dev
 
 generate:
