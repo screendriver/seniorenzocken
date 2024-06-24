@@ -4,7 +4,10 @@ lint:
 	npx prettier --check .
 	npx eslint .
 
-@test:
+test-unit *options:
+	npx vitest {{options}}
+
+test: && (test-unit "--run")
 	npx nuxi typecheck
 
 @build:
