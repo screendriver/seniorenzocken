@@ -7,7 +7,7 @@ lint:
 test-unit *options:
 	npx vitest {{options}}
 
-test: && (test-unit "--run")
+test: && (test-unit "--run") lint
 	npx nuxi typecheck
 
 @build:
