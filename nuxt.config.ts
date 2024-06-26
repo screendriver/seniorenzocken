@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 	devtools: { enabled: true },
-	modules: ["@nuxtjs/tailwindcss", "@nuxt/eslint", "@nuxt/test-utils/module", "@vueuse/nuxt"],
+	modules: ["@nuxtjs/tailwindcss", "@nuxt/eslint", "@nuxt/test-utils/module", "@vueuse/nuxt", "@pinia/nuxt"],
 	nitro: {
 		preset: "node-server",
 	},
