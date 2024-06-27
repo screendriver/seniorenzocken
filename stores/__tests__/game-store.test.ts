@@ -84,3 +84,12 @@ test(
 		expect(gameStore.gameRounds).toEqual([]);
 	}),
 );
+
+test(
+	'game store has an initial "show confetti" property set',
+	withActivePinia(() => {
+		const gameStore = useGameStore();
+
+		expect(gameStore.showConfetti).toBe(false);
+	}),
+);
