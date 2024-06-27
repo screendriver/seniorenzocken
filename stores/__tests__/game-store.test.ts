@@ -26,7 +26,7 @@ test(
 		const gameStore = useGameStore();
 		const expected = teamFactory.build({ teamNumber: 1 });
 
-		expect(gameStore.team1).toEqual(expected);
+		expect(gameStore.team1).toStrictEqual(expected);
 	}),
 );
 
@@ -36,7 +36,7 @@ test(
 		const gameStore = useGameStore();
 		const expected = teamFactory.build({ teamNumber: 2 });
 
-		expect(gameStore.team2).toEqual(expected);
+		expect(gameStore.team2).toStrictEqual(expected);
 	}),
 );
 
@@ -81,7 +81,7 @@ test(
 	withActivePinia(() => {
 		const gameStore = useGameStore();
 
-		expect(gameStore.gameRounds).toEqual([]);
+		expect(gameStore.gameRounds).toHaveLength(0);
 	}),
 );
 
