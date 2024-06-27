@@ -66,3 +66,12 @@ test(
 		expect(gameStore.shouldPlayAudio).toBe(true);
 	}),
 );
+
+test(
+	'game store has an initial "is audio playing" property set',
+	withActivePinia(() => {
+		const gameStore = useGameStore();
+
+		expect(gameStore.isAudioPlaying).toBe(false);
+	}),
+);
