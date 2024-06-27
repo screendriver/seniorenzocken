@@ -7,6 +7,7 @@
 	},
 	"dependencies": {
 		"@pinia/nuxt": "0.5.1",
+		"@sindresorhus/is": "6.3.1",
 		"@vueuse/core": "10.11.0",
 		"@vueuse/nuxt": "10.11.0",
 		"nuxt": "3.12.2",
