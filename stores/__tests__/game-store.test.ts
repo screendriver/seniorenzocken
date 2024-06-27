@@ -1,4 +1,4 @@
-import { test, expect, type TestFunction } from "vitest";
+import { test, expect, beforeEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { Factory } from "fishery";
 import { useGameStore } from "../game-store";
@@ -12,84 +12,73 @@ const teamFactory = Factory.define<Team>(() => {
 	};
 });
 
-function withActivePinia(test: () => void): TestFunction {
+beforeEach(() => {
 	setActivePinia(createPinia());
+});
 
-	return () => {
-		test();
-	};
-}
+test("game store has an initial team1 set", () => {
+	const gameStore = useGameStore();
+	const expected = teamFactory.build({ teamNumber: 1 });
 
-test(
-	"game store has an initial team1 set",
-	withActivePinia(() => {
-		const gameStore = useGameStore();
-		const expected = teamFactory.build({ teamNumber: 1 });
+	expect(gameStore.team1).toStrictEqual(expected);
+});
 
-		expect(gameStore.team1).toStrictEqual(expected);
-	}),
-);
+test("game store has an initial team2 set", () => {
+	const gameStore = useGameStore();
+	const expected = teamFactory.build({ teamNumber: 2 });
 
-test(
-	"game store has an initial team2 set",
-	withActivePinia(() => {
-		const gameStore = useGameStore();
-		const expected = teamFactory.build({ teamNumber: 2 });
+	expect(gameStore.team2).toStrictEqual(expected);
+});
 
-		expect(gameStore.team2).toStrictEqual(expected);
-	}),
-);
+test("game store has an initial team 1 game point set", () => {
+	const gameStore = useGameStore();
 
-test(
-	"game store has an initial team 1 game point set",
-	withActivePinia(() => {
-		const gameStore = useGameStore();
+	expect(gameStore.team1GamePoint).toBe(0);
+});
 
-		expect(gameStore.team1GamePoint).toBe(0);
-	}),
-);
+test("game store has an initial team 2 game point set", () => {
+	const gameStore = useGameStore();
 
-test(
-	"game store has an initial team 2 game point set",
-	withActivePinia(() => {
-		const gameStore = useGameStore();
+	expect(gameStore.team2GamePoint).toBe(0);
+});
 
-		expect(gameStore.team2GamePoint).toBe(0);
-	}),
-);
+test('game store has an initial "should play audio" property set', () => {
+	const gameStore = useGameStore();
 
-test(
-	'game store has an initial "should play audio" property set',
-	withActivePinia(() => {
-		const gameStore = useGameStore();
+	expect(gameStore.shouldPlayAudio).toBe(true);
+});
 
-		expect(gameStore.shouldPlayAudio).toBe(true);
-	}),
-);
+test('game store has an initial "is audio playing" property set', () => {
+	const gameStore = useGameStore();
 
-test(
-	'game store has an initial "is audio playing" property set',
-	withActivePinia(() => {
-		const gameStore = useGameStore();
+	expect(gameStore.isAudioPlaying).toBe(false);
+});
 
-		expect(gameStore.isAudioPlaying).toBe(false);
-	}),
-);
+test("game store has an initial game rounds property set", () => {
+	const gameStore = useGameStore();
 
-test(
-	"game store has an initial game rounds property set",
-	withActivePinia(() => {
-		const gameStore = useGameStore();
+	expect(gameStore.gameRounds).toHaveLength(0);
+});
 
-		expect(gameStore.gameRounds).toHaveLength(0);
-	}),
-);
+test('game store has an initial "show confetti" property set', () => {
+	const gameStore = useGameStore();
 
-test(
-	'game store has an initial "show confetti" property set',
-	withActivePinia(() => {
-		const gameStore = useGameStore();
+	expect(gameStore.showConfetti).toBe(false);
+});
 
-		expect(gameStore.showConfetti).toBe(false);
-	}),
-);
+test('game store toggleShouldPlayAudio() sets "shouldPlayAudio" to false when it was previously true', () => {
+	const gameStore = useGameStore();
+
+	gameStore.toggleShouldPlayAudio();
+
+	expect(gameStore.shouldPlayAudio).toBe(false);
+});
+
+test('game store toggleShouldPlayAudio() sets "shouldPlayAudio" to true when it was previously false', () => {
+	const gameStore = useGameStore();
+
+	gameStore.toggleShouldPlayAudio();
+	gameStore.toggleShouldPlayAudio();
+
+	expect(gameStore.shouldPlayAudio).toBe(true);
+});
