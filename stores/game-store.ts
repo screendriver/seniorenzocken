@@ -1,10 +1,12 @@
 import { createInitialTeam, type Team } from "./team";
+import type { GamePoint } from "./game-points";
 
 export const useGameStore = defineStore("game", () => {
 	const team1: Ref<Team> = ref(createInitialTeam(1));
 	const team2: Ref<Team> = ref(createInitialTeam(2));
+	const team1GamePoint = ref<GamePoint>(0);
 
-	return { team1, team2 };
+	return { team1, team2, team1GamePoint };
 });
 
 if (import.meta.hot) {
