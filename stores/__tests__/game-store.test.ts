@@ -75,3 +75,12 @@ test(
 		expect(gameStore.isAudioPlaying).toBe(false);
 	}),
 );
+
+test(
+	"game store has an initial game rounds property set",
+	withActivePinia(() => {
+		const gameStore = useGameStore();
+
+		expect(gameStore.gameRounds).toEqual([]);
+	}),
+);
