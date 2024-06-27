@@ -48,3 +48,12 @@ test(
 		expect(gameStore.team1GamePoint).toBe(0);
 	}),
 );
+
+test(
+	"game store has an initial team 2 game point set",
+	withActivePinia(() => {
+		const gameStore = useGameStore();
+
+		expect(gameStore.team2GamePoint).toBe(0);
+	}),
+);
