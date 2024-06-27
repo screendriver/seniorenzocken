@@ -19,7 +19,7 @@ export default withNuxt({
 		"vitest/no-disabled-tests": "error",
 		"vitest/no-duplicate-hooks": "error",
 		"vitest/no-focused-tests": "error",
-		"vitest/no-hooks": "error",
+		"vitest/no-hooks": "off",
 		"vitest/no-identical-title": "error",
 		"vitest/no-import-node-test": "error",
 		"vitest/no-interpolation-in-snapshots": "error",
