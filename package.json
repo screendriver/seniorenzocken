@@ -6,6 +6,7 @@
 		"postinstall": "nuxt prepare"
 	},
 	"dependencies": {
+		"@kalimahapps/vue-icons": "1.7.1",
 		"@pinia/nuxt": "0.5.1",
 		"@sindresorhus/is": "6.3.1",
 		"@vueuse/core": "10.11.0",
