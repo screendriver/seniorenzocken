@@ -6,8 +6,9 @@ export const useGameStore = defineStore("game", () => {
 	const team2: Ref<Team> = ref(createInitialTeam(2));
 	const team1GamePoint = ref<GamePoint>(0);
 	const team2GamePoint = ref<GamePoint>(0);
+	const shouldPlayAudio = ref(true);
 
-	return { team1, team2, team1GamePoint, team2GamePoint };
+	return { team1, team2, team1GamePoint, team2GamePoint, shouldPlayAudio };
 });
 
 if (import.meta.hot) {

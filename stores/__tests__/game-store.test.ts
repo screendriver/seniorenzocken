@@ -57,3 +57,12 @@ test(
 		expect(gameStore.team2GamePoint).toBe(0);
 	}),
 );
+
+test(
+	'game store has an initial "should play audio" property set',
+	withActivePinia(() => {
+		const gameStore = useGameStore();
+
+		expect(gameStore.shouldPlayAudio).toBe(true);
+	}),
+);
