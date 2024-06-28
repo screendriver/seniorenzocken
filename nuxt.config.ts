@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-	devtools: { enabled: true },
+	future: {
+		compatibilityVersion: 4,
+	},
 	modules: ["@nuxtjs/tailwindcss", "@nuxt/eslint", "@nuxt/test-utils/module", "@vueuse/nuxt", "@pinia/nuxt"],
 	nitro: {
 		preset: "node-server",
