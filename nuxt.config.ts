@@ -3,7 +3,6 @@ export default defineNuxtConfig({
 	future: {
 		compatibilityVersion: 4,
 	},
-	devtools: { enabled: true },
 	modules: ["@nuxtjs/tailwindcss", "@nuxt/eslint", "@nuxt/test-utils/module", "@vueuse/nuxt", "@pinia/nuxt"],
 	nitro: {
 		preset: "node-server",
