@@ -58,7 +58,7 @@ test('<SettingsDrawer /> renders a label "Display aktiv"', async () => {
 	const labelTexts = wrapper.findAll(".label-text");
 
 	expect(labelTexts).toHaveLength(2);
-	expect(labelTexts[0].text()).toBe("Display aktiv");
+	expect(labelTexts[0]?.text()).toBe("Display aktiv");
 });
 
 test('<SettingsDrawer /> renders a label "Punkestand vorlesen"', async () => {
@@ -67,7 +67,7 @@ test('<SettingsDrawer /> renders a label "Punkestand vorlesen"', async () => {
 	const labelTexts = wrapper.findAll(".label-text");
 
 	expect(labelTexts).toHaveLength(2);
-	expect(labelTexts[1].text()).toBe("Punktestand vorlesen");
+	expect(labelTexts[1]?.text()).toBe("Punktestand vorlesen");
 });
 
 test('<SettingsDrawer /> toggles if audio should be played when checkbox "Punktestand vorlesen" gets checked', async () => {
