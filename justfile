@@ -1,6 +1,9 @@
 default:
 	just --list
 
+lint-fix:
+	npx eslint --fix .
+
 lint:
 	npx prettier --check .
 	npx eslint .

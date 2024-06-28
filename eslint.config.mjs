@@ -1,10 +1,18 @@
 // @ts-check
 import withNuxt from "./.nuxt/eslint.config.mjs";
+// @ts-expect-error
+import eslintConfigPrettier from "eslint-config-prettier";
+import eslintPluginPrettier from "eslint-plugin-prettier";
 import vitest from "eslint-plugin-vitest";
 
 export default withNuxt({
-	plugins: { vitest },
+	plugins: {
+		vitest,
+		prettier: eslintPluginPrettier,
+	},
 	rules: {
+		...eslintConfigPrettier.rules,
+
 		"vitest/consistent-test-filename": "error",
 		"vitest/consistent-test-it": ["error", { fn: "test", withinDescribe: "test" }],
 		"vitest/expect-expect": "error",
@@ -19,7 +27,7 @@ export default withNuxt({
 		"vitest/no-disabled-tests": "error",
 		"vitest/no-duplicate-hooks": "error",
 		"vitest/no-focused-tests": "error",
-		"vitest/no-hooks": "error",
+		"vitest/no-hooks": "off",
 		"vitest/no-identical-title": "error",
 		"vitest/no-import-node-test": "error",
 		"vitest/no-interpolation-in-snapshots": "error",
