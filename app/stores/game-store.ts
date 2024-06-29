@@ -28,6 +28,8 @@ export const useGameStore = defineStore("game", () => {
 	};
 });
 
+export type GameStore = ReturnType<typeof useGameStore>;
+
 if (import.meta.hot) {
 	import.meta.hot.accept(acceptHMRUpdate(useGameStore, import.meta.hot));
 }
