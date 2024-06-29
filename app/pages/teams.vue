@@ -25,11 +25,11 @@ function navigateToGame(): void {
 		>
 			<label :class="inputClassNames">
 				Team 1
-				<input v-model="gameStore.team1.teamName" id="team1-name" type="text" placeholder="Name" class="grow" />
+				<input id="team1-name" v-model="gameStore.team1.teamName" type="text" placeholder="Name" class="grow" />
 			</label>
 			<label :class="inputClassNames">
 				Team 2
-				<input v-model="gameStore.team2.teamName" id="team2-name" type="text" placeholder="Name" class="grow" />
+				<input id="team2-name" v-model="gameStore.team2.teamName" type="text" placeholder="Name" class="grow" />
 			</label>
 			<div class="col-span-full justify-self-center">
 				<input :disabled="isSubmitDisabled" type="submit" value="Spiel starten" class="btn btn-primary" />
