@@ -74,8 +74,8 @@ test('<SettingsDrawer /> toggles if audio should be played when checkbox "Punkte
 	const wrapper = await mountSettingsDrawer();
 	const gameStore = useGameStore();
 
-	const playAudioCheckbox = wrapper.find("#play-audio");
-	playAudioCheckbox.trigger("change");
+	const playAudioCheckbox = wrapper.get("#play-audio");
+	await playAudioCheckbox.trigger("change");
 
 	expect(gameStore.toggleShouldPlayAudio).toHaveBeenCalledOnce();
 });
