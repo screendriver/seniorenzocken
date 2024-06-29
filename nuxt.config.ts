@@ -10,6 +10,7 @@ export default defineNuxtConfig({
 		"@vueuse/nuxt",
 		"@pinia/nuxt",
 		"@nuxtjs/html-validator",
+		"nuxt-typed-router",
 	],
 	nitro: {
 		preset: "node-server",
@@ -31,4 +32,3 @@ export default defineNuxtConfig({
 		},
 	},
 });
-
