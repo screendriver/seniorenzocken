@@ -32,7 +32,7 @@ function navigateToGame(): void {
 				<input id="team2-name" v-model="gameStore.team2.teamName" type="text" placeholder="Name" class="grow" />
 			</label>
 			<div class="col-span-full justify-self-center">
-				<input :disabled="isSubmitDisabled" type="submit" value="Spiel starten" class="btn btn-primary" />
+				<button :disabled="isSubmitDisabled" type="submit" class="btn btn-primary">Spiel starten</button>
 			</div>
 		</form>
 	</section>

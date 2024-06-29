@@ -46,16 +46,17 @@ test('<Teams /> renders a "Team 2" label', async () => {
 test("<Teams /> renders a submit button", async () => {
 	const wrapper = await mountTeams();
 
-	const submitButton = wrapper.find('input[type="submit"]');
-	const valueAttribute = submitButton.attributes()["value"];
+	const submitButton = wrapper.find("button");
+	const typeAttribute = submitButton.attributes()["type"];
 
-	expect(valueAttribute).toBe("Spiel starten");
+	expect(typeAttribute).toBe("submit");
+	expect(submitButton.text()).toBe("Spiel starten");
 });
 
 test("<Teams /> submit button is disabled by default", async () => {
 	const wrapper = await mountTeams();
 
-	const submitButton = wrapper.get('input[type="submit"]');
+	const submitButton = wrapper.get("button");
 	const disabledAttribute = submitButton.attributes()["disabled"];
 
 	expect(disabledAttribute).toBe("");
@@ -66,7 +67,7 @@ test("<Teams /> submit button is still disabled when Team 1 name is filled but T
 		team1: { teamName: "foo" },
 	});
 
-	const submitButton = wrapper.get('input[type="submit"]');
+	const submitButton = wrapper.get("button");
 	const disabledAttribute = submitButton.attributes()["disabled"];
 
 	expect(disabledAttribute).toBe("");
@@ -77,7 +78,7 @@ test("<Teams /> submit button is still disabled when Team 2 name is filled but T
 		team2: { teamName: "bar" },
 	});
 
-	const submitButton = wrapper.get('input[type="submit"]');
+	const submitButton = wrapper.get("button");
 	const disabledAttribute = submitButton.attributes()["disabled"];
 
 	expect(disabledAttribute).toBe("");
@@ -89,7 +90,7 @@ test("<Teams /> submit button is enabled when Team 1 and Team 2 name is filled",
 		team2: { teamName: "bar" },
 	});
 
-	const submitButton = wrapper.get('input[type="submit"]');
+	const submitButton = wrapper.get("button");
 	const disabledAttribute = submitButton.attributes()["disabled"];
 
 	expect(disabledAttribute).toBeUndefined();
