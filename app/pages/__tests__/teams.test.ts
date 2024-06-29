@@ -6,7 +6,7 @@ import type { PartialDeep } from "type-fest";
 import Teams from "../teams.vue";
 import type { GameStore } from "~/stores/game-store";
 
-mockNuxtImport<typeof navigateTo>("navigateTo", () => {
+mockNuxtImport("navigateTo", () => {
 	return vi.fn();
 });
 

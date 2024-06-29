@@ -30,6 +30,7 @@
 		"fishery": "2.2.2",
 		"happy-dom": "14.12.3",
 		"just-install": "2.0.1",
+		"nuxt-typed-router": "3.6.5",
 		"prettier": "3.3.2",
 		"type-fest": "4.20.1",
 		"typescript": "5.5.2",
