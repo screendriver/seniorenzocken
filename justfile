@@ -1,5 +1,5 @@
 default:
-	just --list
+	@just --list
 
 lint-fix:
 	npx eslint --fix .
