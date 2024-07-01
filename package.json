@@ -23,7 +23,7 @@
 		"@nuxtjs/tailwindcss": "6.12.0",
 		"@pinia/testing": "0.1.3",
 		"@vue/test-utils": "2.4.6",
-		"daisyui": "4.12.2",
+		"daisyui": "4.12.10",
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-prettier": "5.1.3",
 		"eslint-plugin-vitest": "0.5.4",
