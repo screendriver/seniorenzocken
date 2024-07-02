@@ -1,6 +1,9 @@
 default:
 	@just --list
 
+@prepare:
+	npx nuxi prepare
+
 lint-fix:
 	npx eslint --fix .
 
