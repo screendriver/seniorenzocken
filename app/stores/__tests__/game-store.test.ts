@@ -82,3 +82,35 @@ test('game store toggleShouldPlayAudio() sets "shouldPlayAudio" to true when it 
 
 	expect(gameStore.shouldPlayAudio).toBe(true);
 });
+
+test('game store "allTeamsAtZeroGamePoints" equals true when both teams has 0 game points', () => {
+	const gameStore = useGameStore();
+	gameStore.team1GamePoint = 0;
+	gameStore.team2GamePoint = 0;
+
+	expect(gameStore.allTeamsAtZeroGamePoints).toBe(true);
+});
+
+test('game store "allTeamsAtZeroGamePoints" equals false when team 1 has 0 game points', () => {
+	const gameStore = useGameStore();
+	gameStore.team1GamePoint = 0;
+	gameStore.team2GamePoint = 2;
+
+	expect(gameStore.allTeamsAtZeroGamePoints).toBe(false);
+});
+
+test('game store "allTeamsAtZeroGamePoints" equals false when team 2 has 0 game points', () => {
+	const gameStore = useGameStore();
+	gameStore.team1GamePoint = 2;
+	gameStore.team2GamePoint = 0;
+
+	expect(gameStore.allTeamsAtZeroGamePoints).toBe(false);
+});
+
+test('game store "allTeamsAtZeroGamePoints" equals false when both teams has 0 game points', () => {
+	const gameStore = useGameStore();
+	gameStore.team1GamePoint = 2;
+	gameStore.team2GamePoint = 2;
+
+	expect(gameStore.allTeamsAtZeroGamePoints).toBe(false);
+});
