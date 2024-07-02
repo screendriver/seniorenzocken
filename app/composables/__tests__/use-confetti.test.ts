@@ -30,5 +30,5 @@ test("useConfetti() calls given confetti function when confetti should be shown"
 		spread: 70,
 		origin: { y: 0.6 },
 	});
-	expect(gameStore.showConfetti).toBeFalsy();
+	expect(gameStore.showConfetti).toBe(false);
 });
