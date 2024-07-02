@@ -114,3 +114,58 @@ test('game store "allTeamsAtZeroGamePoints" equals false when both teams has 0 g
 
 	expect(gameStore.allTeamsAtZeroGamePoints).toBe(false);
 });
+
+test('game store "isGamePointEnabled" equals true when all teams has zero game points and given game point equals 0', () => {
+	const gameStore = useGameStore();
+	gameStore.isAudioPlaying = false;
+	gameStore.team1GamePoint = 0;
+	gameStore.team2GamePoint = 0;
+
+	const isGamePointEnabled = gameStore.isGamePointEnabled(0);
+
+	expect(isGamePointEnabled).toBe(true);
+});
+
+test('game store "isGamePointEnabled" equals true when all teams has zero game points and given game point is greater than 0', () => {
+	const gameStore = useGameStore();
+	gameStore.isAudioPlaying = false;
+	gameStore.team1GamePoint = 0;
+	gameStore.team2GamePoint = 0;
+
+	const isGamePointEnabled = gameStore.isGamePointEnabled(2);
+
+	expect(isGamePointEnabled).toBe(true);
+});
+
+test('game store "isGamePointEnabled" equals true when no team has zero game points but given game point is greater 0', () => {
+	const gameStore = useGameStore();
+	gameStore.isAudioPlaying = false;
+	gameStore.team1GamePoint = 2;
+	gameStore.team2GamePoint = 4;
+
+	const isGamePointEnabled = gameStore.isGamePointEnabled(2);
+
+	expect(isGamePointEnabled).toBe(true);
+});
+
+test('game store "isGamePointEnabled" equals false when no team has zero game points and given game point equals 0', () => {
+	const gameStore = useGameStore();
+	gameStore.isAudioPlaying = false;
+	gameStore.team1GamePoint = 2;
+	gameStore.team2GamePoint = 4;
+
+	const isGamePointEnabled = gameStore.isGamePointEnabled(0);
+
+	expect(isGamePointEnabled).toBe(false);
+});
+
+test('game store "isGamePointEnabled" equals false when audio is currently playing', () => {
+	const gameStore = useGameStore();
+	gameStore.isAudioPlaying = true;
+	gameStore.team1GamePoint = 2;
+	gameStore.team2GamePoint = 4;
+
+	const isGamePointEnabled = gameStore.isGamePointEnabled(2);
+
+	expect(isGamePointEnabled).toBe(false);
+});

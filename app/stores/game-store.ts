@@ -14,6 +14,15 @@ export const useGameStore = defineStore("game", () => {
 	const allTeamsAtZeroGamePoints = computed(() => {
 		return team1GamePoint.value === 0 && team2GamePoint.value === 0;
 	});
+	const isGamePointEnabled = computed(() => {
+		return (gamePoint: GamePoint): boolean => {
+			if (isAudioPlaying.value) {
+				return false;
+			}
+
+			return allTeamsAtZeroGamePoints.value || gamePoint > 0;
+		};
+	});
 
 	function toggleShouldPlayAudio(): void {
 		shouldPlayAudio.value = !shouldPlayAudio.value;
@@ -30,6 +39,7 @@ export const useGameStore = defineStore("game", () => {
 		showConfetti,
 		toggleShouldPlayAudio,
 		allTeamsAtZeroGamePoints,
+		isGamePointEnabled,
 	};
 });
 
