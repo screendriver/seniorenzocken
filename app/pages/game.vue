@@ -5,5 +5,9 @@ useConfetti(canvasConfetti);
 </script>
 
 <template>
-	<h1>Game</h1>
+	<section
+		class="col-start-1 col-end-5 grid grid-cols-subgrid rounded-xl bg-secondary sm:col-start-2 sm:col-end-4 md:col-start-3 md:col-end-7 lg:col-start-4 lg:col-end-10"
+	>
+		<GamePointForm />
+	</section>
 </template>
