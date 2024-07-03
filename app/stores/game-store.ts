@@ -23,6 +23,9 @@ export const useGameStore = defineStore("game", () => {
 			return allTeamsAtZeroGamePoints.value || gamePoint > 0;
 		};
 	});
+	const isNextGameRoundEnabled = computed(() => {
+		return !allTeamsAtZeroGamePoints.value && !isAudioPlaying.value;
+	});
 
 	function toggleShouldPlayAudio(): void {
 		shouldPlayAudio.value = !shouldPlayAudio.value;
@@ -40,6 +43,7 @@ export const useGameStore = defineStore("game", () => {
 		toggleShouldPlayAudio,
 		allTeamsAtZeroGamePoints,
 		isGamePointEnabled,
+		isNextGameRoundEnabled,
 	};
 });
 

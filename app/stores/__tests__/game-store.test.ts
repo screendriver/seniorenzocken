@@ -169,3 +169,57 @@ test('game store "isGamePointEnabled" equals false when audio is currently playi
 
 	expect(isGamePointEnabled).toBe(false);
 });
+
+test('game store "isNextGameRoundEnabled" equals false when all teams has 0 game points and audio is not playing', () => {
+	const gameStore = useGameStore();
+	gameStore.team1GamePoint = 0;
+	gameStore.team2GamePoint = 0;
+	gameStore.isAudioPlaying = false;
+
+	expect(gameStore.isNextGameRoundEnabled).toBe(false);
+});
+
+test('game store "isNextGameRoundEnabled" equals false when all teams has 0 game points and audio is playing', () => {
+	const gameStore = useGameStore();
+	gameStore.team1GamePoint = 0;
+	gameStore.team2GamePoint = 0;
+	gameStore.isAudioPlaying = true;
+
+	expect(gameStore.isNextGameRoundEnabled).toBe(false);
+});
+
+test('game store "isNextGameRoundEnabled" equals true when team 1 has 0 game points and audio is not playing', () => {
+	const gameStore = useGameStore();
+	gameStore.team1GamePoint = 0;
+	gameStore.team2GamePoint = 2;
+	gameStore.isAudioPlaying = false;
+
+	expect(gameStore.isNextGameRoundEnabled).toBe(true);
+});
+
+test('game store "isNextGameRoundEnabled" equals true when team 2 has 0 game points and audio is not playing', () => {
+	const gameStore = useGameStore();
+	gameStore.team1GamePoint = 2;
+	gameStore.team2GamePoint = 0;
+	gameStore.isAudioPlaying = false;
+
+	expect(gameStore.isNextGameRoundEnabled).toBe(true);
+});
+
+test('game store "isNextGameRoundEnabled" equals false when team 1 has 0 game points and audio is playing', () => {
+	const gameStore = useGameStore();
+	gameStore.team1GamePoint = 0;
+	gameStore.team2GamePoint = 2;
+	gameStore.isAudioPlaying = true;
+
+	expect(gameStore.isNextGameRoundEnabled).toBe(false);
+});
+
+test('game store "isNextGameRoundEnabled" equals false when team 2 has 0 game points and audio is playing', () => {
+	const gameStore = useGameStore();
+	gameStore.team1GamePoint = 2;
+	gameStore.team2GamePoint = 0;
+	gameStore.isAudioPlaying = true;
+
+	expect(gameStore.isNextGameRoundEnabled).toBe(false);
+});
