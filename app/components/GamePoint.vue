@@ -31,15 +31,15 @@ const teamAreaClassName = computed(() => {
 		<div class="join m-3">
 			<input
 				v-for="availableGamePoint in availableGamePoints"
+				:key="`${team.teamName}-${availableGamePoint}`"
 				type="radio"
 				:value="availableGamePoint.toString()"
 				:checked="gamePoint === availableGamePoint"
 				:disabled="!enabled"
 				:name="`${team.teamName}-${availableGamePoint}`"
 				:aria-label="availableGamePoint.toString()"
-				:key="`${team.teamName}-${availableGamePoint}`"
-				@click="updateGamePoint(availableGamePoint)"
 				class="btn join-item flex-grow"
+				@click="updateGamePoint(availableGamePoint)"
 			/>
 		</div>
 	</section>
