@@ -1,7 +1,6 @@
 import { test, expect, beforeEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { Factory } from "fishery";
-import { useGameStore } from "../game-store";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {
