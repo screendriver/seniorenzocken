@@ -1,8 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+	compatibilityDate: "2024-07-03",
+
 	future: {
 		compatibilityVersion: 4,
 	},
+
 	modules: [
 		"@nuxtjs/tailwindcss",
 		"@nuxt/eslint",
@@ -12,9 +15,11 @@ export default defineNuxtConfig({
 		"@nuxtjs/html-validator",
 		"nuxt-typed-router",
 	],
+
 	nitro: {
 		preset: "node-server",
 	},
+
 	app: {
 		head: {
 			htmlAttrs: {
@@ -32,3 +37,4 @@ export default defineNuxtConfig({
 		},
 	},
 });
+

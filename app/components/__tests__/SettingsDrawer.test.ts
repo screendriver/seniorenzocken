@@ -1,8 +1,8 @@
 import { test, expect, vi } from "vitest";
 import { mountSuspended, mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { createTestingPinia } from "@pinia/testing";
-import SettingsDrawer from "../SettingsDrawer.vue";
 import type { VueWrapper } from "@vue/test-utils";
+import SettingsDrawer from "../SettingsDrawer.vue";
 
 vi.resetModules();
 

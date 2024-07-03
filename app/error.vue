@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useEventListener } from "@vueuse/core";
-
 useEventListener("keydown", () => {
 	navigateTo({ path: "/teams", replace: true });
 });
