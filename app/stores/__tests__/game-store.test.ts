@@ -1,6 +1,7 @@
-import { test, expect, beforeEach } from "vitest";
+import { test, expect, beforeEach, vi, afterEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { Factory } from "fishery";
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {
@@ -11,8 +12,18 @@ const teamFactory = Factory.define<Team>(() => {
 	};
 });
 
+mockNuxtImport("useCloned", () => {
+	return vi.fn((source) => {
+		return { cloned: source };
+	});
+});
+
 beforeEach(() => {
 	setActivePinia(createPinia());
+});
+
+afterEach(() => {
+	vi.restoreAllMocks();
 });
 
 test("game store has an initial team1 set", () => {
@@ -221,4 +232,141 @@ test('game store "isNextGameRoundEnabled" equals false when team 2 has 0 game po
 	gameStore.isAudioPlaying = true;
 
 	expect(gameStore.isNextGameRoundEnabled).toBe(false);
+});
+
+test('game store "nextGameRound() sets new game points on team 1', () => {
+	const gameStore = useGameStore();
+	gameStore.team1GamePoint = 2;
+
+	expect(gameStore.team1.gamePoints).toBe(0);
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.team1.gamePoints).toBe(2);
+});
+
+test('game store "nextGameRound() sets new game points on team 2', () => {
+	const gameStore = useGameStore();
+	gameStore.team2GamePoint = 2;
+
+	expect(gameStore.team2.gamePoints).toBe(0);
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.team2.gamePoints).toBe(2);
+});
+
+test('game store "nextGameRound() sets "isStretched" to true when team 1 has 12 total game points', () => {
+	const gameStore = useGameStore();
+	gameStore.team1.gamePoints = 10;
+	gameStore.team1GamePoint = 2;
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.team1.isStretched).toBe(true);
+});
+
+test('game store "nextGameRound() sets "isStretched" to true when team 1 more than 12 total game points', () => {
+	const gameStore = useGameStore();
+	gameStore.team1.gamePoints = 10;
+	gameStore.team1GamePoint = 3;
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.team1.isStretched).toBe(true);
+});
+
+test('game store "nextGameRound() sets "isStretched" to true when team 2 has 12 total game points', () => {
+	const gameStore = useGameStore();
+	gameStore.team2.gamePoints = 10;
+	gameStore.team2GamePoint = 2;
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.team2.isStretched).toBe(true);
+});
+
+test('game store "nextGameRound() sets "isStretched" to true when team 2 more than 12 total game points', () => {
+	const gameStore = useGameStore();
+	gameStore.team2.gamePoints = 10;
+	gameStore.team2GamePoint = 3;
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.team2.isStretched).toBe(true);
+});
+
+test('game store "nextGameRound() sets "showConfetti" to false when team 1 has not reached maximum game points', () => {
+	const gameStore = useGameStore();
+
+	gameStore.team1GamePoint = 2;
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.showConfetti).toBe(false);
+});
+
+test('game store "nextGameRound() sets "showConfetti" to true when team 1 has reached maximum game points', () => {
+	const gameStore = useGameStore();
+
+	gameStore.team1GamePoint = 4;
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.showConfetti).toBe(true);
+});
+
+test('game store "nextGameRound() sets "showConfetti" to false when team 2 has not reached maximum game points', () => {
+	const gameStore = useGameStore();
+
+	gameStore.team2GamePoint = 2;
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.showConfetti).toBe(false);
+});
+
+test('game store "nextGameRound() sets "showConfetti" to true when team 2 has reached maximum game points', () => {
+	const gameStore = useGameStore();
+
+	gameStore.team2GamePoint = 4;
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.showConfetti).toBe(true);
+});
+
+test('game store "nextGameRound() resets team 1 and 2 game point to 0', () => {
+	const gameStore = useGameStore();
+
+	gameStore.team1GamePoint = 2;
+	gameStore.team2GamePoint = 4;
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.team1GamePoint).toBe(0);
+	expect(gameStore.team2GamePoint).toBe(0);
+});
+
+test('game store "nextGameRound() sets "isAudioPlaying" to the value of "shouldPlayAudio"', () => {
+	const gameStore = useGameStore();
+
+	gameStore.shouldPlayAudio = true;
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.isAudioPlaying).toBe(true);
+});
+
+test('game store "nextGameRound() adds a new game round with cloned teams', () => {
+	const gameStore = useGameStore();
+
+	gameStore.nextGameRound();
+
+	expect(useCloned).toHaveBeenCalledTimes(2);
+	expect(gameStore.gameRounds).toHaveLength(1);
+	expect(gameStore.gameRounds).toContainEqual([
+		teamFactory.build({ teamNumber: 1 }),
+		teamFactory.build({ teamNumber: 2 }),
+	]);
 });
