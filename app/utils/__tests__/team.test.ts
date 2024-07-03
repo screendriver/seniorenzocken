@@ -1,6 +1,5 @@
 import { test, expect } from "vitest";
 import { Factory } from "fishery";
-import { createInitialTeam, type Team } from "../team";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {
