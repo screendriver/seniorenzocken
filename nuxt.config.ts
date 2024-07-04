@@ -34,6 +34,7 @@ export default defineNuxtConfig({
 				{ name: "theme-color", content: "#075985" },
 				{ name: "robots", content: "noimageindex" },
 			],
+			link: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg", sizes: "any" }],
 		},
 	},
 });
