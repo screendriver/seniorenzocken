@@ -37,4 +37,10 @@ export default defineNuxtConfig({
 			link: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg", sizes: "any" }],
 		},
 	},
+
+	runtimeConfig: {
+		public: {
+			pocketbaseBaseUrl: "http://localhost:8081",
+		},
+	},
 });

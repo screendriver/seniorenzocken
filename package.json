@@ -14,10 +14,13 @@
 		"canvas-confetti": "1.9.3",
 		"nuxt": "3.12.3",
 		"pinia": "2.1.7",
+		"pocketbase": "0.21.3",
+		"valibot": "0.35.0",
 		"vue": "3.4.31",
 		"vue-router": "4.4.0"
 	},
 	"devDependencies": {
+		"@fastify/cors": "9.0.1",
 		"@nuxt/eslint": "0.3.13",
 		"@nuxt/test-utils": "3.13.1",
 		"@nuxtjs/html-validator": "1.8.2",

@@ -1,10 +1,13 @@
 import createFastify from "fastify";
+import cors from "@fastify/cors";
 import { createPocketbaseRoutes } from "./routes/pocketbase";
 
 const fastify = createFastify({
 	disableRequestLogging: true,
 	logger: true,
 });
+
+await fastify.register(cors);
 
 fastify.get("/", () => {
 	return "Deterministic server is working";
