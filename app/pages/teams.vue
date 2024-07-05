@@ -2,7 +2,7 @@
 import { isEmptyString } from "@sindresorhus/is";
 
 const gameStore = useGameStore();
-const { team1, team2 } = storeToRefs(gameStore);
+const { team1, team2, isGameRunning } = storeToRefs(gameStore);
 
 const inputClassNames = "flex gap-2 items-center whitespace-nowrap col-span-full input input-bordered";
 
@@ -11,7 +11,9 @@ const isSubmitDisabled = computed<boolean>(() => {
 });
 
 function navigateToGame(): void {
-	navigateTo({ path: "/game", replace: true });
+	isGameRunning.value = true;
+
+	navigateTo({ name: "game", replace: true });
 }
 </script>
 

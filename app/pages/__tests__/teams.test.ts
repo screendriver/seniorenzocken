@@ -125,8 +125,10 @@ test("<Teams /> navigates to /game route when submitting the form", async () => 
 		team1: { teamName: "foo" },
 		team2: { teamName: "bar" },
 	});
+	const gameStore = useGameStore();
 
 	wrapper.find("form").trigger("submit");
 
-	expect(navigateTo).toHaveBeenCalledWith({ path: "/game", replace: true });
+	expect(gameStore.isGameRunning).toBe(true);
+	expect(navigateTo).toHaveBeenCalledWith({ name: "game", replace: true });
 });
