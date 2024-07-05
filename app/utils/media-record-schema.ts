@@ -4,8 +4,10 @@ const nonEmptyStringSchema = v.pipe(v.string(), v.minLength(1));
 
 export const mediaRecordSchema = v.pipe(
 	v.object({
+		collectionId: nonEmptyStringSchema,
+		fileName: v.pipe(v.array(nonEmptyStringSchema), v.minLength(1)),
+		id: nonEmptyStringSchema,
 		name: nonEmptyStringSchema,
-		path: v.pipe(v.array(nonEmptyStringSchema), v.minLength(1)),
 	}),
 	v.readonly(),
 );
