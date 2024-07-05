@@ -43,7 +43,7 @@
 		"type-fest": "4.21.0",
 		"typescript": "5.5.3",
 		"vitest": "1.6.0",
-		"vue-tsc": "2.0.24",
+		"vue-tsc": "2.0.26",
 		"wait-on": "7.2.0"
 	}
 }
