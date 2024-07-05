@@ -1,6 +1,7 @@
 export const useGameStore = defineStore("game", () => {
 	const team1: Ref<Team> = ref(createInitialTeam(1));
 	const team2: Ref<Team> = ref(createInitialTeam(2));
+	const isGameRunning = ref(false);
 	const team1GamePoint = ref<GamePoint>(0);
 	const team2GamePoint = ref<GamePoint>(0);
 	const shouldPlayAudio = ref(true);
@@ -47,6 +48,7 @@ export const useGameStore = defineStore("game", () => {
 	return {
 		team1,
 		team2,
+		isGameRunning,
 		team1GamePoint,
 		team2GamePoint,
 		shouldPlayAudio,

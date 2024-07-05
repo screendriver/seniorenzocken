@@ -23,7 +23,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-	vi.restoreAllMocks();
+	vi.clearAllMocks();
 });
 
 test("game store has an initial team1 set", () => {
@@ -50,6 +50,19 @@ test("game store has an initial team 2 game point set", () => {
 	const gameStore = useGameStore();
 
 	expect(gameStore.team2GamePoint).toBe(0);
+});
+
+test('game store has an initial "isGameRunning" set to false', () => {
+	const gameStore = useGameStore();
+
+	expect(gameStore.isGameRunning).toBe(false);
+});
+
+test('game store mutates "isGameRunning"', () => {
+	const gameStore = useGameStore();
+	gameStore.isGameRunning = true;
+
+	expect(gameStore.isGameRunning).toBe(true);
 });
 
 test('game store has an initial "should play audio" property set', () => {
