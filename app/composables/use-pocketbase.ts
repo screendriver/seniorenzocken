@@ -3,13 +3,15 @@ import * as v from "valibot";
 
 export function useMediaRecords() {
 	const runtimeConfig = useRuntimeConfig();
+	const pocketBase = new PocketBase(runtimeConfig.public.pocketBaseBaseUrl);
 
-	async function fetchFullList() {
-		const pb = new PocketBase(runtimeConfig.public.pocketbaseBaseUrl);
+	async function fetchAttentionMediaRecords(): Promise<MediaRecords> {
+		const records = await pocketBase.collection("media").getFullList({
+			filter: 'name = "attention"',
+		});
 
-		const records = await pb.collection("media").getFullList();
 		return v.parse(mediaRecordsSchema, records);
 	}
 
-	return { fetchFullList };
+	return { fetchAttentionMediaRecords };
 }

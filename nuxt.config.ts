@@ -40,7 +40,7 @@ export default defineNuxtConfig({
 
 	runtimeConfig: {
 		public: {
-			pocketbaseBaseUrl: "http://localhost:8081",
+			pocketBaseBaseUrl: "http://localhost:8081",
 		},
 	},
 });
