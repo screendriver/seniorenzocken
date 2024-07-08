@@ -6,8 +6,9 @@ export function useMediaRecords() {
 	const pocketBase = new PocketBase(runtimeConfig.public.pocketBaseBaseUrl);
 
 	async function fetchAttentionMediaRecords(): Promise<MediaRecords> {
-		const records = await pocketBase.collection("media").getFullList({
-			filter: 'name = "attention"',
+		const records = await pocketBase.collection("media").getList(1, 1, {
+			filter: 'name="attention"',
+			fields: "collectionId,fileName,id,name",
 		});
 
 		return v.parse(mediaRecordsSchema, records);
