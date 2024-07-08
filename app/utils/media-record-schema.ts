@@ -12,7 +12,12 @@ export const mediaRecordSchema = v.pipe(
 	v.readonly(),
 );
 
-export const mediaRecordsSchema = v.pipe(v.array(mediaRecordSchema), v.minLength(1), v.readonly());
+export const mediaRecordsSchema = v.pipe(
+	v.object({
+		items: v.pipe(v.array(mediaRecordSchema), v.minLength(1), v.readonly()),
+	}),
+	v.readonly(),
+);
 
 export type MediaRecord = v.InferOutput<typeof mediaRecordSchema>;
 
