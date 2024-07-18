@@ -40,7 +40,7 @@
 		"nuxt-typed-router": "3.6.5",
 		"prettier": "3.3.3",
 		"tsx": "4.16.2",
-		"type-fest": "4.22.0",
+		"type-fest": "4.22.1",
 		"typescript": "5.5.3",
 		"vitest": "1.6.0",
 		"vue-tsc": "2.0.26",
