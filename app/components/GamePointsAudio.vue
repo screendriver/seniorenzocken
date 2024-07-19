@@ -2,7 +2,8 @@
 import { isHtmlElement } from "@sindresorhus/is";
 
 const gameStore = useGameStore();
-const { isAudioPlaying, team1, team2 } = storeToRefs(gameStore);
+const { isAudioPlaying, team1, team2, isGameOver } = storeToRefs(gameStore);
+
 const audioPlaylistStore = useAudioPlaylistStore();
 const { audioSourceUrl } = storeToRefs(audioPlaylistStore);
 
@@ -10,7 +11,7 @@ const audioElementReference = ref<HTMLAudioElement>();
 const sourceElementSource = ref<string>();
 
 onMounted(async () => {
-	await audioPlaylistStore.generateAudioPlaylist(team1, team2);
+	await audioPlaylistStore.generateAudioPlaylist(team1, team2, isGameOver);
 });
 
 watchEffect(async () => {

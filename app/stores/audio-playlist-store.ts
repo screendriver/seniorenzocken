@@ -12,13 +12,18 @@ export const useAudioPlaylistStore = defineStore("audio-playlist", () => {
 
 	const { fetchAllMediaRecords } = usePocketBase();
 
-	async function generateAudioPlaylist(team1: Ref<Team>, team2: Ref<Team>): Promise<void> {
+	async function generateAudioPlaylist(team1: Ref<Team>, team2: Ref<Team>, isGameOver: Ref<boolean>): Promise<void> {
 		if (isUndefined(pocketBase)) {
 			throw new Error("PocketBase couldn't be injected");
 		}
 
-		const { findAttentionMediaRecord, findGamePointMediaRecord, findToMediaRecord, findStretchedMediaRecord } =
-			await promisePipe(fetchAllMediaRecords, parseAllMediaRecords, createMediaRecordFinder)();
+		const {
+			findAttentionMediaRecord,
+			findGamePointMediaRecord,
+			findToMediaRecord,
+			findStretchedMediaRecord,
+			findWonMediaRecord,
+		} = await promisePipe(fetchAllMediaRecords, parseAllMediaRecords, createMediaRecordFinder)();
 
 		const buildAbsoluteUrlForMediaRecord = flowRight(
 			buildAbsoluteMediaRecordUrl(pocketBase),
@@ -55,6 +60,14 @@ export const useAudioPlaylistStore = defineStore("audio-playlist", () => {
 
 		if (stretchedMediaRecordUrl.isJust) {
 			playlist.push(stretchedMediaRecordUrl.value);
+		}
+
+		if (isGameOver.value) {
+			const wonMediaRecordUrl = buildAbsoluteUrlForMediaRecord(findWonMediaRecord());
+
+			if (wonMediaRecordUrl.isJust) {
+				playlist.push(wonMediaRecordUrl.value);
+			}
 		}
 
 		audioPlaylist.value = playlist;
