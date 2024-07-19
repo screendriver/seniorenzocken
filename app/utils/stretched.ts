@@ -1,3 +1,3 @@
-export function isStretched(totalGamePoints: number): boolean {
+export function isStretched(totalGamePoints: GamePoints): boolean {
 	return totalGamePoints >= 12;
 }
