@@ -1,8 +1,36 @@
 import { test, expect } from "vitest";
+import * as v from "valibot";
 
 test("availableGamePoints defines 4 available game points", () => {
 	expect(availableGamePoints).toStrictEqual([0, 2, 3, 4]);
 });
+
+test("gamePointsSchema parsing fails when given data is undefined", () => {
+	expect(v.safeParse(gamePointsSchema, undefined).success).toBe(false);
+});
+
+test("gamePointsSchema parsing fails when given data is null", () => {
+	expect(v.safeParse(gamePointsSchema, null).success).toBe(false);
+});
+
+test("gamePointsSchema parsing fails when given data is not a number", () => {
+	expect(v.safeParse(gamePointsSchema, "not-a-number").success).toBe(false);
+});
+
+test("gamePointsSchema parsing fails when given data is lower than 0", () => {
+	expect(v.safeParse(gamePointsSchema, -1).success).toBe(false);
+});
+
+test("gamePointsSchema parsing fails when given data is greater than 18", () => {
+	expect(v.safeParse(gamePointsSchema, 19).success).toBe(false);
+});
+
+test.each([0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])(
+	"gamePointsSchema parsing succeeds when given data equals %i",
+	(gamePoint) => {
+		expect(v.safeParse(gamePointsSchema, gamePoint).success).toBe(true);
+	},
+);
 
 type ReachedMaximumGamePointsTestCase = {
 	team1GamePoint: Ref<GamePoint>;
