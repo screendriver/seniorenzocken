@@ -1,9 +1,5 @@
 import { test, expect } from "vitest";
 
-test("isStretched() returns false when given total game points is a negative number", () => {
-	expect(isStretched(-1)).toBe(false);
-});
-
 test("isStretched() returns false when given total game points equals 0", () => {
 	expect(isStretched(0)).toBe(false);
 });

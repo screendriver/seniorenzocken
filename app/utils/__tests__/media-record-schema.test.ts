@@ -4,8 +4,11 @@ import { Factory } from "fishery";
 
 const mediaRecordFactory = Factory.define(() => {
 	return {
-		name: "-",
-		path: ["-"],
+		collectionId: "collection-id",
+		fileName: ["file.m4a"],
+		id: "the-id",
+		name: "test",
+		gamePoints: 0,
 	};
 });
 
@@ -23,6 +26,76 @@ test("mediaRecordSchema parsing fails when given object is null", () => {
 
 test("mediaRecordSchema parsing fails when given object is not an object", () => {
 	const parseResult = v.safeParse(mediaRecordSchema, "not-an-object");
+
+	expect(parseResult.success).toBe(false);
+});
+
+test("mediaRecordSchema parsing fails when given object.collectionId is undefined", () => {
+	const mediaRecord = mediaRecordFactory.build({ collectionId: undefined });
+	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
+
+	expect(parseResult.success).toBe(false);
+});
+
+test("mediaRecordSchema parsing fails when given object.collectionId is null", () => {
+	const mediaRecord = mediaRecordFactory.build({ collectionId: null });
+	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
+
+	expect(parseResult.success).toBe(false);
+});
+
+test("mediaRecordSchema parsing fails when given object.collectionId is not a string", () => {
+	const mediaRecord = mediaRecordFactory.build({ collectionId: 42 });
+	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
+
+	expect(parseResult.success).toBe(false);
+});
+
+test("mediaRecordSchema parsing fails when given object.fileName is undefined", () => {
+	const mediaRecord = mediaRecordFactory.build({ fileName: undefined });
+	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
+
+	expect(parseResult.success).toBe(false);
+});
+
+test("mediaRecordSchema parsing fails when given object.fileName is null", () => {
+	const mediaRecord = mediaRecordFactory.build({ fileName: null });
+	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
+
+	expect(parseResult.success).toBe(false);
+});
+
+test("mediaRecordSchema parsing fails when given object.fileName is an empty Array", () => {
+	const mediaRecord = mediaRecordFactory.build({ fileName: [] });
+	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
+
+	expect(parseResult.success).toBe(false);
+});
+
+test("mediaRecordSchema parsing fails when given object.fileName is an Array with empty strings", () => {
+	const mediaRecord = mediaRecordFactory.build({ fileName: [""] });
+	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
+
+	expect(parseResult.success).toBe(false);
+});
+
+test("mediaRecordSchema parsing fails when given object.id is undefined", () => {
+	const mediaRecord = mediaRecordFactory.build({ id: undefined });
+	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
+
+	expect(parseResult.success).toBe(false);
+});
+
+test("mediaRecordSchema parsing fails when given object.id is null", () => {
+	const mediaRecord = mediaRecordFactory.build({ id: null });
+	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
+
+	expect(parseResult.success).toBe(false);
+});
+
+test("mediaRecordSchema parsing fails when given object.id is not a string", () => {
+	const mediaRecord = mediaRecordFactory.build({ id: 42 });
+	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
 
 	expect(parseResult.success).toBe(false);
 });
@@ -48,29 +121,22 @@ test("mediaRecordSchema parsing fails when given object.name is not a string", (
 	expect(parseResult.success).toBe(false);
 });
 
-test("mediaRecordSchema parsing fails when given object.path is undefined", () => {
-	const mediaRecord = mediaRecordFactory.build({ path: undefined });
+test("mediaRecordSchema parsing fails when given object.gamePoints is undefined", () => {
+	const mediaRecord = mediaRecordFactory.build({ gamePoints: undefined });
 	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
 
 	expect(parseResult.success).toBe(false);
 });
 
-test("mediaRecordSchema parsing fails when given object.path is null", () => {
-	const mediaRecord = mediaRecordFactory.build({ path: null });
+test("mediaRecordSchema parsing fails when given object.gamePoints is null", () => {
+	const mediaRecord = mediaRecordFactory.build({ gamePoints: null });
 	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
 
 	expect(parseResult.success).toBe(false);
 });
 
-test("mediaRecordSchema parsing fails when given object.path is an empty Array", () => {
-	const mediaRecord = mediaRecordFactory.build({ path: [] });
-	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
-
-	expect(parseResult.success).toBe(false);
-});
-
-test("mediaRecordSchema parsing fails when given object.path is an Array with empty strings", () => {
-	const mediaRecord = mediaRecordFactory.build({ path: [""] });
+test("mediaRecordSchema parsing fails when given object.gamePoints is not a number", () => {
+	const mediaRecord = mediaRecordFactory.build({ gamePoints: "not-a-number" });
 	const parseResult = v.safeParse(mediaRecordSchema, mediaRecord);
 
 	expect(parseResult.success).toBe(false);
@@ -83,32 +149,32 @@ test("mediaRecordSchema parsing succeeds when all required fields exist", () => 
 	expect(parseResult.success).toBe(true);
 });
 
-test("mediaRecordsSchema parsing fails when given object is undefined", () => {
-	const parseResult = v.safeParse(mediaRecordsSchema, undefined);
+test("allMediaRecordsSchema parsing fails when given object is undefined", () => {
+	const parseResult = v.safeParse(allMediaRecordsSchema, undefined);
 
 	expect(parseResult.success).toBe(false);
 });
 
-test("mediaRecordsSchema parsing fails when given object is null", () => {
-	const parseResult = v.safeParse(mediaRecordsSchema, null);
+test("allMediaRecordsSchema parsing fails when given object is null", () => {
+	const parseResult = v.safeParse(allMediaRecordsSchema, null);
 
 	expect(parseResult.success).toBe(false);
 });
 
-test("mediaRecordsSchema parsing fails when given object is not an Array", () => {
-	const parseResult = v.safeParse(mediaRecordsSchema, "not-an-array");
+test("allMediaRecordsSchema parsing fails when given object is not an Array", () => {
+	const parseResult = v.safeParse(allMediaRecordsSchema, "not-an-array");
 
 	expect(parseResult.success).toBe(false);
 });
 
-test("mediaRecordsSchema parsing fails when given object is an empty Array", () => {
-	const parseResult = v.safeParse(mediaRecordsSchema, []);
+test("allMediaRecordsSchema parsing succeeds when given object is an empty Array", () => {
+	const parseResult = v.safeParse(allMediaRecordsSchema, []);
 
-	expect(parseResult.success).toBe(false);
+	expect(parseResult.success).toBe(true);
 });
 
-test("mediaRecordsSchema parsing succeeds when given object is an Array with media records", () => {
-	const parseResult = v.safeParse(mediaRecordsSchema, mediaRecordFactory.buildList(1));
+test("allMediaRecordsSchema parsing succeeds when given object is an Array with media records", () => {
+	const parseResult = v.safeParse(allMediaRecordsSchema, mediaRecordFactory.buildList(1));
 
 	expect(parseResult.success).toBe(true);
 });

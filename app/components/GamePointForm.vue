@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const gameStore = useGameStore();
-const { team1, team1GamePoint, team2, team2GamePoint } = storeToRefs(gameStore);
+
+const { team1, team1GamePoint, team2, team2GamePoint, isPreviousGameRoundEnabled, isNextGameRoundEnabled } =
+	storeToRefs(gameStore);
 </script>
 
 <template>
@@ -18,10 +20,17 @@ const { team1, team1GamePoint, team2, team2GamePoint } = storeToRefs(gameStore);
 			/>
 
 			<div class="join self-center">
-				<button type="button" class="btn btn-secondary join-item">Runde zurück</button>
+				<button
+					:disabled="!isPreviousGameRoundEnabled"
+					type="button"
+					class="btn btn-secondary join-item"
+					@click="gameStore.previousGameRound"
+				>
+					Runde zurück
+				</button>
 
 				<button
-					:disabled="!gameStore.isNextGameRoundEnabled"
+					:disabled="!isNextGameRoundEnabled"
 					type="button"
 					class="btn btn-primary join-item"
 					@click="gameStore.nextGameRound"

@@ -4,14 +4,17 @@ const nonEmptyStringSchema = v.pipe(v.string(), v.minLength(1));
 
 export const mediaRecordSchema = v.pipe(
 	v.object({
+		collectionId: nonEmptyStringSchema,
+		fileName: v.pipe(v.array(nonEmptyStringSchema), v.minLength(1)),
+		id: nonEmptyStringSchema,
 		name: nonEmptyStringSchema,
-		path: v.pipe(v.array(nonEmptyStringSchema), v.minLength(1)),
+		gamePoints: v.number(),
 	}),
 	v.readonly(),
 );
 
-export const mediaRecordsSchema = v.pipe(v.array(mediaRecordSchema), v.minLength(1), v.readonly());
+export const allMediaRecordsSchema = v.pipe(v.array(mediaRecordSchema), v.readonly());
 
 export type MediaRecord = v.InferOutput<typeof mediaRecordSchema>;
 
-export type MediaRecords = v.InferOutput<typeof mediaRecordsSchema>;
+export type AllMediaRecords = v.InferOutput<typeof allMediaRecordsSchema>;
