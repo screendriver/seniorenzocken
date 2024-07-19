@@ -578,3 +578,33 @@ test('game store action nextGameRound() sets "isGameRunning" property to false w
 
 	expect(gameStore.isGameRunning).toBe(false);
 });
+
+test("game store action startNewGame() resets complete state", () => {
+	const gameStore = useGameStore();
+
+	gameStore.$patch({
+		team1: teamFactory.build({ teamName: "one" }),
+		team2: teamFactory.build({ teamName: "two" }),
+		isGameRunning: true,
+		team1GamePoint: 4,
+		team2GamePoint: 2,
+		isAudioPlaying: true,
+		gameRounds: [[teamFactory.build(), teamFactory.build()]],
+		showConfetti: true,
+		isGameOver: true,
+	});
+
+	gameStore.startNewGame();
+
+	expect(gameStore.$state).toMatchObject({
+		team1: teamFactory.build({ teamNumber: 1 }),
+		team2: teamFactory.build({ teamNumber: 2 }),
+		isGameRunning: false,
+		team1GamePoint: 0,
+		team2GamePoint: 0,
+		isAudioPlaying: false,
+		gameRounds: [],
+		showConfetti: false,
+		isGameOver: false,
+	});
+});

@@ -73,6 +73,17 @@ export const useGameStore = defineStore("game", () => {
 		isGameOver.value = checkIfGameWouldBeOver([team1, team2]);
 		isGameRunning.value = !isGameOver.value;
 	}
+	function startNewGame(): void {
+		team1.value = createInitialTeam(1);
+		team2.value = createInitialTeam(2);
+		isGameRunning.value = false;
+		team1GamePoint.value = 0;
+		team2GamePoint.value = 0;
+		isAudioPlaying.value = false;
+		gameRounds.value = [];
+		showConfetti.value = false;
+		isGameOver.value = false;
+	}
 
 	return {
 		team1,
@@ -92,6 +103,7 @@ export const useGameStore = defineStore("game", () => {
 		isNextGameRoundEnabled,
 		previousGameRound,
 		nextGameRound,
+		startNewGame,
 	};
 });
 
