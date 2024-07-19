@@ -1,18 +1,24 @@
-import PocketBase from "pocketbase";
-import * as v from "valibot";
+import type { RecordModel } from "pocketbase";
+import { isUndefined } from "@sindresorhus/is";
 
-export function useMediaRecords() {
-	const runtimeConfig = useRuntimeConfig();
-	const pocketBase = new PocketBase(runtimeConfig.public.pocketBaseBaseUrl);
+const fields = "collectionId,fileName,id,name,gamePoints" as const;
 
-	async function fetchAttentionMediaRecords(): Promise<MediaRecords> {
-		const records = await pocketBase.collection("media").getList(1, 1, {
-			filter: 'name="attention"',
-			fields: "collectionId,fileName,id,name",
-		});
+type UsePocketBase = {
+	readonly fetchAllMediaRecords: () => Promise<readonly RecordModel[]>;
+};
 
-		return v.parse(mediaRecordsSchema, records);
-	}
+export function usePocketBase(): UsePocketBase {
+	const pocketBase = inject(pocketBaseInjectionKey);
 
-	return { fetchAttentionMediaRecords };
+	return {
+		fetchAllMediaRecords: () => {
+			if (isUndefined(pocketBase)) {
+				throw new Error("No PocketBase instance provided");
+			}
+
+			return pocketBase.collection("media").getFullList(undefined, {
+				fields,
+			});
+		},
+	};
 }
