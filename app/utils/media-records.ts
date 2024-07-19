@@ -17,6 +17,7 @@ export type MediaRecordFinder = {
 	readonly findGamePointMediaRecord: (gamePoints: GamePoints) => Maybe<MediaRecord>;
 	readonly findToMediaRecord: () => Maybe<MediaRecord>;
 	readonly findStretchedMediaRecord: (team1: Ref<Team>, team2: Ref<Team>) => Maybe<MediaRecord>;
+	readonly findWonMediaRecord: () => Maybe<MediaRecord>;
 };
 
 export function createMediaRecordFinder(allMediaRecords: AllMediaRecords): MediaRecordFinder {
@@ -47,6 +48,12 @@ export function createMediaRecordFinder(allMediaRecords: AllMediaRecords): Media
 			}
 
 			return Maybe.nothing();
+		},
+
+		findWonMediaRecord: () => {
+			return find((mediaRecord) => {
+				return mediaRecord.name === "won";
+			}, allMediaRecords);
 		},
 	};
 }
