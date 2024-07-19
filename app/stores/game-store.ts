@@ -1,4 +1,5 @@
 import { isNonEmptyArray } from "@sindresorhus/is";
+import { first } from "true-myth/maybe";
 export const useGameStore = defineStore("game", () => {
 	const team1: Ref<Team> = ref(createInitialTeam(1));
 	const team2: Ref<Team> = ref(createInitialTeam(2));
@@ -32,6 +33,22 @@ export const useGameStore = defineStore("game", () => {
 	function toggleShouldPlayAudio(): void {
 		shouldPlayAudio.value = !shouldPlayAudio.value;
 	}
+	function previousGameRound(): void {
+		gameRounds.value.shift();
+
+		const previousGameRound = first(gameRounds.value);
+
+		previousGameRound.match({
+			Just(teamsFromPreviousGameRound) {
+				team1.value = teamsFromPreviousGameRound[0];
+				team2.value = teamsFromPreviousGameRound[1];
+			},
+			Nothing() {
+				team1.value.gamePoints = 0;
+				team2.value.gamePoints = 0;
+			},
+		});
+	}
 	function nextGameRound(): void {
 		const newTeam1GamePoints = team1.value.gamePoints + team1GamePoint.value;
 		team1.value.gamePoints = newTeam1GamePoints;
@@ -64,6 +81,7 @@ export const useGameStore = defineStore("game", () => {
 		isGamePointEnabled,
 		isPreviousGameRoundEnabled,
 		isNextGameRoundEnabled,
+		previousGameRound,
 		nextGameRound,
 	};
 });

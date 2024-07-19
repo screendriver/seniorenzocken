@@ -280,8 +280,53 @@ test('game store "isNextGameRoundEnabled" equals false when team 2 has 0 game po
 	expect(gameStore.isNextGameRoundEnabled).toBe(false);
 });
 
-test('game store "nextGameRound() sets new game points on team 1', () => {
+test("game store action previousGameRound() resets game points on both teams when there are no game rounds at all", () => {
 	const gameStore = useGameStore();
+
+	gameStore.$patch({
+		team1: { gamePoints: 4 },
+		team2: { gamePoints: 2 },
+		gameRounds: [],
+	});
+
+	gameStore.previousGameRound();
+
+	expect(gameStore.team1.gamePoints).toBe(0);
+	expect(gameStore.team2.gamePoints).toBe(0);
+});
+
+test("game store action previousGameRound() resets game points on both teams when there are no previous game rounds", () => {
+	const gameStore = useGameStore();
+
+	gameStore.$patch({
+		team1: { gamePoints: 3 },
+		team2: { gamePoints: 4 },
+		gameRounds: [[teamFactory.build(), teamFactory.build()]],
+	});
+
+	gameStore.previousGameRound();
+
+	expect(gameStore.team1.gamePoints).toBe(0);
+	expect(gameStore.team2.gamePoints).toBe(0);
+});
+
+test("game store action previousGameRound() sets game points on both teams from previous game round", () => {
+	const gameStore = useGameStore();
+
+	gameStore.gameRounds = [
+		[teamFactory.build({ gamePoints: 7 }), teamFactory.build({ gamePoints: 2 })],
+		[teamFactory.build({ gamePoints: 3 }), teamFactory.build({ gamePoints: 2 })],
+	];
+
+	gameStore.previousGameRound();
+
+	expect(gameStore.team1.gamePoints).toBe(3);
+	expect(gameStore.team2.gamePoints).toBe(2);
+});
+
+test("game store action nextGameRound() sets new game points on team 1", () => {
+	const gameStore = useGameStore();
+
 	gameStore.team1GamePoint = 2;
 
 	expect(gameStore.team1.gamePoints).toBe(0);
