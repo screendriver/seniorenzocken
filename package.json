@@ -12,7 +12,7 @@
 		"@vueuse/core": "10.11.0",
 		"@vueuse/nuxt": "10.11.0",
 		"canvas-confetti": "1.9.3",
-		"nuxt": "3.12.3",
+		"nuxt": "3.12.4",
 		"pinia": "2.1.7",
 		"pocketbase": "0.21.3",
 		"valibot": "0.36.0",
