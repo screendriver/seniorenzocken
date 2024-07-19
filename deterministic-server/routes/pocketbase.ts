@@ -11,10 +11,10 @@ const allMediaRecords = [
 	},
 	{
 		collectionId: "oel63lj2fz91cn3",
-		fileName: ["gwonnen_SnylL0Rxf2.m4a"],
+		fileName: ["won_SnylL0Rxf2.m4a"],
 		gamePoints: -1,
 		id: "y17ufwmpyiyh675",
-		name: "gwonnen",
+		name: "won",
 	},
 	{
 		collectionId: "oel63lj2fz91cn3",
