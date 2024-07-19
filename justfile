@@ -21,7 +21,7 @@ test: && lint (test-unit "--run")
 	npx nuxi build
 
 @develop:
-	npx concurrently --kill-others --kill-others-on-fail --names "deterministic-server,nuxt" "tsx ./deterministic-server/server.ts" "wait-on http://localhost:8081 && npx nuxi dev"
+	npx concurrently --kill-others --kill-others-on-fail --names "deterministic-server,nuxt" "tsx watch --clear-screen=false ./deterministic-server/server.ts" "wait-on http://localhost:8081 && npx nuxi dev"
 
 generate:
 	npx nuxt generate
