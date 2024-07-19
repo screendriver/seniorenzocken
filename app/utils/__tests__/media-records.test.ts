@@ -148,6 +148,25 @@ test('mediaRecordFinder.findStretchedMediaRecord() returns a Just when team 2 is
 	expect(mediaRecordFinder.findStretchedMediaRecord(team1, team2)).toStrictEqual(Maybe.just(stretchedMediaRecord));
 });
 
+test("mediaRecordFinder.findWonMediaRecord() returns a Nothing when no media records exist", () => {
+	const mediaRecordFinder = createMediaRecordFinder([]);
+
+	expect(mediaRecordFinder.findWonMediaRecord()).toStrictEqual(Maybe.nothing());
+});
+
+test('mediaRecordFinder.findWonMediaRecord() returns a Nothing when no media record with the name "won" could be found', () => {
+	const mediaRecordFinder = createMediaRecordFinder(mediaRecordFactory.buildList(1, { name: "foo" }));
+
+	expect(mediaRecordFinder.findWonMediaRecord()).toStrictEqual(Maybe.nothing());
+});
+
+test('mediaRecordFinder.findWonMediaRecord() returns a Just when a media record with the name "won" could be found', () => {
+	const toMediaRecord = mediaRecordFactory.build({ name: "won" });
+	const mediaRecordFinder = createMediaRecordFinder([mediaRecordFactory.build({ name: "foo" }), toMediaRecord]);
+
+	expect(mediaRecordFinder.findWonMediaRecord()).toStrictEqual(Maybe.just(toMediaRecord));
+});
+
 test("getRandomMediaFileName() sets the media file name to a Nothing when given media record is also a Nothing", () => {
 	const sample = vi.fn();
 	const mediaRecord = Maybe.nothing<MediaRecord>();
