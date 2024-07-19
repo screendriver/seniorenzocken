@@ -193,6 +193,39 @@ test('game store "isGamePointEnabled" equals false when audio is currently playi
 	expect(isGamePointEnabled).toBe(false);
 });
 
+test('game store "isPreviousGameRoundEnabled" returns false when game rounds are empty', () => {
+	const gameStore = useGameStore();
+
+	gameStore.$patch({
+		gameRounds: [],
+		isAudioPlaying: false,
+	});
+
+	expect(gameStore.isPreviousGameRoundEnabled).toBe(false);
+});
+
+test('game store "isPreviousGameRoundEnabled" returns false when audio is currently playing', () => {
+	const gameStore = useGameStore();
+
+	gameStore.$patch({
+		gameRounds: [[teamFactory.build(), teamFactory.build()]],
+		isAudioPlaying: true,
+	});
+
+	expect(gameStore.isPreviousGameRoundEnabled).toBe(false);
+});
+
+test('game store "isPreviousGameRoundEnabled" returns true when there are game rounds and audio is currently not playing', () => {
+	const gameStore = useGameStore();
+
+	gameStore.$patch({
+		gameRounds: [[teamFactory.build(), teamFactory.build()]],
+		isAudioPlaying: false,
+	});
+
+	expect(gameStore.isPreviousGameRoundEnabled).toBe(true);
+});
+
 test('game store "isNextGameRoundEnabled" equals false when all teams has 0 game points and audio is not playing', () => {
 	const gameStore = useGameStore();
 	gameStore.team1GamePoint = 0;

@@ -1,3 +1,4 @@
+import { isNonEmptyArray } from "@sindresorhus/is";
 export const useGameStore = defineStore("game", () => {
 	const team1: Ref<Team> = ref(createInitialTeam(1));
 	const team2: Ref<Team> = ref(createInitialTeam(2));
@@ -20,6 +21,9 @@ export const useGameStore = defineStore("game", () => {
 
 			return allTeamsAtZeroGamePoints.value || gamePoint > 0;
 		};
+	});
+	const isPreviousGameRoundEnabled = computed(() => {
+		return isNonEmptyArray(gameRounds.value) && !isAudioPlaying.value;
 	});
 	const isNextGameRoundEnabled = computed(() => {
 		return !allTeamsAtZeroGamePoints.value && !isAudioPlaying.value;
@@ -58,6 +62,7 @@ export const useGameStore = defineStore("game", () => {
 		toggleShouldPlayAudio,
 		allTeamsAtZeroGamePoints,
 		isGamePointEnabled,
+		isPreviousGameRoundEnabled,
 		isNextGameRoundEnabled,
 		nextGameRound,
 	};
