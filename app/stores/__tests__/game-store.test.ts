@@ -89,7 +89,13 @@ test('game store has an initial "show confetti" property set', () => {
 	expect(gameStore.showConfetti).toBe(false);
 });
 
-test('game store toggleShouldPlayAudio() sets "shouldPlayAudio" to false when it was previously true', () => {
+test('game store has an initial "is game over" property set', () => {
+	const gameStore = useGameStore();
+
+	expect(gameStore.isGameOver).toBe(false);
+});
+
+test('game store action toggleShouldPlayAudio() sets "shouldPlayAudio" to false when it was previously true', () => {
 	const gameStore = useGameStore();
 
 	gameStore.toggleShouldPlayAudio();

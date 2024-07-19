@@ -10,6 +10,7 @@ export const useGameStore = defineStore("game", () => {
 	const isAudioPlaying = ref(false);
 	const gameRounds = ref<[team1: Team, team2: Team][]>([]);
 	const showConfetti = ref(false);
+	const isGameOver = ref(false);
 
 	const allTeamsAtZeroGamePoints = computed(() => {
 		return team1GamePoint.value === 0 && team2GamePoint.value === 0;
@@ -76,6 +77,7 @@ export const useGameStore = defineStore("game", () => {
 		isAudioPlaying,
 		gameRounds,
 		showConfetti,
+		isGameOver,
 		toggleShouldPlayAudio,
 		allTeamsAtZeroGamePoints,
 		isGamePointEnabled,
