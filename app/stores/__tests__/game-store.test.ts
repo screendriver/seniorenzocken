@@ -1,5 +1,6 @@
 import { test, expect, beforeEach, vi, afterEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { Factory } from "fishery";
 
 const teamFactory = Factory.define<Team>(() => {
@@ -9,6 +10,10 @@ const teamFactory = Factory.define<Team>(() => {
 		gamePoints: 0,
 		isStretched: false,
 	};
+});
+
+mockNuxtImport("navigateTo", () => {
+	return vi.fn();
 });
 
 beforeEach(() => {
@@ -579,7 +584,7 @@ test('game store action nextGameRound() sets "isGameRunning" property to false w
 	expect(gameStore.isGameRunning).toBe(false);
 });
 
-test("game store action startNewGame() resets complete state", () => {
+test('game store action startNewGame() resets complete state and navigates to "/teams"', () => {
 	const gameStore = useGameStore();
 
 	gameStore.$patch({
@@ -607,4 +612,5 @@ test("game store action startNewGame() resets complete state", () => {
 		showConfetti: false,
 		isGameOver: false,
 	});
+	expect(navigateTo).toHaveBeenCalledWith({ name: "teams", replace: true });
 });

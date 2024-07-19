@@ -83,6 +83,8 @@ export const useGameStore = defineStore("game", () => {
 		gameRounds.value = [];
 		showConfetti.value = false;
 		isGameOver.value = false;
+
+		navigateTo({ name: "teams", replace: true });
 	}
 
 	return {
