@@ -1,7 +1,6 @@
 import { test, expect, beforeEach, vi, afterEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { Factory } from "fishery";
-import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 
 const teamFactory = Factory.define<Team>(() => {
 	return {
@@ -10,12 +9,6 @@ const teamFactory = Factory.define<Team>(() => {
 		gamePoints: 0,
 		isStretched: false,
 	};
-});
-
-mockNuxtImport("useCloned", () => {
-	return vi.fn((source) => {
-		return { cloned: source };
-	});
 });
 
 beforeEach(() => {
@@ -466,4 +459,80 @@ test('game store "nextGameRound() adds a new game round with cloned teams', () =
 		teamFactory.build({ teamNumber: 1 }),
 		teamFactory.build({ teamNumber: 2 }),
 	]);
+});
+
+test("game store action nextGameRound() adds new game rounds at the beginning of the game rounds Array", () => {
+	const gameStore = useGameStore();
+
+	gameStore.$patch({
+		team1GamePoint: 3,
+		team2GamePoint: 0,
+	});
+
+	gameStore.nextGameRound();
+
+	gameStore.$patch({
+		team1GamePoint: 4,
+		team2GamePoint: 0,
+	});
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.gameRounds).toHaveLength(2);
+	expect(gameStore.gameRounds).toStrictEqual([
+		[teamFactory.build({ teamNumber: 1, gamePoints: 7 }), teamFactory.build({ teamNumber: 2, gamePoints: 0 })],
+		[teamFactory.build({ teamNumber: 1, gamePoints: 3 }), teamFactory.build({ teamNumber: 2, gamePoints: 0 })],
+	]);
+});
+
+test('game store action nextGameRound() sets "isGameOver" property to false when game is not over', () => {
+	const gameStore = useGameStore();
+
+	gameStore.$patch({
+		team1: { gamePoints: 10 },
+		team2: { gamePoints: 7 },
+	});
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.isGameOver).toBe(false);
+});
+
+test('game store action nextGameRound() sets "isGameOver" property to true when game is over', () => {
+	const gameStore = useGameStore();
+
+	gameStore.$patch({
+		team1: { gamePoints: 15 },
+		team2: { gamePoints: 0 },
+	});
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.isGameOver).toBe(true);
+});
+
+test('game store action nextGameRound() sets "isGameRunning" property to true when game is not over', () => {
+	const gameStore = useGameStore();
+
+	gameStore.$patch({
+		team1: { gamePoints: 2 },
+		team2: { gamePoints: 0 },
+	});
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.isGameRunning).toBe(true);
+});
+
+test('game store action nextGameRound() sets "isGameRunning" property to false when game is over', () => {
+	const gameStore = useGameStore();
+
+	gameStore.$patch({
+		team1: { gamePoints: 0 },
+		team2: { gamePoints: 15 },
+	});
+
+	gameStore.nextGameRound();
+
+	expect(gameStore.isGameRunning).toBe(false);
 });
