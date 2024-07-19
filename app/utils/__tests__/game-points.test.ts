@@ -18,9 +18,9 @@ test.each<ReachedMaximumGamePointsTestCase>([
 	{ team1GamePoint: ref(0), team2GamePoint: ref(4), expected: true },
 	{ team1GamePoint: ref(4), team2GamePoint: ref(4), expected: true },
 ])(
-	"hasReachedMaximumGamePoints() returns $expected when team 1 has $team1GamePoint.value and team 2 has $team2GamePoint.value game points",
+	"hasReachedMaximumGamePoint() returns $expected when team 1 has $team1GamePoint.value and team 2 has $team2GamePoint.value game points",
 	({ team1GamePoint, team2GamePoint, expected }) => {
-		const reached = hasReachedMaximumGamePoints(team1GamePoint, team2GamePoint);
+		const reached = hasReachedMaximumGamePoint(team1GamePoint, team2GamePoint);
 
 		expect(reached).toBe(expected);
 	},
