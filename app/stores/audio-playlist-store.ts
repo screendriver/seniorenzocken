@@ -58,7 +58,7 @@ export const useAudioPlaylistStore = defineStore("audio-playlist", () => {
 			playlist.push(team2GamePointsMediaRecordUrl.value);
 		}
 
-		if (stretchedMediaRecordUrl.isJust) {
+		if (!isGameOver.value && stretchedMediaRecordUrl.isJust) {
 			playlist.push(stretchedMediaRecordUrl.value);
 		}
 
