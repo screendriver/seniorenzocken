@@ -12,7 +12,7 @@ const wonText = determineWinnerTeam(team1, team2).mapOr("Gewonnen hat: ???", (te
 </script>
 
 <template>
-	<section class="col-start-2 col-end-6 my-8 gap-2 grid grid-cols-subgrid grid-rows-3">
+	<section class="col-start-2 col-end-6 my-8 grid grid-cols-subgrid grid-rows-3 gap-2">
 		<h1 class="col-span-full place-self-center">{{ wonText }}</h1>
 
 		<button type="button" class="btn col-start-2 col-end-4" @click="gameStore.startNewGame">Neues Spiel</button>
