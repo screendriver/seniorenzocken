@@ -1,11 +1,11 @@
-FROM node:22.4.1 AS build
+FROM node:22.5.1 AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm clean-install
 COPY . .
 RUN npx just build
 
-FROM node:22.4.1-alpine AS runtime
+FROM node:22.5.1-alpine AS runtime
 RUN mkdir -p /home/node/app && chown --recursive node:node /home/node/app
 WORKDIR /home/node/app
 USER node
