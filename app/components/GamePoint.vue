@@ -20,7 +20,7 @@ const teamAreaClassName = computed(() => {
 <template>
 	<section class="flex flex-col gap-3 rounded-lg bg-slate-600">
 		<div :class="teamAreaClassName">
-			<UsersIcon size="40" class="join-item p-2" />
+			<UsersIcon class="join-item m-2 text-xl text-black" />
 			<cite class="join-item flex-grow not-italic">{{ team.teamName }}</cite>
 			<mark class="badge join-item badge-accent h-auto self-stretch">
 				<span class="countdown">
