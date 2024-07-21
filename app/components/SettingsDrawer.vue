@@ -9,9 +9,11 @@ const {
 } = useWakeLock();
 const gameStore = useGameStore();
 
-if (isWakeLockSupported.value) {
-	requestWakeLock("screen");
-}
+onMounted(() => {
+	if (isWakeLockSupported.value) {
+		requestWakeLock("screen");
+	}
+});
 
 function toggleWakeLock(event: Event): void {
 	const inputElement = event.target as HTMLInputElement;
