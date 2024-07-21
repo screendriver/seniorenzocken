@@ -6,7 +6,7 @@ const { team1, team1GamePoint, team2, team2GamePoint, isPreviousGameRoundEnabled
 </script>
 
 <template>
-	<form class="col-start-2 col-end-6 my-8 grid grid-cols-subgrid">
+	<form class="col-span-full mx-4 lg:col-start-2 lg:col-end-6 my-8 grid grid-cols-subgrid">
 		<fieldset class="col-span-full flex flex-col gap-4">
 			<GamePoint
 				v-model:game-point="team1GamePoint"
