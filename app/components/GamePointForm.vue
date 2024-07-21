@@ -23,7 +23,7 @@ const { team1, team1GamePoint, team2, team2GamePoint, isPreviousGameRoundEnabled
 				<button
 					:disabled="!isPreviousGameRoundEnabled"
 					type="button"
-					class="btn btn-secondary join-item"
+					class="btn btn-primary join-item"
 					@click="gameStore.previousGameRound"
 				>
 					Runde zurück

@@ -19,7 +19,7 @@ function navigateToGame(): void {
 
 <template>
 	<section
-		class="col-start-1 col-end-5 grid grid-cols-subgrid rounded-xl bg-secondary sm:col-start-2 sm:col-end-4 md:col-start-3 md:col-end-7 lg:col-start-4 lg:col-end-10"
+		class="col-start-1 col-end-5 grid grid-cols-subgrid rounded-xl bg-neutral sm:col-start-2 sm:col-end-4 md:col-start-3 md:col-end-7 lg:col-start-4 lg:col-end-10"
 	>
 		<form
 			class="col-span-full mx-6 my-8 grid grid-flow-col grid-cols-subgrid grid-rows-3 items-center gap-2 lg:col-start-2 lg:col-end-6"
