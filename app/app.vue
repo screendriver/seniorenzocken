@@ -9,7 +9,9 @@ provide(pocketBaseInjectionKey, pocketBase);
 
 <template>
 	<NuxtRouteAnnouncer />
-	<SettingsDrawer>
-		<NuxtPage />
-	</SettingsDrawer>
+	<NuxtLayout>
+		<SettingsDrawer>
+			<NuxtPage />
+		</SettingsDrawer>
+	</NuxtLayout>
 </template>
