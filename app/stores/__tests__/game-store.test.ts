@@ -584,7 +584,7 @@ test('game store action nextGameRound() sets "isGameRunning" property to false w
 	expect(gameStore.isGameRunning).toBe(false);
 });
 
-test('game store action startNewGame() resets complete state and navigates to "/teams"', () => {
+test('game store action startNewGame() resets complete state and navigates to "/teams"', async () => {
 	const gameStore = useGameStore();
 
 	gameStore.$patch({
@@ -599,8 +599,9 @@ test('game store action startNewGame() resets complete state and navigates to "/
 		isGameOver: true,
 	});
 
-	gameStore.startNewGame();
+	await gameStore.startNewGame();
 
+	expect(navigateTo).toHaveBeenCalledWith({ name: "teams", replace: true });
 	expect(gameStore.$state).toMatchObject({
 		team1: teamFactory.build({ teamNumber: 1 }),
 		team2: teamFactory.build({ teamNumber: 2 }),
@@ -612,5 +613,4 @@ test('game store action startNewGame() resets complete state and navigates to "/
 		showConfetti: false,
 		isGameOver: false,
 	});
-	expect(navigateTo).toHaveBeenCalledWith({ name: "teams", replace: true });
 });
