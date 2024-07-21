@@ -22,7 +22,7 @@ function navigateToGame(): void {
 		class="col-start-1 col-end-5 grid grid-cols-subgrid rounded-xl bg-secondary sm:col-start-2 sm:col-end-4 md:col-start-3 md:col-end-7 lg:col-start-4 lg:col-end-10"
 	>
 		<form
-			class="items-center col-span-full mx-6 lg:col-start-2 lg:col-end-6 my-8 grid-flow-col grid-rows-3 gap-2 grid grid-cols-subgrid"
+			class="col-span-full mx-6 my-8 grid grid-flow-col grid-cols-subgrid grid-rows-3 items-center gap-2 lg:col-start-2 lg:col-end-6"
 			@submit.prevent="navigateToGame"
 		>
 			<label :class="inputClassNames">

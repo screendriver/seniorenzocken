@@ -5,6 +5,7 @@ default:
 	npx nuxi prepare
 
 lint-fix:
+	npx prettier --log-level warn --write .
 	npx eslint --fix .
 
 lint:

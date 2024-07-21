@@ -73,7 +73,9 @@ export const useGameStore = defineStore("game", () => {
 		isGameOver.value = checkIfGameWouldBeOver([team1, team2]);
 		isGameRunning.value = !isGameOver.value;
 	}
-	function startNewGame(): void {
+	async function startNewGame(): Promise<void> {
+		await navigateTo({ name: "teams", replace: true });
+
 		team1.value = createInitialTeam(1);
 		team2.value = createInitialTeam(2);
 		isGameRunning.value = false;
@@ -83,8 +85,6 @@ export const useGameStore = defineStore("game", () => {
 		gameRounds.value = [];
 		showConfetti.value = false;
 		isGameOver.value = false;
-
-		navigateTo({ name: "teams", replace: true });
 	}
 
 	return {

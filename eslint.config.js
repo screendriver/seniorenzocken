@@ -65,5 +65,7 @@ export default withNuxt({
 		"vitest/valid-describe-callback": "error",
 		"vitest/valid-expect": "error",
 		"vitest/valid-title": "error",
+
+		"vue/no-multiple-template-root": "off",
 	},
 });
