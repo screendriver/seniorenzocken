@@ -1,8 +1,6 @@
 import type { RecordModel } from "pocketbase";
 import { isUndefined } from "@sindresorhus/is";
 
-const fields = "collectionId,fileName,id,name,gamePoints" as const;
-
 type UsePocketBase = {
 	readonly fetchAllMediaRecords: () => Promise<readonly RecordModel[]>;
 };
@@ -17,7 +15,7 @@ export function usePocketBase(): UsePocketBase {
 			}
 
 			return pocketBase.collection("media").getFullList(undefined, {
-				fields,
+				fields: "collectionId,fileName,id,name,gamePoints",
 			});
 		},
 	};
