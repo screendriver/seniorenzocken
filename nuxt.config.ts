@@ -28,7 +28,6 @@ export default defineNuxtConfig({
 			},
 			title: "Senioren zocken",
 			meta: [
-				{ "http-equiv": "Accept-CH", content: "DPR, Width" },
 				{ name: "description", content: "Punkte sammeln für das Kartenspiel Watten" },
 				{ name: "keywords", content: "Watten,Watteln,Wattlung,Kartenspiel,Punkte,Bayern" },
 				{ name: "theme-color", content: "#075985" },
