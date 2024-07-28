@@ -17,7 +17,7 @@
 		"nuxt": "3.12.4",
 		"p-pipe": "4.0.0",
 		"pinia": "2.2.0",
-		"pocketbase": "0.21.3",
+		"pocketbase": "0.21.4",
 		"true-myth": "7.4.0",
 		"valibot": "0.36.0",
 		"vue": "3.4.34",
