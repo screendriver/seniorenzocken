@@ -42,7 +42,7 @@
 		"fastify": "4.28.1",
 		"fishery": "2.2.2",
 		"happy-dom": "14.12.3",
-		"just-install": "2.0.1",
+		"just-install": "2.0.2",
 		"nuxt-typed-router": "3.6.5",
 		"prettier": "3.3.3",
 		"prettier-plugin-tailwindcss": "0.6.5",
