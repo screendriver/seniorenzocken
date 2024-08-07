@@ -21,7 +21,7 @@
 		"true-myth": "7.4.0",
 		"valibot": "0.37.0",
 		"vue": "3.4.36",
-		"vue-router": "4.4.2"
+		"vue-router": "4.4.3"
 	},
 	"devDependencies": {
 		"@fastify/cors": "9.0.1",
