@@ -8,8 +8,10 @@ vi.resetModules();
 
 const wakeLockMock: ReturnType<typeof useWakeLock> = {
 	isSupported: computed(() => true),
-	isActive: ref(true),
+	isActive: computed(() => true),
+	sentinel: ref(null),
 	request: vi.fn(),
+	forceRequest: vi.fn(),
 	release: vi.fn(),
 };
 
