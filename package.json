@@ -7,7 +7,7 @@
 	},
 	"dependencies": {
 		"@kalimahapps/vue-icons": "1.7.1",
-		"@pinia/nuxt": "0.5.3",
+		"@pinia/nuxt": "0.5.4",
 		"@sindresorhus/is": "7.0.0",
 		"@vueuse/core": "11.0.1",
 		"@vueuse/nuxt": "11.0.1",
