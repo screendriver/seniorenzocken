@@ -12,7 +12,6 @@ export default defineNuxtConfig({
 		"@nuxt/test-utils/module",
 		"@vueuse/nuxt",
 		"@pinia/nuxt",
-		"@nuxtjs/html-validator",
 		"nuxt-typed-router",
 	],
 
