@@ -18,7 +18,7 @@
 		"p-pipe": "4.0.0",
 		"pinia": "2.2.1",
 		"pocketbase": "0.21.5",
-		"true-myth": "8.0.0",
+		"true-myth": "8.0.1",
 		"valibot": "0.38.0",
 		"vue": "3.4.36",
 		"vue-router": "4.4.3"
