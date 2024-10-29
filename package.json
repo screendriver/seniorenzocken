@@ -50,7 +50,7 @@
 		"typescript": "5.5.4",
 		"vitest": "2.0.5",
 		"vue-tsc": "2.0.29",
-		"wait-on": "8.0.0"
+		"wait-on": "8.0.1"
 	},
 	"optionalDependencies": {
 		"@rollup/rollup-linux-arm64-gnu": "4.24.2"
