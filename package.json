@@ -45,7 +45,7 @@
 		"nuxt-typed-router": "3.7.0",
 		"prettier": "3.3.3",
 		"prettier-plugin-tailwindcss": "0.6.8",
-		"tsx": "4.17.0",
+		"tsx": "4.19.2",
 		"type-fest": "4.25.0",
 		"typescript": "5.5.4",
 		"vitest": "2.0.5",
