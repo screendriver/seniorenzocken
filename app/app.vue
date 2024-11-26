@@ -13,7 +13,7 @@ onMounted(() => {
 				{
 					async: true,
 					defer: true,
-					"data-website-id": "19ad1338-6801-4b9b-b08c-f38e9ed95c86",
+					"data-website-id": "16d1825d-3f6c-46fb-9243-1d281224605e",
 					src: "https://statistics.echooff.de/tasty.js",
 				},
 			],
