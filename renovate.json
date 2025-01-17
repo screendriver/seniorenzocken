@@ -1,5 +1,6 @@
 {
 	"dependencyDashboard": true,
+	"labels": ["renovate"],
 	"lockFileMaintenance": {
 		"enabled": true,
 		"automerge": true
