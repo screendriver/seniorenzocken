@@ -1,4 +1,5 @@
 {
+	"dependencyDashboard": true,
 	"lockFileMaintenance": {
 		"enabled": true,
 		"automerge": true
