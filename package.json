@@ -38,7 +38,7 @@
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-prettier": "5.2.2",
 		"eslint-plugin-vitest": "0.5.4",
-		"fastify": "4.28.1",
+		"fastify": "4.29.0",
 		"fishery": "2.2.2",
 		"happy-dom": "15.11.7",
 		"just-install": "2.0.2",
