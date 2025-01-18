@@ -12,6 +12,11 @@
 			"matchPackageNames": ["@nuxt?(js)/*", "@*/nuxt", "nuxt", "nuxt-*"]
 		},
 		{
+			"groupName": "Pinia dependencies",
+			"groupSlug": "pinia",
+			"matchPackageNames": ["@pinia/*", "pinia"]
+		},
+		{
 			"matchDepTypes": ["dependencies", "devDependencies"],
 			"matchUpdateTypes": ["minor", "patch"],
 			"automerge": true,
