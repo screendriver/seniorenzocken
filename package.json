@@ -24,7 +24,7 @@
 		"vue-router": "4.5.0"
 	},
 	"devDependencies": {
-		"@fastify/cors": "9.0.1",
+		"@fastify/cors": "10.0.2",
 		"@nuxt/eslint": "0.6.1",
 		"@nuxt/test-utils": "3.14.4",
 		"@nuxtjs/tailwindcss": "6.12.2",
