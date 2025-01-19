@@ -36,7 +36,7 @@
 		"concurrently": "8.2.2",
 		"daisyui": "4.12.23",
 		"eslint-config-prettier": "9.1.0",
-		"eslint-plugin-prettier": "5.2.2",
+		"eslint-plugin-prettier": "5.2.3",
 		"eslint-plugin-vitest": "0.5.4",
 		"fastify": "4.29.0",
 		"fishery": "2.2.2",
