@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { isHtmlElement } from "@sindresorhus/is";
+import { isHtmlElement, isUndefined } from "@sindresorhus/is";
 
 const gameStore = useGameStore();
 const { isAudioPlaying, team1, team2, isGameOver } = storeToRefs(gameStore);
 
+const pocketBase = inject(pocketBaseInjectionKey);
+
+if (isUndefined(pocketBase)) {
+	throw new Error("PocketBase is not defined");
+}
+
 const audioPlaylistStore = useAudioPlaylistStore();
+audioPlaylistStore.initialize(pocketBase);
 const { audioSourceUrl } = storeToRefs(audioPlaylistStore);
 
 const audioElementReference = ref<HTMLAudioElement>();
