@@ -1,3 +1,4 @@
+import type PocketBase from "pocketbase";
 import { isUndefined } from "@sindresorhus/is";
 import Maybe, { first } from "true-myth/maybe";
 import promisePipe from "p-pipe";
@@ -5,15 +6,18 @@ import lodashSample from "lodash.sample";
 import flowRight from "lodash.flowright";
 
 export const useAudioPlaylistStore = defineStore("audio-playlist", () => {
-	const pocketBase = inject(pocketBaseInjectionKey);
-
+	const pocketBaseRef = ref<PocketBase>();
 	const audioPlaylist = ref<URL[]>([]);
 	const audioSourceUrl = ref<Maybe<URL>>(Maybe.nothing());
 
-	const { fetchAllMediaRecords } = usePocketBase();
+	function initialize(pocketBase: PocketBase): void {
+		pocketBaseRef.value = pocketBase;
+	}
+
+	const { fetchAllMediaRecords } = usePocketBase(pocketBaseRef);
 
 	async function generateAudioPlaylist(team1: Ref<Team>, team2: Ref<Team>, isGameOver: Ref<boolean>): Promise<void> {
-		if (isUndefined(pocketBase)) {
+		if (isUndefined(pocketBaseRef.value)) {
 			throw new Error("PocketBase couldn't be injected");
 		}
 
@@ -26,7 +30,7 @@ export const useAudioPlaylistStore = defineStore("audio-playlist", () => {
 		} = await promisePipe(fetchAllMediaRecords, parseAllMediaRecords, createMediaRecordFinder)();
 
 		const buildAbsoluteUrlForMediaRecord = flowRight(
-			buildAbsoluteMediaRecordUrl(pocketBase),
+			buildAbsoluteMediaRecordUrl(pocketBaseRef.value),
 			getRandomMediaFileName(lodashSample),
 		);
 
@@ -83,7 +87,7 @@ export const useAudioPlaylistStore = defineStore("audio-playlist", () => {
 		return nextPlaylistItem;
 	}
 
-	return { audioPlaylist, audioSourceUrl, generateAudioPlaylist, nextAudioPlaylistItem };
+	return { initialize, audioPlaylist, audioSourceUrl, generateAudioPlaylist, nextAudioPlaylistItem };
 });
 
 export type AudioPlaylistStore = ReturnType<typeof useAudioPlaylistStore>;
