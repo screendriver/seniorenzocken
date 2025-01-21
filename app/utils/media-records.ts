@@ -75,7 +75,7 @@ export function buildAbsoluteMediaRecordUrl(pocketBase: PocketBase) {
 			const { mediaRecord, randomMediaFileName } = mediaRecordWithRandomFileNameValue;
 
 			return randomMediaFileName.map((randomMediaFileNameValue) => {
-				const absoluteUrl = pocketBase.files.getUrl(mediaRecord, randomMediaFileNameValue);
+				const absoluteUrl = pocketBase.files.getURL(mediaRecord, randomMediaFileNameValue);
 
 				return new URL(absoluteUrl);
 			});

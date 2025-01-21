@@ -9,7 +9,7 @@ const pocketBaseFactory = Factory.define<PocketBase>(() => {
 			getList: vi.fn().mockResolvedValue({}),
 		}),
 		files: {
-			getUrl: vi.fn().mockReturnValue("http://example.com/api/files/abc123/123abc/foo.m4a"),
+			getURL: vi.fn().mockReturnValue("http://example.com/api/files/abc123/123abc/foo.m4a"),
 		},
 	} as unknown as PocketBase;
 });
