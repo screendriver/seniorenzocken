@@ -14,7 +14,7 @@ onMounted(() => {
 					async: true,
 					defer: true,
 					"data-website-id": "16d1825d-3f6c-46fb-9243-1d281224605e",
-					src: "https://statistics.echooff.de/tasty.js",
+					src: "https://statistics.82r.de/tasty.js",
 				},
 			],
 		});
