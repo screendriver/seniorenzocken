@@ -7,6 +7,11 @@
 	},
 	"packageRules": [
 		{
+			"matchPackageNames": ["node"],
+			"matchManagers": ["dockerfile"],
+			"enabled": false
+		},
+		{
 			"groupName": "Nuxt dependencies",
 			"groupSlug": "nuxt-dependencies",
 			"matchPackageNames": ["@nuxt?(js)/*", "@*/nuxt", "nuxt", "nuxt-*"]
@@ -21,6 +26,15 @@
 			"matchUpdateTypes": ["minor", "patch"],
 			"automerge": true,
 			"automergeType": "branch"
+		}
+	],
+	"regexManagers": [
+		{
+			"fileMatch": ["^Dockerfile$"],
+			"matchStrings": ["FROM node:(?<currentValue>.*?)\\s"],
+			"depNameTemplate": "node",
+			"datasourceTemplate": "node",
+			"versioningTemplate": "node"
 		}
 	]
 }

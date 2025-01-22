@@ -2,6 +2,9 @@
 	"name": "seniorenzocken",
 	"private": true,
 	"type": "module",
+	"engines": {
+		"node": "22.13.1"
+	},
 	"scripts": {
 		"postinstall": "nuxt prepare"
 	},
