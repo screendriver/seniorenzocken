@@ -47,7 +47,7 @@
 		"just-install": "2.0.2",
 		"nuxt-typed-router": "3.7.3",
 		"prettier": "3.4.2",
-		"prettier-plugin-tailwindcss": "0.6.10",
+		"prettier-plugin-tailwindcss": "0.6.11",
 		"tsx": "4.19.2",
 		"type-fest": "4.33.0",
 		"typescript": "5.7.3",
