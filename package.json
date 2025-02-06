@@ -32,6 +32,7 @@
 		"@nuxt/test-utils": "3.15.4",
 		"@nuxtjs/tailwindcss": "6.13.1",
 		"@pinia/testing": "0.1.7",
+		"@tsconfig/node22": "22.0.0",
 		"@types/canvas-confetti": "1.9.0",
 		"@types/lodash.flowright": "3.5.9",
 		"@types/lodash.sample": "4.2.9",
