@@ -1,0 +1,11 @@
+---
+when:
+    - event: push
+
+steps:
+    - name: tests
+      image: node:22.14.0
+      commands:
+          - npm clean-install
+          - npx rust-just test
+          - npx rust-just build
