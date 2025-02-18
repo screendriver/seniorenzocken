@@ -1,71 +1,25 @@
-// @ts-check
-import withNuxt from "./.nuxt/eslint.config.mjs";
-// @ts-expect-error
-import eslintConfigPrettier from "eslint-config-prettier";
-import eslintPluginPrettier from "eslint-plugin-prettier";
-import vitest from "eslint-plugin-vitest";
+import pluginVue from "eslint-plugin-vue";
+import { defineConfigWithVueTs, vueTsConfigs } from "@vue/eslint-config-typescript";
+import pluginVitest from "@vitest/eslint-plugin";
+import skipFormatting from "@vue/eslint-config-prettier/skip-formatting";
 
-export default withNuxt({
-	plugins: {
-		vitest,
-		prettier: eslintPluginPrettier,
+export default defineConfigWithVueTs(
+	{
+		name: "application",
+		files: ["**/*.{ts,vue}"],
 	},
-	rules: {
-		...eslintConfigPrettier.rules,
 
-		"vitest/consistent-test-filename": "error",
-		"vitest/consistent-test-it": ["error", { fn: "test", withinDescribe: "test" }],
-		"vitest/expect-expect": "error",
-		"vitest/max-expect": "off",
-		"vitest/max-expects": "off",
-		"vitest/max-nested-describe": ["error", { max: 1 }],
-		"vitest/no-alias-methods": "error",
-		"vitest/no-commented-out-tests": "error",
-		"vitest/no-conditional-expect": "off",
-		"vitest/no-conditional-in-test": "off",
-		"vitest/no-conditional-tests": "error",
-		"vitest/no-disabled-tests": "error",
-		"vitest/no-duplicate-hooks": "error",
-		"vitest/no-focused-tests": "error",
-		"vitest/no-hooks": "off",
-		"vitest/no-identical-title": "error",
-		"vitest/no-import-node-test": "error",
-		"vitest/no-interpolation-in-snapshots": "error",
-		"vitest/no-large-snapshots": "error",
-		"vitest/no-mocks-import": "error",
-		"vitest/no-restricted-matchers": "error",
-		"vitest/no-restricted-vi-methods": "off",
-		"vitest/no-standalone-expect": "error",
-		"vitest/no-test-prefixes": "error",
-		"vitest/no-test-return-statement": "error",
-		"vitest/prefer-called-with": "off",
-		"vitest/prefer-comparison-matcher": "error",
-		"vitest/prefer-each": "error",
-		"vitest/prefer-equality-matcher": "error",
-		"vitest/prefer-expect-assertions": "off",
-		"vitest/prefer-expect-resolves": "error",
-		"vitest/prefer-hooks-in-order": "error",
-		"vitest/prefer-hooks-on-top": "error",
-		"vitest/prefer-lowercase-title": "off",
-		"vitest/prefer-mock-promise-shorthand": "error",
-		"vitest/prefer-snapshot-hint": "error",
-		"vitest/prefer-spy-on": "error",
-		"vitest/prefer-strict-equal": "error",
-		"vitest/prefer-to-be-falsy": "off",
-		"vitest/prefer-to-be-object": "error",
-		"vitest/prefer-to-be-truthy": "off",
-		"vitest/prefer-to-be": "error",
-		"vitest/prefer-to-contain": "error",
-		"vitest/prefer-to-have-length": "error",
-		"vitest/prefer-todo": "error",
-		"vitest/require-hook": "off",
-		"vitest/require-local-test-context-for-concurrent-snapshots": "error",
-		"vitest/require-to-throw-message": "off",
-		"vitest/require-top-level-describe": "off",
-		"vitest/valid-describe-callback": "error",
-		"vitest/valid-expect": "error",
-		"vitest/valid-title": "error",
-
-		"vue/no-multiple-template-root": "off",
+	{
+		name: "app/files-to-ignore",
+		ignores: ["tailwind.config.js", "**/dist/**", "**/dist-ssr/**", "**/coverage/**"],
 	},
-});
+
+	pluginVue.configs["flat/essential"],
+	vueTsConfigs.recommended,
+
+	{
+		...pluginVitest.configs.recommended,
+		files: ["source/**/__tests__/*"],
+	},
+	skipFormatting,
+);

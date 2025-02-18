@@ -13,11 +13,6 @@
 			"enabled": false
 		},
 		{
-			"groupName": "Nuxt dependencies",
-			"groupSlug": "nuxt-dependencies",
-			"matchPackageNames": ["@nuxt?(js)/*", "@*/nuxt", "nuxt", "nuxt-*"]
-		},
-		{
 			"groupName": "Pinia dependencies",
 			"groupSlug": "pinia",
 			"matchPackageNames": ["@pinia/*", "pinia"]
