@@ -57,6 +57,6 @@
 		"wait-on": "8.0.2"
 	},
 	"optionalDependencies": {
-		"@rollup/rollup-linux-arm64-gnu": "4.32.0"
+		"@rollup/rollup-linux-arm64-gnu": "4.34.8"
 	}
 }
