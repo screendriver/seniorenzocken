@@ -3,7 +3,7 @@ when:
     - event: push
 
 steps:
-    - name: tests
+    - name: test
       image: node:22.14.0
       commands:
           - npm clean-install
