@@ -22,7 +22,7 @@ steps:
           username:
               from_secret: username
           password:
-              from_secret: password
+              from_secret: access_token
 
 depends_on:
     - test
