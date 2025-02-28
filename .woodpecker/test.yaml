@@ -1,9 +1,9 @@
 ---
 when:
-    - event: push
+    - event: [push, manual]
 
 steps:
-    - name: tests
+    - name: test
       image: node:22.14.0
       commands:
           - npm clean-install
