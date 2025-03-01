@@ -5,6 +5,8 @@ when:
 steps:
     - name: build-application
       image: node:22.14.0
+      environment:
+          VITE_POCKETBASE_BASE_URL: https://pb.seniorenzocken.net
       commands:
           - npm clean-install
           - npx rust-just build
