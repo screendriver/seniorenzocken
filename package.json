@@ -9,7 +9,7 @@
 		"@kalimahapps/vue-icons": "1.7.1",
 		"@sindresorhus/is": "7.0.1",
 		"@unhead/vue": "1.11.20",
-		"@vueuse/core": "12.8.2",
+		"@vueuse/core": "13.0.0",
 		"canvas-confetti": "1.9.3",
 		"lodash.flowright": "3.5.0",
 		"lodash.sample": "4.2.1",
