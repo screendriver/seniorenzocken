@@ -38,7 +38,7 @@
 		"@vue/test-utils": "2.4.6",
 		"@vue/tsconfig": "0.7.0",
 		"concurrently": "9.1.2",
-		"daisyui": "5.0.12",
+		"daisyui": "5.0.13",
 		"eslint": "9.24.0",
 		"eslint-plugin-vue": "10.0.0",
 		"fastify": "5.2.2",
