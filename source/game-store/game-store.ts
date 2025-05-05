@@ -52,8 +52,8 @@ export const useGameStore = defineStore("game", () => {
 
 		previousGameRound.match({
 			Just(teamsFromPreviousGameRound) {
-				team1.value = teamsFromPreviousGameRound[0];
-				team2.value = teamsFromPreviousGameRound[1];
+				team1.value = teamsFromPreviousGameRound.value[0];
+				team2.value = teamsFromPreviousGameRound.value[1];
 			},
 			Nothing() {
 				team1.value.gamePoints = 0;

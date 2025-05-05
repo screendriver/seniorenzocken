@@ -85,16 +85,22 @@ export const useAudioPlaylistStore = defineStore("audio-playlist", () => {
 		}
 
 		audioPlaylist.value = playlist;
-		audioSourceUrl.value = first(playlist);
+		audioSourceUrl.value = first(playlist).map((playlistValue) => {
+			return playlistValue.value;
+		});
 	}
 
 	function nextAudioPlaylistItem(): Maybe<URL> {
 		audioPlaylist.value.shift();
 
 		const nextPlaylistItem = first(audioPlaylist.value);
-		audioSourceUrl.value = nextPlaylistItem;
+		audioSourceUrl.value = nextPlaylistItem.map((nextPlaylistItemValue) => {
+			return nextPlaylistItemValue.value;
+		});
 
-		return nextPlaylistItem;
+		return nextPlaylistItem.map((nextPlaylistItemValue) => {
+			return nextPlaylistItemValue.value;
+		});
 	}
 
 	return { initialize, audioPlaylist, audioSourceUrl, generateAudioPlaylist, nextAudioPlaylistItem };
