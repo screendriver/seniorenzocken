@@ -33,7 +33,6 @@
 			"groupSlug": "typescript-eslint monorepo",
 			"extends": ["monorepo:typescript-eslint"]
 		},
-
 		{
 			"matchDepTypes": ["dependencies", "devDependencies"],
 			"matchUpdateTypes": ["minor", "patch"],
@@ -44,7 +43,7 @@
 	"customManagers": [
 		{
 			"customType": "regex",
-			"fileMatch": ["^Dockerfile$"],
+			"managerFilePatterns": ["/^Dockerfile$/"],
 			"matchStrings": ["FROM node:(?<currentValue>\\d+\\.\\d+\\.\\d+)", "FROM node:(?<currentValue>.*?)-alpine"],
 			"depNameTemplate": "node",
 			"datasourceTemplate": "node",
