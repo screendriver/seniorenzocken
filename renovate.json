@@ -26,14 +26,18 @@
 		{
 			"groupName": "ESLint dependencies",
 			"groupSlug": "eslint",
-			"matchPackageNames": ["eslint", "eslint-plugin-*", "@vitest/eslint-plugin", "@vue/eslint-config-*"]
+			"matchPackageNames": [
+				"eslint",
+				"eslint-plugin-*",
+				"@vitest/eslint-plugin",
+				"@vue/eslint-config-*"
+			]
 		},
 		{
 			"groupName": "TypeScript ESLint",
 			"groupSlug": "typescript-eslint monorepo",
 			"extends": ["monorepo:typescript-eslint"]
 		},
-
 		{
 			"matchDepTypes": ["dependencies", "devDependencies"],
 			"matchUpdateTypes": ["minor", "patch"],
@@ -44,8 +48,11 @@
 	"customManagers": [
 		{
 			"customType": "regex",
-			"fileMatch": ["^Dockerfile$"],
-			"matchStrings": ["FROM node:(?<currentValue>\\d+\\.\\d+\\.\\d+)", "FROM node:(?<currentValue>.*?)-alpine"],
+			"managerFilePatterns": ["/^Dockerfile$/"],
+			"matchStrings": [
+				"FROM node:(?<currentValue>\\d+\\.\\d+\\.\\d+)",
+				"FROM node:(?<currentValue>.*?)-alpine"
+			],
 			"depNameTemplate": "node",
 			"datasourceTemplate": "node",
 			"versioningTemplate": "node"
