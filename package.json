@@ -6,7 +6,7 @@
 		"node": "24.0.1"
 	},
 	"dependencies": {
-		"@kalimahapps/vue-icons": "1.7.1",
+		"@kalimahapps/vue-icons": "1.8.1",
 		"@sindresorhus/is": "7.0.1",
 		"@unhead/vue": "2.0.9",
 		"@vueuse/core": "13.2.0",
