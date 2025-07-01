@@ -31,32 +31,46 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-test("<SettingsDrawer /> tries to request a wake lock when it is supported", () => {
+test("<SettingsDrawer /> tries to request a wake lock when it is supported and not already active", async () => {
 	const wakeLock = useWakeLock();
+	wakeLock.isSupported = computed(() => true);
+	wakeLock.isActive = computed(() => false);
 	const request = vi.spyOn(wakeLock, "request");
 
-	mountSettingsDrawer();
+	const wrapper = mountSettingsDrawer();
+
+	const playAudioCheckbox = wrapper.get("div");
+	await playAudioCheckbox.trigger("click");
 
 	expect(request).toHaveBeenCalledWith("screen");
 });
 
-test("<SettingsDrawer /> does not try to request a wake lock when it is not supported", () => {
-	useWakeLock().isSupported = computed(() => false);
+test("<SettingsDrawer /> does not try to request a wake lock when it is supported and already active", async () => {
 	const wakeLock = useWakeLock();
+	wakeLock.isSupported = computed(() => true);
+	wakeLock.isActive = computed(() => true);
 	const request = vi.spyOn(wakeLock, "request");
 
-	mountSettingsDrawer();
-
-	expect(request).not.toHaveBeenCalled();
-});
-
-test('<SettingsDrawer /> renders a label "Display aktiv"', () => {
 	const wrapper = mountSettingsDrawer();
 
-	const labelTexts = wrapper.findAll(".label-text");
+	const playAudioCheckbox = wrapper.get("div");
+	await playAudioCheckbox.trigger("click");
 
-	expect(labelTexts).toHaveLength(2);
-	expect(labelTexts[0]?.text()).toBe("Display aktiv");
+	expect(request).not.toHaveBeenCalledWith("screen");
+});
+
+test("<SettingsDrawer /> does not try to request a wake lock when it is not supported", async () => {
+	const wakeLock = useWakeLock();
+	wakeLock.isSupported = computed(() => false);
+	wakeLock.isActive = computed(() => false);
+	const request = vi.spyOn(wakeLock, "request");
+
+	const wrapper = mountSettingsDrawer();
+
+	const playAudioCheckbox = wrapper.get("div");
+	await playAudioCheckbox.trigger("click");
+
+	expect(request).not.toHaveBeenCalled();
 });
 
 test('<SettingsDrawer /> renders a label "Punkestand vorlesen"', () => {
@@ -64,8 +78,8 @@ test('<SettingsDrawer /> renders a label "Punkestand vorlesen"', () => {
 
 	const labelTexts = wrapper.findAll(".label-text");
 
-	expect(labelTexts).toHaveLength(2);
-	expect(labelTexts[1]?.text()).toBe("Punktestand vorlesen");
+	expect(labelTexts).toHaveLength(1);
+	expect(labelTexts[0]?.text()).toBe("Punktestand vorlesen");
 });
 
 test('<SettingsDrawer /> toggles if audio should be played when checkbox "Punktestand vorlesen" gets checked', async () => {
