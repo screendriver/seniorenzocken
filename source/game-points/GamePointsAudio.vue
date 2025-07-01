@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { inject, onMounted, ref, watchEffect } from "vue";
+import { inject, onMounted, onUnmounted, ref, watch, watchEffect } from "vue";
 import { isHtmlElement, isUndefined } from "@sindresorhus/is";
+import { useOnline } from "@vueuse/core";
 import { useGameStore } from "../game-store/game-store.js";
 import { pocketBaseInjectionKey } from "../pocketbase/pocketbase.js";
 import { useAudioPlaylistStore } from "../audio-playlist/audio-playlist-store.js";
 
+const isOnline = useOnline();
 const gameStore = useGameStore();
 const { isAudioPlaying, team1, team2, isGameOver } = storeToRefs(gameStore);
 
@@ -22,8 +24,32 @@ const { audioSourceUrl } = storeToRefs(audioPlaylistStore);
 const audioElementReference = ref<HTMLAudioElement>();
 const sourceElementSource = ref<string>();
 
+function onAudioError(): void {
+	isAudioPlaying.value = false;
+}
+
+function onAudioWaiting(): void {
+	if (!isOnline.value) {
+		isAudioPlaying.value = false;
+	}
+}
+
+watch(audioElementReference, (audioElement) => {
+	audioElement?.addEventListener("waiting", onAudioWaiting);
+	audioElement?.addEventListener("error", onAudioError);
+});
+
 onMounted(async () => {
-	await audioPlaylistStore.generateAudioPlaylist(team1, team2, isGameOver);
+	try {
+		await audioPlaylistStore.generateAudioPlaylist(team1, team2, isGameOver);
+	} catch {
+		isAudioPlaying.value = false;
+	}
+});
+
+onUnmounted(() => {
+	audioElementReference.value?.removeEventListener("waiting", onAudioWaiting);
+	audioElementReference.value?.removeEventListener("error", onAudioError);
 });
 
 watchEffect(async () => {
@@ -35,8 +61,12 @@ watchEffect(async () => {
 
 	sourceElementSource.value = audioSourceUrl.value.value.toString();
 
-	audioElementReferenceValue.load();
-	await audioElementReferenceValue.play();
+	try {
+		audioElementReferenceValue.load();
+		await audioElementReferenceValue.play();
+	} catch {
+		isAudioPlaying.value = false;
+	}
 });
 
 function playNextAudioPlaylistItem() {
