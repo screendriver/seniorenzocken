@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { inject, onMounted, onUnmounted, ref, watch, watchEffect } from "vue";
+import { inject, onMounted, ref, watchEffect } from "vue";
 import { isHtmlElement, isUndefined } from "@sindresorhus/is";
 import { useOnline } from "@vueuse/core";
 import { useGameStore } from "../game-store/game-store.js";
@@ -34,22 +34,12 @@ function onAudioWaiting(): void {
 	}
 }
 
-watch(audioElementReference, (audioElement) => {
-	audioElement?.addEventListener("waiting", onAudioWaiting);
-	audioElement?.addEventListener("error", onAudioError);
-});
-
 onMounted(async () => {
 	try {
 		await audioPlaylistStore.generateAudioPlaylist(team1, team2, isGameOver);
 	} catch {
 		isAudioPlaying.value = false;
 	}
-});
-
-onUnmounted(() => {
-	audioElementReference.value?.removeEventListener("waiting", onAudioWaiting);
-	audioElementReference.value?.removeEventListener("error", onAudioError);
 });
 
 watchEffect(async () => {
@@ -77,7 +67,12 @@ function playNextAudioPlaylistItem() {
 </script>
 
 <template>
-	<audio ref="audioElementReference" @ended="playNextAudioPlaylistItem">
+	<audio
+		ref="audioElementReference"
+		@ended="playNextAudioPlaylistItem"
+		@error="onAudioError"
+		@waiting="onAudioWaiting"
+	>
 		<source :src="sourceElementSource" type="audio/x-m4a" />
 	</audio>
 </template>
