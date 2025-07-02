@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { serve, type ServerType } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { type CORSOptions, createYoga } from "graphql-yoga";
-import { schema } from "./graphql-server-schema.ts";
+import { schema } from "./graphql/graphql-server-schema.ts";
 
 type ServerOptions = {
 	readonly cors: CORSOptions;
