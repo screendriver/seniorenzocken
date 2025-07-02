@@ -4,6 +4,9 @@ export NODE_OPTIONS := "--disable-warning=ExperimentalWarning"
 default:
 	@just --list
 
+compile:
+	vue-tsc --build
+
 lint:
 	prettier --check .
 	eslint .
@@ -15,8 +18,7 @@ lint-fix:
 test-unit *options:
 	vitest {{options}}
 
-test: && lint (test-unit "--run")
-	vue-tsc --build
+test: compile lint (test-unit "--run")
 
 start-local-server:
 	node --watch --watch-preserve-output source/server/entrypoint-local.ts
