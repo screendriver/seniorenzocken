@@ -7,10 +7,13 @@
 	},
 	"dependencies": {
 		"@kalimahapps/vue-icons": "1.8.1",
+		"@pothos/core": "4.7.0",
 		"@sindresorhus/is": "7.0.2",
 		"@unhead/vue": "2.0.11",
 		"@vueuse/core": "13.4.0",
 		"canvas-confetti": "1.9.3",
+		"graphql": "16.11.0",
+		"graphql-yoga": "5.14.0",
 		"lodash.flowright": "3.5.0",
 		"lodash.sample": "4.2.1",
 		"p-pipe": "4.0.0",
