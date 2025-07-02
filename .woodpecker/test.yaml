@@ -4,7 +4,7 @@ when:
 
 steps:
     - name: test
-      image: node:24.2.0
+      image: node:24.3.0
       commands:
           - npm clean-install
           - npx rust-just test
