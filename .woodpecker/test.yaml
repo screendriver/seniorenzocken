@@ -8,4 +8,4 @@ steps:
       commands:
           - npm clean-install
           - npx rust-just test
-          - npx rust-just build
+          - npx rust-just build-browser-application
