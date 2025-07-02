@@ -1,27 +1,34 @@
 import { Hono } from "hono";
-import { serve } from "@hono/node-server";
+import { serve, type ServerType } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
-import { createYoga } from "graphql-yoga";
+import { type CORSOptions, createYoga } from "graphql-yoga";
 import { schema } from "./schema.ts";
 
-const honoServer = new Hono();
+type ServerOptions = {
+	readonly cors: CORSOptions;
+};
 
-const yoga = createYoga({ schema });
+export function createServer(options: ServerOptions): ServerType {
+	const { cors } = options;
+	const honoServer = new Hono();
 
-honoServer.use("/graphql", async (context) => {
-	return yoga.handle(context.req.raw, {});
-});
+	const yoga = createYoga({ cors, schema });
 
-honoServer.use("/*", serveStatic({ root: "./browser-application" }));
+	honoServer.use("/graphql", async (context) => {
+		return yoga.handle(context.req.raw, {});
+	});
 
-honoServer.get("*", serveStatic({ path: "./browser-application/index.html" }));
+	honoServer.use("/*", serveStatic({ root: "./browser-application" }));
 
-serve(
-	{
-		fetch: honoServer.fetch,
-		port: 4000,
-	},
-	() => {
-		console.info("Server is running on http://localhost:4000");
-	},
-);
+	honoServer.get("*", serveStatic({ path: "./browser-application/index.html" }));
+
+	return serve(
+		{
+			fetch: honoServer.fetch,
+			port: 4000,
+		},
+		() => {
+			console.info("Server is running on http://localhost:4000");
+		},
+	);
+}

@@ -18,8 +18,8 @@ test-unit *options:
 test: && lint (test-unit "--run")
 	vue-tsc --build
 
-start-server:
-	node source/server/server.ts
+start-local-server:
+	tsx watch --clear-screen=false source/server/entrypoint-local.ts
 
 @develop:
 	concurrently --kill-others --kill-others-on-fail --names "server,deterministic-server,vite" "tsx watch --clear-screen=false ./source/server/server.ts" "tsx watch --clear-screen=false ./deterministic-server/server.ts" "wait-on http://localhost:8081 && npx vite"

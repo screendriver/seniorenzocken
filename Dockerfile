@@ -21,4 +21,4 @@ COPY --from=builder --chown=nodejs:nodejs /app/package.json ./package.json
 USER nodejs
 EXPOSE 4000
 
-CMD ["node", "source/server/server.ts"]
+CMD ["node", "source/server/entrypoint-production.ts"]
