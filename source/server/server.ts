@@ -12,7 +12,9 @@ honoServer.use("/graphql", async (context) => {
 	return yoga.handle(context.req.raw, {});
 });
 
-honoServer.use("*", serveStatic({ root: "./browser-application" }));
+honoServer.use("/*", serveStatic({ root: "./browser-application" }));
+
+honoServer.get("*", serveStatic({ path: "./browser-application/index.html" }));
 
 serve(
 	{
