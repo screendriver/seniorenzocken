@@ -1,8 +1,0 @@
-{
-	"extends": "@vue/tsconfig/tsconfig.dom.json",
-	"include": ["env.d.ts", "source/**/*", "source/**/*.vue"],
-	"exclude": ["source/**/__tests__/*"],
-	"compilerOptions": {
-		"tsBuildInfoFile": "./target/tsconfig.app.tsbuildinfo"
-	}
-}

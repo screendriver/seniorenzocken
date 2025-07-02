@@ -1,6 +1,6 @@
 {
-	"extends": "./tsconfig.app.json",
-	"include": ["source/**/__tests__/*", "env.d.ts"],
+	"extends": "./tsconfig.browser-application.json",
+	"include": ["source/browser-application/vite-env.d.ts", "source/**/__tests__/*"],
 	"exclude": [],
 	"compilerOptions": {
 		"tsBuildInfoFile": "./target/tsconfig.vitest.tsbuildinfo",

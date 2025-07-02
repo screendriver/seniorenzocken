@@ -3,14 +3,19 @@
 	"private": true,
 	"type": "module",
 	"engines": {
-		"node": "24.2.0"
+		"node": "24.3.0"
 	},
 	"dependencies": {
+		"@hono/node-server": "1.14.4",
 		"@kalimahapps/vue-icons": "1.8.1",
+		"@pothos/core": "4.7.0",
 		"@sindresorhus/is": "7.0.2",
 		"@unhead/vue": "2.0.11",
 		"@vueuse/core": "13.4.0",
 		"canvas-confetti": "1.9.3",
+		"graphql": "16.11.0",
+		"graphql-yoga": "5.14.0",
+		"hono": "4.8.3",
 		"lodash.flowright": "3.5.0",
 		"lodash.sample": "4.2.1",
 		"p-pipe": "4.0.0",
@@ -26,7 +31,7 @@
 		"@fastify/cors": "11.0.1",
 		"@pinia/testing": "1.0.2",
 		"@tailwindcss/vite": "4.1.11",
-		"@tsconfig/node22": "22.0.2",
+		"@tsconfig/node24": "24.0.1",
 		"@types/canvas-confetti": "1.9.0",
 		"@types/jsdom": "21.1.7",
 		"@types/lodash.flowright": "3.5.9",

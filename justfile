@@ -1,4 +1,5 @@
 export PATH := "./node_modules/.bin:" + env_var("PATH")
+export NODE_OPTIONS := "--disable-warning=ExperimentalWarning"
 
 default:
 	@just --list
@@ -16,6 +17,9 @@ test-unit *options:
 
 test: && lint (test-unit "--run")
 	vue-tsc --build
+
+start-server:
+	node source/server/server.ts
 
 @develop:
 	concurrently --kill-others --kill-others-on-fail --names "deterministic-server,vite" "tsx watch --clear-screen=false ./deterministic-server/server.ts" "wait-on http://localhost:8081 && npx vite"

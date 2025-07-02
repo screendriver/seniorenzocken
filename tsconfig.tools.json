@@ -1,8 +1,8 @@
 {
 	"extends": "@tsconfig/node24/tsconfig.json",
-	"include": ["source/server/**/*"],
+	"include": ["vite.config.*", "vitest.config.*", "eslint.config.*"],
 	"compilerOptions": {
-		"tsBuildInfoFile": "./target/tsconfig.node.tsbuildinfo",
+		"tsBuildInfoFile": "./target/tsconfig.tools.tsbuildinfo",
 		"noEmit": true,
 		"allowImportingTsExtensions": true,
 

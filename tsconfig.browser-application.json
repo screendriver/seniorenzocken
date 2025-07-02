@@ -1,0 +1,9 @@
+{
+	"extends": "@vue/tsconfig/tsconfig.dom.json",
+	"include": ["source/browser-application/**/*", "source/browser-application/**/*.vue"],
+	"exclude": ["source/browser-application/**/__tests__/*"],
+	"compilerOptions": {
+		"tsBuildInfoFile": "./target/tsconfig.browser-application.tsbuildinfo"
+	},
+	"types": []
+}
