@@ -8,4 +8,7 @@ export default defineConfig({
 	build: {
 		outDir: "target/distribution/browser-application",
 	},
+	esbuild: {
+		legalComments: "none",
+	},
 });
