@@ -6,7 +6,7 @@
 		"node": "24.3.0"
 	},
 	"dependencies": {
-		"@hono/node-server": "1.14.4",
+		"@hono/node-server": "1.15.0",
 		"@kalimahapps/vue-icons": "1.8.1",
 		"@pothos/core": "4.7.0",
 		"@sindresorhus/is": "7.0.2",
