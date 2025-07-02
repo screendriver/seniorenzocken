@@ -22,7 +22,6 @@ audioPlaylistStore.initialize(pocketBase);
 const { audioSourceUrl } = storeToRefs(audioPlaylistStore);
 
 const audioElementReference = ref<HTMLAudioElement>();
-const sourceElementSource = ref<string>();
 
 function onAudioError(): void {
 	isAudioPlaying.value = false;
@@ -49,9 +48,10 @@ watchEffect(async () => {
 		return;
 	}
 
-	sourceElementSource.value = audioSourceUrl.value.value.toString();
-
 	try {
+		const audioFile = await fetch(audioSourceUrl.value.value.toString());
+		const audioFileBlob = await audioFile.blob();
+		audioElementReferenceValue.src = URL.createObjectURL(audioFileBlob);
 		audioElementReferenceValue.load();
 		await audioElementReferenceValue.play();
 	} catch {
@@ -69,10 +69,9 @@ function playNextAudioPlaylistItem() {
 <template>
 	<audio
 		ref="audioElementReference"
+		preload="auto"
 		@ended="playNextAudioPlaylistItem"
 		@error="onAudioError"
 		@waiting="onAudioWaiting"
-	>
-		<source :src="sourceElementSource" type="audio/x-m4a" />
-	</audio>
+	/>
 </template>
