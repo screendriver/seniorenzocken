@@ -7,7 +7,7 @@ RUN npm clean-install
 COPY index.html justfile tailwind.config.js vite.config.ts ./
 COPY public/ public/
 COPY source/ source/
-RUN npx rust-just build-browser-application && npm prune --production
+RUN npx rust-just build-browser-application && npm prune --omit=dev
 
 FROM node:24.3.0-alpine
 WORKDIR /app
