@@ -3,14 +3,6 @@ when:
     - event: manual
 
 steps:
-    - name: build-browser-application
-      image: node:24.2.0
-      environment:
-          VITE_POCKETBASE_BASE_URL: https://pb.seniorenzocken.net
-      commands:
-          - npm clean-install
-          - npx rust-just build-browser-application
-
     - name: publish-container-image
       image: woodpeckerci/plugin-docker-buildx:6.0.1
       settings:
@@ -18,8 +10,10 @@ steps:
               from_secret: repository
           registry:
               from_secret: registry
-          dockerfile: docker/browser-application/Dockerfile
+          dockerfile: Dockerfile
           platforms: linux/arm64
+          build_args:
+              VITE_POCKETBASE_BASE_URL: https://pb.seniorenzocken.net
           tags:
               - latest
               - ${CI_COMMIT_SHA}
