@@ -6,6 +6,9 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
 	plugins: [vue(), vueDevTools(), tailwindcss()],
 	build: {
-		outDir: "target/dist",
+		outDir: "target/distribution/browser-application",
+	},
+	esbuild: {
+		legalComments: "none",
 	},
 });

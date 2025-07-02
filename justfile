@@ -20,7 +20,7 @@ test: && lint (test-unit "--run")
 @develop:
 	concurrently --kill-others --kill-others-on-fail --names "deterministic-server,vite" "tsx watch --clear-screen=false ./deterministic-server/server.ts" "wait-on http://localhost:8081 && npx vite"
 
-@build:
+@build-browser-application:
 	vite build
 
 preview:
