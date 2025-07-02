@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { inject, onMounted, ref, watchEffect } from "vue";
-import { isHtmlElement, isUndefined } from "@sindresorhus/is";
+import { inject, onMounted } from "vue";
+import { isUndefined } from "@sindresorhus/is";
 import { useOnline } from "@vueuse/core";
 import { useGameStore } from "../game-store/game-store.js";
 import { pocketBaseInjectionKey } from "../pocketbase/pocketbase.js";
@@ -19,10 +19,6 @@ if (isUndefined(pocketBase)) {
 
 const audioPlaylistStore = useAudioPlaylistStore();
 audioPlaylistStore.initialize(pocketBase);
-const { audioSourceUrl } = storeToRefs(audioPlaylistStore);
-
-const audioElementReference = ref<HTMLAudioElement>();
-const sourceElementSource = ref<string>();
 
 function onAudioError(): void {
 	isAudioPlaying.value = false;
@@ -36,43 +32,36 @@ function onAudioWaiting(): void {
 
 onMounted(async () => {
 	try {
-		await audioPlaylistStore.generateAudioPlaylist(team1, team2, isGameOver);
+		const audioPlaylist = await audioPlaylistStore.generateAudioPlaylist(team1, team2, isGameOver);
+
+		const audioObjects = audioPlaylist.map((playlistItemUrl) => {
+			return new Audio(playlistItemUrl.toString());
+		});
+
+		let currentAudioIndex = 0;
+
+		async function playNext(): Promise<void> {
+			if (currentAudioIndex < audioObjects.length) {
+				const currentAudio = audioObjects[currentAudioIndex];
+				currentAudio.addEventListener("error", onAudioError);
+				currentAudio.addEventListener("waiting", onAudioWaiting);
+				currentAudio.addEventListener("ended", playNext);
+
+				await currentAudio.play();
+
+				currentAudioIndex++;
+			} else {
+				isAudioPlaying.value = false;
+			}
+		}
+
+		playNext();
 	} catch {
 		isAudioPlaying.value = false;
 	}
 });
-
-watchEffect(async () => {
-	const audioElementReferenceValue = audioElementReference.value;
-
-	if (!isAudioPlaying.value || !isHtmlElement(audioElementReferenceValue) || audioSourceUrl.value.isNothing) {
-		return;
-	}
-
-	sourceElementSource.value = audioSourceUrl.value.value.toString();
-
-	try {
-		audioElementReferenceValue.load();
-		await audioElementReferenceValue.play();
-	} catch {
-		isAudioPlaying.value = false;
-	}
-});
-
-function playNextAudioPlaylistItem() {
-	const nextAudioPlaylistItem = audioPlaylistStore.nextAudioPlaylistItem();
-
-	isAudioPlaying.value = nextAudioPlaylistItem.isJust;
-}
 </script>
 
 <template>
-	<audio
-		ref="audioElementReference"
-		@ended="playNextAudioPlaylistItem"
-		@error="onAudioError"
-		@waiting="onAudioWaiting"
-	>
-		<source :src="sourceElementSource" type="audio/x-m4a" />
-	</audio>
+	<audio />
 </template>

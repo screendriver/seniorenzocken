@@ -2,7 +2,6 @@ import { ref, type Ref } from "vue";
 import { defineStore } from "pinia";
 import type PocketBase from "pocketbase";
 import { isUndefined } from "@sindresorhus/is";
-import Maybe, { first } from "true-myth/maybe";
 import promisePipe from "p-pipe";
 import lodashSample from "lodash.sample";
 import flowRight from "lodash.flowright";
@@ -17,8 +16,6 @@ import {
 
 export const useAudioPlaylistStore = defineStore("audio-playlist", () => {
 	const pocketBaseRef = ref<PocketBase>();
-	const audioPlaylist = ref<URL[]>([]);
-	const audioSourceUrl = ref<Maybe<URL>>(Maybe.nothing());
 
 	function initialize(pocketBase: PocketBase): void {
 		pocketBaseRef.value = pocketBase;
@@ -26,7 +23,11 @@ export const useAudioPlaylistStore = defineStore("audio-playlist", () => {
 
 	const { fetchAllMediaRecords } = usePocketBase(pocketBaseRef);
 
-	async function generateAudioPlaylist(team1: Ref<Team>, team2: Ref<Team>, isGameOver: Ref<boolean>): Promise<void> {
+	async function generateAudioPlaylist(
+		team1: Ref<Team>,
+		team2: Ref<Team>,
+		isGameOver: Ref<boolean>,
+	): Promise<readonly URL[]> {
 		if (isUndefined(pocketBaseRef.value)) {
 			throw new Error("PocketBase couldn't be injected");
 		}
@@ -84,26 +85,10 @@ export const useAudioPlaylistStore = defineStore("audio-playlist", () => {
 			}
 		}
 
-		audioPlaylist.value = playlist;
-		audioSourceUrl.value = first(playlist).map((playlistValue) => {
-			return playlistValue.value;
-		});
+		return playlist;
 	}
 
-	function nextAudioPlaylistItem(): Maybe<URL> {
-		audioPlaylist.value.shift();
-
-		const nextPlaylistItem = first(audioPlaylist.value);
-		audioSourceUrl.value = nextPlaylistItem.map((nextPlaylistItemValue) => {
-			return nextPlaylistItemValue.value;
-		});
-
-		return nextPlaylistItem.map((nextPlaylistItemValue) => {
-			return nextPlaylistItemValue.value;
-		});
-	}
-
-	return { initialize, audioPlaylist, audioSourceUrl, generateAudioPlaylist, nextAudioPlaylistItem };
+	return { initialize, generateAudioPlaylist };
 });
 
 export type AudioPlaylistStore = ReturnType<typeof useAudioPlaylistStore>;
