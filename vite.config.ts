@@ -7,6 +7,7 @@ export default defineConfig({
 	plugins: [vue(), vueDevTools(), tailwindcss()],
 	build: {
 		outDir: "target/distribution/browser-application",
+		sourcemap: true,
 	},
 	esbuild: {
 		legalComments: "none",
