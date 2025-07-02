@@ -11,7 +11,7 @@ export default defineConfigWithVueTs(
 
 	{
 		name: "app/files-to-ignore",
-		ignores: ["tailwind.config.js", "**/dist/**", "**/dist-ssr/**", "**/coverage/**"],
+		ignores: ["tailwind.config.js", "**/dist/**", "**/dist-ssr/**", "**/coverage/**", "**/target/**"],
 	},
 
 	pluginVue.configs["flat/essential"],
