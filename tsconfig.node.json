@@ -1,12 +1,11 @@
 {
-	"extends": "@tsconfig/node22/tsconfig.json",
-	"include": ["vite.config.*", "vitest.config.*", "eslint.config.*"],
+	"extends": "@tsconfig/node24/tsconfig.json",
+	"include": ["source/server/**/*"],
 	"compilerOptions": {
-		"noEmit": true,
 		"tsBuildInfoFile": "./target/tsconfig.node.tsbuildinfo",
+		"noEmit": true,
+		"allowImportingTsExtensions": true,
 
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
 		"types": ["node"]
 	}
 }
