@@ -7,5 +7,5 @@ steps:
       image: node:24.3.0
       commands:
           - npm clean-install
-          - npx rust-just test
-          - npx rust-just build-browser-application
+          - npx just test
+          - npx just build-browser-application
