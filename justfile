@@ -20,7 +20,10 @@ test-unit *options:
 
 test: compile lint (test-unit "--run")
 
-start-local-server:
+generate-database-migrations:
+	drizzle-kit generate
+
+start-local-server: generate-database-migrations
 	node --watch --watch-preserve-output source/server/entrypoint-local.ts
 
 @develop:
