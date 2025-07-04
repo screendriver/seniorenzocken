@@ -18,10 +18,15 @@ lint-fix:
 test-unit *options:
 	vitest {{options}}
 
-test: compile lint (test-unit "--run")
+test: compile lint (test-unit "--run") check-database-consistency
 
+[group("database")]
 generate-database-migrations:
 	drizzle-kit generate
+
+[group("database")]
+check-database-consistency:
+	drizzle-kit check
 
 start-local-server: generate-database-migrations
 	node --watch --watch-preserve-output source/server/entrypoint-local.ts
