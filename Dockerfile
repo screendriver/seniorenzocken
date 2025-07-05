@@ -12,8 +12,8 @@ RUN npx just build-browser-application && npm prune --omit=dev
 
 FROM node:24.3.0-alpine
 WORKDIR /app
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nodejs
+RUN addgroup --system --gid 1000 nodejs
+RUN adduser --system --uid 1000 nodejs
 COPY --from=builder --chown=nodejs:nodejs /app/drizzle ./drizzle
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs /app/source/server ./source/server
