@@ -12,16 +12,14 @@ RUN npx just build-browser-application && npm prune --omit=dev
 
 FROM node:24.3.0-alpine
 WORKDIR /app
-RUN addgroup --system --gid 1000 nodejs
-RUN adduser --system --uid 1000 nodejs
-COPY --from=builder --chown=nodejs:nodejs /app/drizzle ./drizzle
-COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nodejs:nodejs /app/source/server ./source/server
-COPY --from=builder --chown=nodejs:nodejs /app/target/distribution/browser-application ./browser-application
-COPY --from=builder --chown=nodejs:nodejs /app/package.json ./package.json
-COPY --from=builder --chown=nodejs:nodejs /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder --chown=node:node /app/drizzle ./drizzle
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/source/server ./source/server
+COPY --from=builder --chown=node:node /app/target/distribution/browser-application ./browser-application
+COPY --from=builder --chown=node:node /app/package.json ./package.json
+COPY --from=builder --chown=node:node /app/drizzle.config.ts ./drizzle.config.ts
 
-USER nodejs
+USER node
 EXPOSE 4000
 
 CMD ["node", "source/server/entrypoint-production.ts"]
