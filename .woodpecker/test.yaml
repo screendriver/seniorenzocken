@@ -9,3 +9,10 @@ steps:
           - npm clean-install
           - npx just test
           - npx just build-browser-application
+          - npx just generate-database-migrations
+
+    - name: fail-on-git-status
+      image: alpine/git:2.49.0
+      commands:
+          - git status
+          - test -z "$(git status --porcelain)"
