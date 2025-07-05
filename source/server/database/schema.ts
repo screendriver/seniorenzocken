@@ -34,7 +34,7 @@ export const teams = sqliteTable(
 
 export const games = sqliteTable("games", {
 	gameId: int().primaryKey({ autoIncrement: true }),
-	datePlayed: text().notNull().default(new Date().toISOString()),
+	datePlayed: text().notNull(),
 	team1Id: int()
 		.notNull()
 		.references(() => {
