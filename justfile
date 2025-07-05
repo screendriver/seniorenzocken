@@ -28,7 +28,7 @@ generate-database-migrations:
 check-database-consistency:
 	drizzle-kit check
 
-start-local-server: generate-database-migrations
+start-local-server:
 	node --watch --watch-preserve-output source/server/entrypoint-local.ts
 
 @develop:
