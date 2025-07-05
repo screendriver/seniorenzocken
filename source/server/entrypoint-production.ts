@@ -1,7 +1,10 @@
+import { migrate } from "drizzle-orm/libsql/migrator";
 import { createDatabase } from "./database/database.ts";
 import { createServer } from "./server.ts";
 
-createDatabase("file:database.sqlite");
+const database = createDatabase("file:database.sqlite");
+
+await migrate(database, { migrationsFolder: "./drizzle" });
 
 createServer({
 	cors: {
