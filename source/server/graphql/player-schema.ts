@@ -1,10 +1,4 @@
-export type Player = {
-	readonly firstName: string;
-	readonly lastName: string;
-	readonly nickname: string;
-	readonly totalGamePoints: number;
-	readonly totalGameRounds: number;
-};
+import type { Player } from "../database/schema.ts";
 
 export function registerPlayerSchema(
 	schemaBuilder: PothosSchemaTypes.SchemaBuilder<
@@ -17,7 +11,7 @@ export function registerPlayerSchema(
 				firstName: fieldBuilder.exposeString("firstName"),
 				lastName: fieldBuilder.exposeString("lastName"),
 				nickname: fieldBuilder.exposeString("nickname"),
-				totalGamePoints: fieldBuilder.exposeInt("totalGamePoints"),
+				totalPoints: fieldBuilder.exposeInt("totalPoints"),
 				totalGameRounds: fieldBuilder.exposeInt("totalGameRounds"),
 			};
 		},

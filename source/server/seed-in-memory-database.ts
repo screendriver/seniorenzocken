@@ -12,7 +12,7 @@ export async function seedInMemoryDatabase(database: LibSQLDatabase<typeof schem
 			players: {
 				count: 8,
 				columns: {
-					totalGamePoints: drizzleSeed.int({
+					totalPoints: drizzleSeed.int({
 						minValue: 0,
 						maxValue: 100,
 					}),

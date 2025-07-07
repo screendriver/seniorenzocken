@@ -11,4 +11,5 @@ createServer({
 		origin: "https://www.seniorenzocken.net",
 		methods: ["POST"],
 	},
+	database,
 });

@@ -1,29 +1,25 @@
 import SchemaBuilder from "@pothos/core";
-import { type Player, registerPlayerSchema } from "./player-schema.ts";
+import type { Database } from "../database/database.ts";
+import { registerPlayerSchema } from "./player-schema.ts";
+import { type Player, players } from "../database/schema.ts";
 
 const builder = new SchemaBuilder<{ Objects: { Player: Player } }>({});
 
-registerPlayerSchema(builder);
+export function createGraphQLServerSchema(database: Database) {
+	registerPlayerSchema(builder);
 
-builder.queryType({
-	fields(fieldBuilder) {
-		return {
-			players: fieldBuilder.field({
-				type: ["Player"],
-				resolve() {
-					return [
-						{
-							firstName: "John",
-							lastName: "Doe",
-							nickname: "JohnDoe",
-							totalGamePoints: 0,
-							totalGameRounds: 0,
-						},
-					];
-				},
-			}),
-		};
-	},
-});
+	builder.queryType({
+		fields(fieldBuilder) {
+			return {
+				players: fieldBuilder.field({
+					type: ["Player"],
+					resolve() {
+						return database.select().from(players).all();
+					},
+				}),
+			};
+		},
+	});
 
-export const schema = builder.toSchema();
+	return builder.toSchema();
+}

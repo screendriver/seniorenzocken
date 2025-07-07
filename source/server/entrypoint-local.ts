@@ -11,4 +11,5 @@ await seedInMemoryDatabase(database);
 
 createServer({
 	cors: false,
+	database,
 });

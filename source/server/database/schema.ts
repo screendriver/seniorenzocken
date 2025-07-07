@@ -1,4 +1,4 @@
-import type { InferInsertModel } from "drizzle-orm";
+import type { InferSelectModel } from "drizzle-orm";
 import { int, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 
 export const players = sqliteTable("players", {
@@ -10,7 +10,7 @@ export const players = sqliteTable("players", {
 	totalGameRounds: int().notNull().default(0),
 });
 
-export type InsertPlayer = InferInsertModel<typeof players>;
+export type Player = InferSelectModel<typeof players>;
 
 export const teams = sqliteTable(
 	"teams",

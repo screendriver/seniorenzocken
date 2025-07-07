@@ -2,17 +2,21 @@ import { Hono } from "hono";
 import { serve, type ServerType } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { type CORSOptions, createYoga } from "graphql-yoga";
-import { schema } from "./graphql/graphql-server-schema.ts";
+import { createGraphQLServerSchema } from "./graphql/graphql-server-schema.ts";
+import type { Database } from "./database/database.ts";
 
 type ServerOptions = {
 	readonly cors: CORSOptions;
+	readonly database: Database;
 };
 
 export function createServer(options: ServerOptions): ServerType {
-	const { cors } = options;
+	const { cors, database } = options;
 	const honoServer = new Hono();
 
-	const yoga = createYoga({ cors, schema });
+	const graphqlSchema = createGraphQLServerSchema(database);
+
+	const yoga = createYoga({ cors, schema: graphqlSchema });
 
 	honoServer.use("/graphql", async (context) => {
 		return yoga.handle(context.req.raw, {});
