@@ -28,11 +28,8 @@ generate-database-migrations:
 check-database-consistency:
 	drizzle-kit check
 
-start-local-server:
-	node --watch --watch-preserve-output source/server/entrypoint-local.ts
-
 @develop:
-	concurrently --kill-others --kill-others-on-fail --names "server,deterministic-server,vite" "tsx watch --clear-screen=false ./source/server/server.ts" "tsx watch --clear-screen=false ./deterministic-server/server.ts" "wait-on http://localhost:8081 && npx vite"
+	concurrently --kill-others --kill-others-on-fail --names "server,deterministic-server,vite" "node --watch --watch-preserve-output source/server/entrypoint-local.ts" "tsx watch --clear-screen=false ./deterministic-server/server.ts" "wait-on http://localhost:8081 && npx vite"
 
 @build-browser-application:
 	vite build
