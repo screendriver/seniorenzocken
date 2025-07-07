@@ -1,3 +1,4 @@
+import { desc } from "drizzle-orm";
 import type { Database } from "../database/database.ts";
 import { players, teams, games } from "../database/schema.ts";
 import { registerPlayerSchema } from "./player-schema.ts";
@@ -42,7 +43,7 @@ export function createGraphQLServerSchema(database: Database) {
 				games: fieldBuilder.field({
 					type: ["Game"],
 					resolve() {
-						return database.select().from(games).all();
+						return database.select().from(games).orderBy(desc(games.datePlayed)).all();
 					},
 				}),
 			};
