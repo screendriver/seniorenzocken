@@ -16,7 +16,7 @@ export function createGraphQLServerSchema(database: Database) {
 				players: fieldBuilder.field({
 					type: ["Player"],
 					resolve() {
-						return database.select().from(players).all();
+						return database.select().from(players).orderBy(players.nickname).all();
 					},
 				}),
 			};
