@@ -9,7 +9,4 @@ await migrate(database, { migrationsFolder: "./drizzle" });
 
 await seedInMemoryDatabase(database);
 
-createServer({
-	cors: false,
-	database,
-});
+createServer({ enableCors: true, database });

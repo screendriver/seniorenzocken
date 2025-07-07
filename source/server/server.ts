@@ -1,26 +1,27 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { serve, type ServerType } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
-import { type CORSOptions, createYoga } from "graphql-yoga";
-import { createGraphQLServerSchema } from "./graphql/graphql-server-schema.ts";
+import { trpcServer } from "@hono/trpc-server";
 import type { Database } from "./database/database.ts";
+import { createTrpcRouter } from "./trpc.ts";
 
 type ServerOptions = {
-	readonly cors: CORSOptions;
+	readonly enableCors: boolean;
 	readonly database: Database;
 };
 
 export function createServer(options: ServerOptions): ServerType {
-	const { cors, database } = options;
+	const { enableCors, database } = options;
 	const honoServer = new Hono();
 
-	const graphqlSchema = createGraphQLServerSchema(database);
+	const tRpcRouter = createTrpcRouter({ database });
 
-	const yoga = createYoga({ cors, schema: graphqlSchema });
+	if (enableCors) {
+		honoServer.use("/trpc/*", cors());
+	}
 
-	honoServer.use("/graphql", async (context) => {
-		return yoga.handle(context.req.raw, {});
-	});
+	honoServer.use("/trpc/*", trpcServer({ router: tRpcRouter }));
 
 	honoServer.use("/*", serveStatic({ root: "./browser-application" }));
 

@@ -4,11 +4,14 @@ import { RouterView } from "vue-router";
 import { useHead } from "@unhead/vue";
 import PocketBase from "pocketbase";
 import { pocketBaseInjectionKey } from "./pocketbase/pocketbase";
+import { createTRpcClient, trpcClientInjectionKey } from "./trpc/client";
 import SettingsDrawer from "./settings/SettingsDrawer.vue";
 
 const pocketBase = new PocketBase(import.meta.env.VITE_POCKETBASE_BASE_URL);
+const tRPCClient = createTRpcClient(new URL(import.meta.env.VITE_TRPC_SERVER_URL));
 
 provide(pocketBaseInjectionKey, pocketBase);
+provide(trpcClientInjectionKey, tRPCClient);
 
 onMounted(() => {
 	if (import.meta.env.PROD) {
