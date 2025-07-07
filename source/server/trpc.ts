@@ -32,5 +32,3 @@ export function createTrpcRouter(options: Options) {
 
 	return builtRouter;
 }
-
-export type TRPCRouter = ReturnType<typeof createTrpcRouter>;
