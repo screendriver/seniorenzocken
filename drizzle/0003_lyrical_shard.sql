@@ -1,0 +1,1 @@
+ALTER TABLE `games` RENAME COLUMN "date_played" TO "date_time_played";

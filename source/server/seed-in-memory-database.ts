@@ -30,7 +30,7 @@ export async function seedInMemoryDatabase(database: LibSQLDatabase<typeof schem
 	await database.insert(schema.teams).values({ player1Id: 5, player2Id: 8 });
 
 	await database.insert(schema.games).values({
-		datePlayed: "2025-07-07 09:18:00.000+02:00",
+		dateTimePlayed: "2025-07-07T09:18:00.000+02:00",
 		team1Id: 1,
 		team2Id: 2,
 		team1Points: 15,
@@ -38,7 +38,7 @@ export async function seedInMemoryDatabase(database: LibSQLDatabase<typeof schem
 	});
 
 	await database.insert(schema.games).values({
-		datePlayed: "2025-07-05 19:35:00.000+02:00",
+		dateTimePlayed: "2025-07-05T19:35:00.000+02:00",
 		team1Id: 1,
 		team2Id: 2,
 		team1Points: 8,

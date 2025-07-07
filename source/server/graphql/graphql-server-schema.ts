@@ -43,7 +43,7 @@ export function createGraphQLServerSchema(database: Database) {
 				games: fieldBuilder.field({
 					type: ["Game"],
 					resolve() {
-						return database.select().from(games).orderBy(desc(games.datePlayed)).all();
+						return database.select().from(games).orderBy(desc(games.dateTimePlayed)).all();
 					},
 				}),
 			};

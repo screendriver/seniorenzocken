@@ -22,6 +22,13 @@
       "when": 1751732747254,
       "tag": "0002_old_barracuda",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1751886621349,
+      "tag": "0003_lyrical_shard",
+      "breakpoints": true
     }
   ]
 }

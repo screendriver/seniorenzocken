@@ -36,7 +36,7 @@ export type Team = InferSelectModel<typeof teams>;
 
 export const games = sqliteTable("games", {
 	gameId: int().primaryKey({ autoIncrement: true }),
-	datePlayed: text().notNull(),
+	dateTimePlayed: text().notNull(),
 	team1Id: int()
 		.notNull()
 		.references(() => {
