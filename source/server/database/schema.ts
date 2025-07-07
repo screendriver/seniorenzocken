@@ -50,3 +50,5 @@ export const games = sqliteTable("games", {
 	team1Points: int().notNull(),
 	team2Points: int().notNull(),
 });
+
+export type Game = InferSelectModel<typeof games>;

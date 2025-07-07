@@ -1,10 +1,6 @@
-import type { Player, Team } from "../database/schema.ts";
+import type { SchemaBuilder } from "./schema-builder.ts";
 
-export function registerTeamSchema(
-	schemaBuilder: PothosSchemaTypes.SchemaBuilder<
-		PothosSchemaTypes.ExtendDefaultTypes<{ Objects: { Player: Player; Team: Team } }>
-	>,
-): void {
+export function registerTeamSchema(schemaBuilder: SchemaBuilder): void {
 	schemaBuilder.objectType("Team", {
 		fields(fieldBuilder) {
 			return {

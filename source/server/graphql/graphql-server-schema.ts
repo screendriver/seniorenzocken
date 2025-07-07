@@ -1,16 +1,16 @@
-import SchemaBuilder from "@pothos/core";
 import type { Database } from "../database/database.ts";
+import { players, teams, games } from "../database/schema.ts";
 import { registerPlayerSchema } from "./player-schema.ts";
-import { type Player, players, type Team, teams } from "../database/schema.ts";
 import { registerTeamSchema } from "./teams-schema.ts";
-
-const builder = new SchemaBuilder<{ Objects: { Player: Player; Team: Team } }>({});
+import { registerGameSchema } from "./game-schema.ts";
+import { schemaBuilder } from "./schema-builder.ts";
 
 export function createGraphQLServerSchema(database: Database) {
-	registerPlayerSchema(builder);
-	registerTeamSchema(builder);
+	registerPlayerSchema(schemaBuilder);
+	registerTeamSchema(schemaBuilder);
+	registerGameSchema(schemaBuilder);
 
-	builder.queryType({
+	schemaBuilder.queryType({
 		fields(fieldBuilder) {
 			return {
 				players: fieldBuilder.field({
@@ -23,7 +23,7 @@ export function createGraphQLServerSchema(database: Database) {
 		},
 	});
 
-	builder.queryType({
+	schemaBuilder.queryType({
 		fields(fieldBuilder) {
 			return {
 				teams: fieldBuilder.field({
@@ -36,5 +36,18 @@ export function createGraphQLServerSchema(database: Database) {
 		},
 	});
 
-	return builder.toSchema();
+	schemaBuilder.queryType({
+		fields(fieldBuilder) {
+			return {
+				games: fieldBuilder.field({
+					type: ["Game"],
+					resolve() {
+						return database.select().from(games).all();
+					},
+				}),
+			};
+		},
+	});
+
+	return schemaBuilder.toSchema();
 }
