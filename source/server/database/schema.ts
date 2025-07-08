@@ -58,7 +58,7 @@ export const gamePointAudios = sqliteTable(
 	{
 		gamePointAudioId: int().primaryKey({ autoIncrement: true }),
 		name: text().notNull(),
-		gamePoints: int().notNull(),
+		gamePoints: int(),
 		audioFile: blob().notNull(),
 	},
 	(table) => {
