@@ -1,5 +1,5 @@
 import type { InferSelectModel } from "drizzle-orm";
-import { int, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { int, sqliteTable, text, unique, index } from "drizzle-orm/sqlite-core";
 
 export const players = sqliteTable("players", {
 	playerId: int().primaryKey({ autoIncrement: true }),
@@ -52,3 +52,18 @@ export const games = sqliteTable("games", {
 });
 
 export type Game = InferSelectModel<typeof games>;
+
+export const gamePointAudios = sqliteTable(
+	"game_point_audios",
+	{
+		gamePointAudioId: int().primaryKey({ autoIncrement: true }),
+		name: text().notNull(),
+		gamePoints: int().notNull(),
+		fileName: text().notNull(),
+	},
+	(table) => {
+		return [index("name_index").on(table.name)];
+	},
+);
+
+export type GamePointAudio = InferSelectModel<typeof gamePointAudios>;
