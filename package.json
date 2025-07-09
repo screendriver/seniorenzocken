@@ -20,6 +20,7 @@
 		"hono": "4.8.4",
 		"lodash.flowright": "3.5.0",
 		"lodash.sample": "4.2.1",
+		"mime": "4.0.7",
 		"p-pipe": "4.0.0",
 		"pinia": "3.0.3",
 		"pocketbase": "0.26.1",
