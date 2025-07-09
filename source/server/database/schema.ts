@@ -7,7 +7,7 @@ export const players = sqliteTable("players", {
 	lastName: text().notNull(),
 	nickname: text().notNull().unique(),
 	totalPoints: int().notNull().default(0),
-	totalGameRounds: int().notNull().default(0),
+	totalGamesCount: int().notNull().default(0),
 });
 
 export type Player = InferSelectModel<typeof players>;
@@ -59,7 +59,7 @@ export const gamePointAudios = sqliteTable(
 		gamePointAudioId: int().primaryKey({ autoIncrement: true }),
 		name: text().notNull(),
 		gamePoints: int(),
-		audioFile: blob().notNull(),
+		audioFile: blob({ mode: "buffer" }).notNull(),
 	},
 	(table) => {
 		return [index("name_index").on(table.name)];
