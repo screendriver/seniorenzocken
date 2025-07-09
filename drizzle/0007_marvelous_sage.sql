@@ -1,0 +1,1 @@
+ALTER TABLE `players` RENAME COLUMN "total_game_rounds" TO "total_games_count";
