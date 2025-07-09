@@ -1,4 +1,4 @@
-import { createTRPCClient, httpBatchLink, type TRPCClient } from "@trpc/client";
+import { createTRPCClient, httpLink, type TRPCClient } from "@trpc/client";
 import type { InjectionKey } from "vue";
 import type { TRPCRouter } from "../../shared/trpc.ts";
 
@@ -7,7 +7,7 @@ export const trpcClientInjectionKey: InjectionKey<TRPCClient<TRPCRouter>> = Symb
 export function createTRpcClient(serverUrl: URL) {
 	return createTRPCClient<TRPCRouter>({
 		links: [
-			httpBatchLink({
+			httpLink({
 				url: serverUrl,
 			}),
 		],
