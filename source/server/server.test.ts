@@ -47,11 +47,13 @@ test(
 
 		await expect(trpcClient.teams.query()).resolves.toEqual([
 			{
+				createdAt: "2025-07-10 10:17:51",
 				player1Id: 1,
 				player2Id: 3,
 				teamId: 1,
 			},
 			{
+				createdAt: "2025-08-10 15:00:00",
 				player1Id: 5,
 				player2Id: 8,
 				teamId: 2,

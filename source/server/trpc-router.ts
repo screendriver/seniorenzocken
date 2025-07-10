@@ -30,7 +30,7 @@ export function createTrpcRouter(options: Options) {
 		}),
 
 		games: publicProcedure.query(() => {
-			return database.select().from(games).orderBy(desc(games.dateTimePlayed)).all();
+			return database.select().from(games).orderBy(desc(games.createdAt)).all();
 		}),
 
 		generateAudioPlaylist: publicProcedure

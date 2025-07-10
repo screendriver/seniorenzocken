@@ -1,5 +1,11 @@
-import type { InferSelectModel } from "drizzle-orm";
+import { type InferSelectModel, sql } from "drizzle-orm";
 import { int, sqliteTable, text, unique, index, blob } from "drizzle-orm/sqlite-core";
+
+const timestamps = {
+	createdAt: text()
+		.notNull()
+		.default(sql`(current_timestamp)`),
+};
 
 export const players = sqliteTable("players", {
 	playerId: int().primaryKey({ autoIncrement: true }),
@@ -8,6 +14,7 @@ export const players = sqliteTable("players", {
 	nickname: text().notNull().unique(),
 	totalPoints: int().notNull().default(0),
 	totalGamesCount: int().notNull().default(0),
+	...timestamps,
 });
 
 export type Player = InferSelectModel<typeof players>;
@@ -26,6 +33,7 @@ export const teams = sqliteTable(
 			.references(() => {
 				return players.playerId;
 			}),
+		...timestamps,
 	},
 	(table) => {
 		return [unique().on(table.player1Id, table.player2Id)];
@@ -36,7 +44,6 @@ export type Team = InferSelectModel<typeof teams>;
 
 export const games = sqliteTable("games", {
 	gameId: int().primaryKey({ autoIncrement: true }),
-	dateTimePlayed: text().notNull(),
 	team1Id: int()
 		.notNull()
 		.references(() => {
@@ -49,6 +56,7 @@ export const games = sqliteTable("games", {
 		}),
 	team1Points: int().notNull(),
 	team2Points: int().notNull(),
+	...timestamps,
 });
 
 export type Game = InferSelectModel<typeof games>;
@@ -60,6 +68,7 @@ export const gamePointAudios = sqliteTable(
 		name: text().notNull(),
 		gamePoints: int(),
 		audioFile: blob({ mode: "buffer" }).notNull(),
+		...timestamps,
 	},
 	(table) => {
 		return [index("name_index").on(table.name)];

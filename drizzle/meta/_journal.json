@@ -57,6 +57,13 @@
       "when": 1751973519070,
       "tag": "0007_marvelous_sage",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1752142451319,
+      "tag": "0008_dapper_steel_serpent",
+      "breakpoints": true
     }
   ]
 }
