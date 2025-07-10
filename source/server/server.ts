@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { logger } from "hono/logger";
 import { validator } from "hono/validator";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
@@ -21,8 +20,6 @@ export function createServer(options: ServerOptions): Hono {
 	const { enableCors, database, trpcRouter } = options;
 
 	return new Hono()
-		.use(logger())
-
 		.use("/api/trpc/*", corsMiddleware({ enableCors }))
 
 		.use("/api/trpc/*", trpcServer({ router: trpcRouter, endpoint: "/api/trpc" }))
