@@ -12,7 +12,7 @@ await migrate(database, { migrationsFolder: "./drizzle" });
 await seedInMemoryDatabase(database);
 
 const trpcRouter = createTrpcRouter({ database });
-const server = createServer({ enableCors: true, database, trpcRouter });
+const server = createServer({ database, trpcRouter });
 
 serve(
 	{

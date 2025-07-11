@@ -2,8 +2,6 @@ FROM node:24.3.0 AS builder
 WORKDIR /app
 ARG VITE_POCKETBASE_BASE_URL
 ENV VITE_POCKETBASE_BASE_URL=${VITE_POCKETBASE_BASE_URL}
-ARG VITE_TRPC_SERVER_URL
-ENV VITE_TRPC_SERVER_URL=${VITE_TRPC_SERVER_URL}
 COPY package.json package-lock.json ./
 RUN npm clean-install
 COPY index.html justfile tailwind.config.js vite.config.ts drizzle.config.ts ./

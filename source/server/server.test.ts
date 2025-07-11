@@ -21,7 +21,6 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 
 		const trpcRouter = createTrpcRouter({ database });
 		const serverOptions: ServerOptions = {
-			enableCors: false,
 			database,
 			trpcRouter,
 		};

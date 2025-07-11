@@ -9,7 +9,7 @@ const database = createDatabase("file:database.sqlite");
 await migrate(database, { migrationsFolder: "./drizzle" });
 
 const trpcRouter = createTrpcRouter({ database });
-const server = createServer({ enableCors: false, database, trpcRouter });
+const server = createServer({ database, trpcRouter });
 
 serve(
 	{

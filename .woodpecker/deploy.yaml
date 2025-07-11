@@ -14,7 +14,6 @@ steps:
           platforms: linux/arm64
           build_args:
               VITE_POCKETBASE_BASE_URL: https://pb.seniorenzocken.net
-              VITE_TRPC_SERVER_URL: https://www.seniorenzocken.net/api/trpc
           tags:
               - latest
               - ${CI_COMMIT_SHA}

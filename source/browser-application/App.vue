@@ -8,7 +8,7 @@ import { createTRpcClient, trpcClientInjectionKey } from "./trpc/client";
 import SettingsDrawer from "./settings/SettingsDrawer.vue";
 
 const pocketBase = new PocketBase(import.meta.env.VITE_POCKETBASE_BASE_URL);
-const tRPCClient = createTRpcClient(new URL(import.meta.env.VITE_TRPC_SERVER_URL));
+const tRPCClient = createTRpcClient();
 
 provide(pocketBaseInjectionKey, pocketBase);
 provide(trpcClientInjectionKey, tRPCClient);

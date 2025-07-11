@@ -7,21 +7,17 @@ import { safeParse, object, pipe, string, transform, number, integer } from "val
 import mime from "mime";
 import type { Database } from "./database/database.ts";
 import { gamePointAudios } from "./database/schema.ts";
-import { corsMiddleware } from "./cors-middleware.ts";
 import type { TRPCRouter } from "../shared/trpc.ts";
 
 export type ServerOptions = {
-	readonly enableCors: boolean;
 	readonly database: Database;
 	readonly trpcRouter: TRPCRouter;
 };
 
 export function createServer(options: ServerOptions): Hono {
-	const { enableCors, database, trpcRouter } = options;
+	const { database, trpcRouter } = options;
 
 	return new Hono()
-		.use("/api/trpc/*", corsMiddleware({ enableCors }))
-
 		.use("/api/trpc/*", trpcServer({ router: trpcRouter, endpoint: "/api/trpc" }))
 
 		.get(
