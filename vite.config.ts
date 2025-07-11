@@ -12,4 +12,11 @@ export default defineConfig({
 	esbuild: {
 		legalComments: "none",
 	},
+	server: {
+		port: 5173,
+		strictPort: true,
+		proxy: {
+			"/api/": "http://localhost:4000",
+		},
+	},
 });
