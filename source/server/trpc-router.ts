@@ -1,11 +1,11 @@
 import { initTRPC, TRPCError } from "@trpc/server";
-import { desc, eq } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 import * as v from "valibot";
-import sample from "lodash.sample";
-import Maybe from "true-myth/maybe";
 import type { Database } from "./database/database.ts";
-import { gamePointAudios, games, players, teams } from "./database/schema.ts";
-import { gamePointsPerRoundSchema } from "./game-points/game-points.ts";
+import { games, players, teams } from "./database/schema.ts";
+import { matchTotalGamePointsSchema } from "./game-points/game-points.ts";
+import { generateAudioPlaylist } from "./audio/playlist.ts";
+import type { AudioRepository } from "./audio/repository.ts";
 
 const trpc = initTRPC.create();
 
@@ -15,10 +15,11 @@ const publicProcedure = trpc.procedure;
 
 type Options = {
 	readonly database: Database;
+	readonly audioRepository: AudioRepository;
 };
 
 export function createTrpcRouter(options: Options) {
-	const { database } = options;
+	const { database, audioRepository } = options;
 
 	return router({
 		players: publicProcedure.query(() => {
@@ -36,26 +37,34 @@ export function createTrpcRouter(options: Options) {
 		generateAudioPlaylist: publicProcedure
 			.input(
 				v.object({
-					team1Points: gamePointsPerRoundSchema,
-					team2Points: gamePointsPerRoundSchema,
+					team1MatchTotalGamePoints: matchTotalGamePointsSchema,
+					team2MatchTotalGamePoints: matchTotalGamePointsSchema,
+					isStretched: v.boolean(),
+					hasWon: v.boolean(),
 				}),
 			)
-			.query(async () => {
-				const attentionAudios = await database
-					.select({ gamePointAudioId: gamePointAudios.gamePointAudioId })
-					.from(gamePointAudios)
-					.where(eq(gamePointAudios.name, "attention.m4a"));
+			.query(async ({ input }) => {
+				const allAudios = await audioRepository.readAllAudios({
+					team1MatchTotalGamePoints: input.team1MatchTotalGamePoints,
+					team2MatchTotalGamePoints: input.team2MatchTotalGamePoints,
+				});
 
-				const { gamePointAudioId: attentionGamePointAudioId } = Maybe.of(sample(attentionAudios)).unwrapOrElse(
-					() => {
-						throw new TRPCError({
-							code: "NOT_FOUND",
-							message: "Could not find any attention audio files",
-						});
-					},
-				);
+				const audioPlaylist = generateAudioPlaylist({
+					allAudios,
+					team1MatchTotalGamePoints: input.team1MatchTotalGamePoints,
+					team2MatchTotalGamePoints: input.team2MatchTotalGamePoints,
+					isStretched: input.isStretched,
+					hasWon: input.hasWon,
+				}).unwrapOrElse(() => {
+					throw new TRPCError({
+						code: "NOT_FOUND",
+						message: "Could not find any attention audio files",
+					});
+				});
 
-				return [`/api/audio/${attentionGamePointAudioId}`];
+				return audioPlaylist.map((gamePointAudio) => {
+					return [`/api/audio/${gamePointAudio.gamePointAudioId}`];
+				});
 			}),
 	});
 }
