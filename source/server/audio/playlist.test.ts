@@ -1,7 +1,7 @@
 import { suite, test, assert, expect } from "vitest";
 import { Factory } from "fishery";
 import { isErr, isOk } from "true-myth/result";
-import { generateAudioPlaylist, type SelectedGamePointAudio, type Options } from "./audio-playlist.ts";
+import { generateAudioPlaylist, type SelectedGamePointAudio, type Options } from "./playlist.ts";
 
 const selectedGamePointAudioFactory = Factory.define<SelectedGamePointAudio>(() => {
 	return {
