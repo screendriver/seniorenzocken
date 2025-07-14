@@ -7,6 +7,7 @@ import { createDatabase } from "./database/database.ts";
 import { seedInMemoryDatabase } from "./seed-in-memory-database.ts";
 import { createTrpcRouter } from "./trpc-router.ts";
 import type { TRPCRouter } from "../shared/trpc.ts";
+import { createAudioRepository } from "./audio/repository.ts";
 
 type TestFunctionOptions = {
 	readonly server: Hono;
@@ -19,7 +20,8 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await seedInMemoryDatabase(database);
 
-		const trpcRouter = createTrpcRouter({ database });
+		const audioRepository = createAudioRepository({ database });
+		const trpcRouter = createTrpcRouter({ database, audioRepository });
 		const serverOptions: ServerOptions = {
 			database,
 			trpcRouter,
@@ -99,6 +101,6 @@ test(
 		expect(response.status).toBe(200);
 		expect(response.headers.get("Content-Disposition")).toBe("inline; filename=attention.m4a");
 		expect(response.headers.get("Content-Type")).toBe("audio/mp4");
-		expect((await response.blob()).size).toBe(2691);
+		expect((await response.blob()).size).toBe(1054);
 	}),
 );
