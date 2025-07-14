@@ -2,7 +2,7 @@ import { union, literal, type InferOutput } from "valibot";
 
 const gamePointsPerRoundLiterals = [0, 2, 3, 4] as const;
 
-const matchTotalGamePointsLiterals = [
+export const matchTotalGamePoints = [
 	...gamePointsPerRoundLiterals,
 	5,
 	6,
@@ -29,8 +29,8 @@ export const gamePointsPerRoundSchema = union(
 export type GamePointsPerRound = InferOutput<typeof gamePointsPerRoundSchema>;
 
 export const matchTotalGamePointsSchema = union(
-	matchTotalGamePointsLiterals.map((matchTotalGamePointsLiteral) => {
-		return literal(matchTotalGamePointsLiteral);
+	matchTotalGamePoints.map((matchTotalGamePoint) => {
+		return literal(matchTotalGamePoint);
 	}),
 );
 
