@@ -10,7 +10,7 @@
 		"@hono/prometheus": "1.0.2",
 		"@hono/trpc-server": "0.4.0",
 		"@kalimahapps/vue-icons": "1.8.1",
-		"@libsql/client": "0.15.9",
+		"@libsql/client": "0.15.10",
 		"@sindresorhus/is": "7.0.2",
 		"@trpc/client": "11.4.3",
 		"@trpc/server": "11.4.3",
