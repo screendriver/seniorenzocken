@@ -14,7 +14,7 @@ await seedInMemoryDatabase(database);
 
 const audioRepository = createAudioRepository({ database });
 const trpcRouter = createTrpcRouter({ database, audioRepository });
-const server = createServer({ database, trpcRouter });
+const server = createServer({ database, trpcRouter, metricsUsername: "foo", metricsPassword: "bar" });
 
 serve(
 	{

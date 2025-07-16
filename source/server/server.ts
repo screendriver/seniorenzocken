@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import { validator } from "hono/validator";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
+import { basicAuth } from "hono/basic-auth";
+import { prometheus } from "@hono/prometheus";
 import { eq } from "drizzle-orm";
 import { safeParse, object, pipe, string, transform, number, integer } from "valibot";
 import mime from "mime";
@@ -12,12 +14,27 @@ import type { TRPCRouter } from "../shared/trpc.ts";
 export type ServerOptions = {
 	readonly database: Database;
 	readonly trpcRouter: TRPCRouter;
+	readonly metricsUsername: string;
+	readonly metricsPassword: string;
 };
 
 export function createServer(options: ServerOptions): Hono {
-	const { database, trpcRouter } = options;
+	const { database, trpcRouter, metricsUsername, metricsPassword } = options;
+
+	const { printMetrics, registerMetrics } = prometheus();
 
 	return new Hono()
+		.use("*", registerMetrics)
+		.use(
+			"/metrics",
+			basicAuth({
+				username: metricsUsername,
+				password: metricsPassword,
+				realm: "metrics",
+			}),
+		)
+		.get("/metrics", printMetrics)
+
 		.use("/api/trpc/*", trpcServer({ router: trpcRouter, endpoint: "/api/trpc" }))
 
 		.get(
@@ -37,7 +54,7 @@ export function createServer(options: ServerOptions): Hono {
 				const parametersParseResult = safeParse(audioFileIdSchema, value);
 
 				if (!parametersParseResult.success) {
-					return context.text("Invalid audio file id", 404);
+					return context.text("Invalid audio file id", 400);
 				}
 
 				return parametersParseResult.output;
@@ -59,6 +76,7 @@ export function createServer(options: ServerOptions): Hono {
 				return context.body(audioFileDatabaseEntry.audioFile, 200, {
 					"Content-Disposition": `inline; filename=${audioFileDatabaseEntry.name}`,
 					"Content-Type": mime.getType(audioFileDatabaseEntry.name) ?? "application/octet-stream",
+					"Cache-Control": "public, max-age=86400",
 				});
 			},
 		)
