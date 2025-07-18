@@ -13,7 +13,7 @@ const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
 	};
 });
 
-suite.only("shouldShowConfetti()", () => {
+suite("shouldShowConfetti()", () => {
 	test("returns false when given current round game points for both teams equals 0", () => {
 		const team1 = notPersistedTeamFactory.build({ teamNumber: 1, currentRoundGamePoints: 0 });
 		const team2 = notPersistedTeamFactory.build({ teamNumber: 2, currentRoundGamePoints: 0 });
