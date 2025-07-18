@@ -109,23 +109,26 @@ export function createTrpcRouter(options: Options) {
 			)
 			.mutation<NextGameRoundMutationOutput>(({ input }) => {
 				const { team1, team2, gameRounds } = input;
+
+				const team1MatchTotalGamePoints = parse(
+					matchTotalGamePointsSchema,
+					team1.currentRoundGamePoints + team1.matchTotalGamePoints,
+				);
+				const team2MatchTotalGamePoints = parse(
+					matchTotalGamePointsSchema,
+					team2.currentRoundGamePoints + team2.matchTotalGamePoints,
+				);
 				const updatedTeam1: NotPersistedTeam = {
 					...team1,
 					currentRoundGamePoints: 0,
-					matchTotalGamePoints: parse(
-						matchTotalGamePointsSchema,
-						team1.currentRoundGamePoints + team1.matchTotalGamePoints,
-					),
-					isStretched: isStretched(team1.matchTotalGamePoints),
+					matchTotalGamePoints: team1MatchTotalGamePoints,
+					isStretched: isStretched(team1MatchTotalGamePoints),
 				};
 				const updatedTeam2: NotPersistedTeam = {
 					...team2,
 					currentRoundGamePoints: 0,
-					matchTotalGamePoints: parse(
-						matchTotalGamePointsSchema,
-						team2.currentRoundGamePoints + team2.matchTotalGamePoints,
-					),
-					isStretched: isStretched(team2.matchTotalGamePoints),
+					matchTotalGamePoints: team2MatchTotalGamePoints,
+					isStretched: isStretched(team2MatchTotalGamePoints),
 				};
 				const gameOver = isGameOver(updatedTeam1, updatedTeam2);
 
