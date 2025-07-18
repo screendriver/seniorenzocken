@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { compress } from "hono/compress";
 import { validator } from "hono/validator";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
@@ -24,6 +25,8 @@ export function createServer(options: ServerOptions): Hono {
 	const { printMetrics, registerMetrics } = prometheus();
 
 	return new Hono()
+		.use(compress())
+
 		.use("*", registerMetrics)
 		.use(
 			"/metrics",
