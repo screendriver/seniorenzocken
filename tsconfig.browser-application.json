@@ -1,9 +1,16 @@
 {
 	"extends": "@vue/tsconfig/tsconfig.dom.json",
-	"include": ["source/browser-application/**/*", "source/browser-application/**/*.vue"],
+	"include": [
+		"source/browser-application/vite-env.d.ts",
+		"source/browser-application/**/*",
+		"source/browser-application/**/*.vue",
+		"source/shared/**/*"
+	],
 	"exclude": ["source/browser-application/**/__tests__/*"],
 	"compilerOptions": {
-		"tsBuildInfoFile": "./target/tsconfig.browser-application.tsbuildinfo"
+		"tsBuildInfoFile": "./target/tsconfig.browser-application.tsbuildinfo",
+		"lib": ["ES2023", "DOM", "DOM.Iterable"],
+		"allowImportingTsExtensions": true
 	},
 	"types": []
 }

@@ -39,7 +39,7 @@ function activateWakeLock(): void {
 							:checked="gameStore.shouldPlayAudio"
 							type="checkbox"
 							class="checkbox"
-							@change="gameStore.toggleShouldPlayAudio"
+							@change="gameStore.shouldPlayAudio = !gameStore.shouldPlayAudio"
 						/>
 					</label>
 				</li>
