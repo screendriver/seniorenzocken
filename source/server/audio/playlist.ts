@@ -3,7 +3,7 @@ import Result from "true-myth/result";
 import { toOkOrErr } from "true-myth/toolbelt";
 import sample from "lodash.sample";
 import type { GamePointAudio } from "../database/schema.ts";
-import type { MatchTotalGamePoints } from "../game-points/game-points.ts";
+import type { MatchTotalGamePoints } from "../../shared/game-points.ts";
 
 export type SelectedGamePointAudio = Pick<GamePointAudio, "gamePointAudioId" | "name" | "gamePoints">;
 

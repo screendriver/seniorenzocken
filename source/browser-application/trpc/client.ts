@@ -1,11 +1,8 @@
-import { createTRPCClient, httpLink, type TRPCClient } from "@trpc/client";
-import type { InjectionKey } from "vue";
+import { createTRPCClient as createRealTRPCClient, httpLink, type TRPCClient } from "@trpc/client";
 import type { TRPCRouter } from "../../shared/trpc.ts";
 
-export const trpcClientInjectionKey: InjectionKey<TRPCClient<TRPCRouter>> = Symbol();
-
-export function createTRpcClient() {
-	return createTRPCClient<TRPCRouter>({
+export function createTRPCClient(): TRPCClient<TRPCRouter> {
+	return createRealTRPCClient<TRPCRouter>({
 		links: [httpLink({ url: "/api/trpc" })],
 	});
 }

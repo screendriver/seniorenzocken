@@ -1,6 +1,6 @@
 {
 	"extends": "@tsconfig/node24/tsconfig.json",
-	"include": ["source/server/**/*"],
+	"include": ["source/server/**/*", "source/shared/**/*"],
 	"compilerOptions": {
 		"tsBuildInfoFile": "./target/tsconfig.node.tsbuildinfo",
 		"noEmit": true,
