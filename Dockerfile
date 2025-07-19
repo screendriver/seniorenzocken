@@ -1,4 +1,4 @@
-FROM node:24.3.0 AS builder
+FROM node:24.4.1 AS builder
 WORKDIR /app
 ARG VITE_POCKETBASE_BASE_URL
 ENV VITE_POCKETBASE_BASE_URL=${VITE_POCKETBASE_BASE_URL}
@@ -10,7 +10,7 @@ COPY public/ public/
 COPY source/ source/
 RUN npx just build-browser-application && npm prune --omit=dev
 
-FROM node:24.3.0-alpine
+FROM node:24.4.1-alpine
 ENV NODE_ENV production
 WORKDIR /app
 COPY --from=builder /app/drizzle ./drizzle
