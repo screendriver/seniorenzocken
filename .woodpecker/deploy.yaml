@@ -12,8 +12,6 @@ steps:
               from_secret: registry
           dockerfile: Dockerfile
           platforms: linux/arm64
-          build_args:
-              VITE_POCKETBASE_BASE_URL: https://pb.seniorenzocken.net
           tags:
               - latest
               - ${CI_COMMIT_SHA}
