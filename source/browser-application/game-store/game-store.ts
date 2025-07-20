@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { isNonEmptyArray, isUndefined } from "@sindresorhus/is";
+import { isNonEmptyArray } from "@sindresorhus/is";
 import Task, { fromPromise } from "true-myth/task";
 import type { NotPersistedTeam } from "../../shared/team.ts";
 import type { GameRounds } from "../../shared/game-rounds.ts";
@@ -68,10 +68,6 @@ export const useGameStore = defineStore("game", () => {
 	}
 
 	function startGame(): Task<void, unknown> {
-		if (isUndefined(team1.value) || isUndefined(team2.value)) {
-			return Task.reject();
-		}
-
 		return fromPromise(trpcClient.startGame.mutate({ team1: team1.value, team2: team2.value }))
 			.map((startedGame) => {
 				isGameRunning.value = startedGame.isGameRunning;
@@ -83,10 +79,6 @@ export const useGameStore = defineStore("game", () => {
 	}
 
 	function nextGameRound(): Task<void, unknown> {
-		if (isUndefined(team1.value) || isUndefined(team2.value)) {
-			return Task.reject();
-		}
-
 		return fromPromise(
 			trpcClient.nextGameRound.mutate({ team1: team1.value, team2: team2.value, gameRounds: gameRounds.value }),
 		)
@@ -105,11 +97,7 @@ export const useGameStore = defineStore("game", () => {
 			});
 	}
 
-	function previousGameRound() {
-		if (isUndefined(team1.value) || isUndefined(team2.value)) {
-			return Task.reject();
-		}
-
+	function previousGameRound(): Task<void, unknown> {
 		return fromPromise(trpcClient.previousGameRound.mutate({ gameRounds: gameRounds.value }))
 			.map((previousGameRoundMutationOutput) => {
 				team1.value = previousGameRoundMutationOutput.team1;
@@ -122,11 +110,7 @@ export const useGameStore = defineStore("game", () => {
 			});
 	}
 
-	function generateAudioPlaylist() {
-		if (isUndefined(team1.value) || isUndefined(team2.value)) {
-			return Task.reject();
-		}
-
+	function generateAudioPlaylist(): Task<string[], unknown> {
 		return fromPromise(
 			trpcClient.generateAudioPlaylist.query({
 				team1MatchTotalGamePoints: team1.value.matchTotalGamePoints,
