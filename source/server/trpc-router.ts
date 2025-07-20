@@ -19,7 +19,7 @@ const router = trpc.router;
 
 const publicProcedure = trpc.procedure;
 
-type NewGameProcedure = {
+type NewGameProcedureOutput = {
 	readonly team1: NotPersistedTeam;
 	readonly team2: NotPersistedTeam;
 	readonly isGameRunning: false;
@@ -68,7 +68,7 @@ export function createTrpcRouter(options: Options) {
 			return database.select().from(games).orderBy(desc(games.createdAt)).all();
 		}),
 
-		newGame: publicProcedure.query<NewGameProcedure>(() => {
+		newGame: publicProcedure.query<NewGameProcedureOutput>(() => {
 			return {
 				team1: {
 					teamNumber: 1,
