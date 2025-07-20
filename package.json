@@ -56,7 +56,7 @@
 		"happy-dom": "18.0.1",
 		"prettier": "3.6.2",
 		"prettier-plugin-tailwindcss": "0.6.14",
-		"rust-just": "1.42.2",
+		"rust-just": "1.42.3",
 		"type-fest": "4.41.0",
 		"typescript": "5.8.3",
 		"vite": "7.0.5",
