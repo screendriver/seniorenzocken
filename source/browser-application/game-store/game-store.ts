@@ -30,7 +30,7 @@ export const useGameStore = defineStore("game", () => {
 	const gameRounds = ref<GameRounds>([]);
 
 	const bothTeamsHasZeroGamePoints = computed(() => {
-		return team1.value?.currentRoundGamePoints === 0 && team2.value?.currentRoundGamePoints === 0;
+		return team1.value.currentRoundGamePoints === 0 && team2.value.currentRoundGamePoints === 0;
 	});
 
 	const isGamePointEnabled = computed(() => {
