@@ -112,9 +112,8 @@ export const useGameStore = defineStore("game", () => {
 	function generateAudioPlaylist(): Task<string[], unknown> {
 		return fromPromise(
 			trpcClient.generateAudioPlaylist.query({
-				team1MatchTotalGamePoints: team1.value.matchTotalGamePoints,
-				team2MatchTotalGamePoints: team2.value.matchTotalGamePoints,
-				isStretched: !isGameOver.value && (team1.value.isStretched || team2.value.isStretched),
+				team1: team1.value,
+				team2: team2.value,
 				hasWon: isGameOver.value,
 			}),
 		).mapRejected(() => {

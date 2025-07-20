@@ -178,24 +178,25 @@ export function createTrpcRouter(options: Options) {
 		generateAudioPlaylist: publicProcedure
 			.input(
 				object({
-					team1MatchTotalGamePoints: matchTotalGamePointsSchema,
-					team2MatchTotalGamePoints: matchTotalGamePointsSchema,
-					isStretched: boolean(),
+					team1: notPersistedTeamSchema,
+					team2: notPersistedTeamSchema,
 					hasWon: boolean(),
 				}),
 			)
 			.query(async ({ input }) => {
+				const { team1, team2, hasWon } = input;
+
 				const allAudios = await audioRepository.readAllAudios({
-					team1MatchTotalGamePoints: input.team1MatchTotalGamePoints,
-					team2MatchTotalGamePoints: input.team2MatchTotalGamePoints,
+					team1MatchTotalGamePoints: team1.matchTotalGamePoints,
+					team2MatchTotalGamePoints: team2.matchTotalGamePoints,
 				});
 
 				const audioPlaylist = generateAudioPlaylist({
 					allAudios,
-					team1MatchTotalGamePoints: input.team1MatchTotalGamePoints,
-					team2MatchTotalGamePoints: input.team2MatchTotalGamePoints,
-					isStretched: input.isStretched,
-					hasWon: input.hasWon,
+					team1MatchTotalGamePoints: team1.matchTotalGamePoints,
+					team2MatchTotalGamePoints: team2.matchTotalGamePoints,
+					isStretched: !hasWon && (team1.isStretched || team2.isStretched),
+					hasWon,
 				}).unwrapOrElse(() => {
 					throw new TRPCError({
 						code: "NOT_FOUND",
