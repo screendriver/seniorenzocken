@@ -20,7 +20,6 @@ function createEmptyNotPersistedTeam(teamNumber: NotPersistedTeam["teamNumber"])
 export const useGameStore = defineStore("game", () => {
 	const { trpcClient } = useTRPCClientStore();
 	const hasError = ref(false);
-	const shouldPlayAudio = ref(true);
 	const isAudioPlaying = ref(false);
 	const team1 = ref<NotPersistedTeam>(createEmptyNotPersistedTeam(1));
 	const team2 = ref<NotPersistedTeam>(createEmptyNotPersistedTeam(2));
@@ -69,8 +68,8 @@ export const useGameStore = defineStore("game", () => {
 
 	function startGame(): Task<void, unknown> {
 		return fromPromise(trpcClient.startGame.mutate({ team1: team1.value, team2: team2.value }))
-			.map((startedGame) => {
-				isGameRunning.value = startedGame.isGameRunning;
+			.map((mutationResult) => {
+				isGameRunning.value = mutationResult.isGameRunning;
 				hasError.value = false;
 			})
 			.mapRejected(() => {
@@ -89,7 +88,7 @@ export const useGameStore = defineStore("game", () => {
 				isGameOver.value = nextGameRoundMutationOutput.isGameOver;
 				showConfetti.value = nextGameRoundMutationOutput.showConfetti;
 				gameRounds.value = nextGameRoundMutationOutput.gameRounds;
-				isAudioPlaying.value = shouldPlayAudio.value;
+				isAudioPlaying.value = true;
 				hasError.value = false;
 			})
 			.mapRejected(() => {
@@ -125,7 +124,6 @@ export const useGameStore = defineStore("game", () => {
 
 	return {
 		hasError,
-		shouldPlayAudio,
 		isAudioPlaying,
 		team1,
 		team2,

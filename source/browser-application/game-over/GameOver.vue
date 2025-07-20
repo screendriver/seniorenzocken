@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useGameStore } from "../game-store/game-store.ts";
@@ -7,11 +6,7 @@ import { determineWinnerTeam } from "../team/teams.ts";
 
 const router = useRouter();
 const gameStore = useGameStore();
-const { team1, team2, isAudioPlaying, shouldPlayAudio } = storeToRefs(gameStore);
-
-const isReplayAudioButtonDisabled = computed(() => {
-	return isAudioPlaying.value || !shouldPlayAudio.value;
-});
+const { team1, team2, isAudioPlaying } = storeToRefs(gameStore);
 
 const wonText = determineWinnerTeam(team1, team2).mapOr("Gewonnen hat: ???", (winnerTeam) => {
 	return `Gewonnen hat: Team "${winnerTeam.value.name}"`;
@@ -30,7 +25,7 @@ async function startNewGame(): Promise<void> {
 			Neues Spiel
 		</button>
 		<button
-			:disabled="isReplayAudioButtonDisabled"
+			:disabled="isAudioPlaying"
 			type="button"
 			class="btn col-span-full mx-10 md:col-start-2 md:col-end-4 md:mx-0"
 			@click="isAudioPlaying = true"
