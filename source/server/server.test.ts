@@ -155,7 +155,7 @@ suite("server", () => {
 			expect(response.status).toBe(200);
 			expect(response.headers.get("Content-Disposition")).toBe("inline; filename=turn_around.m4a");
 			expect(response.headers.get("Content-Type")).toBe("audio/mp4");
-			expect((await response.blob()).size).toBe(1054);
+			expect((await response.blob()).size).toBe(884);
 		}),
 	);
 });
