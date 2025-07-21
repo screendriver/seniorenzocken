@@ -1,4 +1,4 @@
-import { suite, test, expect, type TestFunction } from "vitest";
+import { suite, test, expect, vi, type TestFunction } from "vitest";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
 import { createTRPCClient, unstable_localLink } from "@trpc/client";
@@ -22,7 +22,11 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 		await seedInMemoryDatabase(database);
 
 		const audioRepository = createAudioRepository({ database });
-		const trpcRouter = createTrpcRouter({ database, audioRepository });
+		const trpcRouter = createTrpcRouter({
+			database,
+			audioRepository,
+			isTurnAround: vi.fn().mockReturnValue(false),
+		});
 		const serverOptions: ServerOptions = {
 			database,
 			trpcRouter,

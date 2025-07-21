@@ -4,6 +4,7 @@ import { createDatabase } from "./database/database.ts";
 import { createServer } from "./server.ts";
 import { seedInMemoryDatabase } from "./seed-in-memory-database.ts";
 import { createAudioRepository } from "./audio/repository.ts";
+import { isTurnAround } from "./audio/turn_around.ts";
 import { createTrpcRouter } from "./trpc-router.ts";
 
 const database = createDatabase(":memory:");
@@ -13,7 +14,7 @@ await migrate(database, { migrationsFolder: "./drizzle" });
 await seedInMemoryDatabase(database);
 
 const audioRepository = createAudioRepository({ database });
-const trpcRouter = createTrpcRouter({ database, audioRepository });
+const trpcRouter = createTrpcRouter({ database, audioRepository, isTurnAround });
 const server = createServer({ database, trpcRouter, metricsUsername: "foo", metricsPassword: "bar" });
 
 serve(

@@ -4,6 +4,8 @@ import { toOkOrErr } from "true-myth/toolbelt";
 import sample from "lodash.sample";
 import type { GamePointAudio } from "../database/schema.ts";
 import type { MatchTotalGamePoints } from "../../shared/game-points.ts";
+import type { GameRounds } from "../../shared/game-rounds.ts";
+import type { isTurnAround } from "./turn_around.ts";
 
 export type SelectedGamePointAudio = Pick<GamePointAudio, "gamePointAudioId" | "name" | "gamePoints">;
 
@@ -38,12 +40,22 @@ export type Options = {
 	readonly allAudios: readonly SelectedGamePointAudio[];
 	readonly team1MatchTotalGamePoints: MatchTotalGamePoints;
 	readonly team2MatchTotalGamePoints: MatchTotalGamePoints;
+	readonly gameRounds: GameRounds;
 	readonly isStretched: boolean;
 	readonly hasWon: boolean;
+	readonly isTurnAround: typeof isTurnAround;
 };
 
 export function generateAudioPlaylist(options: Options): Result<readonly SelectedGamePointAudio[], Error> {
-	const { allAudios, team1MatchTotalGamePoints, team2MatchTotalGamePoints, isStretched, hasWon } = options;
+	const {
+		allAudios,
+		team1MatchTotalGamePoints,
+		team2MatchTotalGamePoints,
+		gameRounds,
+		isStretched,
+		hasWon,
+		isTurnAround,
+	} = options;
 
 	const attentionAudios = allAudios.filter((audio) => audio.name === "attention.m4a");
 	const attentionAudio = randomAudioFile(attentionAudios);
@@ -57,9 +69,22 @@ export function generateAudioPlaylist(options: Options): Result<readonly Selecte
 		.ap(toAudio)
 		.ap(team2Audio)
 		.andThen((audioPlaylistValue) => {
+			if (isTurnAround({ gameRounds })) {
+				return find((audio) => audio.name === "turn_around.m4a", allAudios).map((turnAroundAudio) => {
+					audioPlaylistValue.unshift(turnAroundAudio);
+
+					return audioPlaylistValue;
+				});
+			}
+
+			return just(audioPlaylistValue);
+		})
+		.andThen((audioPlaylistValue) => {
 			if (isStretched) {
 				return find((audio) => audio.name === "stretched.m4a", allAudios).map((stretchedAudio) => {
-					return [...audioPlaylistValue, stretchedAudio];
+					audioPlaylistValue.push(stretchedAudio);
+
+					return audioPlaylistValue;
 				});
 			}
 
@@ -68,7 +93,9 @@ export function generateAudioPlaylist(options: Options): Result<readonly Selecte
 		.andThen((audioPlaylistValue) => {
 			if (hasWon) {
 				return find((audio) => audio.name === "won.m4a", allAudios).map((wonAudio) => {
-					return [...audioPlaylistValue, wonAudio];
+					audioPlaylistValue.push(wonAudio);
+
+					return audioPlaylistValue;
 				});
 			}
 

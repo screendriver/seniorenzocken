@@ -1,4 +1,4 @@
-import { suite, test, assert, expect } from "vitest";
+import { suite, test, assert, vi, expect } from "vitest";
 import { Factory } from "fishery";
 import { isErr, isOk } from "true-myth/result";
 import { generateAudioPlaylist, type SelectedGamePointAudio, type Options } from "./playlist.ts";
@@ -16,8 +16,10 @@ const optionsFactory = Factory.define<Options>(() => {
 		allAudios: [],
 		team1MatchTotalGamePoints: 0,
 		team2MatchTotalGamePoints: 0,
+		gameRounds: [],
 		isStretched: false,
 		hasWon: false,
+		isTurnAround: vi.fn().mockReturnValue(false),
 	};
 });
 
@@ -41,7 +43,7 @@ suite("generateAudioPlaylist()", () => {
 			],
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when zero.m4a could not be found", () => {
@@ -52,7 +54,7 @@ suite("generateAudioPlaylist()", () => {
 			],
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when two.m4a could not be found", () => {
@@ -65,7 +67,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 2,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when three.m4a could not be found", () => {
@@ -78,7 +80,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 3,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when four.m4a could not be found", () => {
@@ -91,7 +93,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 4,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when five.m4a could not be found", () => {
@@ -104,7 +106,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 5,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when six.m4a could not be found", () => {
@@ -117,7 +119,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 6,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when seven.m4a could not be found", () => {
@@ -130,7 +132,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 7,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when eight.m4a could not be found", () => {
@@ -143,7 +145,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 8,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when nine.m4a could not be found", () => {
@@ -156,7 +158,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 9,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when ten.m4a could not be found", () => {
@@ -169,7 +171,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 10,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when eleven.m4a could not be found", () => {
@@ -182,7 +184,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 11,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when twelve.m4a could not be found", () => {
@@ -195,7 +197,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 12,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when thirteen.m4a could not be found", () => {
@@ -208,7 +210,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 13,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when fourteen.m4a could not be found", () => {
@@ -221,7 +223,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 14,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when fifteen.m4a could not be found", () => {
@@ -234,7 +236,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 15,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when sixteen.m4a could not be found", () => {
@@ -247,7 +249,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 16,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when seventeen.m4a could not be found", () => {
@@ -260,7 +262,7 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 18,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when eighteen.m4a could not be found", () => {
@@ -273,7 +275,21 @@ suite("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 18,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
+	});
+
+	test("returns an Result Err when turn_around.m4a could not be found", () => {
+		const options = optionsFactory.build({
+			allAudios: [
+				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "two.m4a", gamePoints: 2 }),
+				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+			],
+			isTurnAround: vi.fn().mockReturnValue(true),
+		});
+
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when stretched.m4a could not be found", () => {
@@ -286,7 +302,7 @@ suite("generateAudioPlaylist()", () => {
 			isStretched: true,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
 	test("returns an Result Err when won.m4a could not be found", () => {
@@ -299,10 +315,56 @@ suite("generateAudioPlaylist()", () => {
 			hasWon: true,
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert(isErr(generateAudioPlaylist(options)));
 	});
 
-	test("returns an Result Ok without stretched.m4a and won.m4a when no team is stretched and no team has won", () => {
+	test("returns an Result Ok with turn_around.m4a when one team has a turn around", () => {
+		const options = optionsFactory.build({
+			allAudios: [
+				selectedGamePointAudioFactory.build({ name: "turn_around.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "two.m4a", gamePoints: 2 }),
+				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "twelve.m4a", gamePoints: 12 }),
+			],
+			team1MatchTotalGamePoints: 2,
+			team2MatchTotalGamePoints: 12,
+			isTurnAround: vi.fn().mockReturnValue(true),
+		});
+
+		const audioPlaylist = generateAudioPlaylist(options);
+
+		assert(isOk(audioPlaylist));
+		expect(audioPlaylist.value).toEqual([
+			{
+				gamePointAudioId: 0,
+				gamePoints: null,
+				name: "turn_around.m4a",
+			},
+			{
+				gamePointAudioId: 0,
+				gamePoints: null,
+				name: "attention.m4a",
+			},
+			{
+				gamePointAudioId: 0,
+				gamePoints: 2,
+				name: "two.m4a",
+			},
+			{
+				gamePointAudioId: 0,
+				gamePoints: null,
+				name: "to.m4a",
+			},
+			{
+				gamePointAudioId: 0,
+				gamePoints: 12,
+				name: "twelve.m4a",
+			},
+		]);
+	});
+
+	test("returns an Result Ok without turn_around.m4a, stretched.m4a and won.m4a when no team is stretched and no team has won", () => {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -410,6 +472,66 @@ suite("generateAudioPlaylist()", () => {
 
 		assert(isOk(audioPlaylist));
 		expect(audioPlaylist.value).toEqual([
+			{
+				gamePointAudioId: 0,
+				gamePoints: null,
+				name: "attention.m4a",
+			},
+			{
+				gamePointAudioId: 0,
+				gamePoints: 11,
+				name: "eleven.m4a",
+			},
+			{
+				gamePointAudioId: 0,
+				gamePoints: null,
+				name: "to.m4a",
+			},
+			{
+				gamePointAudioId: 0,
+				gamePoints: 15,
+				name: "fifteen.m4a",
+			},
+			{
+				gamePointAudioId: 0,
+				gamePoints: null,
+				name: "stretched.m4a",
+			},
+			{
+				gamePointAudioId: 0,
+				gamePoints: null,
+				name: "won.m4a",
+			},
+		]);
+	});
+
+	test("returns an Result Ok with turn_around.m4a, stretched.m4a and won.m4a when one team is stretched and has won", () => {
+		const options = optionsFactory.build({
+			allAudios: [
+				selectedGamePointAudioFactory.build({ name: "turn_around.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "eleven.m4a", gamePoints: 11 }),
+				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "fifteen.m4a", gamePoints: 15 }),
+				selectedGamePointAudioFactory.build({ name: "stretched.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "won.m4a" }),
+			],
+			team1MatchTotalGamePoints: 11,
+			team2MatchTotalGamePoints: 15,
+			isStretched: true,
+			hasWon: true,
+			isTurnAround: vi.fn().mockReturnValue(true),
+		});
+
+		const audioPlaylist = generateAudioPlaylist(options);
+
+		assert(isOk(audioPlaylist));
+		expect(audioPlaylist.value).toEqual([
+			{
+				gamePointAudioId: 0,
+				gamePoints: null,
+				name: "turn_around.m4a",
+			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
