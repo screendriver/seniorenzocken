@@ -1,4 +1,4 @@
-import { suite, test, expect, type TestFunction } from "vitest";
+import { suite, test, expect, vi, type TestFunction } from "vitest";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
 import { createTRPCClient, unstable_localLink } from "@trpc/client";
@@ -22,7 +22,11 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 		await seedInMemoryDatabase(database);
 
 		const audioRepository = createAudioRepository({ database });
-		const trpcRouter = createTrpcRouter({ database, audioRepository });
+		const trpcRouter = createTrpcRouter({
+			database,
+			audioRepository,
+			isTurnAround: vi.fn().mockReturnValue(false),
+		});
 		const serverOptions: ServerOptions = {
 			database,
 			trpcRouter,
@@ -147,7 +151,7 @@ suite("server", () => {
 			const response = await server.request("/api/audio/1");
 
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Disposition")).toBe("inline; filename=attention.m4a");
+			expect(response.headers.get("Content-Disposition")).toBe("inline; filename=turn_around.m4a");
 			expect(response.headers.get("Content-Type")).toBe("audio/mp4");
 			expect((await response.blob()).size).toBe(1054);
 		}),

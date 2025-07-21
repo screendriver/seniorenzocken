@@ -60,6 +60,10 @@ export async function seedInMemoryDatabase(database: LibSQLDatabase<typeof schem
 
 	await database.insert(schema.gamePointAudios).values([
 		{
+			name: "turn_around.m4a",
+			audioFile: halfSecondOfSilence,
+		},
+		{
 			name: "attention.m4a",
 			audioFile: halfSecondOfSilence,
 		},

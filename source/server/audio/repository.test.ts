@@ -21,30 +21,35 @@ suite("audio repository", () => {
 			{
 				gamePointAudioId: 1,
 				gamePoints: null,
+				name: "turn_around.m4a",
+			},
+			{
+				gamePointAudioId: 2,
+				gamePoints: null,
 				name: "attention.m4a",
 			},
 			{
-				gamePointAudioId: 5,
+				gamePointAudioId: 6,
 				gamePoints: 4,
 				name: "four.m4a",
 			},
 			{
-				gamePointAudioId: 20,
+				gamePointAudioId: 21,
 				gamePoints: null,
 				name: "to.m4a",
 			},
 			{
-				gamePointAudioId: 11,
+				gamePointAudioId: 12,
 				gamePoints: 10,
 				name: "ten.m4a",
 			},
 			{
-				gamePointAudioId: 21,
+				gamePointAudioId: 22,
 				gamePoints: null,
 				name: "stretched.m4a",
 			},
 			{
-				gamePointAudioId: 22,
+				gamePointAudioId: 23,
 				gamePoints: null,
 				name: "won.m4a",
 			},

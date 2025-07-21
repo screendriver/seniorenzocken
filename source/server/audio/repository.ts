@@ -34,6 +34,7 @@ export function createAudioRepository(options: AudioRepositoryOptions): AudioRep
 				.from(gamePointAudios)
 				.where(
 					or(
+						eq(gamePointAudios.name, "turn_around.m4a"),
 						eq(gamePointAudios.name, "attention.m4a"),
 						eq(gamePointAudios.gamePoints, team1MatchTotalGamePoints),
 						eq(gamePointAudios.name, "to.m4a"),
@@ -45,13 +46,14 @@ export function createAudioRepository(options: AudioRepositoryOptions): AudioRep
 				.orderBy(
 					sql`
 						CASE
-							WHEN ${gamePointAudios.name} = 'attention.m4a' THEN 1
-							WHEN ${gamePointAudios.gamePoints} = ${team1MatchTotalGamePoints} THEN 2
-							WHEN ${gamePointAudios.name} = 'to.m4a' THEN 3
-							WHEN ${gamePointAudios.gamePoints} = ${team2MatchTotalGamePoints} THEN 4
-							WHEN ${gamePointAudios.name} = 'stretched.m4a' THEN 5
-							WHEN ${gamePointAudios.name} = 'won.m4a' THEN 6
-							ELSE 7
+							WHEN ${gamePointAudios.name} = 'turn_around.m4a' THEN 1
+							WHEN ${gamePointAudios.name} = 'attention.m4a' THEN 2
+							WHEN ${gamePointAudios.gamePoints} = ${team1MatchTotalGamePoints} THEN 3
+							WHEN ${gamePointAudios.name} = 'to.m4a' THEN 4
+							WHEN ${gamePointAudios.gamePoints} = ${team2MatchTotalGamePoints} THEN 5
+							WHEN ${gamePointAudios.name} = 'stretched.m4a' THEN 6
+							WHEN ${gamePointAudios.name} = 'won.m4a' THEN 7
+							ELSE 8
 						END
 					`,
 				);

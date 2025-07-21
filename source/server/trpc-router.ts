@@ -12,6 +12,7 @@ import { gameRoundsSchema } from "../shared/game-rounds.ts";
 import { isStretched } from "./stretched/stretched.ts";
 import { shouldShowConfetti } from "./confetti/confetti.ts";
 import { isGameOver } from "./game-over/game-over.ts";
+import type { isTurnAround } from "./audio/turn_around.ts";
 
 const trpc = initTRPC.create();
 
@@ -50,10 +51,11 @@ type PreviousGameRoundMutationOutput = {
 type Options = {
 	readonly database: Database;
 	readonly audioRepository: AudioRepository;
+	readonly isTurnAround: typeof isTurnAround;
 };
 
 export function createTrpcRouter(options: Options) {
-	const { database, audioRepository } = options;
+	const { database, audioRepository, isTurnAround } = options;
 
 	return router({
 		players: publicProcedure.query(() => {
@@ -180,11 +182,12 @@ export function createTrpcRouter(options: Options) {
 				object({
 					team1: notPersistedTeamSchema,
 					team2: notPersistedTeamSchema,
+					gameRounds: gameRoundsSchema,
 					hasWon: boolean(),
 				}),
 			)
 			.query(async ({ input }) => {
-				const { team1, team2, hasWon } = input;
+				const { team1, team2, gameRounds, hasWon } = input;
 
 				const allAudios = await audioRepository.readAllAudios({
 					team1MatchTotalGamePoints: team1.matchTotalGamePoints,
@@ -195,8 +198,10 @@ export function createTrpcRouter(options: Options) {
 					allAudios,
 					team1MatchTotalGamePoints: team1.matchTotalGamePoints,
 					team2MatchTotalGamePoints: team2.matchTotalGamePoints,
+					gameRounds,
 					isStretched: !hasWon && (team1.isStretched || team2.isStretched),
 					hasWon,
+					isTurnAround,
 				}).unwrapOrElse(() => {
 					throw new TRPCError({
 						code: "NOT_FOUND",
