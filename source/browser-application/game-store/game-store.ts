@@ -51,7 +51,7 @@ export const useGameStore = defineStore("game", () => {
 	});
 
 	function newGame(): Task<void, unknown> {
-		return fromPromise(trpcClient.newGame.query())
+		return fromPromise(trpcClient.game.new.query())
 			.map((newGame) => {
 				team1.value = newGame.team1;
 				team2.value = newGame.team2;
@@ -67,7 +67,7 @@ export const useGameStore = defineStore("game", () => {
 	}
 
 	function startGame(): Task<void, unknown> {
-		return fromPromise(trpcClient.startGame.mutate({ team1: team1.value, team2: team2.value }))
+		return fromPromise(trpcClient.game.start.mutate({ team1: team1.value, team2: team2.value }))
 			.map((mutationResult) => {
 				isGameRunning.value = mutationResult.isGameRunning;
 				hasError.value = false;
@@ -79,7 +79,7 @@ export const useGameStore = defineStore("game", () => {
 
 	function nextGameRound(): Task<void, unknown> {
 		return fromPromise(
-			trpcClient.nextGameRound.mutate({ team1: team1.value, team2: team2.value, gameRounds: gameRounds.value }),
+			trpcClient.game.nextRound.mutate({ team1: team1.value, team2: team2.value, gameRounds: gameRounds.value }),
 		)
 			.map((nextGameRoundMutationOutput) => {
 				team1.value = nextGameRoundMutationOutput.team1;
@@ -97,7 +97,7 @@ export const useGameStore = defineStore("game", () => {
 	}
 
 	function previousGameRound(): Task<void, unknown> {
-		return fromPromise(trpcClient.previousGameRound.mutate({ gameRounds: gameRounds.value }))
+		return fromPromise(trpcClient.game.previousRound.mutate({ gameRounds: gameRounds.value }))
 			.map((previousGameRoundMutationOutput) => {
 				team1.value = previousGameRoundMutationOutput.team1;
 				team2.value = previousGameRoundMutationOutput.team2;
@@ -111,7 +111,7 @@ export const useGameStore = defineStore("game", () => {
 
 	function generateAudioPlaylist(): Task<string[], unknown> {
 		return fromPromise(
-			trpcClient.generateAudioPlaylist.query({
+			trpcClient.audio.generatePlaylist.query({
 				team1: team1.value,
 				team2: team2.value,
 				gameRounds: gameRounds.value,

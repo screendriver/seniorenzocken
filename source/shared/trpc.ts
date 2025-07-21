@@ -1,3 +1,3 @@
-import type { createTrpcRouter } from "../server/trpc-router.ts";
+import type { createTrpcApplicationRouter } from "../server/trpc/application-router.ts";
 
-export type TRPCRouter = ReturnType<typeof createTrpcRouter>;
+export type TRPCApplicationRouter = ReturnType<typeof createTrpcApplicationRouter>;
