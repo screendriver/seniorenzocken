@@ -6,13 +6,14 @@ import { stripIndent } from "common-tags";
 import { createServer, ServerOptions } from "./server.ts";
 import { createDatabase } from "./database/database.ts";
 import { seedInMemoryDatabase } from "./seed-in-memory-database.ts";
-import { createTrpcRouter } from "./trpc-router.ts";
-import type { TRPCRouter } from "../shared/trpc.ts";
+import { createTrpcRouter } from "./trpc/index.ts";
+import { createTrpcApplicationRouter } from "./trpc/application-router.ts";
+import type { TRPCApplicationRouter } from "../shared/trpc.ts";
 import { createAudioRepository } from "./audio/repository.ts";
 
 type TestFunctionOptions = {
 	readonly server: Hono;
-	readonly trpcRouter: TRPCRouter;
+	readonly trpcApplicationRouter: TRPCApplicationRouter;
 };
 
 function withServer(testFunction: (options: TestFunctionOptions) => Promise<void>): TestFunction {
@@ -22,20 +23,21 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 		await seedInMemoryDatabase(database);
 
 		const audioRepository = createAudioRepository({ database });
-		const trpcRouter = createTrpcRouter({
+		const trpcApplicationRouter = createTrpcApplicationRouter({
+			trpcRouter: createTrpcRouter(),
 			database,
 			audioRepository,
 			isTurnAround: vi.fn().mockReturnValue(false),
 		});
 		const serverOptions: ServerOptions = {
 			database,
-			trpcRouter,
+			trpcApplicationRouter,
 			metricsUsername: "foo",
 			metricsPassword: "bar",
 		};
 		const server = createServer(serverOptions);
 
-		await testFunction({ server, trpcRouter });
+		await testFunction({ server, trpcApplicationRouter });
 	};
 }
 
@@ -86,11 +88,11 @@ suite("server", () => {
 
 	test(
 		"/api/trpc/ uses the given tRPC server",
-		withServer(async ({ trpcRouter }) => {
-			const trpcClient = createTRPCClient<TRPCRouter>({
+		withServer(async ({ trpcApplicationRouter }) => {
+			const trpcClient = createTRPCClient<TRPCApplicationRouter>({
 				links: [
 					unstable_localLink({
-						router: trpcRouter,
+						router: trpcApplicationRouter,
 						async createContext() {
 							return {};
 						},

@@ -111,7 +111,7 @@ export const useGameStore = defineStore("game", () => {
 
 	function generateAudioPlaylist(): Task<string[], unknown> {
 		return fromPromise(
-			trpcClient.generateAudioPlaylist.query({
+			trpcClient.audio.generatePlaylist.query({
 				team1: team1.value,
 				team2: team2.value,
 				gameRounds: gameRounds.value,

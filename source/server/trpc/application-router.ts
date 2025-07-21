@@ -1,24 +1,18 @@
-import { initTRPC, TRPCError } from "@trpc/server";
 import { desc } from "drizzle-orm";
-import { parse, object, boolean, pipe, nonEmpty } from "valibot";
+import { parse, object, pipe, nonEmpty } from "valibot";
 import { last } from "true-myth/maybe";
-import type { Database } from "./database/database.ts";
-import { games, players, teams } from "./database/schema.ts";
-import { matchTotalGamePointsSchema } from "../shared/game-points.ts";
-import { generateAudioPlaylist } from "./audio/playlist.ts";
-import type { AudioRepository } from "./audio/repository.ts";
-import { notPersistedTeamSchema, type NotPersistedTeam } from "../shared/team.ts";
-import { gameRoundsSchema } from "../shared/game-rounds.ts";
-import { isStretched } from "./stretched/stretched.ts";
-import { shouldShowConfetti } from "./confetti/confetti.ts";
-import { isGameOver } from "./game-over/game-over.ts";
-import type { isTurnAround } from "./audio/turn_around.ts";
-
-const trpc = initTRPC.create();
-
-const router = trpc.router;
-
-const publicProcedure = trpc.procedure;
+import type { TRPCRouter } from "./index.ts";
+import type { Database } from "../database/database.ts";
+import { games, players, teams } from "../database/schema.ts";
+import { matchTotalGamePointsSchema } from "../../shared/game-points.ts";
+import type { AudioRepository } from "../audio/repository.ts";
+import { notPersistedTeamSchema, type NotPersistedTeam } from "../../shared/team.ts";
+import { gameRoundsSchema } from "../../shared/game-rounds.ts";
+import { isStretched } from "../stretched/stretched.ts";
+import { shouldShowConfetti } from "../confetti/confetti.ts";
+import { isGameOver } from "../game-over/game-over.ts";
+import type { isTurnAround } from "../audio/turn_around.ts";
+import { createAudioRouter } from "./routers/audio.ts";
 
 type NewGameProcedureOutput = {
 	readonly team1: NotPersistedTeam;
@@ -49,13 +43,17 @@ type PreviousGameRoundMutationOutput = {
 };
 
 type Options = {
+	readonly trpcRouter: TRPCRouter;
 	readonly database: Database;
 	readonly audioRepository: AudioRepository;
 	readonly isTurnAround: typeof isTurnAround;
 };
 
-export function createTrpcRouter(options: Options) {
-	const { database, audioRepository, isTurnAround } = options;
+export function createTrpcApplicationRouter(options: Options) {
+	const { trpcRouter, database, audioRepository, isTurnAround } = options;
+	const { router, publicProcedure } = trpcRouter;
+
+	const audioRouter = createAudioRouter({ trpcRouter, audioRepository, isTurnAround });
 
 	return router({
 		players: publicProcedure.query(() => {
@@ -177,41 +175,6 @@ export function createTrpcRouter(options: Options) {
 					});
 			}),
 
-		generateAudioPlaylist: publicProcedure
-			.input(
-				object({
-					team1: notPersistedTeamSchema,
-					team2: notPersistedTeamSchema,
-					gameRounds: gameRoundsSchema,
-					hasWon: boolean(),
-				}),
-			)
-			.query(async ({ input }) => {
-				const { team1, team2, gameRounds, hasWon } = input;
-
-				const allAudios = await audioRepository.readAllAudios({
-					team1MatchTotalGamePoints: team1.matchTotalGamePoints,
-					team2MatchTotalGamePoints: team2.matchTotalGamePoints,
-				});
-
-				const audioPlaylist = generateAudioPlaylist({
-					allAudios,
-					team1MatchTotalGamePoints: team1.matchTotalGamePoints,
-					team2MatchTotalGamePoints: team2.matchTotalGamePoints,
-					gameRounds,
-					isStretched: !hasWon && (team1.isStretched || team2.isStretched),
-					hasWon,
-					isTurnAround,
-				}).unwrapOrElse(() => {
-					throw new TRPCError({
-						code: "NOT_FOUND",
-						message: "Could not find any attention audio files",
-					});
-				});
-
-				return audioPlaylist.map((gamePointAudio) => {
-					return `/api/audio/${gamePointAudio.gamePointAudioId}`;
-				});
-			}),
+		audio: audioRouter,
 	});
 }

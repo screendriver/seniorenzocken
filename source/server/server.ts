@@ -10,17 +10,17 @@ import { safeParse, object, pipe, string, transform, number, integer } from "val
 import mime from "mime";
 import type { Database } from "./database/database.ts";
 import { gamePointAudios } from "./database/schema.ts";
-import type { TRPCRouter } from "../shared/trpc.ts";
+import type { TRPCApplicationRouter } from "../shared/trpc.ts";
 
 export type ServerOptions = {
 	readonly database: Database;
-	readonly trpcRouter: TRPCRouter;
+	readonly trpcApplicationRouter: TRPCApplicationRouter;
 	readonly metricsUsername: string;
 	readonly metricsPassword: string;
 };
 
 export function createServer(options: ServerOptions): Hono {
-	const { database, trpcRouter, metricsUsername, metricsPassword } = options;
+	const { database, trpcApplicationRouter, metricsUsername, metricsPassword } = options;
 
 	const { printMetrics, registerMetrics } = prometheus();
 
@@ -38,7 +38,7 @@ export function createServer(options: ServerOptions): Hono {
 		)
 		.get("/metrics", printMetrics)
 
-		.use("/api/trpc/*", trpcServer({ router: trpcRouter, endpoint: "/api/trpc" }))
+		.use("/api/trpc/*", trpcServer({ router: trpcApplicationRouter, endpoint: "/api/trpc" }))
 
 		.get(
 			"/api/audio/:file_id",

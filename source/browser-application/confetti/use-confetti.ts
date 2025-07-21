@@ -1,7 +1,7 @@
 import { watchEffect } from "vue";
 import type canvasConfetti from "canvas-confetti";
 import { storeToRefs } from "pinia";
-import { useGameStore } from "../game-store/game-store.js";
+import { useGameStore } from "../game-store/game-store.ts";
 
 export function useConfetti(confetti: typeof canvasConfetti) {
 	const gameStore = useGameStore();
