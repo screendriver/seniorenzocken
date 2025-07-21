@@ -89,6 +89,7 @@ export const gamePointAudios = sqliteTable(
 				"stretched.m4a",
 				"won.m4a",
 				"to.m4a",
+				"turn_around.m4a",
 			],
 		}).notNull(),
 		gamePoints: int(),

@@ -114,6 +114,7 @@ export const useGameStore = defineStore("game", () => {
 			trpcClient.generateAudioPlaylist.query({
 				team1: team1.value,
 				team2: team2.value,
+				gameRounds: gameRounds.value,
 				hasWon: isGameOver.value,
 			}),
 		).mapRejected(() => {
