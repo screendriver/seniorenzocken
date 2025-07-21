@@ -11,7 +11,7 @@ COPY source/ source/
 RUN npx just build-browser-application && npm prune --omit=dev
 
 FROM node:24.4.1-alpine
-ENV NODE_ENV production
+ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/node_modules ./node_modules
