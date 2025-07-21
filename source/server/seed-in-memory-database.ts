@@ -3,8 +3,8 @@ import type { Client } from "@libsql/client";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import * as schema from "./database/schema.ts";
 
-const halfSecondOfSilence = Buffer.from(
-	"AAAAHGZ0eXBNNEEgAAACAE00QSBpc29taXNvMgAAAAhmcmVlAAAAo21kYXTeAgBMYXZjNjAuMzEuMTAyAEIgCMEYOCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHAAAA1dtb292AAAAbG12aGQAAAAAAAAAAAAAAAAAAAPoAAAB9AABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACgXRyYWsAAABcdGtoZAAAAAMAAAAAAAAAAAAAAAEAAAAAAAAB9AAAAAAAAAAAAAAAAQEAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAACRlZHRzAAAAHGVsc3QAAAAAAAAAAQAAAfQAAAQAAAEAAAAAAfltZGlhAAAAIG1kaGQAAAAAAAAAAAAAAAAAAKxEAABaIlXEAAAAAAAtaGRscgAAAAAAAAAAc291bgAAAAAAAAAAAAAAAFNvdW5kSGFuZGxlcgAAAAGkbWluZgAAABBzbWhkAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAFoc3RibAAAAGpzdHNkAAAAAAAAAAEAAABabXA0YQAAAAAAAAABAAAAAAAAAAAAAgAQAAAAAKxEAAAAAAA2ZXNkcwAAAAADgICAJQABAASAgIAXQBUAAAAAAfQAAAAJQQWAgIAFEhBW5QAGgICAAQIAAAAgc3R0cwAAAAAAAAACAAAAFgAABAAAAAABAAACIgAAABxzdHNjAAAAAAAAAAEAAAABAAAAFwAAAAEAAABwc3RzegAAAAAAAAAAAAAAFwAAABcAAAAGAAAABgAAAAYAAAAGAAAABgAAAAYAAAAGAAAABgAAAAYAAAAGAAAABgAAAAYAAAAGAAAABgAAAAYAAAAGAAAABgAAAAYAAAAGAAAABgAAAAYAAAAGAAAAFHN0Y28AAAAAAAAAAQAAACwAAAAac2dwZAEAAAByb2xsAAAAAgAAAAH//wAAABxzYmdwAAAAAHJvbGwAAAABAAAAFwAAAAEAAABidWR0YQAAAFptZXRhAAAAAAAAACFoZGxyAAAAAAAAAABtZGlyYXBwbAAAAAAAAAAAAAAAAC1pbHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjYwLjE2LjEwMA==",
+const oneHundredMillisecondsOfSilence = Buffer.from(
+	"AAAAHGZ0eXBNNEEgAAACAE00QSBpc29taXNvMgAAAAhmcmVlAAAAPW1kYXTeAgBMYXZjNjAuMzEuMTAyAEIgCMEYOCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHAAAAxNtb292AAAAbG12aGQAAAAAAAAAAAAAAAAAAAPoAAAAZAABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACPXRyYWsAAABcdGtoZAAAAAMAAAAAAAAAAAAAAAEAAAAAAAAAZAAAAAAAAAAAAAAAAQEAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAACRlZHRzAAAAHGVsc3QAAAAAAAAAAQAAAGQAAAQAAAEAAAAAAbVtZGlhAAAAIG1kaGQAAAAAAAAAAAAAAAAAAKxEAAAVOlXEAAAAAAAtaGRscgAAAAAAAAAAc291bgAAAAAAAAAAAAAAAFNvdW5kSGFuZGxlcgAAAAFgbWluZgAAABBzbWhkAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAEkc3RibAAAAGpzdHNkAAAAAAAAAAEAAABabXA0YQAAAAAAAAABAAAAAAAAAAAAAgAQAAAAAKxEAAAAAAA2ZXNkcwAAAAADgICAJQABAASAgIAXQBUAAAAAAfQAAAANcQWAgIAFEhBW5QAGgICAAQIAAAAgc3R0cwAAAAAAAAACAAAABQAABAAAAAABAAABOgAAABxzdHNjAAAAAAAAAAEAAAABAAAABgAAAAEAAAAsc3RzegAAAAAAAAAAAAAABgAAABcAAAAGAAAABgAAAAYAAAAGAAAABgAAABRzdGNvAAAAAAAAAAEAAAAsAAAAGnNncGQBAAAAcm9sbAAAAAIAAAAB//8AAAAcc2JncAAAAAByb2xsAAAAAQAAAAYAAAABAAAAYnVkdGEAAABabWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAbWRpcmFwcGwAAAAAAAAAAAAAAAAtaWxzdAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY2MC4xNi4xMDA=",
 	"base64",
 );
 
@@ -61,113 +61,113 @@ export async function seedInMemoryDatabase(database: LibSQLDatabase<typeof schem
 	await database.insert(schema.gamePointAudios).values([
 		{
 			name: "turn_around.m4a",
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "attention.m4a",
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "zero.m4a",
 			gamePoints: 0,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "two.m4a",
 			gamePoints: 2,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "three.m4a",
 			gamePoints: 3,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "four.m4a",
 			gamePoints: 4,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "five.m4a",
 			gamePoints: 5,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "six.m4a",
 			gamePoints: 6,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "seven.m4a",
 			gamePoints: 7,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "eight.m4a",
 			gamePoints: 8,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "nine.m4a",
 			gamePoints: 9,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "ten.m4a",
 			gamePoints: 10,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "eleven.m4a",
 			gamePoints: 11,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "twelve.m4a",
 			gamePoints: 12,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "thirteen.m4a",
 			gamePoints: 13,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "fourteen.m4a",
 			gamePoints: 14,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "fifteen.m4a",
 			gamePoints: 15,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "sixteen.m4a",
 			gamePoints: 16,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "seventeen.m4a",
 			gamePoints: 17,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "eighteen.m4a",
 			gamePoints: 18,
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "to.m4a",
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "stretched.m4a",
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 		{
 			name: "won.m4a",
-			audioFile: halfSecondOfSilence,
+			audioFile: oneHundredMillisecondsOfSilence,
 		},
 	]);
 }
