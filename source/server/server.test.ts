@@ -147,7 +147,7 @@ suite("server", () => {
 			const response = await server.request("/api/audio/1");
 
 			expect(response.status).toBe(200);
-			expect(response.headers.get("Content-Disposition")).toBe("inline; filename=attention.m4a");
+			expect(response.headers.get("Content-Disposition")).toBe("inline; filename=turn_around.m4a");
 			expect(response.headers.get("Content-Type")).toBe("audio/mp4");
 			expect((await response.blob()).size).toBe(1054);
 		}),
