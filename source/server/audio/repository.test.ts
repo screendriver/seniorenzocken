@@ -46,7 +46,7 @@ suite("audio repository", () => {
 			{
 				gamePointAudioId: 22,
 				gamePoints: null,
-				name: "stretched.m4a",
+				name: "gspandt.m4a",
 			},
 			{
 				gamePointAudioId: 23,

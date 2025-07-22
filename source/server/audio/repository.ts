@@ -39,7 +39,7 @@ export function createAudioRepository(options: AudioRepositoryOptions): AudioRep
 						eq(gamePointAudios.gamePoints, team1MatchTotalGamePoints),
 						eq(gamePointAudios.name, "to.m4a"),
 						eq(gamePointAudios.gamePoints, team2MatchTotalGamePoints),
-						eq(gamePointAudios.name, "stretched.m4a"),
+						eq(gamePointAudios.name, "gspandt.m4a"),
 						eq(gamePointAudios.name, "won.m4a"),
 					),
 				)
@@ -51,7 +51,7 @@ export function createAudioRepository(options: AudioRepositoryOptions): AudioRep
 							WHEN ${gamePointAudios.gamePoints} = ${team1MatchTotalGamePoints} THEN 3
 							WHEN ${gamePointAudios.name} = 'to.m4a' THEN 4
 							WHEN ${gamePointAudios.gamePoints} = ${team2MatchTotalGamePoints} THEN 5
-							WHEN ${gamePointAudios.name} = 'stretched.m4a' THEN 6
+							WHEN ${gamePointAudios.name} = 'gspandt.m4a' THEN 6
 							WHEN ${gamePointAudios.name} = 'won.m4a' THEN 7
 							ELSE 8
 						END

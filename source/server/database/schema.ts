@@ -86,7 +86,7 @@ export const gamePointAudios = sqliteTable(
 				"seventeen.m4a",
 				"eighteen.m4a",
 				"twelve.m4a",
-				"stretched.m4a",
+				"gspandt.m4a",
 				"won.m4a",
 				"to.m4a",
 				"turn_around.m4a",

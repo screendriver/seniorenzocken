@@ -292,7 +292,7 @@ suite("generateAudioPlaylist()", () => {
 		assert(isErr(generateAudioPlaylist(options)));
 	});
 
-	test("returns an Result Err when stretched.m4a could not be found", () => {
+	test("returns an Result Err when gspandt.m4a could not be found", () => {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -364,7 +364,7 @@ suite("generateAudioPlaylist()", () => {
 		]);
 	});
 
-	test("returns an Result Ok without turn_around.m4a, stretched.m4a and won.m4a when no team is stretched and no team has won", () => {
+	test("returns an Result Ok without turn_around.m4a, gspandt.m4a and won.m4a when no team is stretched and no team has won", () => {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -405,14 +405,14 @@ suite("generateAudioPlaylist()", () => {
 		]);
 	});
 
-	test("returns an Result Ok with stretched.m4a but without won.m4a when one team is stretched but no team has won", () => {
+	test("returns an Result Ok with gspandt.m4a but without won.m4a when one team is stretched but no team has won", () => {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "eight.m4a", gamePoints: 8 }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "twelve.m4a", gamePoints: 12 }),
-				selectedGamePointAudioFactory.build({ name: "stretched.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "gspandt.m4a" }),
 			],
 			team1MatchTotalGamePoints: 8,
 			team2MatchTotalGamePoints: 12,
@@ -447,19 +447,19 @@ suite("generateAudioPlaylist()", () => {
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "stretched.m4a",
+				name: "gspandt.m4a",
 			},
 		]);
 	});
 
-	test("returns an Result Ok with stretched.m4a and won.m4a when one team is stretched and has won", () => {
+	test("returns an Result Ok with gspandt.m4a and won.m4a when one team is stretched and has won", () => {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "eleven.m4a", gamePoints: 11 }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "fifteen.m4a", gamePoints: 15 }),
-				selectedGamePointAudioFactory.build({ name: "stretched.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "gspandt.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "won.m4a" }),
 			],
 			team1MatchTotalGamePoints: 11,
@@ -495,7 +495,7 @@ suite("generateAudioPlaylist()", () => {
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "stretched.m4a",
+				name: "gspandt.m4a",
 			},
 			{
 				gamePointAudioId: 0,
@@ -505,7 +505,7 @@ suite("generateAudioPlaylist()", () => {
 		]);
 	});
 
-	test("returns an Result Ok with turn_around.m4a, stretched.m4a and won.m4a when one team is stretched and has won", () => {
+	test("returns an Result Ok with turn_around.m4a, gspandt.m4a and won.m4a when one team is stretched and has won", () => {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "turn_around.m4a" }),
@@ -513,7 +513,7 @@ suite("generateAudioPlaylist()", () => {
 				selectedGamePointAudioFactory.build({ name: "eleven.m4a", gamePoints: 11 }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "fifteen.m4a", gamePoints: 15 }),
-				selectedGamePointAudioFactory.build({ name: "stretched.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "gspandt.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "won.m4a" }),
 			],
 			team1MatchTotalGamePoints: 11,
@@ -555,7 +555,7 @@ suite("generateAudioPlaylist()", () => {
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "stretched.m4a",
+				name: "gspandt.m4a",
 			},
 			{
 				gamePointAudioId: 0,

@@ -81,7 +81,7 @@ export function generateAudioPlaylist(options: Options): Result<readonly Selecte
 		})
 		.andThen((audioPlaylistValue) => {
 			if (isStretched) {
-				return find((audio) => audio.name === "stretched.m4a", allAudios).map((stretchedAudio) => {
+				return find((audio) => audio.name === "gspandt.m4a", allAudios).map((stretchedAudio) => {
 					audioPlaylistValue.push(stretchedAudio);
 
 					return audioPlaylistValue;
