@@ -169,5 +169,53 @@ export async function seedInMemoryDatabase(database: LibSQLDatabase<typeof schem
 			name: "won.m4a",
 			audioFile: oneHundredMillisecondsOfSilence,
 		},
+		{
+			name: "der_is_guad.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
+		{
+			name: "der_war_deier.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
+		{
+			name: "des_is_a_lauf.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
+		{
+			name: "do_legst_di_nida.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
+		{
+			name: "do_sagst_nix_ma.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
+		{
+			name: "gehts_a_oder_gehts_a.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
+		{
+			name: "kimmt_da_no_woas.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
+		{
+			name: "machst_du_no_a_stich.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
+		{
+			name: "sama_gspandt.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
+		{
+			name: "seids_eigschlafa.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
+		{
+			name: "spuilts_lieber_uno.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
+		{
+			name: "was_isn_ogsogt.m4a",
+			audioFile: oneHundredMillisecondsOfSilence,
+		},
 	]);
 }
