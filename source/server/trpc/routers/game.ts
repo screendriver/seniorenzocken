@@ -1,20 +1,25 @@
 import { object, parse, pipe, nonEmpty } from "valibot";
 import { last } from "true-myth/maybe";
 import type { TRPCRouter } from "../index.ts";
-import { type NotPersistedTeam, notPersistedTeamSchema } from "../../../shared/team.ts";
-import { gameRoundsSchema } from "../../../shared/game-rounds.ts";
+import {
+	type NotPersistedTeam1,
+	type NotPersistedTeam2,
+	notPersistedTeam1Schema,
+	notPersistedTeam2Schema,
+} from "../../../shared/team.ts";
+import { type GameRound, type GameRounds, gameRoundsSchema } from "../../../shared/game-rounds.ts";
 import { matchTotalGamePointsSchema } from "../../../shared/game-points.ts";
 import { isStretched } from "../../stretched/stretched.ts";
 import { isGameOver } from "../../game-over/game-over.ts";
 import { shouldShowConfetti } from "../../confetti/confetti.ts";
 
 type NewGameProcedureOutput = {
-	readonly team1: NotPersistedTeam;
-	readonly team2: NotPersistedTeam;
+	readonly team1: NotPersistedTeam1;
+	readonly team2: NotPersistedTeam2;
 	readonly isGameRunning: false;
 	readonly isGameOver: false;
 	readonly showConfetti: false;
-	readonly gameRounds: [NotPersistedTeam, NotPersistedTeam][];
+	readonly gameRounds: GameRounds;
 };
 
 type StartGameMutationOutput = {
@@ -22,18 +27,18 @@ type StartGameMutationOutput = {
 };
 
 type NextGameRoundMutationOutput = {
-	readonly team1: NotPersistedTeam;
-	readonly team2: NotPersistedTeam;
+	readonly team1: NotPersistedTeam1;
+	readonly team2: NotPersistedTeam2;
 	readonly isGameRunning: boolean;
 	readonly isGameOver: boolean;
 	readonly showConfetti: boolean;
-	readonly gameRounds: [NotPersistedTeam, NotPersistedTeam][];
+	readonly gameRounds: GameRounds;
 };
 
 type PreviousGameRoundMutationOutput = {
-	readonly team1: NotPersistedTeam;
-	readonly team2: NotPersistedTeam;
-	readonly gameRounds: [NotPersistedTeam, NotPersistedTeam][];
+	readonly team1: NotPersistedTeam1;
+	readonly team2: NotPersistedTeam2;
+	readonly gameRounds: GameRounds;
 };
 
 type Options = {
@@ -70,7 +75,7 @@ export function createGameRouter(options: Options) {
 		}),
 
 		start: publicProcedure
-			.input(object({ team1: notPersistedTeamSchema, team2: notPersistedTeamSchema }))
+			.input(object({ team1: notPersistedTeam1Schema, team2: notPersistedTeam2Schema }))
 			.mutation<StartGameMutationOutput>(() => {
 				return {
 					isGameRunning: true,
@@ -80,8 +85,8 @@ export function createGameRouter(options: Options) {
 		nextRound: publicProcedure
 			.input(
 				object({
-					team1: notPersistedTeamSchema,
-					team2: notPersistedTeamSchema,
+					team1: notPersistedTeam1Schema,
+					team2: notPersistedTeam2Schema,
 					gameRounds: gameRoundsSchema,
 				}),
 			)
@@ -96,19 +101,29 @@ export function createGameRouter(options: Options) {
 					matchTotalGamePointsSchema,
 					team2.currentRoundGamePoints + team2.matchTotalGamePoints,
 				);
-				const updatedTeam1: NotPersistedTeam = {
+				const updatedTeam1: NotPersistedTeam1 = {
 					...team1,
 					currentRoundGamePoints: 0,
 					matchTotalGamePoints: team1MatchTotalGamePoints,
 					isStretched: isStretched(team1MatchTotalGamePoints),
 				};
-				const updatedTeam2: NotPersistedTeam = {
+				const updatedTeam2: NotPersistedTeam2 = {
 					...team2,
 					currentRoundGamePoints: 0,
 					matchTotalGamePoints: team2MatchTotalGamePoints,
 					isStretched: isStretched(team2MatchTotalGamePoints),
 				};
 				const gameOver = isGameOver(updatedTeam1, updatedTeam2);
+				const newGameRound: GameRound = [
+					{
+						team: updatedTeam1,
+						hasWonGameRound: team1.currentRoundGamePoints > team2.currentRoundGamePoints,
+					},
+					{
+						team: updatedTeam2,
+						hasWonGameRound: team2.currentRoundGamePoints > team1.currentRoundGamePoints,
+					},
+				];
 
 				return {
 					team1: updatedTeam1,
@@ -116,7 +131,7 @@ export function createGameRouter(options: Options) {
 					isGameRunning: !gameOver,
 					isGameOver: gameOver,
 					showConfetti: shouldShowConfetti(team1, team2),
-					gameRounds: [...gameRounds, [updatedTeam1, updatedTeam2]],
+					gameRounds: [...gameRounds, newGameRound],
 				};
 			}),
 
@@ -138,15 +153,15 @@ export function createGameRouter(options: Options) {
 					.match({
 						Just(previousGameRound) {
 							return {
-								team1: previousGameRound[0],
-								team2: previousGameRound[1],
+								team1: previousGameRound[0].team,
+								team2: previousGameRound[1].team,
 								gameRounds: remainingGameRounds,
 							};
 						},
 						Nothing() {
 							return {
-								team1: { ...gameRounds[0][0], matchTotalGamePoints: 0 },
-								team2: { ...gameRounds[0][1], matchTotalGamePoints: 0 },
+								team1: { ...gameRounds[0][0].team, matchTotalGamePoints: 0 },
+								team2: { ...gameRounds[0][1].team, matchTotalGamePoints: 0 },
 								gameRounds: [],
 							};
 						},

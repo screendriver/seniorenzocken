@@ -1,12 +1,23 @@
-import { object, union, literal, string, pipe, nonEmpty, boolean, type InferOutput } from "valibot";
+import { object, literal, string, pipe, nonEmpty, boolean, type InferOutput } from "valibot";
 import { gamePointsPerRoundSchema, matchTotalGamePointsSchema } from "./game-points.ts";
 
-export const notPersistedTeamSchema = object({
-	teamNumber: union([literal(1), literal(2)]),
+const notPersistedTeamSchema = object({
 	name: pipe(string(), nonEmpty()),
 	currentRoundGamePoints: gamePointsPerRoundSchema,
 	matchTotalGamePoints: matchTotalGamePointsSchema,
 	isStretched: boolean(),
 });
 
-export type NotPersistedTeam = InferOutput<typeof notPersistedTeamSchema>;
+export const notPersistedTeam1Schema = object({
+	...notPersistedTeamSchema.entries,
+	teamNumber: literal(1),
+});
+
+export const notPersistedTeam2Schema = object({
+	...notPersistedTeamSchema.entries,
+	teamNumber: literal(2),
+});
+
+export type NotPersistedTeam1 = InferOutput<typeof notPersistedTeam1Schema>;
+export type NotPersistedTeam2 = InferOutput<typeof notPersistedTeam2Schema>;
+export type NotPersistedTeam = NotPersistedTeam1 | NotPersistedTeam2;

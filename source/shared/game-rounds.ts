@@ -1,10 +1,15 @@
-import { strictTuple, array, type InferOutput } from "valibot";
-import { notPersistedTeamSchema } from "./team.ts";
+import { strictTuple, array, object, boolean, type InferOutput } from "valibot";
+import { notPersistedTeam1Schema, notPersistedTeam2Schema } from "./team.ts";
 
-export const gameRoundSchema = strictTuple([notPersistedTeamSchema, notPersistedTeamSchema]);
+const hasWonGameRoundSchema = boolean();
 
-export const gameRoundsSchema = array(strictTuple([notPersistedTeamSchema, notPersistedTeamSchema]));
+export const gameRoundSchema = strictTuple([
+	object({ team: notPersistedTeam1Schema, hasWonGameRound: hasWonGameRoundSchema }),
+	object({ team: notPersistedTeam2Schema, hasWonGameRound: hasWonGameRoundSchema }),
+]);
 
 export type GameRound = InferOutput<typeof gameRoundSchema>;
+
+export const gameRoundsSchema = array(gameRoundSchema);
 
 export type GameRounds = InferOutput<typeof gameRoundsSchema>;

@@ -3,7 +3,7 @@ import { object, boolean } from "valibot";
 import type { AudioRepository } from "../../audio/repository.ts";
 import type { isTurnAround } from "../../audio/turn_around.ts";
 import type { TRPCRouter } from "../index.ts";
-import { notPersistedTeamSchema } from "../../../shared/team.ts";
+import { notPersistedTeam1Schema, notPersistedTeam2Schema } from "../../../shared/team.ts";
 import { gameRoundsSchema } from "../../../shared/game-rounds.ts";
 import { generateAudioPlaylist } from "../../audio/playlist.ts";
 
@@ -24,8 +24,8 @@ export function createAudioRouter(options: Options) {
 		generatePlaylist: publicProcedure
 			.input(
 				object({
-					team1: notPersistedTeamSchema,
-					team2: notPersistedTeamSchema,
+					team1: notPersistedTeam1Schema,
+					team2: notPersistedTeam2Schema,
 					gameRounds: gameRoundsSchema,
 					hasWon: boolean(),
 				}),

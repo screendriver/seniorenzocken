@@ -2,12 +2,14 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { isNonEmptyArray } from "@sindresorhus/is";
 import Task, { fromPromise } from "true-myth/task";
-import type { NotPersistedTeam } from "../../shared/team.ts";
+import type { NotPersistedTeam, NotPersistedTeam1, NotPersistedTeam2 } from "../../shared/team.ts";
 import type { GameRounds } from "../../shared/game-rounds.ts";
 import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store.ts";
 import type { GamePointsPerRound } from "../../shared/game-points.ts";
 
-function createEmptyNotPersistedTeam(teamNumber: NotPersistedTeam["teamNumber"]): NotPersistedTeam {
+function createEmptyNotPersistedTeam(teamNumber: 1): NotPersistedTeam1;
+function createEmptyNotPersistedTeam(teamNumber: 2): NotPersistedTeam2;
+function createEmptyNotPersistedTeam(teamNumber: 1 | 2): NotPersistedTeam {
 	return {
 		teamNumber,
 		name: "",
@@ -21,8 +23,8 @@ export const useGameStore = defineStore("game", () => {
 	const { trpcClient } = useTRPCClientStore();
 	const hasError = ref(false);
 	const isAudioPlaying = ref(false);
-	const team1 = ref<NotPersistedTeam>(createEmptyNotPersistedTeam(1));
-	const team2 = ref<NotPersistedTeam>(createEmptyNotPersistedTeam(2));
+	const team1 = ref(createEmptyNotPersistedTeam(1));
+	const team2 = ref(createEmptyNotPersistedTeam(2));
 	const isGameRunning = ref(false);
 	const showConfetti = ref(false);
 	const isGameOver = ref(false);

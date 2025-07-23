@@ -1,11 +1,21 @@
 import { suite, test, expect } from "vitest";
 import { Factory } from "fishery";
-import { NotPersistedTeam } from "../../shared/team.ts";
+import type { NotPersistedTeam1, NotPersistedTeam2 } from "../../shared/team.ts";
 import { isTurnAround } from "./turn_around.ts";
 
-const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
+const notPersistedTeam1Factory = Factory.define<NotPersistedTeam1>(() => {
 	return {
 		teamNumber: 1,
+		name: "",
+		currentRoundGamePoints: 0,
+		matchTotalGamePoints: 0,
+		isStretched: false,
+	};
+});
+
+const notPersistedTeam2Factory = Factory.define<NotPersistedTeam2>(() => {
+	return {
+		teamNumber: 2,
 		name: "",
 		currentRoundGamePoints: 0,
 		matchTotalGamePoints: 0,
@@ -23,7 +33,10 @@ suite("isTurnAround()", () => {
 	test("returns false when given game rounds has just one game round", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
-				[notPersistedTeamFactory.build({ teamNumber: 1 }), notPersistedTeamFactory.build({ teamNumber: 2 })],
+				[
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
+				],
 			],
 		});
 
@@ -34,8 +47,8 @@ suite("isTurnAround()", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 10 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
 				],
 			],
 		});
@@ -47,8 +60,8 @@ suite("isTurnAround()", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 11 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 			],
 		});
@@ -60,20 +73,32 @@ suite("isTurnAround()", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 2 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 6 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{
+						team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 6 }),
+						hasWonGameRound: false,
+					},
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 9 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{
+						team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 9 }),
+						hasWonGameRound: false,
+					},
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 9 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 2 }),
+					{
+						team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 9 }),
+						hasWonGameRound: false,
+					},
+					{
+						team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }),
+						hasWonGameRound: false,
+					},
 				],
 			],
 		});
@@ -85,20 +110,20 @@ suite("isTurnAround()", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 2 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 6 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 10 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 10 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
 				],
 			],
 		});
@@ -110,20 +135,20 @@ suite("isTurnAround()", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 2 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 6 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 10 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 11 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
 				],
 			],
 		});
@@ -135,24 +160,24 @@ suite("isTurnAround()", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 2 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 6 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 10 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 11 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 11 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 5 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 5 }), hasWonGameRound: false },
 				],
 			],
 		});
@@ -164,20 +189,20 @@ suite("isTurnAround()", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 2 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 6 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 10 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 2 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 10 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
 				],
 			],
 		});
@@ -189,20 +214,20 @@ suite("isTurnAround()", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 2 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 6 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 10 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 2 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 11 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false },
 				],
 			],
 		});
@@ -214,24 +239,24 @@ suite("isTurnAround()", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 2 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 6 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 10 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 2 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 11 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 4 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 11 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 4 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false },
 				],
 			],
 		});
@@ -243,20 +268,20 @@ suite("isTurnAround()", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 10 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 10 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 6 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 2 }),
-					notPersistedTeamFactory.build({ teamNumber: 2 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false },
 				],
 			],
 		});
@@ -268,20 +293,20 @@ suite("isTurnAround()", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1, matchTotalGamePoints: 2 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 10 }),
+					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 10 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 6 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
 				],
 				[
-					notPersistedTeamFactory.build({ teamNumber: 1 }),
-					notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints: 2 }),
+					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
+					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
 				],
 			],
 		});
