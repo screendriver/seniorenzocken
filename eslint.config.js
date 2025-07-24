@@ -7,6 +7,9 @@ export default defineConfigWithVueTs(
 	{
 		name: "application",
 		files: ["**/*.{ts,vue}"],
+		rules: {
+			"@typescript-eslint/consistent-type-imports": "error",
+		},
 	},
 
 	{

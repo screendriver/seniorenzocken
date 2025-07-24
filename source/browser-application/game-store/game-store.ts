@@ -1,7 +1,8 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { isNonEmptyArray } from "@sindresorhus/is";
-import Task, { fromPromise } from "true-myth/task";
+import type Task from "true-myth/task";
+import { fromPromise } from "true-myth/task";
 import type { NotPersistedTeam, NotPersistedTeam1, NotPersistedTeam2 } from "../../shared/team.ts";
 import type { GameRounds } from "../../shared/game-rounds.ts";
 import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store.ts";

@@ -1,5 +1,6 @@
-import Maybe, { of, just, find } from "true-myth/maybe";
-import Result from "true-myth/result";
+import type Maybe from "true-myth/maybe";
+import { of, just, find } from "true-myth/maybe";
+import type Result from "true-myth/result";
 import { toOkOrErr } from "true-myth/toolbelt";
 import sample from "lodash.sample";
 import type { GamePointAudio } from "../database/schema.ts";
