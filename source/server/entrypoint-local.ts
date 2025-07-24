@@ -24,7 +24,7 @@ serve(
 		fetch: server.fetch,
 		port: 4000,
 	},
-	() => {
-		console.info("Server is running on http://localhost:4000");
+	(info) => {
+		console.info(`Server is running on http://localhost:${info.port.toString(10)}`);
 	},
 );
