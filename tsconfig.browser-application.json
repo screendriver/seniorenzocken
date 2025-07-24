@@ -9,8 +9,10 @@
 	"exclude": ["source/browser-application/**/__tests__/*"],
 	"compilerOptions": {
 		"tsBuildInfoFile": "./target/tsconfig.browser-application.tsbuildinfo",
+		"target": "es2023",
 		"lib": ["ES2023", "DOM", "DOM.Iterable"],
-		"allowImportingTsExtensions": true
+		"allowImportingTsExtensions": true,
+		"importHelpers": true
 	},
 	"types": []
 }
