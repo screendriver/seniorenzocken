@@ -3,6 +3,7 @@ import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
 import { createTRPCClient, unstable_localLink } from "@trpc/client";
 import { stripIndent } from "common-tags";
+import { createFakeClock } from "./clock/fake-clock.ts";
 import { createServer, ServerOptions } from "./server.ts";
 import { createDatabase } from "./database/database.ts";
 import { seedInMemoryDatabase } from "./seed-in-memory-database.ts";
@@ -18,6 +19,7 @@ type TestFunctionOptions = {
 
 function withServer(testFunction: (options: TestFunctionOptions) => Promise<void>): TestFunction {
 	return async () => {
+		const fakeClock = createFakeClock();
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await seedInMemoryDatabase(database);
@@ -30,6 +32,7 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 			isTurnAround: vi.fn().mockReturnValue(false),
 		});
 		const serverOptions: ServerOptions = {
+			clock: fakeClock,
 			database,
 			trpcApplicationRouter,
 			metricsUsername: "foo",
@@ -42,6 +45,18 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 }
 
 suite("server", () => {
+	test(
+		"/health returns a 200 status code",
+		withServer(async ({ server }) => {
+			const response = await server.request("/health");
+
+			expect(response.status).toBe(200);
+			expect(await response.json()).toStrictEqual({
+				status: "OK",
+				timestamp: "2025-07-24T09:10:20.153Z",
+			});
+		}),
+	);
 	test(
 		"/metrics returns a 401 status code when no basic auth is given",
 		withServer(async ({ server }) => {

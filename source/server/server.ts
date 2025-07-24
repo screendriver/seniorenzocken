@@ -8,11 +8,13 @@ import { prometheus } from "@hono/prometheus";
 import { eq } from "drizzle-orm";
 import { safeParse, object, pipe, string, transform, number, integer } from "valibot";
 import mime from "mime";
+import type { Clock } from "./clock/clock.ts";
 import type { Database } from "./database/database.ts";
 import { gamePointAudios } from "./database/schema.ts";
 import type { TRPCApplicationRouter } from "../shared/trpc.ts";
 
 export type ServerOptions = {
+	readonly clock: Clock;
 	readonly database: Database;
 	readonly trpcApplicationRouter: TRPCApplicationRouter;
 	readonly metricsUsername: string;
@@ -20,12 +22,16 @@ export type ServerOptions = {
 };
 
 export function createServer(options: ServerOptions): Hono {
-	const { database, trpcApplicationRouter, metricsUsername, metricsPassword } = options;
+	const { clock, database, trpcApplicationRouter, metricsUsername, metricsPassword } = options;
 
 	const { printMetrics, registerMetrics } = prometheus();
 
 	return new Hono()
 		.use(compress())
+
+		.get("/health", (context) => {
+			return context.json({ status: "OK", timestamp: clock.now });
+		})
 
 		.use("*", registerMetrics)
 		.use(

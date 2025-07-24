@@ -2,12 +2,15 @@ import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
 import { parse, pipe, string, nonEmpty } from "valibot";
 import { readFile } from "node:fs/promises";
+import { createClock } from "./clock/clock.ts";
 import { createDatabase } from "./database/database.ts";
 import { createServer } from "./server.ts";
 import { createAudioRepository } from "./audio/repository.ts";
 import { isTurnAround } from "./audio/turn_around.ts";
 import { createTrpcRouter } from "./trpc/index.ts";
 import { createTrpcApplicationRouter } from "./trpc/application-router.ts";
+
+const clock = createClock();
 
 const database = createDatabase("file:database.sqlite");
 
@@ -24,7 +27,7 @@ const [metricsUsername, metricsPassword] = await Promise.all([
 const audioRepository = createAudioRepository({ database });
 const trpcRouter = createTrpcRouter();
 const trpcApplicationRouter = createTrpcApplicationRouter({ trpcRouter, database, audioRepository, isTurnAround });
-const server = createServer({ database, trpcApplicationRouter, metricsUsername, metricsPassword });
+const server = createServer({ clock, database, trpcApplicationRouter, metricsUsername, metricsPassword });
 
 serve(
 	{
