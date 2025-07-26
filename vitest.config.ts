@@ -7,7 +7,7 @@ export default mergeConfig(
 	defineConfig({
 		test: {
 			environment: "happy-dom",
-			root: fileURLToPath(new URL("./", import.meta.url)),
+			root: fileURLToPath(new URL("./source", import.meta.url)),
 		},
 	}),
 );
