@@ -13,6 +13,11 @@
 			"matchPackageNames": ["@pinia/*", "pinia"]
 		},
 		{
+			"groupName": "tRPC dependencies",
+			"groupSlug": "trpc",
+			"matchPackageNames": ["@pinia/*", "@hono/trpc-server"]
+		},
+		{
 			"matchFileNames": [".woodpecker/*.yaml"],
 			"matchUpdateTypes": ["minor", "patch"],
 			"automerge": true,
