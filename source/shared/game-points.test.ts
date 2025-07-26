@@ -5,7 +5,7 @@ import {
 	gamePointsPerRoundSchema,
 	matchTotalGamePoints,
 	matchTotalGamePointsSchema,
-} from "./game-points.ts";
+} from "./game-points.js";
 
 suite("gamePointsPerRound", () => {
 	test("has correct values", () => {

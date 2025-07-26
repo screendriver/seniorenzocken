@@ -1,8 +1,8 @@
 import { suite, test, expect } from "vitest";
 import { migrate } from "drizzle-orm/libsql/migrator";
-import { seedInMemoryDatabase } from "../seed-in-memory-database.ts";
-import { createDatabase } from "../database/database.ts";
-import { createAudioRepository } from "./repository.ts";
+import { seedInMemoryDatabase } from "../seed-in-memory-database.js";
+import { createDatabase } from "../database/database.js";
+import { createAudioRepository } from "./repository.js";
 
 suite("audio repository", () => {
 	test("readAllAudios() returns the selected audio files in correct order", async () => {

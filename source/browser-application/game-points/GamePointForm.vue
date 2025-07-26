@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useGameStore } from "../game-store/game-store.ts";
+import { useGameStore } from "../game-store/game-store.js";
 import GamePoint from "./GamePoint.vue";
 
 const gameStore = useGameStore();

@@ -1,5 +1,5 @@
 import { suite, test, expect } from "vitest";
-import { createFakeClock } from "./fake-clock.ts";
+import { createFakeClock } from "./fake-clock.js";
 
 suite("fake-clock", () => {
 	test("now() returns a fixed date", () => {

@@ -1,11 +1,11 @@
 import { desc } from "drizzle-orm";
-import type { TRPCRouter } from "./index.ts";
-import type { Database } from "../database/database.ts";
-import { games, players, teams } from "../database/schema.ts";
-import type { AudioRepository } from "../audio/repository.ts";
-import type { isTurnAround } from "../audio/turn_around.ts";
-import { createGameRouter } from "./routers/game.ts";
-import { createAudioRouter } from "./routers/audio.ts";
+import type { TRPCRouter } from "./index.js";
+import type { Database } from "../database/database.js";
+import { games, players, teams } from "../database/schema.js";
+import type { AudioRepository } from "../audio/repository.js";
+import type { isTurnAround } from "../audio/turn_around.js";
+import { createGameRouter } from "./routers/game.js";
+import { createAudioRouter } from "./routers/audio.js";
 
 type Options = {
 	readonly trpcRouter: TRPCRouter;
@@ -39,3 +39,5 @@ export function createTrpcApplicationRouter(options: Options) {
 		audio: audioRouter,
 	});
 }
+
+export type TRPCApplicationRouter = ReturnType<typeof createTrpcApplicationRouter>;

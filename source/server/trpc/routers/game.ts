@@ -1,17 +1,18 @@
+import { TRPCError } from "@trpc/server";
 import { object, parse, pipe, nonEmpty } from "valibot";
 import { last } from "true-myth/maybe";
-import type { TRPCRouter } from "../index.ts";
+import type { TRPCRouter } from "../index.js";
 import {
 	type NotPersistedTeam1,
 	type NotPersistedTeam2,
 	notPersistedTeam1Schema,
 	notPersistedTeam2Schema,
-} from "../../../shared/team.ts";
-import { type GameRound, type GameRounds, gameRoundsSchema } from "../../../shared/game-rounds.ts";
-import { matchTotalGamePointsSchema } from "../../../shared/game-points.ts";
-import { isStretched } from "../../stretched/stretched.ts";
-import { isGameOver } from "../../game-over/game-over.ts";
-import { shouldShowConfetti } from "../../confetti/confetti.ts";
+} from "../../../shared/team.js";
+import { type GameRound, type GameRounds, gameRoundsSchema } from "../../../shared/game-rounds.js";
+import { matchTotalGamePointsSchema } from "../../../shared/game-points.js";
+import { isStretched } from "../../stretched/stretched.js";
+import { isGameOver } from "../../game-over/game-over.js";
+import { shouldShowConfetti } from "../../confetti/confetti.js";
 
 type NewGameProcedureOutput = {
 	readonly team1: NotPersistedTeam1;
@@ -147,9 +148,7 @@ export function createGameRouter(options: Options) {
 				const remainingGameRounds = gameRounds.toSpliced(-1);
 
 				return last(remainingGameRounds)
-					.andThen((previousGameRound) => {
-						return previousGameRound;
-					})
+					.andThen((previousGameRound) => previousGameRound)
 					.match({
 						Just(previousGameRound) {
 							return {
@@ -159,9 +158,15 @@ export function createGameRouter(options: Options) {
 							};
 						},
 						Nothing() {
+							const firstGameRound = gameRounds[0];
+
+							if (firstGameRound === undefined) {
+								throw new TRPCError({ code: "NOT_FOUND" });
+							}
+
 							return {
-								team1: { ...gameRounds[0][0].team, matchTotalGamePoints: 0 },
-								team2: { ...gameRounds[0][1].team, matchTotalGamePoints: 0 },
+								team1: { ...firstGameRound[0].team, matchTotalGamePoints: 0 },
+								team2: { ...firstGameRound[1].team, matchTotalGamePoints: 0 },
 								gameRounds: [],
 							};
 						},

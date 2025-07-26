@@ -3,7 +3,7 @@ import { mount } from "@vue/test-utils";
 import { createTestingPinia } from "@pinia/testing";
 import type { PartialDeep } from "type-fest";
 import TeamsView from "./TeamsView.vue";
-import { useGameStore, type GameStore } from "../game-store/game-store.ts";
+import { useGameStore, type GameStore } from "../game-store/game-store.js";
 
 vi.mock("vue-router", () => {
 	return {

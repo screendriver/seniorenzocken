@@ -29,7 +29,7 @@ check-database-consistency:
 	drizzle-kit check
 
 @develop:
-	concurrently --kill-others --kill-others-on-fail --names "server,vite" "node --watch --watch-preserve-output source/server/entrypoint-local.ts" "npx vite"
+	concurrently --kill-others --kill-others-on-fail --names "server,vite" "tsx watch --clear-screen=false source/server/entrypoint-local.ts" "vite"
 
 @build-browser-application:
 	vite build

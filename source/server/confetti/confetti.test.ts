@@ -1,7 +1,7 @@
 import { suite, test, expect } from "vitest";
 import { Factory } from "fishery";
-import type { NotPersistedTeam } from "../../shared/team.ts";
-import { shouldShowConfetti } from "./confetti.ts";
+import type { NotPersistedTeam } from "../../shared/team.js";
+import { shouldShowConfetti } from "./confetti.js";
 
 const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
 	return {

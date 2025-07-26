@@ -1,5 +1,5 @@
 import { object, literal, string, pipe, nonEmpty, boolean, type InferOutput } from "valibot";
-import { gamePointsPerRoundSchema, matchTotalGamePointsSchema } from "./game-points.ts";
+import { gamePointsPerRoundSchema, matchTotalGamePointsSchema } from "./game-points.js";
 
 const notPersistedTeamSchema = object({
 	name: pipe(string(), nonEmpty()),

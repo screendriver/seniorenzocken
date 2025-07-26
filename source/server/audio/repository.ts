@@ -1,7 +1,7 @@
 import { eq, or, sql } from "drizzle-orm";
-import type { Database } from "../database/database.ts";
-import { gamePointAudios, type GamePointAudio } from "../database/schema.ts";
-import type { MatchTotalGamePoints } from "../../shared/game-points.ts";
+import type { Database } from "../database/database.js";
+import { gamePointAudios, type GamePointAudio } from "../database/schema.js";
+import type { MatchTotalGamePoints } from "../../shared/game-points.js";
 
 type ReadAudio = Pick<GamePointAudio, "gamePointAudioId" | "name" | "gamePoints">;
 

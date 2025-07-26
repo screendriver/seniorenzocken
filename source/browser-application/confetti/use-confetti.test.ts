@@ -1,8 +1,8 @@
 import { suite, test, expect, beforeEach, vi } from "vitest";
 import type canvasConfetti from "canvas-confetti";
 import { createPinia, setActivePinia } from "pinia";
-import { useGameStore } from "../game-store/game-store.ts";
-import { useConfetti } from "./use-confetti.ts";
+import { useGameStore } from "../game-store/game-store.js";
+import { useConfetti } from "./use-confetti.js";
 
 beforeEach(() => {
 	setActivePinia(createPinia());

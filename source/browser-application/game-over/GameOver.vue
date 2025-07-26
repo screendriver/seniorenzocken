@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
-import { useGameStore } from "../game-store/game-store.ts";
-import { determineWinnerTeam } from "../team/teams.ts";
+import { useGameStore } from "../game-store/game-store.js";
+import { determineWinnerTeam } from "../team/teams.js";
 
 const router = useRouter();
 const gameStore = useGameStore();

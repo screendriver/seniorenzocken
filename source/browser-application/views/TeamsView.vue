@@ -3,7 +3,7 @@ import { computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { isEmptyString } from "@sindresorhus/is";
-import { useGameStore } from "../game-store/game-store";
+import { useGameStore } from "../game-store/game-store.js";
 
 const router = useRouter();
 const gameStore = useGameStore();

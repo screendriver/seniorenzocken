@@ -1,7 +1,7 @@
 import { suite, test, expect } from "vitest";
 import { safeParse } from "valibot";
 import { Factory } from "fishery";
-import { notPersistedTeam1Schema, notPersistedTeam2Schema } from "./team.ts";
+import { notPersistedTeam1Schema, notPersistedTeam2Schema } from "./team.js";
 
 const notPersistedTeamFactory = Factory.define<unknown>(() => {
 	return {

@@ -3,12 +3,13 @@ import { onMounted } from "vue";
 import { RouterView } from "vue-router";
 import { useWakeLock } from "@vueuse/core";
 import { useHead } from "@unhead/vue";
-import { useGameStore } from "./game-store/game-store.ts";
+import { useGameStore } from "./game-store/game-store.js";
 
 const gameStore = useGameStore();
 const { isSupported: isWakeLockSupported, isActive: isWakeLockActive, request: requestWakeLock } = useWakeLock();
 
 onMounted(() => {
+	// @ts-expect-error moduleResolution needs to be set to "bundler" but this is currently not possible because of a tRPC bug
 	if (import.meta.env.PROD) {
 		useHead({
 			script: [

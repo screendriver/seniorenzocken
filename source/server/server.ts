@@ -8,10 +8,10 @@ import { prometheus } from "@hono/prometheus";
 import { eq } from "drizzle-orm";
 import { safeParse, object, pipe, string, transform, number, integer } from "valibot";
 import mime from "mime";
-import type { Clock } from "./clock/clock.ts";
-import type { Database } from "./database/database.ts";
-import { gamePointAudios } from "./database/schema.ts";
-import type { TRPCApplicationRouter } from "../shared/trpc.ts";
+import type { Clock } from "./clock/clock.js";
+import type { Database } from "./database/database.js";
+import { gamePointAudios } from "./database/schema.js";
+import type { TRPCApplicationRouter } from "./trpc/application-router.js";
 
 export type ServerOptions = {
 	readonly clock: Clock;
@@ -70,21 +70,20 @@ export function createServer(options: ServerOptions): Hono {
 			}),
 			async (context) => {
 				const audioFileId = context.req.valid("param").file_id;
-				const databaseEntry = await database
+				const databaseEntries = await database
 					.select({ name: gamePointAudios.name, audioFile: gamePointAudios.audioFile })
 					.from(gamePointAudios)
 					.where(eq(gamePointAudios.gamePointAudioId, audioFileId))
 					.limit(1);
+				const databaseEntry = databaseEntries[0];
 
-				if (databaseEntry.length === 0) {
+				if (databaseEntry === undefined) {
 					return context.text("Audio file could not be found", 404);
 				}
 
-				const audioFileDatabaseEntry = databaseEntry[0];
-
-				return context.body(audioFileDatabaseEntry.audioFile, 200, {
-					"Content-Disposition": `inline; filename=${audioFileDatabaseEntry.name}`,
-					"Content-Type": mime.getType(audioFileDatabaseEntry.name) ?? "application/octet-stream",
+				return context.body(databaseEntry.audioFile, 200, {
+					"Content-Disposition": `inline; filename=${databaseEntry.name}`,
+					"Content-Type": mime.getType(databaseEntry.name) ?? "application/octet-stream",
 					"Cache-Control": "public, max-age=86400",
 				});
 			},

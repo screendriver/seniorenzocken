@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import canvasConfetti from "canvas-confetti";
 import { storeToRefs } from "pinia";
-import { useConfetti } from "../confetti/use-confetti";
-import { useGameStore } from "../game-store/game-store";
+import { useConfetti } from "../confetti/use-confetti.js";
+import { useGameStore } from "../game-store/game-store.js";
 import GamePointsAudio from "../game-points/GamePointsAudio.vue";
 import GameOver from "../game-over/GameOver.vue";
 import GamePointForm from "../game-points/GamePointForm.vue";
