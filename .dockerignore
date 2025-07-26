@@ -1,8 +1,10 @@
 .git
 .output
+target
 **/node_modules/
 *.d.ts
 **/*.d.ts
+!source/browser-application/vite-env.d.ts
 *.test.js
 **/*.test.js
 **/*.test.js.map
