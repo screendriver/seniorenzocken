@@ -1,13 +1,13 @@
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
-import { createFakeClock } from "./clock/fake-clock.ts";
-import { createDatabase } from "./database/database.ts";
-import { createServer } from "./server.ts";
-import { seedInMemoryDatabase } from "./seed-in-memory-database.ts";
-import { createAudioRepository } from "./audio/repository.ts";
-import { isTurnAround } from "./audio/turn_around.ts";
-import { createTrpcRouter } from "./trpc/index.ts";
-import { createTrpcApplicationRouter } from "./trpc/application-router.ts";
+import { createFakeClock } from "./clock/fake-clock.js";
+import { createDatabase } from "./database/database.js";
+import { createServer } from "./server.js";
+import { seedInMemoryDatabase } from "./seed-in-memory-database.js";
+import { createAudioRepository } from "./audio/repository.js";
+import { isTurnAround } from "./audio/turn_around.js";
+import { createTrpcRouter } from "./trpc/index.js";
+import { createTrpcApplicationRouter } from "./trpc/application-router.js";
 
 const fakeClock = createFakeClock();
 

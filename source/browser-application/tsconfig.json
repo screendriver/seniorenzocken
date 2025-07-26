@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"tsBuildInfoFile": "../../target/buildcache/tsconfig.browser-application.tsbuildinfo",
+		"noEmit": true,
+		"lib": ["ES2024", "DOM", "DOM.Iterable"],
+		"moduleDetection": "force",
+		"jsx": "preserve",
+		"jsxImportSource": "vue"
+	},
+	"types": ["canvas-confetti", "lodash.sample"],
+	"references": [{ "path": "../shared/tsconfig.json" }, { "path": "../server-shared/tsconfig.json" }],
+	"include": ["./vite-env.d.ts", "./**/*.ts", "./**/*.vue"]
+}

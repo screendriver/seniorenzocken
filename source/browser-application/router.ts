@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import TeamsView from "./views/TeamsView.vue";
 import GameView from "./views/GameView.vue";
 import NotFoundView from "./views/NotFoundView.vue";
-import { useGameStore } from "./game-store/game-store";
+import { useGameStore } from "./game-store/game-store.js";
 
 export const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +29,8 @@ export const router = createRouter({
 				if (!gameStore.isGameRunning) {
 					return { name: "teams", replace: true };
 				}
+
+				return true;
 			},
 		},
 		{

@@ -1,7 +1,7 @@
 import type { Result } from "true-myth";
 import { ok, err } from "true-myth/result";
 import type { Ref } from "vue";
-import type { NotPersistedTeam } from "../../shared/team.ts";
+import type { NotPersistedTeam } from "../../shared/team.js";
 
 function teamsHaveSameGamePoints(team1: Ref<NotPersistedTeam>, team2: Ref<NotPersistedTeam>): boolean {
 	return team1.value.matchTotalGamePoints === team2.value.matchTotalGamePoints;

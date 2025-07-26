@@ -1,5 +1,5 @@
 import { suite, test, expect } from "vitest";
-import { isStretched } from "./stretched.ts";
+import { isStretched } from "./stretched.js";
 
 suite("isStretched()", () => {
 	test("returns false when given match total game points equals 0", () => {

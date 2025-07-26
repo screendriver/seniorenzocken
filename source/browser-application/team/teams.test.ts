@@ -2,8 +2,8 @@ import { suite, test, expect } from "vitest";
 import { ref } from "vue";
 import { Factory } from "fishery";
 import { ok, err } from "true-myth/result";
-import type { NotPersistedTeam } from "../../shared/team.ts";
-import { determineWinnerTeam } from "./teams.ts";
+import type { NotPersistedTeam } from "../../shared/team.js";
+import { determineWinnerTeam } from "./teams.js";
 
 const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
 	return {

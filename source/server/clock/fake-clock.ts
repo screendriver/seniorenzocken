@@ -1,4 +1,4 @@
-import type { Clock } from "./clock.ts";
+import type { Clock } from "./clock.js";
 
 export function createFakeClock(): Clock {
 	return {

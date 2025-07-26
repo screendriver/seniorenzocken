@@ -1,5 +1,5 @@
 import { strictTuple, array, object, boolean, type InferOutput } from "valibot";
-import { notPersistedTeam1Schema, notPersistedTeam2Schema } from "./team.ts";
+import { notPersistedTeam1Schema, notPersistedTeam2Schema } from "./team.js";
 
 const hasWonGameRoundSchema = boolean();
 

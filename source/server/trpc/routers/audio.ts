@@ -3,9 +3,9 @@ import { object, boolean } from "valibot";
 import type { AudioRepository } from "../../audio/repository.ts";
 import type { isTurnAround } from "../../audio/turn_around.ts";
 import type { TRPCRouter } from "../index.ts";
-import { notPersistedTeam1Schema, notPersistedTeam2Schema } from "../../../shared/team.ts";
-import { gameRoundsSchema } from "../../../shared/game-rounds.ts";
-import { generateAudioPlaylist } from "../../audio/playlist.ts";
+import { notPersistedTeam1Schema, notPersistedTeam2Schema } from "../../../shared/team.js";
+import { gameRoundsSchema } from "../../../shared/game-rounds.js";
+import { generateAudioPlaylist } from "../../audio/playlist.js";
 
 type Options = {
 	readonly trpcRouter: TRPCRouter;

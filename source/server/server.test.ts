@@ -3,15 +3,14 @@ import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
 import { createTRPCClient, unstable_localLink } from "@trpc/client";
 import { stripIndent } from "common-tags";
-import { createFakeClock } from "./clock/fake-clock.ts";
-import type { ServerOptions } from "./server.ts";
-import { createServer } from "./server.ts";
-import { createDatabase } from "./database/database.ts";
-import { seedInMemoryDatabase } from "./seed-in-memory-database.ts";
-import { createTrpcRouter } from "./trpc/index.ts";
-import { createTrpcApplicationRouter } from "./trpc/application-router.ts";
-import type { TRPCApplicationRouter } from "../shared/trpc.ts";
-import { createAudioRepository } from "./audio/repository.ts";
+import { createFakeClock } from "./clock/fake-clock.js";
+import type { ServerOptions } from "./server.js";
+import { createServer } from "./server.js";
+import { createDatabase } from "./database/database.js";
+import { seedInMemoryDatabase } from "./seed-in-memory-database.js";
+import { createTrpcRouter } from "./trpc/index.js";
+import { createTrpcApplicationRouter, type TRPCApplicationRouter } from "./trpc/application-router.js";
+import { createAudioRepository } from "./audio/repository.js";
 
 type TestFunctionOptions = {
 	readonly server: Hono;

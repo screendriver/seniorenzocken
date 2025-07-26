@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { FeUsers as UsersIcon } from "@kalimahapps/vue-icons";
-import { type GamePointsPerRound, gamePointsPerRound } from "../../shared/game-points.ts";
-import type { NotPersistedTeam } from "../../shared/team.ts";
+import { type GamePointsPerRound, gamePointsPerRound } from "../../shared/game-points.js";
+import type { NotPersistedTeam } from "../../shared/team.js";
 
 const { team, enabled } = defineProps<{
 	team: NotPersistedTeam;

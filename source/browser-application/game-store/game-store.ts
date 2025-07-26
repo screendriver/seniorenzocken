@@ -3,10 +3,10 @@ import { computed, ref } from "vue";
 import { isNonEmptyArray } from "@sindresorhus/is";
 import type Task from "true-myth/task";
 import { fromPromise } from "true-myth/task";
-import type { NotPersistedTeam, NotPersistedTeam1, NotPersistedTeam2 } from "../../shared/team.ts";
-import type { GameRounds } from "../../shared/game-rounds.ts";
-import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store.ts";
-import type { GamePointsPerRound } from "../../shared/game-points.ts";
+import type { NotPersistedTeam, NotPersistedTeam1, NotPersistedTeam2 } from "../../shared/team.js";
+import type { GameRounds } from "../../shared/game-rounds.js";
+import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store.js";
+import type { GamePointsPerRound } from "../../shared/game-points.js";
 
 function createEmptyNotPersistedTeam(teamNumber: 1): NotPersistedTeam1;
 function createEmptyNotPersistedTeam(teamNumber: 2): NotPersistedTeam2;

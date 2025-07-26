@@ -2,7 +2,8 @@
 import { storeToRefs } from "pinia";
 import { onMounted } from "vue";
 import { useOnline } from "@vueuse/core";
-import { useGameStore } from "../game-store/game-store.ts";
+import { isUndefined } from "@sindresorhus/is";
+import { useGameStore } from "../game-store/game-store.js";
 
 const isOnline = useOnline();
 const gameStore = useGameStore();
@@ -35,11 +36,14 @@ onMounted(async () => {
 		async function playNext(): Promise<void> {
 			if (currentAudioIndex < audioObjects.length) {
 				const currentAudio = audioObjects[currentAudioIndex];
-				currentAudio.addEventListener("error", onAudioError);
-				currentAudio.addEventListener("waiting", onAudioWaiting);
-				currentAudio.addEventListener("ended", playNext);
 
-				await currentAudio.play();
+				if (!isUndefined(currentAudio)) {
+					currentAudio.addEventListener("error", onAudioError);
+					currentAudio.addEventListener("waiting", onAudioWaiting);
+					currentAudio.addEventListener("ended", playNext);
+
+					await currentAudio.play();
+				}
 
 				currentAudioIndex++;
 			} else {

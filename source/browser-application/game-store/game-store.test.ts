@@ -1,8 +1,8 @@
 import { suite, test, expect, beforeEach, vi, afterEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { Factory } from "fishery";
-import { useGameStore } from "./game-store.ts";
-import type { NotPersistedTeam } from "../../shared/team.ts";
+import { useGameStore } from "./game-store.js";
+import type { NotPersistedTeam } from "../../shared/team.js";
 
 const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
 	return {
