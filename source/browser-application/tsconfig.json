@@ -12,5 +12,5 @@
 	},
 	"types": ["canvas-confetti", "lodash.sample"],
 	"references": [{ "path": "../shared/tsconfig.json" }, { "path": "../server-shared/tsconfig.json" }],
-	"include": ["./vite-env.d.ts", "./**/*.ts", "./**/*.vue"]
+	"include": ["./**/*.ts", "./**/*.vue"]
 }
