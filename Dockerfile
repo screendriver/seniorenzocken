@@ -2,10 +2,7 @@ FROM node:24.4.1 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm clean-install
-COPY index.html justfile tailwind.config.js vite.config.ts drizzle.config.ts ./
-COPY drizzle/ drizzle/
-COPY public/ public/
-COPY source/ source/
+COPY . .
 RUN npx just compile && npx just build-browser-application && npm prune --omit=dev
 
 FROM node:24.4.1-alpine
