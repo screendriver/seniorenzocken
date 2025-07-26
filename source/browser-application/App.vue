@@ -9,7 +9,6 @@ const gameStore = useGameStore();
 const { isSupported: isWakeLockSupported, isActive: isWakeLockActive, request: requestWakeLock } = useWakeLock();
 
 onMounted(() => {
-	// @ts-expect-error moduleResolution needs to be set to "bundler" but this is currently not possible because of a tRPC bug
 	if (import.meta.env.PROD) {
 		useHead({
 			script: [

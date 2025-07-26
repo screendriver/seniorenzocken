@@ -2,6 +2,8 @@
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"tsBuildInfoFile": "../../target/buildcache/tsconfig.browser-application.tsbuildinfo",
+		"module": "esnext",
+		"moduleResolution": "bundler",
 		"noEmit": true,
 		"lib": ["ES2024", "DOM", "DOM.Iterable"],
 		"moduleDetection": "force",

@@ -1,7 +1,8 @@
 import { suite, test, expect, vi, type TestFunction } from "vitest";
+import { serve } from "@hono/node-server";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
-import { createTRPCClient, unstable_localLink } from "@trpc/client";
+import { createTRPCClient, httpLink } from "@trpc/client";
 import { stripIndent } from "common-tags";
 import { createFakeClock } from "./clock/fake-clock.js";
 import type { ServerOptions } from "./server.js";
@@ -14,7 +15,6 @@ import { createAudioRepository } from "./audio/repository.js";
 
 type TestFunctionOptions = {
 	readonly server: Hono;
-	readonly trpcApplicationRouter: TRPCApplicationRouter;
 };
 
 function withServer(testFunction: (options: TestFunctionOptions) => Promise<void>): TestFunction {
@@ -40,7 +40,7 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 		};
 		const server = createServer(serverOptions);
 
-		await testFunction({ server, trpcApplicationRouter });
+		await testFunction({ server });
 	};
 }
 
@@ -103,16 +103,11 @@ suite("server", () => {
 
 	test(
 		"/api/trpc/ uses the given tRPC server",
-		withServer(async ({ trpcApplicationRouter }) => {
+		withServer(async ({ server }) => {
+			const listeningServer = serve({ fetch: server.fetch });
+
 			const trpcClient = createTRPCClient<TRPCApplicationRouter>({
-				links: [
-					unstable_localLink({
-						router: trpcApplicationRouter,
-						async createContext() {
-							return {};
-						},
-					}),
-				],
+				links: [httpLink({ url: "/api/trpc" })],
 			});
 
 			await expect(trpcClient.teams.query()).resolves.toEqual([
@@ -129,6 +124,8 @@ suite("server", () => {
 					teamId: 2,
 				},
 			]);
+
+			listeningServer.close();
 		}),
 	);
 
