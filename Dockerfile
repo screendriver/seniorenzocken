@@ -21,4 +21,4 @@ USER node
 
 EXPOSE 4000
 
-CMD ["node", "source/server/entrypoint-production.ts"]
+CMD ["node", "--enable-source-maps", "source/server/entrypoint-production.ts"]
