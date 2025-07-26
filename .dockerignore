@@ -4,6 +4,7 @@ target
 **/node_modules/
 *.d.ts
 **/*.d.ts
+**/*.d.ts.map
 !source/browser-application/vite-env.d.ts
 *.test.js
 **/*.test.js
