@@ -21,7 +21,7 @@ test-unit *options:
 test: compile lint (test-unit "--run") check-database-consistency
 
 [group("database")]
-generate-database-migrations:
+generate-database-migrations: compile
 	drizzle-kit generate
 
 [group("database")]
