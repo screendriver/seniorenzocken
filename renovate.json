@@ -15,7 +15,7 @@
 		{
 			"groupName": "tRPC dependencies",
 			"groupSlug": "trpc",
-			"matchPackageNames": ["@pinia/*", "@hono/trpc-server"]
+			"matchPackageNames": ["@trpc/*", "@hono/trpc-server"]
 		},
 		{
 			"matchFileNames": [".woodpecker/*.yaml"],
