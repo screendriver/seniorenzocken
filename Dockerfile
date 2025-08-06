@@ -22,4 +22,4 @@ USER node
 
 EXPOSE 4000
 
-CMD ["node", "--enable-source-maps", "source/server/entrypoint-production.js"]
+CMD ["node", "--enable-source-maps", "--import", "./source/server/instrument.js", "./source/server/entrypoint-production.js"]
