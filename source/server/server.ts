@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
 import { compress } from "hono/compress";
 import { validator } from "hono/validator";
 import { serveStatic } from "@hono/node-server/serve-static";
@@ -8,6 +9,7 @@ import { prometheus } from "@hono/prometheus";
 import { eq } from "drizzle-orm";
 import { safeParse, object, pipe, string, transform, number, integer } from "valibot";
 import mime from "mime";
+import * as Sentry from "@sentry/node";
 import type { Clock } from "./clock/clock.js";
 import type { Database } from "./database/database.js";
 import { gamePointAudios } from "./database/schema.js";
@@ -27,6 +29,15 @@ export function createServer(options: ServerOptions): Hono {
 	const { printMetrics, registerMetrics } = prometheus();
 
 	return new Hono()
+		.onError((error, context) => {
+			Sentry.captureException(error);
+
+			if (error instanceof HTTPException) {
+				return error.getResponse();
+			}
+			return context.json({ error: "Internal server error" }, 500);
+		})
+
 		.use(compress())
 
 		.get("/health", (context) => {
