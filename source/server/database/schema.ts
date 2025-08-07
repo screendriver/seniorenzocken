@@ -4,7 +4,7 @@ import { int, sqliteTable, text, unique, index, blob } from "drizzle-orm/sqlite-
 const timestamps = {
 	createdAt: text()
 		.notNull()
-		.default(sql`(current_timestamp)`),
+		.default(sql`(current_timestamp)`)
 };
 
 export const players = sqliteTable("players", {
@@ -14,7 +14,7 @@ export const players = sqliteTable("players", {
 	nickname: text().notNull().unique(),
 	totalPoints: int().notNull().default(0),
 	totalGamesCount: int().notNull().default(0),
-	...timestamps,
+	...timestamps
 });
 
 export type Player = InferSelectModel<typeof players>;
@@ -33,11 +33,11 @@ export const teams = sqliteTable(
 			.references(() => {
 				return players.playerId;
 			}),
-		...timestamps,
+		...timestamps
 	},
 	(table) => {
 		return [unique().on(table.player1Id, table.player2Id)];
-	},
+	}
 );
 
 export type Team = InferSelectModel<typeof teams>;
@@ -56,7 +56,7 @@ export const games = sqliteTable("games", {
 		}),
 	team1Points: int().notNull(),
 	team2Points: int().notNull(),
-	...timestamps,
+	...timestamps
 });
 
 export type Game = InferSelectModel<typeof games>;
@@ -101,16 +101,16 @@ export const gamePointAudios = sqliteTable(
 				"sama_gspandt.m4a",
 				"seids_eigschlafa.m4a",
 				"spuilts_lieber_uno.m4a",
-				"was_isn_ogsogt.m4a",
-			],
+				"was_isn_ogsogt.m4a"
+			]
 		}).notNull(),
 		gamePoints: int(),
 		audioFile: blob({ mode: "buffer" }).notNull(),
-		...timestamps,
+		...timestamps
 	},
 	(table) => {
 		return [index("name_index").on(table.name)];
-	},
+	}
 );
 
 export type GamePointAudio = InferSelectModel<typeof gamePointAudios>;

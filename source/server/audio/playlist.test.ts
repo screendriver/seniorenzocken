@@ -7,7 +7,7 @@ const selectedGamePointAudioFactory = Factory.define<SelectedGamePointAudio>(() 
 	return {
 		gamePointAudioId: 0,
 		name: "attention.m4a",
-		gamePoints: null,
+		gamePoints: null
 	};
 });
 
@@ -19,7 +19,7 @@ const optionsFactory = Factory.define<Options>(() => {
 		gameRounds: [],
 		isStretched: false,
 		hasWon: false,
-		isTurnAround: vi.fn().mockReturnValue(false),
+		isTurnAround: vi.fn().mockReturnValue(false)
 	};
 });
 
@@ -28,8 +28,8 @@ suite("generateAudioPlaylist()", () => {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
-				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-			],
+				selectedGamePointAudioFactory.build({ name: "to.m4a" })
+			]
 		});
 
 		expect(isErr(generateAudioPlaylist(options))).toBe(true);
@@ -39,8 +39,8 @@ suite("generateAudioPlaylist()", () => {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
-			],
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
+			]
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -50,8 +50,8 @@ suite("generateAudioPlaylist()", () => {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-			],
+				selectedGamePointAudioFactory.build({ name: "to.m4a" })
+			]
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -62,9 +62,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 2,
+			team1MatchTotalGamePoints: 2
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -75,9 +75,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 3,
+			team1MatchTotalGamePoints: 3
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -88,9 +88,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 4,
+			team1MatchTotalGamePoints: 4
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -101,9 +101,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 5,
+			team1MatchTotalGamePoints: 5
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -114,9 +114,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 6,
+			team1MatchTotalGamePoints: 6
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -127,9 +127,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 7,
+			team1MatchTotalGamePoints: 7
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -140,9 +140,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 8,
+			team1MatchTotalGamePoints: 8
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -153,9 +153,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 9,
+			team1MatchTotalGamePoints: 9
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -166,9 +166,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 10,
+			team1MatchTotalGamePoints: 10
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -179,9 +179,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 11,
+			team1MatchTotalGamePoints: 11
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -192,9 +192,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 12,
+			team1MatchTotalGamePoints: 12
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -205,9 +205,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 13,
+			team1MatchTotalGamePoints: 13
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -218,9 +218,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 14,
+			team1MatchTotalGamePoints: 14
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -231,9 +231,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 15,
+			team1MatchTotalGamePoints: 15
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -244,9 +244,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 16,
+			team1MatchTotalGamePoints: 16
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -257,9 +257,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 18,
+			team1MatchTotalGamePoints: 18
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -270,9 +270,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			team1MatchTotalGamePoints: 18,
+			team1MatchTotalGamePoints: 18
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -284,9 +284,9 @@ suite("generateAudioPlaylist()", () => {
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "two.m4a", gamePoints: 2 }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			isTurnAround: vi.fn().mockReturnValue(true),
+			isTurnAround: vi.fn().mockReturnValue(true)
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -297,9 +297,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			isStretched: true,
+			isStretched: true
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -310,9 +310,9 @@ suite("generateAudioPlaylist()", () => {
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
+				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			hasWon: true,
+			hasWon: true
 		});
 
 		assert(isErr(generateAudioPlaylist(options)));
@@ -325,11 +325,11 @@ suite("generateAudioPlaylist()", () => {
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "two.m4a", gamePoints: 2 }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "twelve.m4a", gamePoints: 12 }),
+				selectedGamePointAudioFactory.build({ name: "twelve.m4a", gamePoints: 12 })
 			],
 			team1MatchTotalGamePoints: 2,
 			team2MatchTotalGamePoints: 12,
-			isTurnAround: vi.fn().mockReturnValue(true),
+			isTurnAround: vi.fn().mockReturnValue(true)
 		});
 
 		const audioPlaylist = generateAudioPlaylist(options);
@@ -339,28 +339,28 @@ suite("generateAudioPlaylist()", () => {
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "turn_around.m4a",
+				name: "turn_around.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "attention.m4a",
+				name: "attention.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: 2,
-				name: "two.m4a",
+				name: "two.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "to.m4a",
+				name: "to.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: 12,
-				name: "twelve.m4a",
-			},
+				name: "twelve.m4a"
+			}
 		]);
 	});
 
@@ -370,12 +370,12 @@ suite("generateAudioPlaylist()", () => {
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "ten.m4a", gamePoints: 10 }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "five.m4a", gamePoints: 5 }),
+				selectedGamePointAudioFactory.build({ name: "five.m4a", gamePoints: 5 })
 			],
 			team1MatchTotalGamePoints: 10,
 			team2MatchTotalGamePoints: 5,
 			isStretched: false,
-			hasWon: false,
+			hasWon: false
 		});
 
 		const audioPlaylist = generateAudioPlaylist(options);
@@ -385,23 +385,23 @@ suite("generateAudioPlaylist()", () => {
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "attention.m4a",
+				name: "attention.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: 10,
-				name: "ten.m4a",
+				name: "ten.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "to.m4a",
+				name: "to.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: 5,
-				name: "five.m4a",
-			},
+				name: "five.m4a"
+			}
 		]);
 	});
 
@@ -412,12 +412,12 @@ suite("generateAudioPlaylist()", () => {
 				selectedGamePointAudioFactory.build({ name: "eight.m4a", gamePoints: 8 }),
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "twelve.m4a", gamePoints: 12 }),
-				selectedGamePointAudioFactory.build({ name: "gspandt.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "gspandt.m4a" })
 			],
 			team1MatchTotalGamePoints: 8,
 			team2MatchTotalGamePoints: 12,
 			isStretched: true,
-			hasWon: false,
+			hasWon: false
 		});
 
 		const audioPlaylist = generateAudioPlaylist(options);
@@ -427,28 +427,28 @@ suite("generateAudioPlaylist()", () => {
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "attention.m4a",
+				name: "attention.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: 8,
-				name: "eight.m4a",
+				name: "eight.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "to.m4a",
+				name: "to.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: 12,
-				name: "twelve.m4a",
+				name: "twelve.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "gspandt.m4a",
-			},
+				name: "gspandt.m4a"
+			}
 		]);
 	});
 
@@ -460,12 +460,12 @@ suite("generateAudioPlaylist()", () => {
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "fifteen.m4a", gamePoints: 15 }),
 				selectedGamePointAudioFactory.build({ name: "gspandt.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "won.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "won.m4a" })
 			],
 			team1MatchTotalGamePoints: 11,
 			team2MatchTotalGamePoints: 15,
 			isStretched: true,
-			hasWon: true,
+			hasWon: true
 		});
 
 		const audioPlaylist = generateAudioPlaylist(options);
@@ -475,33 +475,33 @@ suite("generateAudioPlaylist()", () => {
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "attention.m4a",
+				name: "attention.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: 11,
-				name: "eleven.m4a",
+				name: "eleven.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "to.m4a",
+				name: "to.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: 15,
-				name: "fifteen.m4a",
+				name: "fifteen.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "gspandt.m4a",
+				name: "gspandt.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "won.m4a",
-			},
+				name: "won.m4a"
+			}
 		]);
 	});
 
@@ -514,13 +514,13 @@ suite("generateAudioPlaylist()", () => {
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "fifteen.m4a", gamePoints: 15 }),
 				selectedGamePointAudioFactory.build({ name: "gspandt.m4a" }),
-				selectedGamePointAudioFactory.build({ name: "won.m4a" }),
+				selectedGamePointAudioFactory.build({ name: "won.m4a" })
 			],
 			team1MatchTotalGamePoints: 11,
 			team2MatchTotalGamePoints: 15,
 			isStretched: true,
 			hasWon: true,
-			isTurnAround: vi.fn().mockReturnValue(true),
+			isTurnAround: vi.fn().mockReturnValue(true)
 		});
 
 		const audioPlaylist = generateAudioPlaylist(options);
@@ -530,38 +530,38 @@ suite("generateAudioPlaylist()", () => {
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "turn_around.m4a",
+				name: "turn_around.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "attention.m4a",
+				name: "attention.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: 11,
-				name: "eleven.m4a",
+				name: "eleven.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "to.m4a",
+				name: "to.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: 15,
-				name: "fifteen.m4a",
+				name: "fifteen.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "gspandt.m4a",
+				name: "gspandt.m4a"
 			},
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
-				name: "won.m4a",
-			},
+				name: "won.m4a"
+			}
 		]);
 	});
 });

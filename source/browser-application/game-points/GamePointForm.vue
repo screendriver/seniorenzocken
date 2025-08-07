@@ -16,6 +16,7 @@ const { team1, team2, isPreviousGameRoundEnabled, isNextGameRoundEnabled } = sto
 				:team="team1"
 				:enabled="gameStore.isGamePointEnabled(team1.currentRoundGamePoints)"
 			/>
+
 			<GamePoint
 				v-model:game-point="team2.currentRoundGamePoints"
 				:team="team2"

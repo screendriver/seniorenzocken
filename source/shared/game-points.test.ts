@@ -4,7 +4,7 @@ import {
 	gamePointsPerRound,
 	gamePointsPerRoundSchema,
 	matchTotalGamePoints,
-	matchTotalGamePointsSchema,
+	matchTotalGamePointsSchema
 } from "./game-points.js";
 
 suite("gamePointsPerRound", () => {
@@ -51,27 +51,27 @@ suite("gamePointsPerRoundSchema", () => {
 	});
 
 	test("parsing succeeds when given number equals 0", () => {
-		const gamePointsPerRound = parse(gamePointsPerRoundSchema, 0);
+		const parseResult = parse(gamePointsPerRoundSchema, 0);
 
-		expect(gamePointsPerRound).toBe(0);
+		expect(parseResult).toBe(0);
 	});
 
 	test("parsing succeeds when given number equals 2", () => {
-		const gamePointsPerRound = parse(gamePointsPerRoundSchema, 2);
+		const parseResult = parse(gamePointsPerRoundSchema, 2);
 
-		expect(gamePointsPerRound).toBe(2);
+		expect(parseResult).toBe(2);
 	});
 
 	test("parsing succeeds when given number equals 3", () => {
-		const gamePointsPerRound = parse(gamePointsPerRoundSchema, 3);
+		const parseResult = parse(gamePointsPerRoundSchema, 3);
 
-		expect(gamePointsPerRound).toBe(3);
+		expect(parseResult).toBe(3);
 	});
 
 	test("parsing succeeds when given number equals 4", () => {
-		const gamePointsPerRound = parse(gamePointsPerRoundSchema, 4);
+		const parseResult = parse(gamePointsPerRoundSchema, 4);
 
-		expect(gamePointsPerRound).toBe(4);
+		expect(parseResult).toBe(4);
 	});
 });
 
@@ -86,7 +86,7 @@ suite("matchTotalGamePointsSchema", () => {
 		expect(() => {
 			parse(matchTotalGamePointsSchema, undefined);
 		}).toThrowError(
-			"Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received undefined",
+			"Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received undefined"
 		);
 	});
 
@@ -94,7 +94,7 @@ suite("matchTotalGamePointsSchema", () => {
 		expect(() => {
 			parse(matchTotalGamePointsSchema, null);
 		}).toThrowError(
-			"Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received null",
+			"Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received null"
 		);
 	});
 
@@ -102,7 +102,7 @@ suite("matchTotalGamePointsSchema", () => {
 		expect(() => {
 			parse(matchTotalGamePointsSchema, "not-a-number");
 		}).toThrowError(
-			'Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received "not-a-number"',
+			'Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received "not-a-number"'
 		);
 	});
 
@@ -110,7 +110,7 @@ suite("matchTotalGamePointsSchema", () => {
 		expect(() => {
 			parse(matchTotalGamePointsSchema, -1);
 		}).toThrowError(
-			"Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received -1",
+			"Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received -1"
 		);
 	});
 
@@ -118,7 +118,7 @@ suite("matchTotalGamePointsSchema", () => {
 		expect(() => {
 			parse(matchTotalGamePointsSchema, 1);
 		}).toThrowError(
-			"Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received 1",
+			"Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received 1"
 		);
 	});
 
@@ -126,31 +126,31 @@ suite("matchTotalGamePointsSchema", () => {
 		expect(() => {
 			parse(matchTotalGamePointsSchema, 19);
 		}).toThrowError(
-			"Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received 19",
+			"Invalid type: Expected (0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18) but received 19"
 		);
 	});
 
 	test("parsing succeeds when given number equals 0", () => {
-		const gamePointsPerRound = parse(matchTotalGamePointsSchema, 0);
+		const parseResult = parse(matchTotalGamePointsSchema, 0);
 
-		expect(gamePointsPerRound).toBe(0);
+		expect(parseResult).toBe(0);
 	});
 
 	test("parsing succeeds when given number equals 2", () => {
-		const gamePointsPerRound = parse(matchTotalGamePointsSchema, 2);
+		const parseResult = parse(matchTotalGamePointsSchema, 2);
 
-		expect(gamePointsPerRound).toBe(2);
+		expect(parseResult).toBe(2);
 	});
 
 	test("parsing succeeds when given number equals 3", () => {
-		const gamePointsPerRound = parse(matchTotalGamePointsSchema, 3);
+		const parseResult = parse(matchTotalGamePointsSchema, 3);
 
-		expect(gamePointsPerRound).toBe(3);
+		expect(parseResult).toBe(3);
 	});
 
 	test("parsing succeeds when given number equals 4", () => {
-		const gamePointsPerRound = parse(matchTotalGamePointsSchema, 4);
+		const parseResult = parse(matchTotalGamePointsSchema, 4);
 
-		expect(gamePointsPerRound).toBe(4);
+		expect(parseResult).toBe(4);
 	});
 });

@@ -31,7 +31,7 @@ suite("useConfetti()", () => {
 		expect(confetti).toHaveBeenCalledWith({
 			particleCount: 100,
 			spread: 70,
-			origin: { y: 0.6 },
+			origin: { y: 0.6 }
 		});
 		expect(gameStore.showConfetti).toBe(false);
 	});

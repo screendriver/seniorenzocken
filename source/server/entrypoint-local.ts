@@ -25,15 +25,15 @@ const server = createServer({
 	database,
 	trpcApplicationRouter,
 	metricsUsername: "foo",
-	metricsPassword: "bar",
+	metricsPassword: "bar"
 });
 
 serve(
 	{
 		fetch: server.fetch,
-		port: 4000,
+		port: 4000
 	},
 	(info) => {
 		console.info(`Server is running on http://localhost:${info.port.toString(10)}`);
-	},
+	}
 );

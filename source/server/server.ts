@@ -50,8 +50,8 @@ export function createServer(options: ServerOptions): Hono {
 			basicAuth({
 				username: metricsUsername,
 				password: metricsPassword,
-				realm: "metrics",
-			}),
+				realm: "metrics"
+			})
 		)
 		.get("/metrics", printMetrics)
 
@@ -67,8 +67,8 @@ export function createServer(options: ServerOptions): Hono {
 							return Number.parseFloat(id);
 						}),
 						number(),
-						integer(),
-					),
+						integer()
+					)
 				});
 
 				const parametersParseResult = safeParse(audioFileIdSchema, value);
@@ -95,9 +95,9 @@ export function createServer(options: ServerOptions): Hono {
 				return context.body(databaseEntry.audioFile, 200, {
 					"Content-Disposition": `inline; filename=${databaseEntry.name}`,
 					"Content-Type": mime.getType(databaseEntry.name) ?? "application/octet-stream",
-					"Cache-Control": "public, max-age=86400",
+					"Cache-Control": "public, max-age=86400"
 				});
-			},
+			}
 		)
 
 		.use("/*", serveStatic({ root: "./browser-application" }))

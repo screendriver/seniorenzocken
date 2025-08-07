@@ -5,8 +5,7 @@ import type { Hono } from "hono";
 import { createTRPCClient, httpLink } from "@trpc/client";
 import { stripIndent } from "common-tags";
 import { createFakeClock } from "./clock/fake-clock.js";
-import type { ServerOptions } from "./server.js";
-import { createServer } from "./server.js";
+import { type ServerOptions, createServer } from "./server.js";
 import { createDatabase } from "./database/database.js";
 import { seedInMemoryDatabase } from "./seed-in-memory-database.js";
 import { createTrpcRouter } from "./trpc/index.js";
@@ -29,14 +28,14 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 			trpcRouter: createTrpcRouter(),
 			database,
 			audioRepository,
-			isTurnAround: vi.fn().mockReturnValue(false),
+			isTurnAround: vi.fn().mockReturnValue(false)
 		});
 		const serverOptions: ServerOptions = {
 			clock: fakeClock,
 			database,
 			trpcApplicationRouter,
 			metricsUsername: "foo",
-			metricsPassword: "bar",
+			metricsPassword: "bar"
 		};
 		const server = createServer(serverOptions);
 
@@ -53,9 +52,9 @@ suite("server", () => {
 			expect(response.status).toBe(200);
 			expect(await response.json()).toStrictEqual({
 				status: "OK",
-				timestamp: "2025-07-24T09:10:20.153Z",
+				timestamp: "2025-07-24T09:10:20.153Z"
 			});
-		}),
+		})
 	);
 	test(
 		"/metrics returns a 401 status code when no basic auth is given",
@@ -64,7 +63,7 @@ suite("server", () => {
 
 			expect(response.status).toBe(401);
 			expect(await response.text()).toBe("Unauthorized");
-		}),
+		})
 	);
 
 	test(
@@ -72,13 +71,13 @@ suite("server", () => {
 		withServer(async ({ server }) => {
 			const response = await server.request("/metrics", {
 				headers: {
-					Authorization: "Basic nothing",
-				},
+					Authorization: "Basic nothing"
+				}
 			});
 
 			expect(response.status).toBe(401);
 			expect(await response.text()).toBe("Unauthorized");
-		}),
+		})
 	);
 
 	test(
@@ -86,19 +85,20 @@ suite("server", () => {
 		withServer(async ({ server }) => {
 			const response = await server.request("/metrics", {
 				headers: {
-					Authorization: "Basic Zm9vOmJhcg==",
-				},
+					Authorization: "Basic Zm9vOmJhcg=="
+				}
 			});
 
 			expect(response.status).toBe(200);
-			expect((await response.text()).trimEnd()).toBe(stripIndent`
+			const responseText = await response.text();
+			expect(responseText.trimEnd()).toBe(stripIndent`
 				# HELP http_request_duration_seconds Duration of HTTP requests in seconds
 				# TYPE http_request_duration_seconds histogram
 
 				# HELP http_requests_total Total number of HTTP requests
 				# TYPE http_requests_total counter
 			`);
-		}),
+		})
 	);
 
 	test(
@@ -107,7 +107,7 @@ suite("server", () => {
 			const listeningServer = serve({ fetch: server.fetch });
 
 			const trpcClient = createTRPCClient<TRPCApplicationRouter>({
-				links: [httpLink({ url: "/api/trpc" })],
+				links: [httpLink({ url: "/api/trpc" })]
 			});
 
 			await expect(trpcClient.teams.query()).resolves.toEqual([
@@ -115,18 +115,18 @@ suite("server", () => {
 					createdAt: "2025-07-10 10:17:51",
 					player1Id: 1,
 					player2Id: 3,
-					teamId: 1,
+					teamId: 1
 				},
 				{
 					createdAt: "2025-08-10 15:00:00",
 					player1Id: 5,
 					player2Id: 8,
-					teamId: 2,
-				},
+					teamId: 2
+				}
 			]);
 
 			listeningServer.close();
-		}),
+		})
 	);
 
 	test(
@@ -136,7 +136,7 @@ suite("server", () => {
 
 			expect(response.status).toBe(400);
 			expect(await response.text()).toBe("Invalid audio file id");
-		}),
+		})
 	);
 
 	test(
@@ -146,7 +146,7 @@ suite("server", () => {
 
 			expect(response.status).toBe(400);
 			expect(await response.text()).toBe("Invalid audio file id");
-		}),
+		})
 	);
 
 	test(
@@ -156,7 +156,7 @@ suite("server", () => {
 
 			expect(response.status).toBe(404);
 			expect(await response.text()).toBe("Audio file could not be found");
-		}),
+		})
 	);
 
 	test(
@@ -167,7 +167,8 @@ suite("server", () => {
 			expect(response.status).toBe(200);
 			expect(response.headers.get("Content-Disposition")).toBe("inline; filename=turn_around.m4a");
 			expect(response.headers.get("Content-Type")).toBe("audio/mp4");
-			expect((await response.blob()).size).toBe(884);
-		}),
+			const responseBlob = await response.blob();
+			expect(responseBlob.size).toBe(884);
+		})
 	);
 });

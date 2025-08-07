@@ -4,10 +4,11 @@ import type { NotPersistedTeam } from "../../shared/team.ts";
 
 function checkForTurnAround(teamWithZeroMatchTotalGamePoints: NotPersistedTeam) {
 	return (currentGameRound: GameRound) => {
-		return find(
-			(gameRound) => gameRound.team.teamNumber === teamWithZeroMatchTotalGamePoints.teamNumber,
-			currentGameRound,
-		).mapOr(false, (gameRound) => gameRound.team.matchTotalGamePoints > 0);
+		return find((gameRound) => {
+			return gameRound.team.teamNumber === teamWithZeroMatchTotalGamePoints.teamNumber;
+		}, currentGameRound).mapOr(false, (gameRound) => {
+			return gameRound.team.matchTotalGamePoints > 0;
+		});
 	};
 }
 
@@ -25,18 +26,19 @@ export function isTurnAround(options: Options): boolean {
 		return false;
 	}
 
-	const previousGameRoundHasAtLeastTenMatchTotalGamePoints = previousGameRound.value.some(
-		(gameRound) => gameRound.team.matchTotalGamePoints >= 10,
-	);
+	const previousGameRoundHasAtLeastTenMatchTotalGamePoints = previousGameRound.value.some((gameRound) => {
+		return gameRound.team.matchTotalGamePoints >= 10;
+	});
 
 	if (!previousGameRoundHasAtLeastTenMatchTotalGamePoints) {
 		return false;
 	}
 
-	const teamWithZeroMatchTotalGamePoints = find(
-		(gameRound) => gameRound.team.matchTotalGamePoints === 0,
-		previousGameRound.value,
-	).map((gameRound) => gameRound.team);
+	const teamWithZeroMatchTotalGamePoints = find((gameRound) => {
+		return gameRound.team.matchTotalGamePoints === 0;
+	}, previousGameRound.value).map((gameRound) => {
+		return gameRound.team;
+	});
 
 	return just(checkForTurnAround).ap(teamWithZeroMatchTotalGamePoints).ap(currentGameRound).unwrapOr(false);
 }

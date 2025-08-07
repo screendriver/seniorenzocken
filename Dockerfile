@@ -15,7 +15,7 @@ COPY --from=builder /app/target/build/source/server ./source/server
 COPY --from=builder /app/target/build/source/shared ./source/shared
 COPY --from=builder /app/target/distribution/browser-application ./browser-application
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/drizzle.config.js ./drizzle.config.js
 RUN chown -R node:node /app
 
 USER node

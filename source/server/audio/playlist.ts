@@ -1,5 +1,4 @@
-import type Maybe from "true-myth/maybe";
-import { of, just, find } from "true-myth/maybe";
+import { type Maybe, of, just, find } from "true-myth/maybe";
 import type Result from "true-myth/result";
 import { toOkOrErr } from "true-myth/toolbelt";
 import sample from "lodash.sample";
@@ -8,7 +7,7 @@ import type { MatchTotalGamePoints } from "../../shared/game-points.ts";
 import type { GameRounds } from "../../shared/game-rounds.ts";
 import type { isTurnAround } from "./turn_around.ts";
 
-export type SelectedGamePointAudio = Pick<GamePointAudio, "gamePointAudioId" | "name" | "gamePoints">;
+export type SelectedGamePointAudio = Pick<GamePointAudio, "gamePointAudioId" | "gamePoints" | "name">;
 
 function randomAudioFile(audioFiles: readonly SelectedGamePointAudio[]): Maybe<SelectedGamePointAudio> {
 	return of(sample(audioFiles));
@@ -16,15 +15,19 @@ function randomAudioFile(audioFiles: readonly SelectedGamePointAudio[]): Maybe<S
 
 function findTeamPointsAudio(
 	matchTotalGamePoints: MatchTotalGamePoints,
-	allAudios: readonly SelectedGamePointAudio[],
+	allAudios: readonly SelectedGamePointAudio[]
 ): Maybe<SelectedGamePointAudio> {
 	if (matchTotalGamePoints === 0) {
-		const zeroAudios = allAudios.filter((audio) => audio.name === "zero.m4a");
+		const zeroAudios = allAudios.filter((audio) => {
+			return audio.name === "zero.m4a";
+		});
 
 		return randomAudioFile(zeroAudios);
 	}
 
-	return find((audio) => audio.gamePoints === matchTotalGamePoints, allAudios);
+	return find((audio) => {
+		return audio.gamePoints === matchTotalGamePoints;
+	}, allAudios);
 }
 
 function createAudioPlaylist(attentionAudio: SelectedGamePointAudio) {
@@ -55,13 +58,17 @@ export function generateAudioPlaylist(options: Options): Result<readonly Selecte
 		gameRounds,
 		isStretched,
 		hasWon,
-		isTurnAround,
+		isTurnAround
 	} = options;
 
-	const attentionAudios = allAudios.filter((audio) => audio.name === "attention.m4a");
+	const attentionAudios = allAudios.filter((audio) => {
+		return audio.name === "attention.m4a";
+	});
 	const attentionAudio = randomAudioFile(attentionAudios);
 	const team1Audio = findTeamPointsAudio(team1MatchTotalGamePoints, allAudios);
-	const toAudio = find((audio) => audio.name === "to.m4a", allAudios);
+	const toAudio = find((audio) => {
+		return audio.name === "to.m4a";
+	}, allAudios);
 	const team2Audio = findTeamPointsAudio(team2MatchTotalGamePoints, allAudios);
 
 	const audioPlaylist = just(createAudioPlaylist)
@@ -71,7 +78,9 @@ export function generateAudioPlaylist(options: Options): Result<readonly Selecte
 		.ap(team2Audio)
 		.andThen((audioPlaylistValue) => {
 			if (isTurnAround({ gameRounds })) {
-				return find((audio) => audio.name === "turn_around.m4a", allAudios).map((turnAroundAudio) => {
+				return find((audio) => {
+					return audio.name === "turn_around.m4a";
+				}, allAudios).map((turnAroundAudio) => {
 					audioPlaylistValue.unshift(turnAroundAudio);
 
 					return audioPlaylistValue;
@@ -82,7 +91,9 @@ export function generateAudioPlaylist(options: Options): Result<readonly Selecte
 		})
 		.andThen((audioPlaylistValue) => {
 			if (isStretched) {
-				return find((audio) => audio.name === "gspandt.m4a", allAudios).map((stretchedAudio) => {
+				return find((audio) => {
+					return audio.name === "gspandt.m4a";
+				}, allAudios).map((stretchedAudio) => {
 					audioPlaylistValue.push(stretchedAudio);
 
 					return audioPlaylistValue;
@@ -93,7 +104,9 @@ export function generateAudioPlaylist(options: Options): Result<readonly Selecte
 		})
 		.andThen((audioPlaylistValue) => {
 			if (hasWon) {
-				return find((audio) => audio.name === "won.m4a", allAudios).map((wonAudio) => {
+				return find((audio) => {
+					return audio.name === "won.m4a";
+				}, allAudios).map((wonAudio) => {
 					audioPlaylistValue.push(wonAudio);
 
 					return audioPlaylistValue;

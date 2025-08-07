@@ -1,8 +1,7 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { isNonEmptyArray } from "@sindresorhus/is";
-import type Task from "true-myth/task";
-import { fromPromise } from "true-myth/task";
+import { type Task, fromPromise } from "true-myth/task";
 import type { NotPersistedTeam, NotPersistedTeam1, NotPersistedTeam2 } from "../../shared/team.js";
 import type { GameRounds } from "../../shared/game-rounds.js";
 import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store.js";
@@ -16,7 +15,7 @@ function createEmptyNotPersistedTeam(teamNumber: 1 | 2): NotPersistedTeam {
 		name: "",
 		currentRoundGamePoints: 0,
 		matchTotalGamePoints: 0,
-		isStretched: false,
+		isStretched: false
 	};
 }
 
@@ -55,14 +54,16 @@ export const useGameStore = defineStore("game", () => {
 
 	function newGame(): Task<void, unknown> {
 		return fromPromise(trpcClient.game.new.query())
-			.map((newGame) => {
-				team1.value = newGame.team1;
-				team2.value = newGame.team2;
-				isGameRunning.value = newGame.isGameRunning;
-				isGameOver.value = newGame.isGameOver;
-				showConfetti.value = newGame.showConfetti;
-				gameRounds.value = newGame.gameRounds;
+			.map((newGameOutput) => {
+				team1.value = newGameOutput.team1;
+				team2.value = newGameOutput.team2;
+				isGameRunning.value = newGameOutput.isGameRunning;
+				isGameOver.value = newGameOutput.isGameOver;
+				showConfetti.value = newGameOutput.showConfetti;
+				gameRounds.value = newGameOutput.gameRounds;
 				hasError.value = false;
+
+				return newGameOutput;
 			})
 			.mapRejected(() => {
 				hasError.value = true;
@@ -74,6 +75,8 @@ export const useGameStore = defineStore("game", () => {
 			.map((mutationResult) => {
 				isGameRunning.value = mutationResult.isGameRunning;
 				hasError.value = false;
+
+				return mutationResult;
 			})
 			.mapRejected(() => {
 				hasError.value = true;
@@ -82,7 +85,7 @@ export const useGameStore = defineStore("game", () => {
 
 	function nextGameRound(): Task<void, unknown> {
 		return fromPromise(
-			trpcClient.game.nextRound.mutate({ team1: team1.value, team2: team2.value, gameRounds: gameRounds.value }),
+			trpcClient.game.nextRound.mutate({ team1: team1.value, team2: team2.value, gameRounds: gameRounds.value })
 		)
 			.map((nextGameRoundMutationOutput) => {
 				team1.value = nextGameRoundMutationOutput.team1;
@@ -93,6 +96,8 @@ export const useGameStore = defineStore("game", () => {
 				gameRounds.value = nextGameRoundMutationOutput.gameRounds;
 				isAudioPlaying.value = true;
 				hasError.value = false;
+
+				return nextGameRoundMutationOutput;
 			})
 			.mapRejected(() => {
 				hasError.value = true;
@@ -106,6 +111,8 @@ export const useGameStore = defineStore("game", () => {
 				team2.value = previousGameRoundMutationOutput.team2;
 				gameRounds.value = previousGameRoundMutationOutput.gameRounds;
 				hasError.value = false;
+
+				return previousGameRoundMutationOutput;
 			})
 			.mapRejected(() => {
 				hasError.value = true;
@@ -118,8 +125,8 @@ export const useGameStore = defineStore("game", () => {
 				team1: team1.value,
 				team2: team2.value,
 				gameRounds: gameRounds.value,
-				hasWon: isGameOver.value,
-			}),
+				hasWon: isGameOver.value
+			})
 		).mapRejected(() => {
 			hasError.value = true;
 		});
@@ -142,12 +149,12 @@ export const useGameStore = defineStore("game", () => {
 		startGame,
 		previousGameRound,
 		nextGameRound,
-		generateAudioPlaylist,
+		generateAudioPlaylist
 	};
 });
 
 export type GameStore = ReturnType<typeof useGameStore>;
 
-if (import.meta.hot) {
+if (import.meta.hot !== undefined) {
 	import.meta.hot.accept(acceptHMRUpdate(useGameStore, import.meta.hot));
 }

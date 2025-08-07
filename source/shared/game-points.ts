@@ -3,9 +3,11 @@ import { union, literal, type InferOutput } from "valibot";
 export const gamePointsPerRound = [0, 2, 3, 4] as const;
 
 export const gamePointsPerRoundSchema = union(
-	gamePointsPerRound.map((gamePointsPerRoundValue) => {
-		return literal(gamePointsPerRoundValue);
-	}),
+	gamePointsPerRound.map((gamePoint) => {
+		const gamePointLiteral = literal(gamePoint);
+
+		return gamePointLiteral;
+	})
 );
 
 export type GamePointsPerRound = InferOutput<typeof gamePointsPerRoundSchema>;
@@ -14,8 +16,10 @@ export const matchTotalGamePoints = [...gamePointsPerRound, 5, 6, 7, 8, 9, 10, 1
 
 export const matchTotalGamePointsSchema = union(
 	matchTotalGamePoints.map((matchTotalGamePoint) => {
-		return literal(matchTotalGamePoint);
-	}),
+		const matchTotalGamePointLiteral = literal(matchTotalGamePoint);
+
+		return matchTotalGamePointLiteral;
+	})
 );
 
 export type MatchTotalGamePoints = InferOutput<typeof matchTotalGamePointsSchema>;

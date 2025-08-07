@@ -1,8 +1,8 @@
 import { suite, test, expect, beforeEach, vi, afterEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { Factory } from "fishery";
-import { useGameStore } from "./game-store.js";
 import type { NotPersistedTeam } from "../../shared/team.js";
+import { useGameStore } from "./game-store.js";
 
 const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
 	return {
@@ -10,7 +10,7 @@ const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
 		name: "",
 		currentRoundGamePoints: 0,
 		matchTotalGamePoints: 0,
-		isStretched: false,
+		isStretched: false
 	};
 });
 
