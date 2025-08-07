@@ -29,6 +29,10 @@
 			"matchPackageNames": ["eslint", "eslint-plugin-*", "@vitest/eslint-plugin", "@vue/eslint-config-*"]
 		},
 		{
+			"matchPackageNames": ["@sentry/*"],
+			"groupName": "sentry packages"
+		},
+		{
 			"groupName": "TypeScript ESLint",
 			"groupSlug": "typescript-eslint monorepo",
 			"extends": ["monorepo:typescript-eslint"]
