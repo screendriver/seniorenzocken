@@ -12,7 +12,7 @@
 		"@kalimahapps/vue-icons": "1.8.1",
 		"@libsql/client": "0.15.10",
 		"@sentry/node": "10.2.0",
-		"@sentry/vue": "10.1.0",
+		"@sentry/vue": "10.2.0",
 		"@sindresorhus/is": "7.0.2",
 		"@trpc/client": "11.4.4",
 		"@trpc/server": "11.4.4",
