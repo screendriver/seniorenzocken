@@ -5,6 +5,6 @@ suite("fake-clock", () => {
 	test("now() returns a fixed date", () => {
 		const fakeClock = createFakeClock();
 
-		expect(fakeClock.now).toEqual(new Date("2025-07-24T09:10:20.153Z"));
+		expect(fakeClock.now).toStrictEqual(new Date("2025-07-24T09:10:20.153Z"));
 	});
 });

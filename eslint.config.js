@@ -3,6 +3,7 @@ import { browserConfig } from "@enormora/eslint-config-browser";
 import { typescriptConfig } from "@enormora/eslint-config-typescript";
 import { nodeConfig, nodeConfigFileConfig, nodeEntryPointFileConfig } from "@enormora/eslint-config-node";
 import { vueConfig } from "@enormora/eslint-config-vue-ts";
+import { vitestConfig } from "@enormora/eslint-config-vitest";
 import globals from "globals";
 
 export default [
@@ -87,9 +88,13 @@ export default [
 		files: ["source/browser-application/**/*.ts"]
 	},
 	{
+		...vitestConfig,
 		files: ["**/*.test.ts"],
 		rules: {
+			...vitestConfig.rules,
+
 			"@typescript-eslint/no-magic-numbers": "off",
+			"@typescript-eslint/no-shadow": "off",
 			"@typescript-eslint/no-unsafe-type-assertion": "off",
 			"destructuring/in-params": "off"
 		}

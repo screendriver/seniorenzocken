@@ -50,19 +50,20 @@ suite("server", () => {
 			const response = await server.request("/health");
 
 			expect(response.status).toBe(200);
-			expect(await response.json()).toStrictEqual({
+			await expect(response.json()).resolves.toStrictEqual({
 				status: "OK",
 				timestamp: "2025-07-24T09:10:20.153Z"
 			});
 		})
 	);
+
 	test(
 		"/metrics returns a 401 status code when no basic auth is given",
 		withServer(async ({ server }) => {
 			const response = await server.request("/metrics");
 
 			expect(response.status).toBe(401);
-			expect(await response.text()).toBe("Unauthorized");
+			await expect(response.text()).resolves.toBe("Unauthorized");
 		})
 	);
 
@@ -76,7 +77,7 @@ suite("server", () => {
 			});
 
 			expect(response.status).toBe(401);
-			expect(await response.text()).toBe("Unauthorized");
+			await expect(response.text()).resolves.toBe("Unauthorized");
 		})
 	);
 
@@ -90,7 +91,9 @@ suite("server", () => {
 			});
 
 			expect(response.status).toBe(200);
+
 			const responseText = await response.text();
+
 			expect(responseText.trimEnd()).toBe(stripIndent`
 				# HELP http_request_duration_seconds Duration of HTTP requests in seconds
 				# TYPE http_request_duration_seconds histogram
@@ -110,7 +113,7 @@ suite("server", () => {
 				links: [httpLink({ url: "/api/trpc" })]
 			});
 
-			await expect(trpcClient.teams.query()).resolves.toEqual([
+			await expect(trpcClient.teams.query()).resolves.toStrictEqual([
 				{
 					createdAt: "2025-07-10 10:17:51",
 					player1Id: 1,
@@ -135,7 +138,7 @@ suite("server", () => {
 			const response = await server.request("/api/audio/foo");
 
 			expect(response.status).toBe(400);
-			expect(await response.text()).toBe("Invalid audio file id");
+			await expect(response.text()).resolves.toBe("Invalid audio file id");
 		})
 	);
 
@@ -145,7 +148,7 @@ suite("server", () => {
 			const response = await server.request("/api/audio/42.2");
 
 			expect(response.status).toBe(400);
-			expect(await response.text()).toBe("Invalid audio file id");
+			await expect(response.text()).resolves.toBe("Invalid audio file id");
 		})
 	);
 
@@ -155,7 +158,7 @@ suite("server", () => {
 			const response = await server.request("/api/audio/42");
 
 			expect(response.status).toBe(404);
-			expect(await response.text()).toBe("Audio file could not be found");
+			await expect(response.text()).resolves.toBe("Audio file could not be found");
 		})
 	);
 
@@ -167,7 +170,9 @@ suite("server", () => {
 			expect(response.status).toBe(200);
 			expect(response.headers.get("Content-Disposition")).toBe("inline; filename=turn_around.m4a");
 			expect(response.headers.get("Content-Type")).toBe("audio/mp4");
+
 			const responseBlob = await response.blob();
+
 			expect(responseBlob.size).toBe(884);
 		})
 	);

@@ -17,7 +17,7 @@ suite("audio repository", () => {
 			team2MatchTotalGamePoints: 10
 		});
 
-		expect(allAudios).toEqual([
+		expect(allAudios).toStrictEqual([
 			{
 				gamePointAudioId: 1,
 				gamePoints: null,
