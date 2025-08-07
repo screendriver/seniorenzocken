@@ -29,7 +29,8 @@ export default [
 			],
 			"@stylistic/max-len": "off",
 			"max-lines": "off",
-			"import/no-unassigned-import": "off"
+			"import/no-unassigned-import": "off",
+			"import/no-cycle": "off"
 		}
 	},
 	{
