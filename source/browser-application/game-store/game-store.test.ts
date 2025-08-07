@@ -1,4 +1,4 @@
-import { suite, test, expect, beforeEach, vi, afterEach } from "vitest";
+import { suite, test, expect, vi, type TestFunction } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { Factory } from "fishery";
 import type { NotPersistedTeam } from "../../shared/team.js";
@@ -14,26 +14,34 @@ const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
 	};
 });
 
-beforeEach(() => {
-	setActivePinia(createPinia());
-});
+function withPinia(testFunction: () => void): TestFunction {
+	return () => {
+		setActivePinia(createPinia());
 
-afterEach(() => {
-	vi.clearAllMocks();
-});
+		testFunction();
+
+		vi.clearAllMocks();
+	};
+}
 
 suite("game store", () => {
-	test("game store has an initial team1 set", () => {
-		const gameStore = useGameStore();
-		const expected = notPersistedTeamFactory.build({ teamNumber: 1 });
+	test(
+		"game store has an initial team1 set",
+		withPinia(() => {
+			const gameStore = useGameStore();
+			const expected = notPersistedTeamFactory.build({ teamNumber: 1 });
 
-		expect(gameStore.team1).toStrictEqual(expected);
-	});
+			expect(gameStore.team1).toStrictEqual(expected);
+		})
+	);
 
-	test("game store has an initial team2 set", () => {
-		const gameStore = useGameStore();
-		const expected = notPersistedTeamFactory.build({ teamNumber: 2 });
+	test(
+		"game store has an initial team2 set",
+		withPinia(() => {
+			const gameStore = useGameStore();
+			const expected = notPersistedTeamFactory.build({ teamNumber: 2 });
 
-		expect(gameStore.team2).toStrictEqual(expected);
-	});
+			expect(gameStore.team2).toStrictEqual(expected);
+		})
+	);
 });

@@ -335,7 +335,8 @@ suite("generateAudioPlaylist()", () => {
 		const audioPlaylist = generateAudioPlaylist(options);
 
 		assert(isOk(audioPlaylist));
-		expect(audioPlaylist.value).toEqual([
+
+		expect(audioPlaylist.value).toStrictEqual([
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
@@ -381,7 +382,8 @@ suite("generateAudioPlaylist()", () => {
 		const audioPlaylist = generateAudioPlaylist(options);
 
 		assert(isOk(audioPlaylist));
-		expect(audioPlaylist.value).toEqual([
+
+		expect(audioPlaylist.value).toStrictEqual([
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
@@ -423,7 +425,8 @@ suite("generateAudioPlaylist()", () => {
 		const audioPlaylist = generateAudioPlaylist(options);
 
 		assert(isOk(audioPlaylist));
-		expect(audioPlaylist.value).toEqual([
+
+		expect(audioPlaylist.value).toStrictEqual([
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
@@ -471,7 +474,8 @@ suite("generateAudioPlaylist()", () => {
 		const audioPlaylist = generateAudioPlaylist(options);
 
 		assert(isOk(audioPlaylist));
-		expect(audioPlaylist.value).toEqual([
+
+		expect(audioPlaylist.value).toStrictEqual([
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
@@ -526,7 +530,8 @@ suite("generateAudioPlaylist()", () => {
 		const audioPlaylist = generateAudioPlaylist(options);
 
 		assert(isOk(audioPlaylist));
-		expect(audioPlaylist.value).toEqual([
+
+		expect(audioPlaylist.value).toStrictEqual([
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
