@@ -1,9 +1,0 @@
-{
-	"extends": "./tsconfig.base.json",
-	"include": ["vite.config.ts", "vitest.config.ts", "eslint.config.ts", "drizzle.config.ts"],
-	"compilerOptions": {
-		"tsBuildInfoFile": "./target/buildcache/tsconfig.tools.tsbuildinfo",
-		"noEmit": true,
-		"types": ["node"]
-	}
-}

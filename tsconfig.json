@@ -4,7 +4,6 @@
 		{ "path": "./source/browser-application/tsconfig.json" },
 		{ "path": "./source/server/tsconfig.json" },
 		{ "path": "./source/server-shared/tsconfig.json" },
-		{ "path": "./source/shared/tsconfig.json" },
-		{ "path": "./tsconfig.tools.json" }
+		{ "path": "./source/shared/tsconfig.json" }
 	]
 }

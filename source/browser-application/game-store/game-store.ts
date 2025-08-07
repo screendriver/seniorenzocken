@@ -63,7 +63,7 @@ export const useGameStore = defineStore("game", () => {
 				gameRounds.value = newGameOutput.gameRounds;
 				hasError.value = false;
 
-				return newGameOutput;
+				return undefined;
 			})
 			.mapRejected(() => {
 				hasError.value = true;
@@ -76,7 +76,7 @@ export const useGameStore = defineStore("game", () => {
 				isGameRunning.value = mutationResult.isGameRunning;
 				hasError.value = false;
 
-				return mutationResult;
+				return undefined;
 			})
 			.mapRejected(() => {
 				hasError.value = true;
@@ -97,7 +97,7 @@ export const useGameStore = defineStore("game", () => {
 				isAudioPlaying.value = true;
 				hasError.value = false;
 
-				return nextGameRoundMutationOutput;
+				return undefined;
 			})
 			.mapRejected(() => {
 				hasError.value = true;
@@ -112,7 +112,7 @@ export const useGameStore = defineStore("game", () => {
 				gameRounds.value = previousGameRoundMutationOutput.gameRounds;
 				hasError.value = false;
 
-				return previousGameRoundMutationOutput;
+				return undefined;
 			})
 			.mapRejected(() => {
 				hasError.value = true;
