@@ -45,7 +45,7 @@ onMounted(async () => {
 					await currentAudio.play();
 				}
 
-				currentAudioIndex++;
+				currentAudioIndex += 1;
 			} else {
 				isAudioPlaying.value = false;
 			}

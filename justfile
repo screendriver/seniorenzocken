@@ -9,7 +9,7 @@ compile:
 
 lint:
 	prettier --check .
-	eslint .
+	eslint . --cache --cache-location "./target/eslintcache" --cache-strategy content --max-warnings 0
 
 lint-fix:
 	prettier --log-level warn --write .

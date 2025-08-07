@@ -3,7 +3,7 @@ import type { Database } from "../database/database.js";
 import { gamePointAudios, type GamePointAudio } from "../database/schema.js";
 import type { MatchTotalGamePoints } from "../../shared/game-points.js";
 
-type ReadAudio = Pick<GamePointAudio, "gamePointAudioId" | "name" | "gamePoints">;
+type ReadAudio = Pick<GamePointAudio, "gamePointAudioId" | "gamePoints" | "name">;
 
 type ReadAllAudiosOptions = {
 	readonly team1MatchTotalGamePoints: MatchTotalGamePoints;
@@ -11,7 +11,7 @@ type ReadAllAudiosOptions = {
 };
 
 export type AudioRepository = {
-	readAllAudios(options: ReadAllAudiosOptions): Promise<readonly ReadAudio[]>;
+	readAllAudios: (options: ReadAllAudiosOptions) => Promise<readonly ReadAudio[]>;
 };
 
 type AudioRepositoryOptions = {
@@ -22,14 +22,14 @@ export function createAudioRepository(options: AudioRepositoryOptions): AudioRep
 	const { database } = options;
 
 	return {
-		async readAllAudios(options) {
-			const { team1MatchTotalGamePoints, team2MatchTotalGamePoints } = options;
+		async readAllAudios(readOptions) {
+			const { team1MatchTotalGamePoints, team2MatchTotalGamePoints } = readOptions;
 
 			return database
 				.select({
 					gamePointAudioId: gamePointAudios.gamePointAudioId,
 					name: gamePointAudios.name,
-					gamePoints: gamePointAudios.gamePoints,
+					gamePoints: gamePointAudios.gamePoints
 				})
 				.from(gamePointAudios)
 				.where(
@@ -40,8 +40,8 @@ export function createAudioRepository(options: AudioRepositoryOptions): AudioRep
 						eq(gamePointAudios.name, "to.m4a"),
 						eq(gamePointAudios.gamePoints, team2MatchTotalGamePoints),
 						eq(gamePointAudios.name, "gspandt.m4a"),
-						eq(gamePointAudios.name, "won.m4a"),
-					),
+						eq(gamePointAudios.name, "won.m4a")
+					)
 				)
 				.orderBy(
 					sql`
@@ -55,8 +55,8 @@ export function createAudioRepository(options: AudioRepositoryOptions): AudioRep
 							WHEN ${gamePointAudios.name} = 'won.m4a' THEN 7
 							ELSE 8
 						END
-					`,
+					`
 				);
-		},
+		}
 	};
 }

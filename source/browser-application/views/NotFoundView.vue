@@ -17,25 +17,39 @@ useEventListener("keydown", () => {
 			<div class="text-center">
 				<span class="bg-[#bbb] text-[#000084]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;
 			</div>
+
 			<div class="text-center">
 				<span class="bg-[#bbb] text-[#000084]">&nbsp;4&nbsp;0&nbsp;4&nbsp;</span>
+
 				<span class="bg-black text-[#000084]">&nbsp;</span>
 			</div>
+
 			<div class="text-center">
 				<span class="bg-[#bbb] text-[#000084]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+
 				<span class="bg-black text-[#000084]">&nbsp;</span>
 			</div>
+
 			<div class="text-center">
 				&nbsp;<span class="bg-black text-[#000084]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 			</div>
+
 			<div class="text-left">&nbsp;</div>
+
 			<div class="text-left">A fatal exception 404 has occurred at C0DE:ABAD1DEA in 0xC0DEBA5E.</div>
+
 			<div class="text-left">The current request will be terminated.</div>
+
 			<div class="text-left">&nbsp;</div>
+
 			<div class="text-left">* Press any key to return to the previous page.</div>
+
 			<div class="text-left">* Press CTRL+ALT+DEL to restart your computer. You will</div>
+
 			<div class="text-left">&nbsp;&nbsp;lose any unsaved information in all applications.</div>
+
 			<div class="text-left">&nbsp;</div>
+
 			<div class="text-center">
 				Press any key to continue...<span class="animate-blinking-text">&#9608;</span>
 			</div>

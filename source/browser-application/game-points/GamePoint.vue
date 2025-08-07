@@ -24,13 +24,16 @@ const teamAreaClassName = computed(() => {
 	<section class="flex flex-col gap-3 rounded-lg bg-slate-600">
 		<div :class="teamAreaClassName">
 			<UsersIcon class="join-item m-2 text-xl text-black" />
+
 			<cite class="join-item flex-grow not-italic">{{ team.name }}</cite>
+
 			<mark class="badge join-item badge-accent h-auto self-stretch">
 				<span class="countdown">
 					<span :style="{ '--value': team.matchTotalGamePoints }" />
 				</span>
 			</mark>
 		</div>
+
 		<div class="join m-3">
 			<input
 				v-for="gamePointPerRound in gamePointsPerRound"

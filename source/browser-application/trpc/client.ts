@@ -3,6 +3,6 @@ import type { TRPCApplicationRouter } from "../../server-shared/trpc-application
 
 export function createTRPCClient(): TRPCClient<TRPCApplicationRouter> {
 	return createRealTRPCClient<TRPCApplicationRouter>({
-		links: [httpLink({ url: "/api/trpc" })],
+		links: [httpLink({ url: "/api/trpc" })]
 	});
 }

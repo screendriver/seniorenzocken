@@ -24,6 +24,7 @@ async function startNewGame(): Promise<void> {
 		<button type="button" class="btn col-span-full mx-10 md:col-start-2 md:col-end-4 md:mx-0" @click="startNewGame">
 			Neues Spiel
 		</button>
+
 		<button
 			:disabled="isAudioPlaying"
 			type="button"

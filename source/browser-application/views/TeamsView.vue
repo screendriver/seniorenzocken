@@ -40,10 +40,12 @@ async function startGame(): Promise<void> {
 				Team 1
 				<input v-model="gameStore.team1.name" id="team1-name" type="text" placeholder="Name" class="grow" />
 			</label>
+
 			<label :class="inputClassNames">
 				Team 2
 				<input v-model="gameStore.team2.name" id="team2-name" type="text" placeholder="Name" class="grow" />
 			</label>
+
 			<div class="col-span-full justify-self-center">
 				<button :disabled="isSubmitDisabled" type="submit" class="btn btn-primary">Spiel starten</button>
 			</div>

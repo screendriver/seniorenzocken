@@ -16,23 +16,23 @@ onMounted(() => {
 					async: true,
 					defer: true,
 					"data-website-id": "16d1825d-3f6c-46fb-9243-1d281224605e",
-					src: "https://statistics.82r.de/tasty.js",
-				},
-			],
+					src: "https://statistics.82r.de/tasty.js"
+				}
+			]
 		});
 	}
 });
 
 function activateWakeLock(): void {
 	if (isWakeLockSupported.value && !isWakeLockActive.value) {
-		void requestWakeLock("screen");
+		requestWakeLock("screen");
 	}
 }
 </script>
 
 <template>
 	<template v-if="$route.name === 'notFound'">
-		<RouterView />
+		<RouterView v-if="$route.name === 'notFound'" />
 	</template>
 
 	<template v-else>
@@ -50,6 +50,7 @@ function activateWakeLock(): void {
 					d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
 				/>
 			</svg>
+
 			<span>Es ist ein unbekannter Fehler augetreten</span>
 		</div>
 

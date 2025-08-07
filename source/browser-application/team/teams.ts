@@ -9,7 +9,7 @@ function teamsHaveSameGamePoints(team1: Ref<NotPersistedTeam>, team2: Ref<NotPer
 
 export function determineWinnerTeam(
 	team1: Ref<NotPersistedTeam>,
-	team2: Ref<NotPersistedTeam>,
+	team2: Ref<NotPersistedTeam>
 ): Result<Ref<NotPersistedTeam>, string> {
 	if (teamsHaveSameGamePoints(team1, team2)) {
 		return err("Both teams have the same game points");

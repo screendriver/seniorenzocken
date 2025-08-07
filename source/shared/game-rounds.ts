@@ -5,7 +5,7 @@ const hasWonGameRoundSchema = boolean();
 
 export const gameRoundSchema = strictTuple([
 	object({ team: notPersistedTeam1Schema, hasWonGameRound: hasWonGameRoundSchema }),
-	object({ team: notPersistedTeam2Schema, hasWonGameRound: hasWonGameRoundSchema }),
+	object({ team: notPersistedTeam2Schema, hasWonGameRound: hasWonGameRoundSchema })
 ]);
 
 export type GameRound = InferOutput<typeof gameRoundSchema>;

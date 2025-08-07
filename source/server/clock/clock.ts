@@ -6,6 +6,6 @@ export function createClock(): Clock {
 	return {
 		get now() {
 			return new Date();
-		},
+		}
 	};
 }

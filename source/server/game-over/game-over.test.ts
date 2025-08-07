@@ -9,7 +9,7 @@ const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
 		name: "",
 		currentRoundGamePoints: 0,
 		matchTotalGamePoints: 0,
-		isStretched: false,
+		isStretched: false
 	};
 });
 

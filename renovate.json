@@ -24,9 +24,8 @@
 			"automergeType": "branch"
 		},
 		{
-			"groupName": "ESLint dependencies",
-			"groupSlug": "eslint",
-			"matchPackageNames": ["eslint", "eslint-plugin-*", "@vitest/eslint-plugin", "@vue/eslint-config-*"]
+			"matchPackageNames": ["eslint", "@enormora/eslint-config-*"],
+			"groupName": "eslint packages"
 		},
 		{
 			"matchPackageNames": ["@sentry/*"],

@@ -1,7 +1,7 @@
+import { readFile } from "node:fs/promises";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
 import { parse, pipe, string, nonEmpty } from "valibot";
-import { readFile } from "node:fs/promises";
 import { createClock } from "./clock/clock.js";
 import { createDatabase } from "./database/database.js";
 import { createServer } from "./server.js";
@@ -21,7 +21,7 @@ const metricsUsernameFile = parse(nonEmptyStringSchema, process.env.METRICS_USER
 const metricsPasswordFile = parse(nonEmptyStringSchema, process.env.METRICS_PASSWORD_FILE);
 const [metricsUsername, metricsPassword] = await Promise.all([
 	readFile(metricsUsernameFile, { encoding: "utf8" }),
-	readFile(metricsPasswordFile, { encoding: "utf8" }),
+	readFile(metricsPasswordFile, { encoding: "utf8" })
 ]);
 
 const audioRepository = createAudioRepository({ database });
@@ -32,9 +32,9 @@ const server = createServer({ clock, database, trpcApplicationRouter, metricsUse
 serve(
 	{
 		fetch: server.fetch,
-		port: 4000,
+		port: 4000
 	},
 	(info) => {
 		console.info(`Server is running on http://localhost:${info.port.toString(10)}`);
-	},
+	}
 );

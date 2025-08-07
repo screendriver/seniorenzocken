@@ -13,11 +13,12 @@ type Options = {
 	readonly isTurnAround: typeof isTurnAround;
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- trPC works with type inference
 export function createAudioRouter(options: Options) {
 	const {
 		trpcRouter: { router, publicProcedure },
 		audioRepository,
-		isTurnAround,
+		isTurnAround
 	} = options;
 
 	return router({
@@ -27,15 +28,17 @@ export function createAudioRouter(options: Options) {
 					team1: notPersistedTeam1Schema,
 					team2: notPersistedTeam2Schema,
 					gameRounds: gameRoundsSchema,
-					hasWon: boolean(),
-				}),
+					hasWon: boolean()
+				})
 			)
-			.query(async ({ input }) => {
-				const { team1, team2, gameRounds, hasWon } = input;
+			.query(async (resolverOptions) => {
+				const {
+					input: { team1, team2, gameRounds, hasWon }
+				} = resolverOptions;
 
 				const allAudios = await audioRepository.readAllAudios({
 					team1MatchTotalGamePoints: team1.matchTotalGamePoints,
-					team2MatchTotalGamePoints: team2.matchTotalGamePoints,
+					team2MatchTotalGamePoints: team2.matchTotalGamePoints
 				});
 
 				const audioPlaylist = generateAudioPlaylist({
@@ -45,17 +48,17 @@ export function createAudioRouter(options: Options) {
 					gameRounds,
 					isStretched: !hasWon && (team1.isStretched || team2.isStretched),
 					hasWon,
-					isTurnAround,
+					isTurnAround
 				}).unwrapOrElse(() => {
 					throw new TRPCError({
 						code: "NOT_FOUND",
-						message: "Could not find any attention audio files",
+						message: "Could not find any attention audio files"
 					});
 				});
 
 				return audioPlaylist.map((gamePointAudio) => {
 					return `/api/audio/${gamePointAudio.gamePointAudioId}`;
 				});
-			}),
+			})
 	});
 }

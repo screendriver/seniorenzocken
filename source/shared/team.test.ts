@@ -9,7 +9,7 @@ const notPersistedTeamFactory = Factory.define<unknown>(() => {
 		name: "test-team",
 		currentRoundGamePoints: 0,
 		matchTotalGamePoints: 0,
-		isStretched: false,
+		isStretched: false
 	};
 });
 
@@ -224,7 +224,7 @@ suite("notPersistedTeam1Schema", () => {
 		{ currentRoundGamePoints: 0 },
 		{ currentRoundGamePoints: 2 },
 		{ currentRoundGamePoints: 3 },
-		{ currentRoundGamePoints: 4 },
+		{ currentRoundGamePoints: 4 }
 	])("parsing succeeds when currentRoundGamePoints equals $currentRoundGamePoints", ({ currentRoundGamePoints }) => {
 		const team = notPersistedTeamFactory.build({ currentRoundGamePoints });
 		const parseResult = safeParse(notPersistedTeam1Schema, team);
@@ -250,7 +250,7 @@ suite("notPersistedTeam1Schema", () => {
 		{ matchTotalGamePoints: 15 },
 		{ matchTotalGamePoints: 16 },
 		{ matchTotalGamePoints: 17 },
-		{ matchTotalGamePoints: 18 },
+		{ matchTotalGamePoints: 18 }
 	])("parsing succeeds when matchTotalGamePoints equals $matchTotalGamePoints", ({ matchTotalGamePoints }) => {
 		const team = notPersistedTeamFactory.build({ matchTotalGamePoints });
 		const parseResult = safeParse(notPersistedTeam1Schema, team);
@@ -265,7 +265,7 @@ suite("notPersistedTeam1Schema", () => {
 			const parseResult = safeParse(notPersistedTeam1Schema, team);
 
 			expect(parseResult.success).toBe(true);
-		},
+		}
 	);
 });
 
@@ -480,7 +480,7 @@ suite("notPersistedTeam2Schema", () => {
 		{ currentRoundGamePoints: 0 },
 		{ currentRoundGamePoints: 2 },
 		{ currentRoundGamePoints: 3 },
-		{ currentRoundGamePoints: 4 },
+		{ currentRoundGamePoints: 4 }
 	])("parsing succeeds when currentRoundGamePoints equals $currentRoundGamePoints", ({ currentRoundGamePoints }) => {
 		const team = notPersistedTeamFactory.build({ teamNumber: 2, currentRoundGamePoints });
 		const parseResult = safeParse(notPersistedTeam2Schema, team);
@@ -506,7 +506,7 @@ suite("notPersistedTeam2Schema", () => {
 		{ matchTotalGamePoints: 15 },
 		{ matchTotalGamePoints: 16 },
 		{ matchTotalGamePoints: 17 },
-		{ matchTotalGamePoints: 18 },
+		{ matchTotalGamePoints: 18 }
 	])("parsing succeeds when matchTotalGamePoints equals $matchTotalGamePoints", ({ matchTotalGamePoints }) => {
 		const team = notPersistedTeamFactory.build({ teamNumber: 2, matchTotalGamePoints });
 		const parseResult = safeParse(notPersistedTeam2Schema, team);
@@ -521,6 +521,6 @@ suite("notPersistedTeam2Schema", () => {
 			const parseResult = safeParse(notPersistedTeam2Schema, team);
 
 			expect(parseResult.success).toBe(true);
-		},
+		}
 	);
 });

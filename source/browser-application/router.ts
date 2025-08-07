@@ -11,13 +11,13 @@ export const router = createRouter({
 			path: "/",
 			name: "home",
 			redirect: {
-				name: "teams",
-			},
+				name: "teams"
+			}
 		},
 		{
 			path: "/teams",
 			name: "teams",
-			component: TeamsView,
+			component: TeamsView
 		},
 		{
 			path: "/game",
@@ -31,12 +31,12 @@ export const router = createRouter({
 				}
 
 				return true;
-			},
+			}
 		},
 		{
 			path: "/:pathMatch(.*)*",
 			name: "notFound",
-			component: NotFoundView,
-		},
-	],
+			component: NotFoundView
+		}
+	]
 });

@@ -7,16 +7,16 @@ export default defineConfig({
 	plugins: [vue(), vueDevTools(), tailwindcss()],
 	build: {
 		outDir: "target/distribution/browser-application",
-		sourcemap: true,
+		sourcemap: true
 	},
 	esbuild: {
-		legalComments: "none",
+		legalComments: "none"
 	},
 	server: {
 		port: 5173,
 		strictPort: true,
 		proxy: {
-			"/api/": "http://localhost:4000",
-		},
-	},
+			"/api/": "http://localhost:4000"
+		}
+	}
 });
