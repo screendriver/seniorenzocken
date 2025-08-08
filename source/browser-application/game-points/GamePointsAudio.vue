@@ -26,7 +26,7 @@ onMounted(async () => {
 		const audioObjects = audioPlaylist
 			.map((playlistItemUrls) => {
 				return playlistItemUrls.map((playlistItemUrl) => {
-					return new Audio(playlistItemUrl.toString());
+					return new Audio(playlistItemUrl);
 				});
 			})
 			.unwrapOr<HTMLAudioElement[]>([]);

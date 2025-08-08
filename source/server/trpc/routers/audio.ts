@@ -1,5 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { object, boolean } from "valibot";
+import { sample } from "es-toolkit";
+import { of } from "true-myth/maybe";
 import type { AudioRepository } from "../../audio/repository.ts";
 import type { isTurnAround } from "../../audio/turn_around.ts";
 import type { TRPCRouter } from "../index.ts";
@@ -59,6 +61,22 @@ export function createAudioRouter(options: Options) {
 				return audioPlaylist.map((gamePointAudio) => {
 					return `/api/audio/${gamePointAudio.gamePointAudioId}`;
 				});
-			})
+			}),
+
+		getRandomFunAudio: publicProcedure.query(async () => {
+			const allFunAudios = await audioRepository.readAllFunAudios();
+
+			return of(sample(allFunAudios)).match({
+				Just(randomAudio) {
+					return `/api/audio/${randomAudio.gamePointAudioId}`;
+				},
+				Nothing() {
+					throw new TRPCError({
+						code: "NOT_FOUND",
+						message: "Could not find any fun audio files"
+					});
+				}
+			});
+		})
 	});
 }

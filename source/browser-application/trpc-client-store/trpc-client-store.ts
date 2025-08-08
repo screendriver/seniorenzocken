@@ -7,20 +7,11 @@ export const useTRPCClientStore: StoreDefinition<
 	"trpc-client",
 	{
 		trpcClient: TRPCClient<TRPCApplicationRouter>;
-	},
-	{
-		getTRPCClient: (state: { trpcClient: TRPCClient<TRPCApplicationRouter> }) => TRPCClient<TRPCApplicationRouter>;
 	}
 > = defineStore("trpc-client", {
 	state() {
 		return {
 			trpcClient: createTRPCClient()
 		};
-	},
-
-	getters: {
-		getTRPCClient(state) {
-			return state.trpcClient;
-		}
 	}
 });
