@@ -4,7 +4,7 @@ import { seedInMemoryDatabase } from "../seed-in-memory-database.js";
 import { createDatabase } from "../database/database.js";
 import { createAudioRepository } from "./repository.js";
 
-suite("readAllAudios()", () => {
+suite("readGamePointsAudios()", () => {
 	test("returns the selected audio files in correct order", async () => {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
@@ -12,7 +12,7 @@ suite("readAllAudios()", () => {
 
 		const audioRepository = createAudioRepository({ database });
 
-		const allAudios = await audioRepository.readAllAudios({
+		const allAudios = await audioRepository.readGamePointsAudios({
 			team1MatchTotalGamePoints: 4,
 			team2MatchTotalGamePoints: 10
 		});

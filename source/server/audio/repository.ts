@@ -12,7 +12,7 @@ type ReadAllAudiosOptions = {
 };
 
 export type AudioRepository = {
-	readAllAudios: (options: ReadAllAudiosOptions) => Promise<readonly ReadAudio[]>;
+	readGamePointsAudios: (options: ReadAllAudiosOptions) => Promise<readonly ReadAudio[]>;
 	readAllFunAudios: () => Promise<readonly ReadAudioWithoutGamePoints[]>;
 };
 
@@ -24,7 +24,7 @@ export function createAudioRepository(options: AudioRepositoryOptions): AudioRep
 	const { database } = options;
 
 	return {
-		async readAllAudios(readOptions) {
+		async readGamePointsAudios(readOptions) {
 			const { team1MatchTotalGamePoints, team2MatchTotalGamePoints } = readOptions;
 
 			return database

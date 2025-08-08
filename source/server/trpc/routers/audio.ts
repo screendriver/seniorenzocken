@@ -24,7 +24,7 @@ export function createAudioRouter(options: Options) {
 	} = options;
 
 	return router({
-		generatePlaylist: publicProcedure
+		gamePointsPlaylist: publicProcedure
 			.input(
 				object({
 					team1: notPersistedTeam1Schema,
@@ -38,12 +38,12 @@ export function createAudioRouter(options: Options) {
 					input: { team1, team2, gameRounds, hasWon }
 				} = resolverOptions;
 
-				const allAudios = await audioRepository.readAllAudios({
+				const allAudios = await audioRepository.readGamePointsAudios({
 					team1MatchTotalGamePoints: team1.matchTotalGamePoints,
 					team2MatchTotalGamePoints: team2.matchTotalGamePoints
 				});
 
-				const audioPlaylist = generateAudioPlaylist({
+				const audioPlaylistResult = generateAudioPlaylist({
 					allAudios,
 					team1MatchTotalGamePoints: team1.matchTotalGamePoints,
 					team2MatchTotalGamePoints: team2.matchTotalGamePoints,
@@ -51,15 +51,21 @@ export function createAudioRouter(options: Options) {
 					isStretched: !hasWon && (team1.isStretched || team2.isStretched),
 					hasWon,
 					isTurnAround
-				}).unwrapOrElse(() => {
-					throw new TRPCError({
-						code: "NOT_FOUND",
-						message: "Could not find any attention audio files"
-					});
 				});
 
-				return audioPlaylist.map((gamePointAudio) => {
-					return `/api/audio/${gamePointAudio.gamePointAudioId}`;
+				return audioPlaylistResult.match({
+					Ok(audioPlaylist) {
+						return audioPlaylist.map((gamePointAudio) => {
+							return `/api/audio/${gamePointAudio.gamePointAudioId}`;
+						});
+					},
+					Err(error) {
+						throw new TRPCError({
+							code: "NOT_FOUND",
+							message: "Could not find any attention audio files",
+							cause: error
+						});
+					}
 				});
 			}),
 
