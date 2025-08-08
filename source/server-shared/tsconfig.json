@@ -1,7 +1,6 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"tsBuildInfoFile": "../../target/buildcache/tsconfig.server-shared.tsbuildinfo",
 		"types": ["node"]
 	},
 	"references": [{ "path": "../server/tsconfig.json" }],

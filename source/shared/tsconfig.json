@@ -1,7 +1,5 @@
 {
 	"extends": "../../tsconfig.base.json",
-	"compilerOptions": {
-		"tsBuildInfoFile": "../../target/buildcache/tsconfig.shared.tsbuildinfo"
-	},
+	"compilerOptions": {},
 	"include": ["./**/*"]
 }
