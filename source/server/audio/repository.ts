@@ -4,6 +4,7 @@ import { gamePointAudios, type GamePointAudio } from "../database/schema.js";
 import type { MatchTotalGamePoints } from "../../shared/game-points.js";
 
 type ReadAudio = Pick<GamePointAudio, "gamePointAudioId" | "gamePoints" | "name">;
+type ReadAudioWithoutGamePoints = Pick<ReadAudio, "gamePointAudioId" | "name">;
 
 type ReadAllAudiosOptions = {
 	readonly team1MatchTotalGamePoints: MatchTotalGamePoints;
@@ -12,6 +13,7 @@ type ReadAllAudiosOptions = {
 
 export type AudioRepository = {
 	readAllAudios: (options: ReadAllAudiosOptions) => Promise<readonly ReadAudio[]>;
+	readAllFunAudios: () => Promise<readonly ReadAudioWithoutGamePoints[]>;
 };
 
 type AudioRepositoryOptions = {
@@ -56,6 +58,31 @@ export function createAudioRepository(options: AudioRepositoryOptions): AudioRep
 							ELSE 8
 						END
 					`
+				);
+		},
+
+		readAllFunAudios() {
+			return database
+				.select({
+					gamePointAudioId: gamePointAudios.gamePointAudioId,
+					name: gamePointAudios.name
+				})
+				.from(gamePointAudios)
+				.where(
+					or(
+						eq(gamePointAudios.name, "der_is_guad.m4a"),
+						eq(gamePointAudios.name, "der_war_deier.m4a"),
+						eq(gamePointAudios.name, "des_is_a_lauf.m4a"),
+						eq(gamePointAudios.name, "do_legst_di_nida.m4a"),
+						eq(gamePointAudios.name, "do_sagst_nix_ma.m4a"),
+						eq(gamePointAudios.name, "gehts_a_oder_gehts_a.m4a"),
+						eq(gamePointAudios.name, "kimmt_da_no_woas.m4a"),
+						eq(gamePointAudios.name, "machst_du_no_a_stich.m4a"),
+						eq(gamePointAudios.name, "sama_gspandt.m4a"),
+						eq(gamePointAudios.name, "seids_eigschlafa.m4a"),
+						eq(gamePointAudios.name, "spuilts_lieber_uno.m4a"),
+						eq(gamePointAudios.name, "was_isn_ogsogt.m4a")
+					)
 				);
 		}
 	};
