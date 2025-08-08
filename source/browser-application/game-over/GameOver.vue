@@ -1,15 +1,31 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
+import { onMounted, ref } from "vue";
+import { tryOrElse } from "true-myth/task";
 import { useGameStore } from "../game-store/game-store.js";
-import { determineWinnerTeam } from "../team/teams.js";
+import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store.js";
 
 const router = useRouter();
 const gameStore = useGameStore();
+const { trpcClient } = useTRPCClientStore();
 const { team1, team2, isAudioPlaying } = storeToRefs(gameStore);
 
-const wonText = determineWinnerTeam(team1, team2).mapOr("Gewonnen hat: ???", (winnerTeam) => {
-	return `Gewonnen hat: Team "${winnerTeam.value.name}"`;
+const wonText = ref("");
+
+onMounted(async () => {
+	const winnerTeamResult = await tryOrElse(
+		(error: unknown) => {
+			return new Error("Could not determine winner team", { cause: error });
+		},
+		async () => {
+			return trpcClient.game.determineWinnerTeam.query({ team1: team1.value, team2: team2.value });
+		}
+	);
+
+	wonText.value = winnerTeamResult.mapOr("Gewonnen hat: ???", (winnerTeam) => {
+		return `Gewonnen hat: Team "${winnerTeam.name}"`;
+	});
 });
 
 async function startNewGame(): Promise<void> {

@@ -3,6 +3,7 @@ import { object, parse, pipe, nonEmpty } from "valibot";
 import { last } from "true-myth/maybe";
 import type { TRPCRouter } from "../index.js";
 import {
+	type NotPersistedTeam,
 	type NotPersistedTeam1,
 	type NotPersistedTeam2,
 	notPersistedTeam1Schema,
@@ -13,6 +14,7 @@ import { matchTotalGamePointsSchema } from "../../../shared/game-points.js";
 import { isStretched } from "../../stretched/stretched.js";
 import { isGameOver } from "../../game-over/game-over.js";
 import { shouldShowConfetti } from "../../confetti/confetti.js";
+import { determineWinnerTeam } from "../../team/team.js";
 
 type NewGameProcedureOutput = {
 	readonly team1: NotPersistedTeam1;
@@ -178,6 +180,27 @@ export function createGameRouter(options: Options) {
 							};
 						}
 					});
+			}),
+
+		determineWinnerTeam: publicProcedure
+			.input(object({ team1: notPersistedTeam1Schema, team2: notPersistedTeam2Schema }))
+			.query<NotPersistedTeam>((resolverOptions) => {
+				const {
+					input: { team1, team2 }
+				} = resolverOptions;
+
+				return determineWinnerTeam(team1, team2).match({
+					Ok(winnerTeam) {
+						return winnerTeam;
+					},
+					Err(error) {
+						throw new TRPCError({
+							code: "NOT_FOUND",
+							message: "Could not determine winner team",
+							cause: error
+						});
+					}
+				});
 			})
 	});
 }
