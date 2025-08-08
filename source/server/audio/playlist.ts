@@ -1,7 +1,7 @@
 import { type Maybe, of, just, find } from "true-myth/maybe";
 import type Result from "true-myth/result";
 import { toOkOrErr } from "true-myth/toolbelt";
-import sample from "lodash.sample";
+import { sample } from "es-toolkit";
 import type { GamePointAudio } from "../database/schema.ts";
 import type { MatchTotalGamePoints } from "../../shared/game-points.ts";
 import type { GameRounds } from "../../shared/game-rounds.ts";
