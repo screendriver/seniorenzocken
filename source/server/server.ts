@@ -35,6 +35,7 @@ export function createServer(options: ServerOptions): Hono {
 			if (error instanceof HTTPException) {
 				return error.getResponse();
 			}
+
 			return context.json({ error: "Internal server error" }, 500);
 		})
 
