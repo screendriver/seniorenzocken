@@ -1,7 +1,7 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { isNonEmptyArray } from "@sindresorhus/is";
-import { type Task, fromPromise } from "true-myth/task";
+import { type Task, tryOrElse } from "true-myth/task";
 import type { NotPersistedTeam, NotPersistedTeam1, NotPersistedTeam2 } from "../../shared/team.js";
 import type { GameRounds } from "../../shared/game-rounds.js";
 import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store.js";
@@ -52,84 +52,121 @@ export const useGameStore = defineStore("game", () => {
 		return !bothTeamsHasZeroGamePoints.value && !isAudioPlaying.value;
 	});
 
-	function newGame(): Task<void, unknown> {
-		return fromPromise(trpcClient.game.new.query())
-			.map((newGameOutput) => {
-				team1.value = newGameOutput.team1;
-				team2.value = newGameOutput.team2;
-				isGameRunning.value = newGameOutput.isGameRunning;
-				isGameOver.value = newGameOutput.isGameOver;
-				showConfetti.value = newGameOutput.showConfetti;
-				gameRounds.value = newGameOutput.gameRounds;
-				hasError.value = false;
-
-				return undefined;
-			})
-			.mapRejected(() => {
+	function newGame(): Task<void, Error> {
+		const newGameTask = tryOrElse(
+			(error: unknown) => {
 				hasError.value = true;
-			});
-	}
 
-	function startGame(): Task<void, unknown> {
-		return fromPromise(trpcClient.game.start.mutate({ team1: team1.value, team2: team2.value }))
-			.map((mutationResult) => {
-				isGameRunning.value = mutationResult.isGameRunning;
-				hasError.value = false;
+				return new Error("Could not create new game", { cause: error });
+			},
+			async () => {
+				return trpcClient.game.new.query();
+			}
+		);
 
-				return undefined;
-			})
-			.mapRejected(() => {
-				hasError.value = true;
-			});
-	}
+		return newGameTask.map((newGameOutput) => {
+			team1.value = newGameOutput.team1;
+			team2.value = newGameOutput.team2;
+			isGameRunning.value = newGameOutput.isGameRunning;
+			isGameOver.value = newGameOutput.isGameOver;
+			showConfetti.value = newGameOutput.showConfetti;
+			gameRounds.value = newGameOutput.gameRounds;
+			hasError.value = false;
 
-	function nextGameRound(): Task<void, unknown> {
-		return fromPromise(
-			trpcClient.game.nextRound.mutate({ team1: team1.value, team2: team2.value, gameRounds: gameRounds.value })
-		)
-			.map((nextGameRoundMutationOutput) => {
-				team1.value = nextGameRoundMutationOutput.team1;
-				team2.value = nextGameRoundMutationOutput.team2;
-				isGameRunning.value = nextGameRoundMutationOutput.isGameRunning;
-				isGameOver.value = nextGameRoundMutationOutput.isGameOver;
-				showConfetti.value = nextGameRoundMutationOutput.showConfetti;
-				gameRounds.value = nextGameRoundMutationOutput.gameRounds;
-				isAudioPlaying.value = true;
-				hasError.value = false;
-
-				return undefined;
-			})
-			.mapRejected(() => {
-				hasError.value = true;
-			});
-	}
-
-	function previousGameRound(): Task<void, unknown> {
-		return fromPromise(trpcClient.game.previousRound.mutate({ gameRounds: gameRounds.value }))
-			.map((previousGameRoundMutationOutput) => {
-				team1.value = previousGameRoundMutationOutput.team1;
-				team2.value = previousGameRoundMutationOutput.team2;
-				gameRounds.value = previousGameRoundMutationOutput.gameRounds;
-				hasError.value = false;
-
-				return undefined;
-			})
-			.mapRejected(() => {
-				hasError.value = true;
-			});
-	}
-
-	function generateAudioPlaylist(): Task<string[], unknown> {
-		return fromPromise(
-			trpcClient.audio.generatePlaylist.query({
-				team1: team1.value,
-				team2: team2.value,
-				gameRounds: gameRounds.value,
-				hasWon: isGameOver.value
-			})
-		).mapRejected(() => {
-			hasError.value = true;
+			return undefined;
 		});
+	}
+
+	function startGame(): Task<void, Error> {
+		const startGameTask = tryOrElse(
+			(error: unknown) => {
+				hasError.value = true;
+
+				return new Error("Could not start game", { cause: error });
+			},
+			async () => {
+				return trpcClient.game.start.mutate({ team1: team1.value, team2: team2.value });
+			}
+		);
+
+		return startGameTask.map((mutationResult) => {
+			isGameRunning.value = mutationResult.isGameRunning;
+			hasError.value = false;
+
+			return undefined;
+		});
+	}
+
+	function nextGameRound(): Task<void, Error> {
+		const nextRoundTask = tryOrElse(
+			(error: unknown) => {
+				hasError.value = true;
+
+				return new Error("Could not start next game round", { cause: error });
+			},
+			async () => {
+				return trpcClient.game.nextRound.mutate({
+					team1: team1.value,
+					team2: team2.value,
+					gameRounds: gameRounds.value
+				});
+			}
+		);
+
+		return nextRoundTask.map((nextGameRoundMutationOutput) => {
+			team1.value = nextGameRoundMutationOutput.team1;
+			team2.value = nextGameRoundMutationOutput.team2;
+			isGameRunning.value = nextGameRoundMutationOutput.isGameRunning;
+			isGameOver.value = nextGameRoundMutationOutput.isGameOver;
+			showConfetti.value = nextGameRoundMutationOutput.showConfetti;
+			gameRounds.value = nextGameRoundMutationOutput.gameRounds;
+			isAudioPlaying.value = true;
+			hasError.value = false;
+
+			return undefined;
+		});
+	}
+
+	function previousGameRound(): Task<void, Error> {
+		const previousRoundTask = tryOrElse(
+			(error: unknown) => {
+				hasError.value = true;
+
+				return new Error("Could not go back to previous game round", { cause: error });
+			},
+			async () => {
+				return trpcClient.game.previousRound.mutate({ gameRounds: gameRounds.value });
+			}
+		);
+
+		return previousRoundTask.map((previousGameRoundMutationOutput) => {
+			team1.value = previousGameRoundMutationOutput.team1;
+			team2.value = previousGameRoundMutationOutput.team2;
+			gameRounds.value = previousGameRoundMutationOutput.gameRounds;
+			hasError.value = false;
+
+			return undefined;
+		});
+	}
+
+	function generateGamePointsAudioPlaylist(): Task<string[], Error> {
+		const gamePointsPlaylistTask = tryOrElse(
+			(error: unknown) => {
+				hasError.value = true;
+
+				return new Error("Could not query for game points playlist", { cause: error });
+			},
+			async () => {
+				return trpcClient.audio.gamePointsPlaylist.query({
+					team1: team1.value,
+					team2: team2.value,
+					gameRounds: gameRounds.value,
+					hasWon: isGameOver.value
+				});
+			}
+		);
+
+		return gamePointsPlaylistTask;
 	}
 
 	return {
@@ -149,7 +186,7 @@ export const useGameStore = defineStore("game", () => {
 		startGame,
 		previousGameRound,
 		nextGameRound,
-		generateAudioPlaylist
+		generateGamePointsAudioPlaylist
 	};
 });
 

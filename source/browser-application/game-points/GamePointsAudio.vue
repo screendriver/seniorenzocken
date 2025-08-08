@@ -20,41 +20,40 @@ function onAudioWaiting(): void {
 }
 
 onMounted(async () => {
-	try {
-		const audioPlaylist = await gameStore.generateAudioPlaylist();
+	const audioPlaylist = await gameStore.generateGamePointsAudioPlaylist();
 
-		const audioObjects = audioPlaylist
-			.map((playlistItemUrls) => {
-				return playlistItemUrls.map((playlistItemUrl) => {
-					return new Audio(playlistItemUrl);
-				});
-			})
-			.unwrapOr<HTMLAudioElement[]>([]);
-
-		let currentAudioIndex = 0;
-
-		async function playNext(): Promise<void> {
-			if (currentAudioIndex < audioObjects.length) {
-				const currentAudio = audioObjects[currentAudioIndex];
-
-				if (!isUndefined(currentAudio)) {
-					currentAudio.addEventListener("error", onAudioError);
-					currentAudio.addEventListener("waiting", onAudioWaiting);
-					currentAudio.addEventListener("ended", playNext);
-
-					await currentAudio.play();
-				}
-
-				currentAudioIndex += 1;
-			} else {
-				isAudioPlaying.value = false;
-			}
+	const audioObjects = audioPlaylist.match({
+		Ok(playlistItemAPIPaths) {
+			return playlistItemAPIPaths.map((playlistItemAPIPath) => {
+				return new Audio(playlistItemAPIPath);
+			});
+		},
+		Err() {
+			return [];
 		}
+	});
 
-		playNext();
-	} catch {
-		isAudioPlaying.value = false;
+	let currentAudioIndex = 0;
+
+	async function playNext(): Promise<void> {
+		if (currentAudioIndex < audioObjects.length) {
+			const currentAudio = audioObjects[currentAudioIndex];
+
+			if (!isUndefined(currentAudio)) {
+				currentAudio.addEventListener("error", onAudioError);
+				currentAudio.addEventListener("waiting", onAudioWaiting);
+				currentAudio.addEventListener("ended", playNext);
+
+				await currentAudio.play();
+			}
+
+			currentAudioIndex += 1;
+		} else {
+			isAudioPlaying.value = false;
+		}
 	}
+
+	playNext();
 });
 </script>
 
