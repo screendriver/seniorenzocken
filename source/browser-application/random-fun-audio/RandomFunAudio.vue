@@ -21,6 +21,8 @@ const { start: startTimer, stop: stopTimer } = useTimeoutFn(async () => {
 	const randomFunAudio = new Audio(randomFunAudioUrl);
 
 	await randomFunAudio.play();
+
+	startTimer();
 }, getRandomDelay);
 
 function restartTimer(): void {
