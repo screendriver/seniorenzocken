@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import TeamsView from "./views/TeamsView.vue";
-import GameView from "./views/GameView.vue";
-import NotFoundView from "./views/NotFoundView.vue";
 import { useGameStore } from "./game-store/game-store.js";
 
 export const router = createRouter({
@@ -22,7 +20,9 @@ export const router = createRouter({
 		{
 			path: "/game",
 			name: "game",
-			component: GameView,
+			async component() {
+				return import("./views/GameView.vue");
+			},
 			beforeEnter() {
 				const gameStore = useGameStore();
 
@@ -36,7 +36,9 @@ export const router = createRouter({
 		{
 			path: "/:pathMatch(.*)*",
 			name: "notFound",
-			component: NotFoundView
+			async component() {
+				return import("./views/NotFoundView.vue");
+			}
 		}
 	]
 });
