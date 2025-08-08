@@ -20,6 +20,7 @@
 		"@vueuse/core": "13.6.0",
 		"canvas-confetti": "1.9.3",
 		"drizzle-orm": "0.44.4",
+		"es-toolkit": "1.39.8",
 		"hono": "4.9.0",
 		"ky": "1.8.2",
 		"lodash.sample": "4.2.1",
