@@ -13,6 +13,7 @@ export default defineConfig({
 		legalComments: "none"
 	},
 	server: {
+		host: true,
 		port: 5173,
 		strictPort: true,
 		proxy: {
