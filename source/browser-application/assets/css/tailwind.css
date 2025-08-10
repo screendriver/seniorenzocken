@@ -4,13 +4,6 @@
 	themes: business --default;
 }
 
-@layer components {
-	html:has(.drawer-auto-gutter .drawer-toggle:checked) {
-		/* See https://github.com/saadeghi/daisyui/issues/2859 */
-		scrollbar-gutter: auto;
-	}
-}
-
 @theme {
 	--animate-blinking-text: blinkingText 0.8s infinite;
 

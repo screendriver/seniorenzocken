@@ -1,10 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-	plugins: [require("daisyui")],
-	daisyui: {
-		themes: ["business"],
-		logs: false
-	},
 	theme: {
 		extend: {
 			animation: {
