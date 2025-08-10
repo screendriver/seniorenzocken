@@ -3,7 +3,6 @@ import canvasConfetti from "canvas-confetti";
 import { storeToRefs } from "pinia";
 import { useConfetti } from "../confetti/use-confetti.js";
 import { useGameStore } from "../game-store/game-store.js";
-import RandomFunAudio from "../random-fun-audio/RandomFunAudio.vue";
 import GamePointsAudio from "../game-points/GamePointsAudio.vue";
 import GameOver from "../game-over/GameOver.vue";
 import GamePointForm from "../game-points/GamePointForm.vue";
@@ -15,8 +14,6 @@ const { isAudioPlaying, isGameOver } = storeToRefs(gameStore);
 </script>
 
 <template>
-	<RandomFunAudio v-if="!isAudioPlaying" />
-
 	<section
 		class="bg-neutral col-start-1 col-end-5 grid grid-cols-subgrid rounded-xl sm:col-start-2 sm:col-end-4 md:col-start-3 md:col-end-7 lg:col-start-4 lg:col-end-10"
 	>
