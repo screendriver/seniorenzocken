@@ -57,7 +57,7 @@ function restartTimer(): void {
 
 onKeyStroke(restartTimer);
 
-watch([x, y, pressed], restartTimer);
+watch([isGameRunning, x, y, pressed], restartTimer);
 </script>
 
 <template>
