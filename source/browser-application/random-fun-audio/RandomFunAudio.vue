@@ -21,10 +21,10 @@ defineExpose({ playEmptyAudio });
 
 function getRandomDelay(): number {
 	const oneMinuteInMilliseconds = 60_000;
-	const minutes = 3;
-	const threeMinutesInMilliseconds = minutes * oneMinuteInMilliseconds;
+	const minutes = 2;
+	const twoMinutesInMilliseconds = minutes * oneMinuteInMilliseconds;
 
-	return threeMinutesInMilliseconds + Math.floor(Math.random() * oneMinuteInMilliseconds);
+	return twoMinutesInMilliseconds + Math.floor(Math.random() * oneMinuteInMilliseconds);
 }
 
 const { start: startTimer, stop: stopTimer } = useTimeoutFn(
