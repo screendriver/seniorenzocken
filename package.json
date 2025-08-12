@@ -20,7 +20,7 @@
 		"canvas-confetti": "1.9.3",
 		"drizzle-orm": "0.44.4",
 		"es-toolkit": "1.39.9",
-		"hono": "4.9.0",
+		"hono": "4.9.1",
 		"ky": "1.8.2",
 		"mime": "4.0.7",
 		"p-pipe": "4.0.0",
