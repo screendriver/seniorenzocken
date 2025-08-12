@@ -1,6 +1,5 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-import { createHead } from "@unhead/vue/client";
 import * as Sentry from "@sentry/vue";
 import { createSentryPiniaPlugin } from "@sentry/vue";
 
@@ -9,7 +8,6 @@ import { router } from "./router.js";
 
 const app = createApp(App);
 const pinia = createPinia();
-const head = createHead();
 
 if (import.meta.env.PROD) {
 	Sentry.init({
@@ -25,6 +23,5 @@ pinia.use(createSentryPiniaPlugin());
 
 app.use(pinia);
 app.use(router);
-app.use(head);
 
 app.mount("#application");

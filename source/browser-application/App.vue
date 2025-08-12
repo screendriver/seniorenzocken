@@ -1,28 +1,13 @@
 <script setup lang="ts">
-import { onMounted, useTemplateRef } from "vue";
+import { useTemplateRef } from "vue";
 import { RouterView } from "vue-router";
 import { useWakeLock } from "@vueuse/core";
-import { useHead } from "@unhead/vue";
 import RandomFunAudio from "./random-fun-audio/RandomFunAudio.vue";
 import { useGameStore } from "./game-store/game-store.js";
 
 const gameStore = useGameStore();
 const { isSupported: isWakeLockSupported, isActive: isWakeLockActive, request: requestWakeLock } = useWakeLock();
 const randomFunAudioReference = useTemplateRef("randomFunAudio");
-
-onMounted(() => {
-	if (import.meta.env.PROD) {
-		useHead({
-			script: [
-				{
-					defer: true,
-					"data-website-id": "16d1825d-3f6c-46fb-9243-1d281224605e",
-					src: "https://statistics.82r.de/tasty.js"
-				}
-			]
-		});
-	}
-});
 
 function activateWakeLock(): void {
 	if (isWakeLockSupported.value && !isWakeLockActive.value) {
