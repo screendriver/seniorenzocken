@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, assert } from "vitest";
 import { migrate } from "drizzle-orm/libsql/migrator";
+import { isOk } from "true-myth/result";
 import { seedInMemoryDatabase } from "../seed-in-memory-database.js";
 import { createDatabase } from "../database/database.js";
 import { createAudioRepository } from "./repository.js";
@@ -17,7 +18,9 @@ describe("readGamePointsAudios()", () => {
 			team2MatchTotalGamePoints: 10
 		});
 
-		expect(allAudios).toStrictEqual([
+		assert(isOk(allAudios));
+
+		expect(allAudios.value).toStrictEqual([
 			{
 				gamePointAudioId: 1,
 				gamePoints: null,
@@ -67,7 +70,9 @@ describe("readAllFunAudios()", () => {
 
 		const allFunAudios = await audioRepository.readAllFunAudios();
 
-		expect(allFunAudios).toStrictEqual([
+		assert(isOk(allFunAudios));
+
+		expect(allFunAudios.value).toStrictEqual([
 			{
 				gamePointAudioId: 24,
 				name: "der_is_guad.m4a"

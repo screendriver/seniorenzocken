@@ -1,0 +1,236 @@
+import { describe, it, expect, vi, type Mock } from "vitest";
+import { initTRPC, TRPCError, type inferProcedureInput } from "@trpc/server";
+import { Factory } from "fishery";
+import { Task } from "true-myth/task";
+import type { TRPCApplicationRouter } from "../application-router.js";
+import type { NotPersistedTeam } from "../../../shared/team.js";
+import type {
+	AudioRepository,
+	ReadAllAudiosOptions,
+	ReadAudio,
+	ReadAudioWithoutGamePoints
+} from "../../audio/repository.js";
+import { createAudioRouter, type AudioRouterOptions } from "./audio.js";
+
+type GamePointsPlaylistInput = inferProcedureInput<TRPCApplicationRouter["audio"]["gamePointsPlaylist"]>;
+
+const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
+	return {
+		teamNumber: 1,
+		name: "team",
+		currentRoundGamePoints: 0,
+		matchTotalGamePoints: 0,
+		isStretched: false
+	};
+});
+
+const gamePointsPlaylistInputFactory = Factory.define(() => {
+	return {
+		team1: notPersistedTeamFactory.build({ teamNumber: 1 }),
+		team2: notPersistedTeamFactory.build({ teamNumber: 2 }),
+		gameRounds: [],
+		hasWon: false
+	};
+});
+
+type Overrides = {
+	readonly trpcRouter: ReturnType<typeof initTRPC.create>;
+	readonly readGamePointsAudios?: Mock<(options: ReadAllAudiosOptions) => Task<readonly ReadAudio[], Error>>;
+	readonly readAllFunAudios?: Mock<(options: ReadAllAudiosOptions) => Task<readonly ReadAudio[], Error>>;
+};
+
+function createAudioRouterOptions(overrides: Overrides): AudioRouterOptions & {} {
+	const { trpcRouter } = overrides;
+	const audioRepository = {
+		readGamePointsAudios: overrides.readGamePointsAudios ?? vi.fn(),
+		readAllFunAudios: overrides.readAllFunAudios ?? vi.fn()
+	};
+
+	return {
+		trpcRouter: {
+			router: trpcRouter.router,
+			publicProcedure: trpcRouter.procedure
+		},
+		audioRepository: audioRepository as unknown as AudioRepository,
+		isTurnAround: vi.fn()
+	};
+}
+
+describe("gamePointsPlaylist()", () => {
+	it.each<{ input: GamePointsPlaylistInput; expectedErrorMessage: string }>([
+		{
+			input: gamePointsPlaylistInputFactory.build({ team1: undefined }) as GamePointsPlaylistInput,
+			expectedErrorMessage: "Invalid type: Expected Object but received undefined"
+		},
+		{
+			input: gamePointsPlaylistInputFactory.build({ team1: "not-an-object" }) as GamePointsPlaylistInput,
+			expectedErrorMessage: 'Invalid type: Expected Object but received "not-an-object"'
+		},
+		{
+			input: gamePointsPlaylistInputFactory.build({ team2: undefined }) as GamePointsPlaylistInput,
+			expectedErrorMessage: "Invalid type: Expected Object but received undefined"
+		},
+		{
+			input: gamePointsPlaylistInputFactory.build({ team2: "not-an-object" }) as GamePointsPlaylistInput,
+			expectedErrorMessage: 'Invalid type: Expected Object but received "not-an-object"'
+		},
+		{
+			input: gamePointsPlaylistInputFactory.build({ gameRounds: undefined }) as GamePointsPlaylistInput,
+			expectedErrorMessage: "Invalid type: Expected Array but received undefined"
+		},
+		{
+			input: gamePointsPlaylistInputFactory.build({ gameRounds: "not-an-array" }) as GamePointsPlaylistInput,
+			expectedErrorMessage: 'Invalid type: Expected Array but received "not-an-array"'
+		},
+		{
+			input: gamePointsPlaylistInputFactory.build({ hasWon: undefined }) as GamePointsPlaylistInput,
+			expectedErrorMessage: "Invalid type: Expected boolean but received undefined"
+		},
+		{
+			input: gamePointsPlaylistInputFactory.build({ hasWon: "not-a-boolean" }) as GamePointsPlaylistInput,
+			expectedErrorMessage: 'Invalid type: Expected boolean but received "not-a-boolean"'
+		}
+	])(
+		"throws an error with error code 'BAD_REQUEST' when input validation fails",
+		async ({ input, expectedErrorMessage }) => {
+			const trpcRouter = initTRPC.create();
+			const options = createAudioRouterOptions({ trpcRouter });
+
+			const audioRouter = createAudioRouter(options);
+			const createCaller = trpcRouter.createCallerFactory(audioRouter);
+			const caller = createCaller({});
+
+			await expect(caller.gamePointsPlaylist(input)).rejects.toThrow(TRPCError);
+
+			await expect(caller.gamePointsPlaylist(input)).rejects.toThrow(
+				expect.objectContaining({
+					code: "BAD_REQUEST",
+					message: expectedErrorMessage
+				})
+			);
+		}
+	);
+
+	it("throws an error when game points audios could not be read", async () => {
+		const trpcRouter = initTRPC.create();
+		const readGamePointsAudios = vi
+			.fn()
+			.mockReturnValue(Task.reject<readonly ReadAudio[], Error>(new Error("Reading game points audios failed")));
+		const options = createAudioRouterOptions({ trpcRouter, readGamePointsAudios });
+
+		const audioRouter = createAudioRouter(options);
+		const createCaller = trpcRouter.createCallerFactory(audioRouter);
+		const caller = createCaller({});
+
+		const input = gamePointsPlaylistInputFactory.build() as GamePointsPlaylistInput;
+
+		await expect(caller.gamePointsPlaylist(input)).rejects.toThrow(
+			expect.objectContaining({
+				code: "NOT_FOUND",
+				message: "Could not find any attention audio files"
+			})
+		);
+	});
+
+	it("throws an error when game points audios are an empty Array", async () => {
+		const trpcRouter = initTRPC.create();
+		const readGamePointsAudios = vi.fn().mockReturnValue(Task.resolve<readonly ReadAudio[], Error>([]));
+		const options = createAudioRouterOptions({ trpcRouter, readGamePointsAudios });
+
+		const audioRouter = createAudioRouter(options);
+		const createCaller = trpcRouter.createCallerFactory(audioRouter);
+		const caller = createCaller({});
+
+		const input = gamePointsPlaylistInputFactory.build() as GamePointsPlaylistInput;
+
+		await expect(caller.gamePointsPlaylist(input)).rejects.toThrow(
+			expect.objectContaining({
+				code: "NOT_FOUND",
+				message: "Could not find any attention audio files"
+			})
+		);
+	});
+
+	it("returns a list of game points audios", async () => {
+		const trpcRouter = initTRPC.create();
+		const readGamePointsAudios = vi.fn().mockReturnValue(
+			Task.resolve<readonly ReadAudio[], Error>([
+				{ gamePointAudioId: 1, name: "attention.m4a", gamePoints: null },
+				{ gamePointAudioId: 1, name: "zero.m4a", gamePoints: 0 },
+				{ gamePointAudioId: 1, name: "to.m4a", gamePoints: null }
+			])
+		);
+		const options = createAudioRouterOptions({ trpcRouter, readGamePointsAudios });
+
+		const audioRouter = createAudioRouter(options);
+		const createCaller = trpcRouter.createCallerFactory(audioRouter);
+		const caller = createCaller({});
+
+		const input = gamePointsPlaylistInputFactory.build() as GamePointsPlaylistInput;
+
+		await expect(caller.gamePointsPlaylist(input)).resolves.toStrictEqual([
+			"/api/audio/1",
+			"/api/audio/1",
+			"/api/audio/1",
+			"/api/audio/1"
+		]);
+	});
+});
+
+describe("getRandomFunAudio()", () => {
+	it("throws an error when fun audios could not be read", async () => {
+		const trpcRouter = initTRPC.create();
+		const readAllFunAudios = vi
+			.fn()
+			.mockReturnValue(Task.reject<readonly ReadAudioWithoutGamePoints[], Error>(new Error("Test error")));
+		const options = createAudioRouterOptions({ trpcRouter, readAllFunAudios });
+
+		const audioRouter = createAudioRouter(options);
+		const createCaller = trpcRouter.createCallerFactory(audioRouter);
+		const caller = createCaller({});
+
+		await expect(caller.getRandomFunAudio()).rejects.toThrow(
+			expect.objectContaining({
+				code: "NOT_FOUND",
+				message: "Could not find any fun audio files"
+			})
+		);
+	});
+
+	it("throws an error when fun audios are an empty Array", async () => {
+		const trpcRouter = initTRPC.create();
+		const readAllFunAudios = vi
+			.fn()
+			.mockReturnValue(Task.resolve<readonly ReadAudioWithoutGamePoints[], Error>([]));
+		const options = createAudioRouterOptions({ trpcRouter, readAllFunAudios });
+
+		const audioRouter = createAudioRouter(options);
+		const createCaller = trpcRouter.createCallerFactory(audioRouter);
+		const caller = createCaller({});
+
+		await expect(caller.getRandomFunAudio()).rejects.toThrow(
+			expect.objectContaining({
+				code: "NOT_FOUND",
+				message: "Could not find any fun audio files"
+			})
+		);
+	});
+
+	it("returns a random fun audio", async () => {
+		const trpcRouter = initTRPC.create();
+		const readAllFunAudios = vi
+			.fn()
+			.mockReturnValue(
+				Task.resolve<readonly ReadAudioWithoutGamePoints[], Error>([
+					{ gamePointAudioId: 1, name: "spuilts_lieber_uno.m4a" }
+				])
+			);
+		const options = createAudioRouterOptions({ trpcRouter, readAllFunAudios });
+
+		const audioRouter = createAudioRouter(options);
+		const createCaller = trpcRouter.createCallerFactory(audioRouter);
+		const caller = createCaller({});
+
+		await expect(caller.getRandomFunAudio()).resolves.toBe("/api/audio/1");
+	});
+});
