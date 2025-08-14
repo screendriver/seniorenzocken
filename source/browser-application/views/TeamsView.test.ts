@@ -1,4 +1,4 @@
-import { suite, test, expect, vi } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createTestingPinia } from "@pinia/testing";
 import type { PartialDeep } from "type-fest";
@@ -29,8 +29,8 @@ function mountTeamsView(initialGameStoreState?: PartialDeep<GameStore>) {
 	});
 }
 
-suite("<TeamsView />", () => {
-	test('renders a "Team 1" label', () => {
+describe("<TeamsView />", () => {
+	it('renders a "Team 1" label', () => {
 		const wrapper = mountTeamsView();
 
 		const labelTexts = wrapper.findAll("label");
@@ -39,7 +39,7 @@ suite("<TeamsView />", () => {
 		expect(labelTexts[0]?.text()).toBe("Team 1");
 	});
 
-	test('renders a "Team 2" label', () => {
+	it('renders a "Team 2" label', () => {
 		const wrapper = mountTeamsView();
 
 		const labelTexts = wrapper.findAll("label");
@@ -48,7 +48,7 @@ suite("<TeamsView />", () => {
 		expect(labelTexts[1]?.text()).toBe("Team 2");
 	});
 
-	test("renders a submit button", () => {
+	it("renders a submit button", () => {
 		const wrapper = mountTeamsView();
 
 		const submitButton = wrapper.find("button");
@@ -58,7 +58,7 @@ suite("<TeamsView />", () => {
 		expect(submitButton.text()).toBe("Spiel starten");
 	});
 
-	test("submit button is disabled by default", () => {
+	it("disables submit button by default", () => {
 		const wrapper = mountTeamsView();
 
 		const submitButton = wrapper.get("button");
@@ -67,7 +67,7 @@ suite("<TeamsView />", () => {
 		expect(disabledAttribute).toBe("");
 	});
 
-	test("submit button is still disabled when Team 1 name is filled but Team 2 name is empty", () => {
+	it("still disables submit button when Team 1 name is filled but Team 2 name is empty", () => {
 		const wrapper = mountTeamsView({
 			team1: { name: "foo" },
 			team2: { name: "" }
@@ -79,7 +79,7 @@ suite("<TeamsView />", () => {
 		expect(disabledAttribute).toBe("");
 	});
 
-	test("submit button is still disabled when Team 2 name is filled but Team 1 name is empty", () => {
+	it("still disables submit button is when Team 2 name is filled but Team 1 name is empty", () => {
 		const wrapper = mountTeamsView({
 			team1: { name: "" },
 			team2: { name: "bar" }
@@ -91,7 +91,7 @@ suite("<TeamsView />", () => {
 		expect(disabledAttribute).toBe("");
 	});
 
-	test("submit button is enabled when Team 1 and Team 2 name is filled", () => {
+	it("enables submit button when Team 1 and Team 2 name is filled", () => {
 		const wrapper = mountTeamsView({
 			team1: { name: "foo" },
 			team2: { name: "bar" }
@@ -103,7 +103,7 @@ suite("<TeamsView />", () => {
 		expect(disabledAttribute).toBeUndefined();
 	});
 
-	test("changes the name of Team 1 when entering text", async () => {
+	it("changes the name of Team 1 when entering text", async () => {
 		const wrapper = mountTeamsView({
 			team1: { name: "foo" }
 		});
@@ -115,7 +115,7 @@ suite("<TeamsView />", () => {
 		expect(gameStore.team1.name).toBe("bar");
 	});
 
-	test("changes the name of Team 2 when entering text", async () => {
+	it("changes the name of Team 2 when entering text", async () => {
 		const wrapper = mountTeamsView({
 			team2: { name: "foo" }
 		});

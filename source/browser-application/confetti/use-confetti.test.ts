@@ -1,4 +1,4 @@
-import { suite, test, expect, vi, type TestFunction } from "vitest";
+import { describe, it, expect, vi, type TestFunction } from "vitest";
 import type canvasConfetti from "canvas-confetti";
 import { createPinia, setActivePinia } from "pinia";
 import { useGameStore } from "../game-store/game-store.js";
@@ -12,8 +12,8 @@ function withPinia(testFunction: () => Promise<void>): TestFunction {
 	};
 }
 
-suite("useConfetti()", () => {
-	test(
+describe("useConfetti()", () => {
+	it(
 		"does not call given confetti function when confetti should not be shown",
 		withPinia(async () => {
 			const gameStore = useGameStore();
@@ -26,7 +26,7 @@ suite("useConfetti()", () => {
 		})
 	);
 
-	test(
+	it(
 		"calls given confetti function when confetti should be shown",
 		withPinia(async () => {
 			const gameStore = useGameStore();

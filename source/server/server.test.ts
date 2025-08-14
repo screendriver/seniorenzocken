@@ -1,4 +1,4 @@
-import { suite, test, expect, vi, type TestFunction } from "vitest";
+import { describe, it, expect, vi, type TestFunction } from "vitest";
 import { serve } from "@hono/node-server";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
@@ -43,9 +43,9 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 	};
 }
 
-suite("server", () => {
-	test(
-		"/health returns a 200 status code",
+describe("server", () => {
+	it(
+		"returns a 200 status code on /health route",
 		withServer(async ({ server }) => {
 			const response = await server.request("/health");
 
@@ -57,8 +57,8 @@ suite("server", () => {
 		})
 	);
 
-	test(
-		"/metrics returns a 401 status code when no basic auth is given",
+	it(
+		"returns a 401 status code when no basic auth is given on /metrics route",
 		withServer(async ({ server }) => {
 			const response = await server.request("/metrics");
 
@@ -67,8 +67,8 @@ suite("server", () => {
 		})
 	);
 
-	test(
-		"/metrics returns a 401 status code when wrong credentials are given",
+	it(
+		"returns a 401 status code when wrong credentials are given on /metrics route",
 		withServer(async ({ server }) => {
 			const response = await server.request("/metrics", {
 				headers: {
@@ -81,8 +81,8 @@ suite("server", () => {
 		})
 	);
 
-	test(
-		"/metrics returns a 200 status code with metrics when correct credentials are given",
+	it(
+		"returns a 200 status code with metrics when correct credentials are given on /metrics route",
 		withServer(async ({ server }) => {
 			const response = await server.request("/metrics", {
 				headers: {
@@ -104,8 +104,8 @@ suite("server", () => {
 		})
 	);
 
-	test(
-		"/api/trpc/ uses the given tRPC server",
+	it(
+		"uses the given tRPC server on /api/trpc/ route",
 		withServer(async ({ server }) => {
 			const listeningServer = serve({ fetch: server.fetch });
 
@@ -132,8 +132,8 @@ suite("server", () => {
 		})
 	);
 
-	test(
-		"/api/audio/:file_id returns a HTTP 400 status code when :file_id is not a number",
+	it(
+		"returns a HTTP 400 status code when :file_id is not a number on /api/audio/:file_id route",
 		withServer(async ({ server }) => {
 			const response = await server.request("/api/audio/foo");
 
@@ -142,8 +142,8 @@ suite("server", () => {
 		})
 	);
 
-	test(
-		"/api/audio/:file_id returns a HTTP 400 status code when :file_id is not an integer",
+	it(
+		"returns a HTTP 400 status code when :file_id is not an integer on /api/audio/:file_id route",
 		withServer(async ({ server }) => {
 			const response = await server.request("/api/audio/42.2");
 
@@ -152,8 +152,8 @@ suite("server", () => {
 		})
 	);
 
-	test(
-		"/api/audio/:file_id returns a HTTP 404 status code when :file_id cannot be found in the database",
+	it(
+		"returns a HTTP 404 status code when :file_id cannot be found in the database on /api/audio/:file_id route",
 		withServer(async ({ server }) => {
 			const response = await server.request("/api/audio/42");
 
@@ -162,8 +162,8 @@ suite("server", () => {
 		})
 	);
 
-	test(
-		"/api/audio/:file_id returns an audio file binary when id can be found",
+	it(
+		"returns an audio file binary when id can be found on /api/audio/:file_id route",
 		withServer(async ({ server }) => {
 			const response = await server.request("/api/audio/1");
 

@@ -1,4 +1,4 @@
-import { suite, test, expect } from "vitest";
+import { describe, it, expect } from "vitest";
 import { Factory } from "fishery";
 import type { NotPersistedTeam1, NotPersistedTeam2 } from "../../shared/team.js";
 import { isTurnAround } from "./turn_around.js";
@@ -23,14 +23,14 @@ const notPersistedTeam2Factory = Factory.define<NotPersistedTeam2>(() => {
 	};
 });
 
-suite("isTurnAround()", () => {
-	test("returns false when given game rounds are empty", () => {
+describe("isTurnAround()", () => {
+	it("returns false when given game rounds are empty", () => {
 		const turnAround = isTurnAround({ gameRounds: [] });
 
 		expect(turnAround).toBe(false);
 	});
 
-	test("returns false when given game rounds has just one game round", () => {
+	it("returns false when given game rounds has just one game round", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
@@ -43,7 +43,7 @@ suite("isTurnAround()", () => {
 		expect(turnAround).toBe(false);
 	});
 
-	test("returns false when given game rounds has just one game round and one team has 10 match total game points", () => {
+	it("returns false when given game rounds has just one game round and one team has 10 match total game points", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
@@ -56,7 +56,7 @@ suite("isTurnAround()", () => {
 		expect(turnAround).toBe(false);
 	});
 
-	test("returns false when given game rounds has just one game round and one team has more than 10 match total game points", () => {
+	it("returns false when given game rounds has just one game round and one team has more than 10 match total game points", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
@@ -69,7 +69,7 @@ suite("isTurnAround()", () => {
 		expect(turnAround).toBe(false);
 	});
 
-	test("returns false when given game rounds has not reached 10 match total game points", () => {
+	it("returns false when given game rounds has not reached 10 match total game points", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
@@ -106,7 +106,7 @@ suite("isTurnAround()", () => {
 		expect(turnAround).toBe(false);
 	});
 
-	test("returns true when team 1 has reached 10 match total game points and team 2 made its first match total game points", () => {
+	it("returns true when team 1 has reached 10 match total game points and team 2 made its first match total game points", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
@@ -131,7 +131,7 @@ suite("isTurnAround()", () => {
 		expect(turnAround).toBe(true);
 	});
 
-	test("returns true when team 1 has reached more than 10 match total game points and team 2 made its first match total game points", () => {
+	it("returns true when team 1 has reached more than 10 match total game points and team 2 made its first match total game points", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
@@ -156,7 +156,7 @@ suite("isTurnAround()", () => {
 		expect(turnAround).toBe(true);
 	});
 
-	test("returns false when team 1 has reached more than 10 match total game points and team 2 made more than once new match total game points", () => {
+	it("returns false when team 1 has reached more than 10 match total game points and team 2 made more than once new match total game points", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
@@ -185,7 +185,7 @@ suite("isTurnAround()", () => {
 		expect(turnAround).toBe(false);
 	});
 
-	test("returns true when team 2 has reached 10 match total game points and team 1 made its first match total game points", () => {
+	it("returns true when team 2 has reached 10 match total game points and team 1 made its first match total game points", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
@@ -210,7 +210,7 @@ suite("isTurnAround()", () => {
 		expect(turnAround).toBe(true);
 	});
 
-	test("returns true when team 2 has reached more than 10 match total game points and team 1 made its first match total game points", () => {
+	it("returns true when team 2 has reached more than 10 match total game points and team 1 made its first match total game points", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
@@ -235,7 +235,7 @@ suite("isTurnAround()", () => {
 		expect(turnAround).toBe(true);
 	});
 
-	test("returns false when team 2 has reached more than 10 match total game points and team 1 made more than once match total game points", () => {
+	it("returns false when team 2 has reached more than 10 match total game points and team 1 made more than once match total game points", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
@@ -264,7 +264,7 @@ suite("isTurnAround()", () => {
 		expect(turnAround).toBe(false);
 	});
 
-	test("returns false when team 1 has reached 10 match total game points and team 1 made its first match total game points but the order of game rounds is reversed", () => {
+	it("returns false when team 1 has reached 10 match total game points and team 1 made its first match total game points but the order of game rounds is reversed", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[
@@ -289,7 +289,7 @@ suite("isTurnAround()", () => {
 		expect(turnAround).toBe(false);
 	});
 
-	test("returns false when team 2 has reached 10 match total game points and team 1 made its first match total game points but the order of game rounds is reversed", () => {
+	it("returns false when team 2 has reached 10 match total game points and team 1 made its first match total game points but the order of game rounds is reversed", () => {
 		const turnAround = isTurnAround({
 			gameRounds: [
 				[

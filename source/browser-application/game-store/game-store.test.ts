@@ -1,4 +1,4 @@
-import { suite, test, expect, vi, type TestFunction } from "vitest";
+import { describe, it, expect, vi, type TestFunction } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { Factory } from "fishery";
 import type { NotPersistedTeam } from "../../shared/team.js";
@@ -24,9 +24,9 @@ function withPinia(testFunction: () => void): TestFunction {
 	};
 }
 
-suite("game store", () => {
-	test(
-		"game store has an initial team1 set",
+describe("game store", () => {
+	it(
+		"has an initial team1 set",
 		withPinia(() => {
 			const gameStore = useGameStore();
 			const expected = notPersistedTeamFactory.build({ teamNumber: 1 });
@@ -35,8 +35,8 @@ suite("game store", () => {
 		})
 	);
 
-	test(
-		"game store has an initial team2 set",
+	it(
+		"has an initial team2 set",
 		withPinia(() => {
 			const gameStore = useGameStore();
 			const expected = notPersistedTeamFactory.build({ teamNumber: 2 });

@@ -1,11 +1,11 @@
-import { suite, test, expect } from "vitest";
+import { describe, it, expect } from "vitest";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { seedInMemoryDatabase } from "../seed-in-memory-database.js";
 import { createDatabase } from "../database/database.js";
 import { createAudioRepository } from "./repository.js";
 
-suite("readGamePointsAudios()", () => {
-	test("returns the selected audio files in correct order", async () => {
+describe("readGamePointsAudios()", () => {
+	it("returns the selected audio files in correct order", async () => {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await seedInMemoryDatabase(database);
@@ -57,8 +57,8 @@ suite("readGamePointsAudios()", () => {
 	});
 });
 
-suite("readAllFunAudios()", () => {
-	test("returns all fun audio files", async () => {
+describe("readAllFunAudios()", () => {
+	it("returns all fun audio files", async () => {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await seedInMemoryDatabase(database);
