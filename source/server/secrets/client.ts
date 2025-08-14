@@ -18,7 +18,7 @@ export function createSecretsClient(dependencies: SecretsClientDependencies): Se
 		fetchSecret(secretName) {
 			return tryOrElse(
 				(errorReason) => {
-					return new Error(`Could not fetch ${secretName} secret`, { cause: errorReason });
+					return new Error(`Could not fetch "${secretName}" secret`, { cause: errorReason });
 				},
 				async () => {
 					return infisicalSDK.secrets().getSecret({

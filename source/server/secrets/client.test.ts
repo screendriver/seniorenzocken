@@ -28,7 +28,7 @@ describe("fetchSecret()", () => {
 
 		assert(isErr(result));
 
-		expect(result.error.message).toBe("Could not fetch FOO secret");
+		expect(result.error.message).toBe('Could not fetch "FOO" secret');
 	});
 
 	it("returns an Result Err when infisical does not respond with the expected data", async () => {
