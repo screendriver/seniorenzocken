@@ -43,7 +43,7 @@
 		"@enormora/eslint-config-vitest": "0.0.2",
 		"@enormora/eslint-config-vue-ts": "0.0.4",
 		"@pinia/testing": "1.0.2",
-		"@tailwindcss/vite": "4.1.11",
+		"@tailwindcss/vite": "4.1.12",
 		"@tsconfig/node24": "24.0.1",
 		"@types/canvas-confetti": "1.9.0",
 		"@types/common-tags": "1.8.4",
