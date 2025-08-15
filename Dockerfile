@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/node:24.5.0 AS builder
+FROM public.ecr.aws/docker/library/node:24.6.0 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm clean-install
@@ -6,7 +6,7 @@ COPY . .
 RUN npx just compile && npx just build-browser-application && npm prune --omit=dev
 RUN find . \( -name "*.d.ts" -o -name "*.d.ts.map" \) -type f -delete
 
-FROM public.ecr.aws/docker/library/node:24.5.0-alpine
+FROM public.ecr.aws/docker/library/node:24.6.0-alpine
 ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=builder /app/drizzle ./drizzle
