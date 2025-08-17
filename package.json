@@ -20,7 +20,7 @@
 		"@vueuse/core": "13.6.0",
 		"canvas-confetti": "1.9.3",
 		"drizzle-orm": "0.44.4",
-		"es-toolkit": "1.39.9",
+		"es-toolkit": "1.39.10",
 		"hono": "4.9.2",
 		"ky": "1.8.2",
 		"mime": "4.0.7",
