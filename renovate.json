@@ -32,11 +32,6 @@
 			"groupName": "sentry packages"
 		},
 		{
-			"groupName": "TypeScript ESLint",
-			"groupSlug": "typescript-eslint monorepo",
-			"extends": ["monorepo:typescript-eslint"]
-		},
-		{
 			"matchDepTypes": ["dependencies", "devDependencies"],
 			"matchUpdateTypes": ["minor", "patch"],
 			"automerge": true,
