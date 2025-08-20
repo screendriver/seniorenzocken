@@ -42,7 +42,7 @@
 		"@enormora/eslint-config-node": "0.0.18",
 		"@enormora/eslint-config-typescript": "0.0.23",
 		"@enormora/eslint-config-vitest": "0.0.3",
-		"@enormora/eslint-config-vue-ts": "0.0.5",
+		"@enormora/eslint-config-vue-ts": "0.0.6",
 		"@pinia/testing": "1.0.2",
 		"@tailwindcss/vite": "4.1.12",
 		"@tsconfig/node24": "24.0.1",
