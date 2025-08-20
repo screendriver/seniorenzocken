@@ -11,11 +11,12 @@ const randomFunAudioReference = useTemplateRef("randomFunAudio");
 
 function activateWakeLock(): void {
 	if (isWakeLockSupported.value && !isWakeLockActive.value) {
-		requestWakeLock("screen");
+		void requestWakeLock("screen");
 	}
 }
 
 function playEmptyAudio(): void {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- this rule should not complain here
 	randomFunAudioReference.value?.playEmptyAudio();
 }
 </script>

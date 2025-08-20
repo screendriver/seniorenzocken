@@ -14,7 +14,8 @@ const { x, y } = useMouse();
 const { pressed } = useMousePressed();
 
 function playEmptyAudio(): void {
-	audioElementReference.value?.play();
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- this rule should not complain here
+	void audioElementReference.value?.play();
 }
 
 defineExpose({ playEmptyAudio });
@@ -29,7 +30,7 @@ function getRandomDelay(): number {
 
 const { start: startTimer, stop: stopTimer } = useTimeoutFn(
 	async () => {
-		if (isNull(audioElementReference.value) || isGameRunning.value === false) {
+		if (isNull(audioElementReference.value) || !isGameRunning.value) {
 			return;
 		}
 
@@ -38,6 +39,7 @@ const { start: startTimer, stop: stopTimer } = useTimeoutFn(
 		// eslint-disable-next-line require-atomic-updates -- done on purpose
 		audioElementReference.value.src = randomFunAudioUrl;
 
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- this rule should not complain here
 		await audioElementReference.value.play();
 
 		startTimer();
@@ -47,7 +49,7 @@ const { start: startTimer, stop: stopTimer } = useTimeoutFn(
 );
 
 function restartTimer(): void {
-	if (isNull(audioElementReference.value) || isGameRunning.value === false) {
+	if (isNull(audioElementReference.value) || !isGameRunning.value) {
 		return;
 	}
 

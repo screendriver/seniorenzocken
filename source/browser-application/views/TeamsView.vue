@@ -23,7 +23,7 @@ async function startGame(): Promise<void> {
 	const startGameResult = await gameStore.startGame();
 
 	if (startGameResult.isOk) {
-		router.push({ name: "game", replace: true });
+		void router.push({ name: "game", replace: true });
 	}
 }
 </script>

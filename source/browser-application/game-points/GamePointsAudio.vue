@@ -35,7 +35,7 @@ onMounted(async () => {
 
 	let currentAudioIndex = 0;
 
-	async function playNext(): Promise<void> {
+	function playNext(): void {
 		if (currentAudioIndex < audioObjects.length) {
 			const currentAudio = audioObjects[currentAudioIndex];
 
@@ -44,10 +44,11 @@ onMounted(async () => {
 				currentAudio.addEventListener("waiting", onAudioWaiting);
 				currentAudio.addEventListener("ended", playNext);
 
-				await currentAudio.play();
+				// eslint-disable-next-line promise/catch-or-return, promise/prefer-await-to-then, @typescript-eslint/no-floating-promises -- needs to be refactored
+				currentAudio.play().then(() => {
+					currentAudioIndex += 1;
+				});
 			}
-
-			currentAudioIndex += 1;
 		} else {
 			isAudioPlaying.value = false;
 		}

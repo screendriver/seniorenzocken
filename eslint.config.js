@@ -61,7 +61,8 @@ export default [
 		files: ["**/*.vue"],
 		rules: {
 			"vue/no-bare-strings-in-template": "off",
-			"no-useless-assignment": "off"
+			"no-useless-assignment": "off",
+			"no-void": "off"
 		},
 		languageOptions: {
 			globals: globals.browser
