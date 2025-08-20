@@ -5,7 +5,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 useEventListener("keydown", () => {
-	router.push({ name: "teams", replace: true });
+	void router.push({ name: "teams", replace: true });
 });
 </script>
 
