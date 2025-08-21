@@ -3,10 +3,11 @@ import { createPinia } from "pinia";
 import * as Sentry from "@sentry/vue";
 import { createSentryPiniaPlugin } from "@sentry/vue";
 import App from "./App.vue";
-import { router } from "./router.js";
+import { createRouter } from "./router.js";
 
 const app = createApp(App);
 const pinia = createPinia();
+const router = createRouter();
 
 if (import.meta.env.PROD) {
 	Sentry.init({
