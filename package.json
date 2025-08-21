@@ -33,7 +33,7 @@
 		"true-myth": "9.0.1",
 		"tslib": "2.8.1",
 		"valibot": "1.1.0",
-		"vue": "3.5.18",
+		"vue": "3.5.19",
 		"vue-router": "4.5.1"
 	},
 	"devDependencies": {
