@@ -1,5 +1,6 @@
 import { createRouter as createVueRouter, createWebHistory, type Router } from "vue-router";
 import * as Sentry from "@sentry/vue";
+import { isError } from "@sindresorhus/is";
 import TeamsView from "./views/TeamsView.vue";
 import { useGameStore } from "./game-store/game-store.js";
 
@@ -48,6 +49,12 @@ export function createRouter(): Router {
 	router.afterEach((_to, _from, failure) => {
 		if (failure !== undefined) {
 			Sentry.captureException(failure);
+		}
+	});
+
+	router.onError((error: unknown, to) => {
+		if (isError(error) && error.message.includes("Failed to fetch dynamically imported module")) {
+			globalThis.location.href = to.fullPath;
 		}
 	});
 
