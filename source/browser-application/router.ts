@@ -1,4 +1,5 @@
 import { createRouter as createVueRouter, createWebHistory, type Router } from "vue-router";
+import * as Sentry from "@sentry/vue";
 import TeamsView from "./views/TeamsView.vue";
 import { useGameStore } from "./game-store/game-store.js";
 
@@ -42,6 +43,12 @@ export function createRouter(): Router {
 				}
 			}
 		]
+	});
+
+	router.afterEach((_to, _from, failure) => {
+		if (failure !== undefined) {
+			Sentry.captureException(failure);
+		}
 	});
 
 	return router;
