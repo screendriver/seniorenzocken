@@ -93,7 +93,9 @@ export function createServer(options: ServerOptions): Hono {
 					return context.text("Audio file could not be found", 404);
 				}
 
-				return context.body(databaseEntry.audioFile, 200, {
+				const audioFile = new Uint8Array(databaseEntry.audioFile);
+
+				return context.body(audioFile, 200, {
 					"Content-Disposition": `inline; filename=${databaseEntry.name}`,
 					"Content-Type": mime.getType(databaseEntry.name) ?? "application/octet-stream",
 					"Cache-Control": "public, max-age=86400"
