@@ -18,7 +18,7 @@
 		"@sindresorhus/is": "7.0.2",
 		"@trpc/client": "11.5.0",
 		"@trpc/server": "11.5.0",
-		"@vueuse/core": "13.7.0",
+		"@vueuse/core": "13.8.0",
 		"canvas-confetti": "1.9.3",
 		"drizzle-orm": "0.44.5",
 		"es-toolkit": "1.39.10",
