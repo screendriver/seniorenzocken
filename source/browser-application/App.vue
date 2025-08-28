@@ -2,6 +2,7 @@
 import { useTemplateRef } from "vue";
 import { RouterView } from "vue-router";
 import { useWakeLock } from "@vueuse/core";
+import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 import RandomFunAudio from "./random-fun-audio/RandomFunAudio.vue";
 import { useGameStore } from "./game-store/game-store.js";
 
@@ -65,4 +66,6 @@ function playEmptyAudio(): void {
 			<RouterView />
 		</main>
 	</template>
+
+	<VueQueryDevtools />
 </template>

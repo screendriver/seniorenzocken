@@ -32,6 +32,10 @@
 			"groupName": "sentry packages"
 		},
 		{
+			"matchPackageNames": ["@tanstack/*"],
+			"groupName": "tanstack packages"
+		},
+		{
 			"matchDepTypes": ["dependencies", "devDependencies"],
 			"matchUpdateTypes": ["minor", "patch"],
 			"automerge": true,
