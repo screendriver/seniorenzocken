@@ -9,7 +9,7 @@ const router = useRouter();
 const gameStore = useGameStore();
 const { hasError, team1, team2 } = storeToRefs(gameStore);
 
-const inputClassNames = "flex gap-2 items-center whitespace-nowrap col-span-full input input-bordered";
+const inputClassNames = "input input-bordered col-span-full w-full";
 
 onMounted(async () => {
 	await gameStore.newGame();
