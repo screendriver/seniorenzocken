@@ -25,7 +25,9 @@ const server = createServer({
 	database,
 	trpcApplicationRouter,
 	metricsUsername: "foo",
-	metricsPassword: "bar"
+	metricsPassword: "bar",
+	seniorenzockenUsername: "hello",
+	seniorenzockenPassword: "world"
 });
 
 serve(

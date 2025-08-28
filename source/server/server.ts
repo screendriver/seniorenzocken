@@ -21,10 +21,20 @@ export type ServerOptions = {
 	readonly trpcApplicationRouter: TRPCApplicationRouter;
 	readonly metricsUsername: string;
 	readonly metricsPassword: string;
+	readonly seniorenzockenUsername: string;
+	readonly seniorenzockenPassword: string;
 };
 
 export function createServer(options: ServerOptions): Hono {
-	const { clock, database, trpcApplicationRouter, metricsUsername, metricsPassword } = options;
+	const {
+		clock,
+		database,
+		trpcApplicationRouter,
+		metricsUsername,
+		metricsPassword,
+		seniorenzockenUsername,
+		seniorenzockenPassword
+	} = options;
 
 	const { printMetrics, registerMetrics } = prometheus();
 
@@ -55,6 +65,8 @@ export function createServer(options: ServerOptions): Hono {
 			})
 		)
 		.get("/metrics", printMetrics)
+
+		.use("/auth/*", basicAuth({ username: seniorenzockenUsername, password: seniorenzockenPassword }))
 
 		.use("/api/trpc/*", trpcServer({ router: trpcApplicationRouter, endpoint: "/api/trpc" }))
 

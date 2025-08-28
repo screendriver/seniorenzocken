@@ -35,7 +35,9 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 			database,
 			trpcApplicationRouter,
 			metricsUsername: "foo",
-			metricsPassword: "bar"
+			metricsPassword: "bar",
+			seniorenzockenUsername: "hello",
+			seniorenzockenPassword: "world"
 		};
 		const server = createServer(serverOptions);
 

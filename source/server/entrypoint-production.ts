@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
+import { all } from "true-myth/task";
 import { createClock } from "./clock/clock.js";
 import { createDatabase } from "./database/database.js";
 import { createServer } from "./server.js";
@@ -22,6 +23,15 @@ const prometheusSecretsResult = await secretsRepository.getPrometheusSecrets();
 const prometheusSecrets = prometheusSecretsResult.unwrapOrElse((error) => {
 	throw new Error("Could not fetch Prometheus secrets", { cause: error });
 });
+const seniorenzockenSecretsResult = await all([
+	secretsRepository.getSecret("SENIORENZOCKEN_USERNAME"),
+	secretsRepository.getSecret("SENIORENZOCKEN_PASSWORD")
+]).map((secrets) => {
+	return { seniorenzockenUsername: secrets[0], seniorenzockenPassword: secrets[1] };
+});
+const seniorenzockenSecrets = seniorenzockenSecretsResult.unwrapOrElse((error) => {
+	throw new Error("Could not fetch Seniorenzocken secrets", { cause: error });
+});
 
 const clock = createClock();
 
@@ -37,7 +47,9 @@ const server = createServer({
 	database,
 	trpcApplicationRouter,
 	metricsUsername: prometheusSecrets.username,
-	metricsPassword: prometheusSecrets.password
+	metricsPassword: prometheusSecrets.password,
+	seniorenzockenUsername: seniorenzockenSecrets.seniorenzockenUsername,
+	seniorenzockenPassword: seniorenzockenSecrets.seniorenzockenPassword
 });
 
 serve(
