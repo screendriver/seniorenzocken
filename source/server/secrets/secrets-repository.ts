@@ -8,6 +8,7 @@ type PrometheusSecrets = {
 
 export type SecretsRepository = {
 	readonly getPrometheusSecrets: () => Task<PrometheusSecrets, Error>;
+	readonly getSecret: (secretName: string) => Task<string, Error>;
 };
 
 type SecretsClientDependencies = {
@@ -25,6 +26,10 @@ export function createSecretsRepository(dependencies: SecretsClientDependencies)
 			]).map(([username, password]) => {
 				return { username, password };
 			});
+		},
+
+		getSecret(secretName) {
+			return secretsClient.fetchSecret(secretName);
 		}
 	};
 }

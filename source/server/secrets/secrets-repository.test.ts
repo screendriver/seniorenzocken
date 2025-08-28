@@ -37,3 +37,27 @@ describe("getPrometheusSecrets()", () => {
 		expect(secretResult.value).toStrictEqual({ username: "foo", password: "bar" });
 	});
 });
+
+describe("getSecret()", () => {
+	it("returns an Result Err when fetching secret failed", async () => {
+		const fetchSecret = vi.fn().mockReturnValue(Task.reject(new Error("Oh oh")));
+		const secretsClient = createFakeSecretsClient({ fetchSecret });
+		const secretsRepository = createSecretsRepository({ secretsClient });
+		const secretResult = await secretsRepository.getSecret("FOO");
+
+		assert(isErr(secretResult));
+
+		expect(secretResult.error.message).toBe("Oh oh");
+	});
+
+	it("returns an Result Ok when fetching secret succeeded", async () => {
+		const fetchSecret = vi.fn().mockReturnValue(Task.resolve("bar"));
+		const secretsClient = createFakeSecretsClient({ fetchSecret });
+		const secretsRepository = createSecretsRepository({ secretsClient });
+		const secretResult = await secretsRepository.getSecret("FOO");
+
+		assert(isOk(secretResult));
+
+		expect(secretResult.value).toBe("bar");
+	});
+});
