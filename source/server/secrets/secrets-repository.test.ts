@@ -1,7 +1,7 @@
 import { describe, it, expect, assert, vi, type Mock } from "vitest";
 import Task from "true-myth/task";
 import { isErr, isOk } from "true-myth/result";
-import type { SecretsClient } from "./client.js";
+import type { SecretsClient } from "./secrets-client.js";
 import { createSecretsRepository } from "./secrets-repository.js";
 
 type Overrides = {

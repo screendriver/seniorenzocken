@@ -1,5 +1,5 @@
 import { type Task, all } from "true-myth/task";
-import type { SecretsClient } from "./client.js";
+import type { SecretsClient } from "./secrets-client.js";
 
 type PrometheusSecrets = {
 	readonly username: string;

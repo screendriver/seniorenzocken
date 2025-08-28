@@ -2,7 +2,7 @@ import { describe, it, expect, assert, vi, type Mock } from "vitest";
 import { isErr, isOk } from "true-myth/result";
 import { stripIndent } from "common-tags";
 import type { InitializedInfisicalSDK } from "./infisical/infisical-sdk.js";
-import { createSecretsClient } from "./client.js";
+import { createSecretsClient } from "./secrets-client.js";
 
 type Overrides = {
 	readonly listSecrets?: Mock;

@@ -9,7 +9,7 @@ import { isTurnAround } from "./audio/turn_around.js";
 import { createTrpcRouter } from "./trpc/index.js";
 import { createTrpcApplicationRouter } from "./trpc/application-router.js";
 import { createInfisicalSDK } from "./secrets/infisical/infisical-sdk.js";
-import { createSecretsClient } from "./secrets/client.js";
+import { createSecretsClient } from "./secrets/secrets-client.js";
 import { createSecretsRepository } from "./secrets/secrets-repository.js";
 
 const infisicalAccessToken = await readFile("/run/secrets/infisical_access_token", "utf8");
