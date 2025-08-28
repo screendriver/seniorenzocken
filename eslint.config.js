@@ -4,11 +4,12 @@ import { typescriptConfig } from "@enormora/eslint-config-typescript";
 import { nodeConfig, nodeConfigFileConfig, nodeEntryPointFileConfig } from "@enormora/eslint-config-node";
 import { vueConfig } from "@enormora/eslint-config-vue-ts";
 import { vitestConfig } from "@enormora/eslint-config-vitest";
+import pluginTanStackQuery from "@tanstack/eslint-plugin-query";
 import globals from "globals";
 
 export default [
 	{
-		ignores: ["drizzle/**/*", "source/browser-application/vue-shim.d.ts", "tailwind.config.js", "target/**/*"]
+		ignores: ["drizzle/**/*", "source/browser-application/*.d.ts", "tailwind.config.js", "target/**/*"]
 	},
 	{
 		...baseConfig,
@@ -55,6 +56,21 @@ export default [
 	},
 	{
 		...vueConfig,
+		plugins: {
+			...vueConfig.plugins,
+
+			"@tanstack/query": pluginTanStackQuery
+		},
+		rules: {
+			...vueConfig.rules,
+
+			"@tanstack/query/exhaustive-deps": "error",
+			"@tanstack/query/no-rest-destructuring": "error",
+			"@tanstack/query/stable-query-client": "error",
+			"@tanstack/query/no-unstable-deps": "error",
+			"@tanstack/query/infinite-query-property-order": "error",
+			"@tanstack/query/no-void-query-fn": "error"
+		},
 		files: ["**/*.vue"]
 	},
 	{
