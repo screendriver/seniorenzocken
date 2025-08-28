@@ -37,6 +37,13 @@ export function createRouter(): Router {
 				}
 			},
 			{
+				path: "/sign-in",
+				name: "sign-in",
+				async component() {
+					return import("./views/SignInView.vue");
+				}
+			},
+			{
 				path: "/:pathMatch(.*)*",
 				name: "notFound",
 				async component() {
