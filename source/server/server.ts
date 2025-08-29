@@ -41,12 +41,16 @@ export function createServer(options: ServerOptions): Hono {
 
 	return new Hono()
 		.onError((error, context) => {
-			Sentry.captureException(error);
-
 			if (error instanceof HTTPException) {
+				if (error.status === 401 && error.message === "Unauthorized") {
+					return error.getResponse();
+				}
+
+				Sentry.captureException(error);
 				return error.getResponse();
 			}
 
+			Sentry.captureException(error);
 			return context.json({ error: "Internal server error" }, 500);
 		})
 
