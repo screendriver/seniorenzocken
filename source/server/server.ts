@@ -14,6 +14,7 @@ import type { Clock } from "./clock/clock.js";
 import type { Database } from "./database/database.js";
 import { gamePointAudios } from "./database/schema.js";
 import type { TRPCApplicationRouter } from "./trpc/application-router.js";
+import { authenticationMiddleware } from "./auth/authentication-middleware.js";
 
 export type ServerOptions = {
 	readonly clock: Clock;
@@ -66,7 +67,13 @@ export function createServer(options: ServerOptions): Hono {
 		)
 		.get("/metrics", printMetrics)
 
-		.use("/auth/*", basicAuth({ username: seniorenzockenUsername, password: seniorenzockenPassword }))
+		.post(
+			"/api/authenticate",
+			authenticationMiddleware({ seniorenzockenUsername, seniorenzockenPassword }),
+			(context) => {
+				return context.text("OK");
+			}
+		)
 
 		.use("/api/trpc/*", trpcServer({ router: trpcApplicationRouter, endpoint: "/api/trpc" }))
 
