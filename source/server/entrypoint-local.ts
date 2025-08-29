@@ -24,10 +24,10 @@ const server = createServer({
 	clock: fakeClock,
 	database,
 	trpcApplicationRouter,
-	metricsUsername: "foo",
-	metricsPassword: "bar",
-	seniorenzockenUsername: "hello",
-	seniorenzockenPassword: "world"
+	metricsUsername: "hello",
+	metricsPassword: "world",
+	seniorenzockenUsername: "foo",
+	seniorenzockenPassword: "bar"
 });
 
 serve(
