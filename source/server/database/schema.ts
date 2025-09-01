@@ -114,3 +114,13 @@ export const gamePointAudios = sqliteTable(
 );
 
 export type GamePointAudio = InferSelectModel<typeof gamePointAudios>;
+
+export const sessions = sqliteTable("sessions", {
+	sessionId: int().primaryKey({ autoIncrement: true }),
+	token: text().notNull().unique(),
+	ipAddress: text(),
+	userAgent: text(),
+	...timestamps
+});
+
+export type Session = InferSelectModel<typeof sessions>;

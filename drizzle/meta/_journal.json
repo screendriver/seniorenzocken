@@ -64,6 +64,13 @@
       "when": 1752142451319,
       "tag": "0008_dapper_steel_serpent",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1756711996467,
+      "tag": "0009_slow_dragon_man",
+      "breakpoints": true
     }
   ]
 }

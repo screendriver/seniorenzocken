@@ -6,7 +6,6 @@
 		"node": "24.7.0"
 	},
 	"dependencies": {
-		"@enormora/identity-esm": "1.0.1",
 		"@hono/node-server": "1.19.1",
 		"@hono/prometheus": "1.0.2",
 		"@hono/trpc-server": "0.4.0",
