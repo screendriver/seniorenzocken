@@ -1,12 +1,13 @@
 import { describe, it, expect, assert } from "vitest";
 import { isErr, isOk } from "true-myth/result";
 import { just } from "true-myth/maybe";
+import Unit from "true-myth/unit";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { sessions as sessionsDatabaseSchema } from "../database/schema.js";
 import { createDatabase } from "../database/database.js";
 import { createSessionRepository } from "./session-repository.js";
 
-describe("getSession", () => {
+describe("getSession()", () => {
 	it("returns a Result Err when database selection failed", async () => {
 		const database = createDatabase(":memory:");
 		const sessionRepostory = createSessionRepository({ database });
@@ -62,5 +63,44 @@ describe("getSession", () => {
 			ipAddress: just("127.0.0.1"),
 			userAgent: just("test-user-agent")
 		});
+	});
+});
+
+describe("deleteSession()", () => {
+	it("returns a Result Err when database deletion failed", async () => {
+		const database = createDatabase(":memory:");
+		const sessionRepostory = createSessionRepository({ database });
+
+		const result = await sessionRepostory.deleteSession("");
+
+		assert(isErr(result));
+
+		expect(result.error.message).toBe("Could not delete session");
+	});
+
+	it("returns a Result Ok when session token did not exist", async () => {
+		const database = createDatabase(":memory:");
+		await migrate(database, { migrationsFolder: "./drizzle" });
+		await database.insert(sessionsDatabaseSchema).values({ token: "test-token" });
+		const sessionRepostory = createSessionRepository({ database });
+
+		const result = await sessionRepostory.deleteSession("not-found");
+
+		assert(isOk(result));
+
+		expect(result.value).toBe(Unit);
+	});
+
+	it("returns a Result Ok when session token was successfully deleted", async () => {
+		const database = createDatabase(":memory:");
+		await migrate(database, { migrationsFolder: "./drizzle" });
+		await database.insert(sessionsDatabaseSchema).values({ token: "test-token" });
+		const sessionRepostory = createSessionRepository({ database });
+
+		const result = await sessionRepostory.deleteSession("test-token");
+
+		assert(isOk(result));
+
+		expect(result.value).toBe(Unit);
 	});
 });
