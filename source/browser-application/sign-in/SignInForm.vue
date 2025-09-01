@@ -2,7 +2,6 @@
 import { ref, watch } from "vue";
 import { useMutation } from "@tanstack/vue-query";
 import ky from "ky";
-import { useSessionStorage } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import AlertErrorMessage from "../alert/AlertErrorMessage.vue";
 import UsernameInput from "./UsernameInput.vue";
@@ -17,28 +16,21 @@ const signInButtonClass = ref({
 	"btn-disabled": false
 });
 
-const authorizationInStorage = useSessionStorage("authorization", "");
 const router = useRouter();
 
 const { mutate, isPending } = useMutation({
 	async mutationFn() {
-		const credentials = `${username.value}:${password.value}`;
-		const authorization = `Basic ${btoa(credentials)}`;
-
-		await ky.post("/api/authenticate", {
-			headers: {
-				Authorization: authorization
+		return ky.post("/api/authenticate", {
+			json: {
+				username: username.value,
+				password: password.value
 			}
 		});
-
-		return authorization;
 	},
 	onError() {
 		signInFailed.value = true;
 	},
-	async onSuccess(encodedCredentials) {
-		authorizationInStorage.value = encodedCredentials;
-
+	async onSuccess() {
 		await router.push({ name: "teams" });
 	}
 });
