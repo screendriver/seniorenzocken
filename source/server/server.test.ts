@@ -1,3 +1,5 @@
+// @vitest-environment happy-dom
+import { randomUUID } from "node:crypto";
 import { describe, it, expect, vi, type TestFunction } from "vitest";
 import { serve } from "@hono/node-server";
 import { migrate } from "drizzle-orm/libsql/migrator";
@@ -11,9 +13,11 @@ import { seedInMemoryDatabase } from "./seed-in-memory-database.js";
 import { createTrpcRouter } from "./trpc/index.js";
 import { createTrpcApplicationRouter, type TRPCApplicationRouter } from "./trpc/application-router.js";
 import { createAudioRepository } from "./audio/repository.js";
+import { createSessionRepository } from "./session/session-repository.js";
+import type { HonoEnvironment } from "./hono-environment.js";
 
 type TestFunctionOptions = {
-	readonly server: Hono;
+	readonly server: Hono<HonoEnvironment>;
 };
 
 function withServer(testFunction: (options: TestFunctionOptions) => Promise<void>): TestFunction {
@@ -34,10 +38,12 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 			clock: fakeClock,
 			database,
 			trpcApplicationRouter,
+			sessionRepository: createSessionRepository({ database, randomUUID }),
 			metricsUsername: "foo",
 			metricsPassword: "bar",
 			seniorenzockenUsername: "hello",
-			seniorenzockenPassword: "world"
+			seniorenzockenPassword: "world",
+			isRunningInProduction: false
 		};
 		const server = createServer(serverOptions);
 

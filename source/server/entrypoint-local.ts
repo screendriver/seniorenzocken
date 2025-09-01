@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
 import { createFakeClock } from "./clock/fake-clock.js";
@@ -8,6 +9,7 @@ import { createAudioRepository } from "./audio/repository.js";
 import { isTurnAround } from "./audio/turn_around.js";
 import { createTrpcRouter } from "./trpc/index.js";
 import { createTrpcApplicationRouter } from "./trpc/application-router.js";
+import { createSessionRepository } from "./session/session-repository.js";
 
 const fakeClock = createFakeClock();
 
@@ -20,14 +22,17 @@ await seedInMemoryDatabase(database);
 const audioRepository = createAudioRepository({ database });
 const trpcRouter = createTrpcRouter();
 const trpcApplicationRouter = createTrpcApplicationRouter({ trpcRouter, database, audioRepository, isTurnAround });
+const sessionRepository = createSessionRepository({ database, randomUUID });
 const server = createServer({
 	clock: fakeClock,
 	database,
 	trpcApplicationRouter,
+	sessionRepository,
 	metricsUsername: "hello",
 	metricsPassword: "world",
 	seniorenzockenUsername: "foo",
-	seniorenzockenPassword: "bar"
+	seniorenzockenPassword: "bar",
+	isRunningInProduction: false
 });
 
 serve(

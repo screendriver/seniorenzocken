@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
@@ -12,6 +13,7 @@ import { createTrpcApplicationRouter } from "./trpc/application-router.js";
 import { createInfisicalSDK } from "./secrets/infisical/infisical-sdk.js";
 import { createSecretsClient } from "./secrets/secrets-client.js";
 import { createSecretsRepository } from "./secrets/secrets-repository.js";
+import { createSessionRepository } from "./session/session-repository.js";
 
 const infisicalAccessToken = await readFile("/run/secrets/infisical_access_token", "utf8");
 
@@ -42,14 +44,17 @@ await migrate(database, { migrationsFolder: "./drizzle" });
 const audioRepository = createAudioRepository({ database });
 const trpcRouter = createTrpcRouter();
 const trpcApplicationRouter = createTrpcApplicationRouter({ trpcRouter, database, audioRepository, isTurnAround });
+const sessionRepository = createSessionRepository({ database, randomUUID });
 const server = createServer({
 	clock,
 	database,
 	trpcApplicationRouter,
+	sessionRepository,
 	metricsUsername: prometheusSecrets.username,
 	metricsPassword: prometheusSecrets.password,
 	seniorenzockenUsername: seniorenzockenSecrets.seniorenzockenUsername,
-	seniorenzockenPassword: seniorenzockenSecrets.seniorenzockenPassword
+	seniorenzockenPassword: seniorenzockenSecrets.seniorenzockenPassword,
+	isRunningInProduction: true
 });
 
 serve(
