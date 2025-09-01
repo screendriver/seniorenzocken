@@ -8,8 +8,8 @@ import type { Database } from "../database/database.js";
 import { sessionSchema, type Session } from "./session-schema.js";
 
 type CreateSessionOptions = {
-	readonly ipAddress?: string;
-	readonly userAgent?: string;
+	readonly ipAddress?: string | undefined;
+	readonly userAgent?: string | undefined;
 };
 
 export type SessionRepository = {
