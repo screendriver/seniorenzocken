@@ -14,32 +14,39 @@ import type { Clock } from "./clock/clock.js";
 import type { Database } from "./database/database.js";
 import { gamePointAudios } from "./database/schema.js";
 import type { TRPCApplicationRouter } from "./trpc/application-router.js";
-import { authenticationMiddleware } from "./auth/authentication-middleware.js";
+import type { SessionRepository } from "./session/session-repository.js";
+import { sessionMiddleware } from "./session/session-middleware.js";
+import type { HonoEnvironment } from "./hono-environment.js";
+import { createAuthenticateHandlers } from "./auth/authentication.js";
 
 export type ServerOptions = {
 	readonly clock: Clock;
 	readonly database: Database;
 	readonly trpcApplicationRouter: TRPCApplicationRouter;
+	readonly sessionRepository: SessionRepository;
 	readonly metricsUsername: string;
 	readonly metricsPassword: string;
 	readonly seniorenzockenUsername: string;
 	readonly seniorenzockenPassword: string;
+	readonly isRunningInProduction: boolean;
 };
 
-export function createServer(options: ServerOptions): Hono {
+export function createServer(options: ServerOptions): Hono<HonoEnvironment> {
 	const {
 		clock,
 		database,
 		trpcApplicationRouter,
+		sessionRepository,
 		metricsUsername,
 		metricsPassword,
 		seniorenzockenUsername,
-		seniorenzockenPassword
+		seniorenzockenPassword,
+		isRunningInProduction
 	} = options;
 
 	const { printMetrics, registerMetrics } = prometheus();
 
-	return new Hono()
+	return new Hono<HonoEnvironment>()
 		.onError((error, context) => {
 			if (error instanceof HTTPException) {
 				if (error.status === 401 && error.message === "Unauthorized") {
@@ -71,12 +78,16 @@ export function createServer(options: ServerOptions): Hono {
 		)
 		.get("/metrics", printMetrics)
 
+		.use(sessionMiddleware({ sessionRepository }))
+
 		.post(
 			"/api/authenticate",
-			authenticationMiddleware({ seniorenzockenUsername, seniorenzockenPassword }),
-			(context) => {
-				return context.text("OK");
-			}
+			...createAuthenticateHandlers({
+				sessionRepository,
+				seniorenzockenUsername,
+				seniorenzockenPassword,
+				isRunningInProduction
+			})
 		)
 
 		.use("/api/trpc/*", trpcServer({ router: trpcApplicationRouter, endpoint: "/api/trpc" }))
