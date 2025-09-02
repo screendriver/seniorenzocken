@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { compress } from "hono/compress";
 import { validator } from "hono/validator";
@@ -18,6 +18,7 @@ import type { SessionRepository } from "./session/session-repository.js";
 import { sessionMiddleware } from "./session/session-middleware.js";
 import type { HonoEnvironment } from "./hono-environment.js";
 import { createAuthenticateHandlers } from "./auth/authentication.js";
+import { createTRPCContext } from "./trpc/context.js";
 
 export type ServerOptions = {
 	readonly clock: Clock;
@@ -90,7 +91,17 @@ export function createServer(options: ServerOptions): Hono<HonoEnvironment> {
 			})
 		)
 
-		.use("/api/trpc/*", trpcServer({ router: trpcApplicationRouter, endpoint: "/api/trpc" }))
+		.use(
+			"/api/trpc/*",
+			trpcServer({
+				router: trpcApplicationRouter,
+				endpoint: "/api/trpc",
+				createContext(_contextOptions, honoContext) {
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- @hono/trpc-server gives us Context<any> here
+					return createTRPCContext({ honoContext: honoContext as unknown as Context<HonoEnvironment> });
+				}
+			})
+		)
 
 		.get(
 			"/api/audio/:file_id",
