@@ -2,6 +2,7 @@ import { createFactory } from "hono/factory";
 import { getConnInfo } from "@hono/node-server/conninfo";
 import { setCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
+import { fromPromise } from "true-myth/task";
 import { safeParse } from "valibot";
 import type { HonoEnvironment } from "../hono-environment.js";
 import type { SessionRepository } from "../session/session-repository.js";
@@ -21,9 +22,13 @@ export function createAuthenticateHandlers(options: AuthenticateHandlersOptions)
 	const { sessionRepository, seniorenzockenUsername, seniorenzockenPassword, isRunningInProduction } = options;
 
 	return factory.createHandlers(async (context) => {
-		const jsonPayload = await context.req.json<unknown>();
+		const jsonPayload = await fromPromise(context.req.json<unknown>());
 
-		const jsonPayloadParseResult = safeParse(authenticationSchema, jsonPayload);
+		if (jsonPayload.isErr) {
+			throw new HTTPException(400);
+		}
+
+		const jsonPayloadParseResult = safeParse(authenticationSchema, jsonPayload.value);
 
 		if (!jsonPayloadParseResult.success) {
 			throw new HTTPException(400);
