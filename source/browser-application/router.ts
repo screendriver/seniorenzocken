@@ -69,6 +69,14 @@ export function createRouter(): Router {
 				}
 			},
 			{
+				path: "/teams-selection",
+				name: "teams-selection",
+				async component() {
+					return import("./views/TeamsSelectionView.vue");
+				},
+				meta: { requiresAuth: true }
+			},
+			{
 				path: "/:pathMatch(.*)*",
 				name: "notFound",
 				async component() {

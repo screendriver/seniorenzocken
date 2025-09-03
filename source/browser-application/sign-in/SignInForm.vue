@@ -31,7 +31,7 @@ const { mutate, isPending } = useMutation({
 		signInFailed.value = true;
 	},
 	async onSuccess() {
-		await router.push({ name: "teams" });
+		await router.push({ name: "teams-selection" });
 	}
 });
 
