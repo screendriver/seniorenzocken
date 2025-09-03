@@ -52,7 +52,8 @@ function createAudioRouterOptions(overrides: Overrides): AudioRouterOptions & {}
 	return {
 		trpcRouter: {
 			router: trpcRouter.router,
-			publicProcedure: trpcRouter.publicProcedure
+			publicProcedure: trpcRouter.publicProcedure,
+			protectedProcedure: trpcRouter.protectedProcedure
 		},
 		audioRepository: audioRepository as unknown as AudioRepository,
 		isTurnAround: vi.fn()
@@ -97,10 +98,14 @@ describe("gamePointsPlaylist()", () => {
 		"throws an error with error code 'BAD_REQUEST' when input validation fails",
 		async ({ input, expectedErrorMessage }) => {
 			const trpc = initTRPC.context<TRPCRouterContext>().create();
+			const protectedProcedure = trpc.procedure.use(async (options) => {
+				return options.next({ ctx: { sessionToken: "" } });
+			});
 			const options = createAudioRouterOptions({
 				trpcRouter: {
 					router: trpc.router,
-					publicProcedure: trpc.procedure
+					publicProcedure: trpc.procedure,
+					protectedProcedure
 				}
 			});
 
@@ -121,13 +126,17 @@ describe("gamePointsPlaylist()", () => {
 
 	it("throws an error when game points audios could not be read", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
+		const protectedProcedure = trpc.procedure.use(async (options) => {
+			return options.next({ ctx: { sessionToken: "" } });
+		});
 		const readGamePointsAudios = vi
 			.fn()
 			.mockReturnValue(Task.reject<readonly ReadAudio[], Error>(new Error("Reading game points audios failed")));
 		const options = createAudioRouterOptions({
 			trpcRouter: {
 				router: trpc.router,
-				publicProcedure: trpc.procedure
+				publicProcedure: trpc.procedure,
+				protectedProcedure
 			},
 			readGamePointsAudios
 		});
@@ -148,11 +157,15 @@ describe("gamePointsPlaylist()", () => {
 
 	it("throws an error when game points audios are an empty Array", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
+		const protectedProcedure = trpc.procedure.use(async (options) => {
+			return options.next({ ctx: { sessionToken: "" } });
+		});
 		const readGamePointsAudios = vi.fn().mockReturnValue(Task.resolve<readonly ReadAudio[], Error>([]));
 		const options = createAudioRouterOptions({
 			trpcRouter: {
 				router: trpc.router,
-				publicProcedure: trpc.procedure
+				publicProcedure: trpc.procedure,
+				protectedProcedure
 			},
 			readGamePointsAudios
 		});
@@ -173,6 +186,9 @@ describe("gamePointsPlaylist()", () => {
 
 	it("returns a list of game points audios", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
+		const protectedProcedure = trpc.procedure.use(async (options) => {
+			return options.next({ ctx: { sessionToken: "" } });
+		});
 		const readGamePointsAudios = vi.fn().mockReturnValue(
 			Task.resolve<readonly ReadAudio[], Error>([
 				{ gamePointAudioId: 1, name: "attention.m4a", gamePoints: null },
@@ -183,7 +199,8 @@ describe("gamePointsPlaylist()", () => {
 		const options = createAudioRouterOptions({
 			trpcRouter: {
 				router: trpc.router,
-				publicProcedure: trpc.procedure
+				publicProcedure: trpc.procedure,
+				protectedProcedure
 			},
 			readGamePointsAudios
 		});
@@ -206,13 +223,17 @@ describe("gamePointsPlaylist()", () => {
 describe("getRandomFunAudio()", () => {
 	it("throws an error when fun audios could not be read", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
+		const protectedProcedure = trpc.procedure.use(async (options) => {
+			return options.next({ ctx: { sessionToken: "" } });
+		});
 		const readAllFunAudios = vi
 			.fn()
 			.mockReturnValue(Task.reject<readonly ReadAudioWithoutGamePoints[], Error>(new Error("Test error")));
 		const options = createAudioRouterOptions({
 			trpcRouter: {
 				router: trpc.router,
-				publicProcedure: trpc.procedure
+				publicProcedure: trpc.procedure,
+				protectedProcedure
 			},
 			readAllFunAudios
 		});
@@ -231,13 +252,17 @@ describe("getRandomFunAudio()", () => {
 
 	it("throws an error when fun audios are an empty Array", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
+		const protectedProcedure = trpc.procedure.use(async (options) => {
+			return options.next({ ctx: { sessionToken: "" } });
+		});
 		const readAllFunAudios = vi
 			.fn()
 			.mockReturnValue(Task.resolve<readonly ReadAudioWithoutGamePoints[], Error>([]));
 		const options = createAudioRouterOptions({
 			trpcRouter: {
 				router: trpc.router,
-				publicProcedure: trpc.procedure
+				publicProcedure: trpc.procedure,
+				protectedProcedure
 			},
 			readAllFunAudios
 		});
@@ -256,6 +281,9 @@ describe("getRandomFunAudio()", () => {
 
 	it("returns a random fun audio", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
+		const protectedProcedure = trpc.procedure.use(async (options) => {
+			return options.next({ ctx: { sessionToken: "" } });
+		});
 		const readAllFunAudios = vi
 			.fn()
 			.mockReturnValue(
@@ -266,7 +294,8 @@ describe("getRandomFunAudio()", () => {
 		const options = createAudioRouterOptions({
 			trpcRouter: {
 				router: trpc.router,
-				publicProcedure: trpc.procedure
+				publicProcedure: trpc.procedure,
+				protectedProcedure
 			},
 			readAllFunAudios
 		});

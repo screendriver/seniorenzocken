@@ -1,4 +1,4 @@
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import type { TRPCRouterContext } from "./context.js";
 
 export type TRPCRouter = ReturnType<typeof createTrpcRouter>;
@@ -7,5 +7,16 @@ export type TRPCRouter = ReturnType<typeof createTrpcRouter>;
 export function createTrpcRouter() {
 	const trpc = initTRPC.context<TRPCRouterContext>().create();
 
-	return { router: trpc.router, publicProcedure: trpc.procedure };
+	const protectedProcedure = trpc.procedure.use(async (options) => {
+		return options.ctx.sessionToken.match({
+			async Just(sessionToken) {
+				return options.next({ ctx: { sessionToken } });
+			},
+			Nothing() {
+				throw new TRPCError({ code: "UNAUTHORIZED" });
+			}
+		});
+	});
+
+	return { router: trpc.router, publicProcedure: trpc.procedure, protectedProcedure };
 }
