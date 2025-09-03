@@ -35,6 +35,21 @@ export function createTrpcApplicationRouter(options: Options) {
 			return database.select().from(games).orderBy(desc(games.createdAt)).all();
 		}),
 
+		session: publicProcedure.query(async (procedureOptions) => {
+			return procedureOptions.ctx.session
+				.map((session) => {
+					return { token: session.token };
+				})
+				.match({
+					Just(session) {
+						return session;
+					},
+					Nothing() {
+						return null;
+					}
+				});
+		}),
+
 		game: gameRouter,
 
 		audio: audioRouter
