@@ -8,9 +8,9 @@ export function createTrpcRouter() {
 	const trpc = initTRPC.context<TRPCRouterContext>().create();
 
 	const protectedProcedure = trpc.procedure.use(async (options) => {
-		return options.ctx.sessionToken.match({
-			async Just(sessionToken) {
-				return options.next({ ctx: { sessionToken } });
+		return options.ctx.session.match({
+			async Just(session) {
+				return options.next({ ctx: { session } });
 			},
 			Nothing() {
 				throw new TRPCError({ code: "UNAUTHORIZED" });

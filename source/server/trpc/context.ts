@@ -1,9 +1,10 @@
 import type { Context } from "hono";
 import type { Maybe } from "true-myth/maybe";
 import type { HonoEnvironment } from "../hono-environment.js";
+import type { Session } from "../session/session-schema.js";
 
 export type TRPCRouterContext = {
-	readonly sessionToken: Maybe<string>;
+	readonly session: Maybe<Session>;
 };
 
 type CreateContextOptions = {
@@ -13,5 +14,5 @@ type CreateContextOptions = {
 export function createTRPCContext(options: CreateContextOptions): TRPCRouterContext {
 	const { honoContext } = options;
 
-	return { sessionToken: honoContext.get("sessionToken") };
+	return { session: honoContext.get("session") };
 }

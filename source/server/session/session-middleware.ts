@@ -15,7 +15,7 @@ export function sessionMiddleware(dependencies: SessionMiddlewareDepdendencies):
 	const { sessionRepository } = dependencies;
 
 	return createMiddleware(async (context, next) => {
-		context.set("sessionToken", nothing());
+		context.set("session", nothing());
 		const existingSessionToken = of(getCookie(context, cookieName));
 
 		if (existingSessionToken.isNothing) {
@@ -30,7 +30,7 @@ export function sessionMiddleware(dependencies: SessionMiddlewareDepdendencies):
 			return next();
 		}
 
-		context.set("sessionToken", just(sessionResult.value.token));
+		context.set("session", just(sessionResult.value));
 
 		return next();
 	});

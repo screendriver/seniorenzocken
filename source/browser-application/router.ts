@@ -1,10 +1,35 @@
-import { createRouter as createVueRouter, createWebHistory, type Router } from "vue-router";
+import {
+	createRouter as createVueRouter,
+	createWebHistory,
+	type NavigationGuardReturn,
+	type RouteLocationNormalized,
+	type Router
+} from "vue-router";
 import * as Sentry from "@sentry/vue";
 import { isError } from "@sindresorhus/is";
 import TeamsView from "./views/TeamsView.vue";
 import { useGameStore } from "./game-store/game-store.js";
+import { useTRPCClientStore } from "./trpc-client-store/trpc-client-store";
 
 export function createRouter(): Router {
+	async function authenticationGuard(to: RouteLocationNormalized): Promise<NavigationGuardReturn | undefined> {
+		if (!to.meta.requiresAuth) {
+			return undefined;
+		}
+
+		const { trpcClient } = useTRPCClientStore();
+		const session = await trpcClient.session.query();
+
+		if (session === null) {
+			return {
+				name: "teams",
+				replace: true
+			};
+		}
+
+		return undefined;
+	}
+
 	const router = createVueRouter({
 		history: createWebHistory(import.meta.env.BASE_URL),
 		routes: [
@@ -44,6 +69,14 @@ export function createRouter(): Router {
 				}
 			},
 			{
+				path: "/teams-selection",
+				name: "teams-selection",
+				async component() {
+					return import("./views/TeamsSelectionView.vue");
+				},
+				meta: { requiresAuth: true }
+			},
+			{
 				path: "/:pathMatch(.*)*",
 				name: "notFound",
 				async component() {
@@ -52,6 +85,8 @@ export function createRouter(): Router {
 			}
 		]
 	});
+
+	router.beforeEach(authenticationGuard);
 
 	router.afterEach((_to, _from, failure) => {
 		if (failure !== undefined) {
