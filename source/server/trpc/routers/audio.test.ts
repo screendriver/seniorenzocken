@@ -99,7 +99,9 @@ describe("gamePointsPlaylist()", () => {
 		async ({ input, expectedErrorMessage }) => {
 			const trpc = initTRPC.context<TRPCRouterContext>().create();
 			const protectedProcedure = trpc.procedure.use(async (options) => {
-				return options.next({ ctx: { sessionToken: "" } });
+				return options.next({
+					ctx: { session: { token: "", ipAddress: nothing<string>(), userAgent: nothing<string>() } }
+				});
 			});
 			const options = createAudioRouterOptions({
 				trpcRouter: {
@@ -111,7 +113,7 @@ describe("gamePointsPlaylist()", () => {
 
 			const audioRouter = createAudioRouter(options);
 			const createCaller = trpc.createCallerFactory(audioRouter);
-			const caller = createCaller({ sessionToken: nothing() });
+			const caller = createCaller({ session: nothing() });
 
 			await expect(caller.gamePointsPlaylist(input)).rejects.toThrow(TRPCError);
 
@@ -127,7 +129,9 @@ describe("gamePointsPlaylist()", () => {
 	it("throws an error when game points audios could not be read", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
 		const protectedProcedure = trpc.procedure.use(async (options) => {
-			return options.next({ ctx: { sessionToken: "" } });
+			return options.next({
+				ctx: { session: { token: "", ipAddress: nothing<string>(), userAgent: nothing<string>() } }
+			});
 		});
 		const readGamePointsAudios = vi
 			.fn()
@@ -143,7 +147,7 @@ describe("gamePointsPlaylist()", () => {
 
 		const audioRouter = createAudioRouter(options);
 		const createCaller = trpc.createCallerFactory(audioRouter);
-		const caller = createCaller({ sessionToken: nothing() });
+		const caller = createCaller({ session: nothing() });
 
 		const input = gamePointsPlaylistInputFactory.build() as GamePointsPlaylistInput;
 
@@ -158,7 +162,9 @@ describe("gamePointsPlaylist()", () => {
 	it("throws an error when game points audios are an empty Array", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
 		const protectedProcedure = trpc.procedure.use(async (options) => {
-			return options.next({ ctx: { sessionToken: "" } });
+			return options.next({
+				ctx: { session: { token: "", ipAddress: nothing<string>(), userAgent: nothing<string>() } }
+			});
 		});
 		const readGamePointsAudios = vi.fn().mockReturnValue(Task.resolve<readonly ReadAudio[], Error>([]));
 		const options = createAudioRouterOptions({
@@ -172,7 +178,7 @@ describe("gamePointsPlaylist()", () => {
 
 		const audioRouter = createAudioRouter(options);
 		const createCaller = trpc.createCallerFactory(audioRouter);
-		const caller = createCaller({ sessionToken: nothing() });
+		const caller = createCaller({ session: nothing() });
 
 		const input = gamePointsPlaylistInputFactory.build() as GamePointsPlaylistInput;
 
@@ -187,7 +193,9 @@ describe("gamePointsPlaylist()", () => {
 	it("returns a list of game points audios", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
 		const protectedProcedure = trpc.procedure.use(async (options) => {
-			return options.next({ ctx: { sessionToken: "" } });
+			return options.next({
+				ctx: { session: { token: "", ipAddress: nothing<string>(), userAgent: nothing<string>() } }
+			});
 		});
 		const readGamePointsAudios = vi.fn().mockReturnValue(
 			Task.resolve<readonly ReadAudio[], Error>([
@@ -207,7 +215,7 @@ describe("gamePointsPlaylist()", () => {
 
 		const audioRouter = createAudioRouter(options);
 		const createCaller = trpc.createCallerFactory(audioRouter);
-		const caller = createCaller({ sessionToken: nothing() });
+		const caller = createCaller({ session: nothing() });
 
 		const input = gamePointsPlaylistInputFactory.build() as GamePointsPlaylistInput;
 
@@ -224,7 +232,9 @@ describe("getRandomFunAudio()", () => {
 	it("throws an error when fun audios could not be read", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
 		const protectedProcedure = trpc.procedure.use(async (options) => {
-			return options.next({ ctx: { sessionToken: "" } });
+			return options.next({
+				ctx: { session: { token: "", ipAddress: nothing<string>(), userAgent: nothing<string>() } }
+			});
 		});
 		const readAllFunAudios = vi
 			.fn()
@@ -240,7 +250,7 @@ describe("getRandomFunAudio()", () => {
 
 		const audioRouter = createAudioRouter(options);
 		const createCaller = trpc.createCallerFactory(audioRouter);
-		const caller = createCaller({ sessionToken: nothing() });
+		const caller = createCaller({ session: nothing() });
 
 		await expect(caller.getRandomFunAudio()).rejects.toThrow(
 			expect.objectContaining({
@@ -253,7 +263,9 @@ describe("getRandomFunAudio()", () => {
 	it("throws an error when fun audios are an empty Array", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
 		const protectedProcedure = trpc.procedure.use(async (options) => {
-			return options.next({ ctx: { sessionToken: "" } });
+			return options.next({
+				ctx: { session: { token: "", ipAddress: nothing<string>(), userAgent: nothing<string>() } }
+			});
 		});
 		const readAllFunAudios = vi
 			.fn()
@@ -269,7 +281,7 @@ describe("getRandomFunAudio()", () => {
 
 		const audioRouter = createAudioRouter(options);
 		const createCaller = trpc.createCallerFactory(audioRouter);
-		const caller = createCaller({ sessionToken: nothing() });
+		const caller = createCaller({ session: nothing() });
 
 		await expect(caller.getRandomFunAudio()).rejects.toThrow(
 			expect.objectContaining({
@@ -282,7 +294,9 @@ describe("getRandomFunAudio()", () => {
 	it("returns a random fun audio", async () => {
 		const trpc = initTRPC.context<TRPCRouterContext>().create();
 		const protectedProcedure = trpc.procedure.use(async (options) => {
-			return options.next({ ctx: { sessionToken: "" } });
+			return options.next({
+				ctx: { session: { token: "", ipAddress: nothing<string>(), userAgent: nothing<string>() } }
+			});
 		});
 		const readAllFunAudios = vi
 			.fn()
@@ -302,7 +316,7 @@ describe("getRandomFunAudio()", () => {
 
 		const audioRouter = createAudioRouter(options);
 		const createCaller = trpc.createCallerFactory(audioRouter);
-		const caller = createCaller({ sessionToken: nothing() });
+		const caller = createCaller({ session: nothing() });
 
 		await expect(caller.getRandomFunAudio()).resolves.toBe("/api/audio/1");
 	});

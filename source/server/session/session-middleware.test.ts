@@ -20,9 +20,9 @@ function createTestClient(overrides: SessionRepositoryOverrides = {}) {
 	const server = new Hono()
 		.use(sessionMiddleware({ sessionRepository: createSessionRepository(overrides) }))
 		.get("/", async (context) => {
-			return context.get("sessionToken").match({
-				Just(sessionToken) {
-					return context.text(sessionToken);
+			return context.get("session").match({
+				Just(session) {
+					return context.text(session.token);
 				},
 				Nothing() {
 					return context.text("OK");
