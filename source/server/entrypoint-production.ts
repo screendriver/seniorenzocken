@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
 import { all } from "true-myth/task";
+import { Cron } from "croner";
 import { createClock } from "./clock/clock.js";
 import { createDatabase } from "./database/database.js";
 import { createServer } from "./server.js";
@@ -14,6 +15,7 @@ import { createInfisicalSDK } from "./secrets/infisical/infisical-sdk.js";
 import { createSecretsClient } from "./secrets/secrets-client.js";
 import { createSecretsRepository } from "./secrets/secrets-repository.js";
 import { createSessionRepository } from "./session/session-repository.js";
+import { startCleanupDatabaseCronJob } from "./database/cleanup.js";
 
 const infisicalAccessToken = await readFile("/run/secrets/infisical_access_token", "utf8");
 
@@ -40,6 +42,8 @@ const clock = createClock();
 const database = createDatabase("file:database.sqlite");
 
 await migrate(database, { migrationsFolder: "./drizzle" });
+
+startCleanupDatabaseCronJob({ Cron, database });
 
 const audioRepository = createAudioRepository({ database });
 const trpcRouter = createTrpcRouter();
