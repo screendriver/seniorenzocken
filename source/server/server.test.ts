@@ -13,6 +13,7 @@ import { seedInMemoryDatabase } from "./seed-in-memory-database.js";
 import { createTrpcRouter } from "./trpc/index.js";
 import { createTrpcApplicationRouter, type TRPCApplicationRouter } from "./trpc/application-router.js";
 import { createAudioRepository } from "./audio/repository.js";
+import { createPlayersRepository } from "./players/players-repository.js";
 import { createSessionRepository } from "./session/session-repository.js";
 import type { HonoEnvironment } from "./hono-environment.js";
 
@@ -28,10 +29,12 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 		await seedInMemoryDatabase(database);
 
 		const audioRepository = createAudioRepository({ database });
+		const playersRepository = createPlayersRepository({ database });
 		const trpcApplicationRouter = createTrpcApplicationRouter({
 			trpcRouter: createTrpcRouter(),
 			database,
 			audioRepository,
+			playersRepository,
 			isTurnAround: vi.fn().mockReturnValue(false)
 		});
 		const serverOptions: ServerOptions = {

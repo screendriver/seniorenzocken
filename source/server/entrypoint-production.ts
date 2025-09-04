@@ -8,6 +8,7 @@ import { createClock } from "./clock/clock.js";
 import { createDatabase } from "./database/database.js";
 import { createServer } from "./server.js";
 import { createAudioRepository } from "./audio/repository.js";
+import { createPlayersRepository } from "./players/players-repository.js";
 import { isTurnAround } from "./audio/turn_around.js";
 import { createTrpcRouter } from "./trpc/index.js";
 import { createTrpcApplicationRouter } from "./trpc/application-router.js";
@@ -46,8 +47,15 @@ await migrate(database, { migrationsFolder: "./drizzle" });
 startCleanupDatabaseCronJob({ Cron, database });
 
 const audioRepository = createAudioRepository({ database });
+const playersRepository = createPlayersRepository({ database });
 const trpcRouter = createTrpcRouter();
-const trpcApplicationRouter = createTrpcApplicationRouter({ trpcRouter, database, audioRepository, isTurnAround });
+const trpcApplicationRouter = createTrpcApplicationRouter({
+	trpcRouter,
+	database,
+	audioRepository,
+	playersRepository,
+	isTurnAround
+});
 const sessionRepository = createSessionRepository({ database, randomUUID });
 const server = createServer({
 	clock,
