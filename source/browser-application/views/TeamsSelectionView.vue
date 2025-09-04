@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/vue-query";
 import { isNonEmptyArray } from "@sindresorhus/is";
 import SelectPlayer from "../teams-selection/SelectPlayer.vue";
 import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store";
+import { areSelectedPlayerIdsValid } from "../teams-selection/selected-player-ids";
 
 const { trpcClient } = useTRPCClientStore();
 
@@ -11,20 +12,23 @@ const { isLoading, data: players } = useQuery({
 	queryKey: ["players"],
 	async queryFn() {
 		return trpcClient.players.query();
-	}
+	},
+	placeholderData: []
 });
 
-const selectedPlayer1Id = ref<number>(-1);
-const selectedPlayer2Id = ref<number>(-1);
-const selectedPlayer3Id = ref<number>(-1);
-const selectedPlayer4Id = ref<number>(-1);
+const selectedPlayer1Id = ref(-1);
+const selectedPlayer2Id = ref(-1);
+const selectedPlayer3Id = ref(-1);
+const selectedPlayer4Id = ref(-1);
 
 const submitButtonClass = computed(() => {
-	const enabled =
-		selectedPlayer1Id.value > -1 &&
-		selectedPlayer2Id.value > -1 &&
-		selectedPlayer3Id.value > -1 &&
-		selectedPlayer4Id.value > -1;
+	const selectedPlayerIds = [
+		selectedPlayer1Id.value,
+		selectedPlayer2Id.value,
+		selectedPlayer3Id.value,
+		selectedPlayer4Id.value
+	];
+	const enabled = areSelectedPlayerIdsValid(selectedPlayerIds);
 
 	return {
 		btn: true,
