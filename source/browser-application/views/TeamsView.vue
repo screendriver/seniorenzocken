@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, useTemplateRef } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { isEmptyString } from "@sindresorhus/is";
+import RandomFunAudio from "../random-fun-audio/RandomFunAudio.vue";
 import { useGameStore } from "../game-store/game-store.js";
+
+const randomFunAudioReference = useTemplateRef("randomFunAudio");
 
 const router = useRouter();
 const gameStore = useGameStore();
@@ -20,6 +23,9 @@ const isSubmitDisabled = computed<boolean>(() => {
 });
 
 async function startGame(): Promise<void> {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- this rule should not complain here
+	randomFunAudioReference.value?.playEmptyAudio();
+
 	const startGameResult = await gameStore.startGame();
 
 	if (startGameResult.isOk) {
@@ -29,6 +35,8 @@ async function startGame(): Promise<void> {
 </script>
 
 <template>
+	<RandomFunAudio ref="randomFunAudio" />
+
 	<section
 		class="bg-neutral col-start-1 col-end-5 grid grid-cols-subgrid rounded-xl sm:col-start-2 sm:col-end-4 md:col-start-3 md:col-end-7 lg:col-start-4 lg:col-end-10"
 	>

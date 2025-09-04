@@ -7,6 +7,10 @@ import AlertErrorMessage from "../alert/AlertErrorMessage.vue";
 import UsernameInput from "./UsernameInput.vue";
 import PasswordInput from "./PasswordInput.vue";
 
+const emit = defineEmits<{
+	submit: [];
+}>();
+
 const username = ref("");
 const password = ref("");
 const signInFailed = ref(false);
@@ -31,6 +35,7 @@ const { mutate, isPending } = useMutation({
 		signInFailed.value = true;
 	},
 	async onSuccess() {
+		emit("submit");
 		await router.push({ name: "teams-selection" });
 	}
 });
