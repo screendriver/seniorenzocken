@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, ref } from "vue";
 import { useQuery } from "@tanstack/vue-query";
 import { isNonEmptyArray } from "@sindresorhus/is";
 import SelectPlayer from "../teams-selection/SelectPlayer.vue";
@@ -11,6 +12,25 @@ const { isLoading, data: players } = useQuery({
 	async queryFn() {
 		return trpcClient.players.query();
 	}
+});
+
+const selectedPlayer1Id = ref<number>(-1);
+const selectedPlayer2Id = ref<number>(-1);
+const selectedPlayer3Id = ref<number>(-1);
+const selectedPlayer4Id = ref<number>(-1);
+
+const submitButtonClass = computed(() => {
+	const enabled =
+		selectedPlayer1Id.value > -1 &&
+		selectedPlayer2Id.value > -1 &&
+		selectedPlayer3Id.value > -1 &&
+		selectedPlayer4Id.value > -1;
+
+	return {
+		btn: true,
+		"btn-primary": true,
+		"btn-disabled": !enabled
+	};
 });
 </script>
 
@@ -27,9 +47,9 @@ const { isLoading, data: players } = useQuery({
 		>
 			<legend class="fieldset-legend">Team 1</legend>
 
-			<SelectPlayer :player-number="1" :players="players" />
+			<SelectPlayer :player-number="1" :players="players" v-model="selectedPlayer1Id" />
 
-			<SelectPlayer :player-number="2" :players="players" />
+			<SelectPlayer :player-number="2" :players="players" v-model="selectedPlayer2Id" />
 		</fieldset>
 
 		<fieldset
@@ -37,13 +57,13 @@ const { isLoading, data: players } = useQuery({
 		>
 			<legend class="fieldset-legend">Team 2</legend>
 
-			<SelectPlayer :player-number="3" :players="players" />
+			<SelectPlayer :player-number="3" :players="players" v-model="selectedPlayer3Id" />
 
-			<SelectPlayer :player-number="4" :players="players" />
+			<SelectPlayer :player-number="4" :players="players" v-model="selectedPlayer4Id" />
 		</fieldset>
 
 		<div class="col-span-full justify-self-center">
-			<button type="submit" class="btn btn-primary">Spiel starten</button>
+			<button type="submit" :class="submitButtonClass">Spiel starten</button>
 		</div>
 	</form>
 </template>
