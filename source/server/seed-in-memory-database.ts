@@ -23,7 +23,7 @@ export async function seedInMemoryDatabase(
 						minValue: 0,
 						maxValue: 100
 					}),
-					totalGameRounds: drizzleSeed.int({
+					totalGamesCount: drizzleSeed.int({
 						minValue: 0,
 						maxValue: 100
 					})
