@@ -11,6 +11,6 @@ const { playerNumber, players } = defineProps<{
 	<select class="select w-full">
 		<option disabled selected>Spieler {{ playerNumber }}</option>
 
-		<option v-for="player in players" :key="player.playerId">{{ player.nickname }}</option>
+		<option v-for="player in players" :key="player.playerId">{{ player.nickname }} ({{ player.firstName }})</option>
 	</select>
 </template>

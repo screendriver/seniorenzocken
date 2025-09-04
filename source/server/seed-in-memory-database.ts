@@ -19,6 +19,7 @@ export async function seedInMemoryDatabase(
 			players: {
 				count: 8,
 				columns: {
+					firstName: drizzleSeed.firstName(),
 					totalPoints: drizzleSeed.int({
 						minValue: 0,
 						maxValue: 100
