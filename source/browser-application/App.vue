@@ -1,24 +1,16 @@
 <script setup lang="ts">
-import { useTemplateRef } from "vue";
 import { RouterView } from "vue-router";
 import { useWakeLock } from "@vueuse/core";
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
-import RandomFunAudio from "./random-fun-audio/RandomFunAudio.vue";
 import { useGameStore } from "./game-store/game-store.js";
 
 const gameStore = useGameStore();
 const { isSupported: isWakeLockSupported, isActive: isWakeLockActive, request: requestWakeLock } = useWakeLock();
-const randomFunAudioReference = useTemplateRef("randomFunAudio");
 
 function activateWakeLock(): void {
 	if (isWakeLockSupported.value && !isWakeLockActive.value) {
 		void requestWakeLock("screen");
 	}
-}
-
-function playEmptyAudio(): void {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- this rule should not complain here
-	randomFunAudioReference.value?.playEmptyAudio();
 }
 </script>
 
@@ -55,14 +47,9 @@ function playEmptyAudio(): void {
 		</header>
 
 		<main
-			@click.once="
-				activateWakeLock();
-				playEmptyAudio();
-			"
+			@click.once="activateWakeLock()"
 			class="mx-6 grid min-h-screen grid-cols-4 items-center gap-4 md:mx-auto md:grid-cols-8 lg:max-w-7xl lg:grid-cols-12"
 		>
-			<RandomFunAudio ref="randomFunAudio" />
-
 			<RouterView />
 		</main>
 	</template>
