@@ -48,11 +48,7 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 				},
 				async () => {
 					return database
-						.select({
-							token: userSessionsDatabaseSchema.token,
-							ipAddress: userSessionsDatabaseSchema.ipAddress,
-							userAgent: userSessionsDatabaseSchema.userAgent
-						})
+						.select({ token: userSessionsDatabaseSchema.token })
 						.from(userSessionsDatabaseSchema)
 						.where(eq(userSessionsDatabaseSchema.token, sessionToken))
 						.limit(1);
@@ -81,21 +77,13 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 							ipAddress: options.ipAddress,
 							userAgent: options.userAgent
 						})
-						.returning({
-							token: userSessionsDatabaseSchema.token,
-							ipAddress: userSessionsDatabaseSchema.ipAddress,
-							userAgent: userSessionsDatabaseSchema.userAgent
-						});
+						.returning({ token: userSessionsDatabaseSchema.token });
 				}
 			).andThen((databaseRecords) => {
 				const { success, output, issues } = safeParse(sessionSchema, databaseRecords[0]);
 
 				if (success) {
-					return Task.resolve({
-						token: output.token,
-						ipAddress: output.ipAddress,
-						userAgent: output.userAgent
-					});
+					return Task.resolve({ token: output.token });
 				}
 
 				return Task.reject(new Error("Could not create session", { cause: summarize(issues) }));
@@ -144,13 +132,13 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 					return new Error("Could not delete session", { cause: error });
 				},
 				async () => {
-					return database
+					await database
 						.delete(userSessionsDatabaseSchema)
 						.where(eq(userSessionsDatabaseSchema.token, sessionToken));
+
+					return Unit;
 				}
-			).map(() => {
-				return Unit;
-			});
+			);
 		}
 	};
 }
