@@ -3,7 +3,7 @@ import { Task, tryOrElse } from "true-myth/task";
 import { eq } from "drizzle-orm";
 import { safeParse, summarize } from "valibot";
 import { Unit } from "true-myth/unit";
-import { sessions as sessionsDatabaseSchema } from "../database/schema.js";
+import { userSessions as userSessionsDatabaseSchema } from "../database/schema.js";
 import type { Database } from "../database/database.js";
 import { sessionSchema, type Session } from "./session-schema.js";
 
@@ -35,12 +35,12 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 				async () => {
 					return database
 						.select({
-							token: sessionsDatabaseSchema.token,
-							ipAddress: sessionsDatabaseSchema.ipAddress,
-							userAgent: sessionsDatabaseSchema.userAgent
+							token: userSessionsDatabaseSchema.token,
+							ipAddress: userSessionsDatabaseSchema.ipAddress,
+							userAgent: userSessionsDatabaseSchema.userAgent
 						})
-						.from(sessionsDatabaseSchema)
-						.where(eq(sessionsDatabaseSchema.token, sessionToken))
+						.from(userSessionsDatabaseSchema)
+						.where(eq(userSessionsDatabaseSchema.token, sessionToken))
 						.limit(1);
 				}
 			).andThen((sessionsFromDatabase) => {
@@ -61,16 +61,16 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 				},
 				async () => {
 					return database
-						.insert(sessionsDatabaseSchema)
+						.insert(userSessionsDatabaseSchema)
 						.values({
 							token: randomUUID(),
 							ipAddress: options.ipAddress,
 							userAgent: options.userAgent
 						})
 						.returning({
-							token: sessionsDatabaseSchema.token,
-							ipAddress: sessionsDatabaseSchema.ipAddress,
-							userAgent: sessionsDatabaseSchema.userAgent
+							token: userSessionsDatabaseSchema.token,
+							ipAddress: userSessionsDatabaseSchema.ipAddress,
+							userAgent: userSessionsDatabaseSchema.userAgent
 						});
 				}
 			).andThen((databaseRecords) => {
@@ -95,8 +95,8 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 				},
 				async () => {
 					return database
-						.delete(sessionsDatabaseSchema)
-						.where(eq(sessionsDatabaseSchema.token, sessionToken));
+						.delete(userSessionsDatabaseSchema)
+						.where(eq(userSessionsDatabaseSchema.token, sessionToken));
 				}
 			).map(() => {
 				return Unit;

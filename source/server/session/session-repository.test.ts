@@ -3,7 +3,7 @@ import { isErr, isOk } from "true-myth/result";
 import { just, nothing } from "true-myth/maybe";
 import Unit from "true-myth/unit";
 import { migrate } from "drizzle-orm/libsql/migrator";
-import { sessions as sessionsDatabaseSchema } from "../database/schema.js";
+import { userSessions as userSessionsDatabaseSchema } from "../database/schema.js";
 import { createDatabase } from "../database/database.js";
 import { createSessionRepository } from "./session-repository.js";
 
@@ -37,7 +37,7 @@ describe("getSession()", () => {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await database
-			.insert(sessionsDatabaseSchema)
+			.insert(userSessionsDatabaseSchema)
 			.values({ token: "test-token", ipAddress: "127.0.0.1", userAgent: "test-user-agent" });
 		const randomUUID = vi.fn().mockReturnValue("");
 		const sessionRepostory = createSessionRepository({ database, randomUUID });
@@ -53,7 +53,7 @@ describe("getSession()", () => {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await database
-			.insert(sessionsDatabaseSchema)
+			.insert(userSessionsDatabaseSchema)
 			.values({ token: "test-token", ipAddress: "127.0.0.1", userAgent: "test-user-agent" });
 		const randomUUID = vi.fn().mockReturnValue("");
 		const sessionRepostory = createSessionRepository({ database, randomUUID });
@@ -134,7 +134,7 @@ describe("deleteSession()", () => {
 	it("returns a Result Ok when session token did not exist", async () => {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
-		await database.insert(sessionsDatabaseSchema).values({ token: "test-token" });
+		await database.insert(userSessionsDatabaseSchema).values({ token: "test-token" });
 		const randomUUID = vi.fn().mockReturnValue("");
 		const sessionRepostory = createSessionRepository({ database, randomUUID });
 
@@ -148,7 +148,7 @@ describe("deleteSession()", () => {
 	it("returns a Result Ok when session token was successfully deleted", async () => {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
-		await database.insert(sessionsDatabaseSchema).values({ token: "test-token" });
+		await database.insert(userSessionsDatabaseSchema).values({ token: "test-token" });
 		const randomUUID = vi.fn().mockReturnValue("");
 		const sessionRepostory = createSessionRepository({ database, randomUUID });
 

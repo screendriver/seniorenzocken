@@ -14,8 +14,8 @@ export function cleanupDatabase(database: Database): Task<number, Error> {
 		},
 		async () => {
 			const { rowsAffected } = await database
-				.delete(schema.sessions)
-				.where(lt(schema.sessions.createdAt, sql`datetime('now', '-14 days')`));
+				.delete(schema.userSessions)
+				.where(lt(schema.userSessions.createdAt, sql`datetime('now', '-14 days')`));
 
 			await database.run("VACUUM");
 
