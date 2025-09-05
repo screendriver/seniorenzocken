@@ -5,7 +5,9 @@ import { games, teams } from "../database/schema.js";
 import type { AudioRepository } from "../audio/repository.js";
 import type { isTurnAround } from "../audio/turn_around.js";
 import type { PlayersRepository } from "../players/players-repository.js";
+import type { SessionRepository } from "../session/session-repository.js";
 import { createGameRouter } from "./routers/game.js";
+import { createProtectedGameRouter } from "./routers/protected-game.js";
 import { createAudioRouter } from "./routers/audio.js";
 import type { TRPCRouter } from "./index.js";
 
@@ -14,15 +16,17 @@ type Options = {
 	readonly database: Database;
 	readonly audioRepository: AudioRepository;
 	readonly playersRepository: PlayersRepository;
+	readonly sessionRepository: SessionRepository;
 	readonly isTurnAround: typeof isTurnAround;
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- tRPC works with type inference
 export function createTrpcApplicationRouter(options: Options) {
-	const { trpcRouter, database, audioRepository, playersRepository, isTurnAround } = options;
+	const { trpcRouter, database, audioRepository, playersRepository, sessionRepository, isTurnAround } = options;
 	const { router, publicProcedure, protectedProcedure } = trpcRouter;
 
 	const gameRouter = createGameRouter({ trpcRouter });
+	const protectedGameRouter = createProtectedGameRouter({ trpcRouter, sessionRepository });
 	const audioRouter = createAudioRouter({ trpcRouter, audioRepository, isTurnAround });
 
 	return router({
@@ -64,6 +68,8 @@ export function createTrpcApplicationRouter(options: Options) {
 		}),
 
 		game: gameRouter,
+
+		protectedGame: protectedGameRouter,
 
 		audio: audioRouter
 	});

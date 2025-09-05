@@ -3,9 +3,22 @@ import { isErr, isOk } from "true-myth/result";
 import { just, nothing } from "true-myth/maybe";
 import Unit from "true-myth/unit";
 import { migrate } from "drizzle-orm/libsql/migrator";
+import { Factory } from "fishery";
+import { assertError } from "@sindresorhus/is";
 import { userSessions as userSessionsDatabaseSchema } from "../database/schema.js";
 import { createDatabase } from "../database/database.js";
-import { createSessionRepository } from "./session-repository.js";
+import { seedInMemoryDatabase } from "../seed-in-memory-database.js";
+import { createSessionRepository, type CreateGameSessionOptions } from "./session-repository.js";
+
+const createGameSessionOptionsFactory = Factory.define<CreateGameSessionOptions>(() => {
+	return {
+		sessionToken: "test-token",
+		team1Player1Id: 5,
+		team1Player2Id: 7,
+		team2Player1Id: 10,
+		team2Player2Id: 16
+	};
+});
 
 describe("getSession()", () => {
 	it("returns a Result Err when database selection failed", async () => {
@@ -115,6 +128,55 @@ describe("createSession()", () => {
 			ipAddress: just("127.0.0.1"),
 			userAgent: just("test-user-agent")
 		});
+	});
+});
+
+describe("createGameSession()", () => {
+	it("returns a Result Err when database insertion failed", async () => {
+		const database = createDatabase(":memory:");
+		const randomUUID = vi.fn().mockReturnValue("");
+		const sessionRepostory = createSessionRepository({ database, randomUUID });
+
+		const options = createGameSessionOptionsFactory.build();
+		const result = await sessionRepostory.createGameSession(options);
+
+		assert(isErr(result));
+
+		expect(result.error.message).toBe("Could not create game session");
+	});
+
+	it("returns a Result Err when session token could not be found in database", async () => {
+		const database = createDatabase(":memory:");
+		await migrate(database, { migrationsFolder: "./drizzle" });
+		const randomUUID = vi.fn().mockReturnValue("random-uuid");
+		const sessionRepostory = createSessionRepository({ database, randomUUID });
+
+		const options = createGameSessionOptionsFactory.build({ sessionToken: "not-found" });
+		const result = await sessionRepostory.createGameSession(options);
+
+		assert(isErr(result));
+
+		expect(result.error.message).toBe("Could not create game session");
+
+		assertError(result.error.cause);
+
+		expect(result.error.cause.message).toBe("User session could not be found");
+	});
+
+	it("returns a Result Ok when database insertion succeeded", async () => {
+		const database = createDatabase(":memory:");
+		await migrate(database, { migrationsFolder: "./drizzle" });
+		await seedInMemoryDatabase(database);
+		await database.insert(userSessionsDatabaseSchema).values({ token: "test-token" });
+		const randomUUID = vi.fn().mockReturnValue("random-uuid");
+		const sessionRepostory = createSessionRepository({ database, randomUUID });
+
+		const options = createGameSessionOptionsFactory.build();
+		const result = await sessionRepostory.createGameSession(options);
+
+		assert(isOk(result));
+
+		expect(result.value).toBe(Unit);
 	});
 });
 

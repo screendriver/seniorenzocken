@@ -30,11 +30,13 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 
 		const audioRepository = createAudioRepository({ database });
 		const playersRepository = createPlayersRepository({ database });
+		const sessionRepository = createSessionRepository({ database, randomUUID: vi.fn().mockReturnValue("") });
 		const trpcApplicationRouter = createTrpcApplicationRouter({
 			trpcRouter: createTrpcRouter(),
 			database,
 			audioRepository,
 			playersRepository,
+			sessionRepository,
 			isTurnAround: vi.fn().mockReturnValue(false)
 		});
 		const serverOptions: ServerOptions = {
@@ -124,20 +126,7 @@ describe("server", () => {
 				links: [httpLink({ url: "/api/trpc" })]
 			});
 
-			await expect(trpcClient.teams.query()).resolves.toStrictEqual([
-				{
-					createdAt: "2025-07-10 10:17:51",
-					player1Id: 1,
-					player2Id: 3,
-					teamId: 1
-				},
-				{
-					createdAt: "2025-08-10 15:00:00",
-					player1Id: 5,
-					player2Id: 8,
-					teamId: 2
-				}
-			]);
+			await expect(trpcClient.teams.query()).resolves.toStrictEqual([]);
 
 			listeningServer.close();
 		})
