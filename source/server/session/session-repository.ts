@@ -144,13 +144,13 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 					return new Error("Could not delete session", { cause: error });
 				},
 				async () => {
-					return database
+					await database
 						.delete(userSessionsDatabaseSchema)
 						.where(eq(userSessionsDatabaseSchema.token, sessionToken));
+
+					return Unit;
 				}
-			).map(() => {
-				return Unit;
-			});
+			);
 		}
 	};
 }
