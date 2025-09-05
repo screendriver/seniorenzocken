@@ -14,7 +14,7 @@ import { useTRPCClientStore } from "./trpc-client-store/trpc-client-store";
 export function createRouter(): Router {
 	async function authenticationGuard(to: RouteLocationNormalized): Promise<NavigationGuardReturn | undefined> {
 		if (!to.meta.requiresAuth) {
-			return undefined;
+			return true;
 		}
 
 		const { trpcClient } = useTRPCClientStore();
@@ -27,7 +27,7 @@ export function createRouter(): Router {
 			};
 		}
 
-		return undefined;
+		return true;
 	}
 
 	const router = createVueRouter({
@@ -66,6 +66,16 @@ export function createRouter(): Router {
 				name: "sign-in",
 				async component() {
 					return import("./views/SignInView.vue");
+				},
+				async beforeEnter() {
+					const { trpcClient } = useTRPCClientStore();
+					const session = await trpcClient.session.query();
+
+					if (session === null) {
+						return true;
+					}
+
+					return { name: "teams-selection", replace: true };
 				}
 			},
 			{
