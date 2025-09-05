@@ -7,15 +7,21 @@ const timestamps = {
 		.default(sql`(current_timestamp)`)
 };
 
-export const players = sqliteTable("players", {
-	playerId: int().primaryKey({ autoIncrement: true }),
-	firstName: text().notNull(),
-	lastName: text().notNull(),
-	nickname: text().notNull().unique(),
-	totalPoints: int().notNull().default(0),
-	totalGamesCount: int().notNull().default(0),
-	...timestamps
-});
+export const players = sqliteTable(
+	"players",
+	{
+		playerId: int().primaryKey({ autoIncrement: true }),
+		firstName: text().notNull(),
+		lastName: text().notNull(),
+		nickname: text().notNull().unique(),
+		totalPoints: int().notNull().default(0),
+		totalGamesCount: int().notNull().default(0),
+		...timestamps
+	},
+	(table) => {
+		return [index("nickname_index").on(table.nickname)];
+	}
+);
 
 export type Player = InferSelectModel<typeof players>;
 
