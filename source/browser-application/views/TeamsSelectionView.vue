@@ -1,17 +1,27 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
 import { useQuery, useMutation } from "@tanstack/vue-query";
 import { isNonEmptyArray } from "@sindresorhus/is";
 import SelectPlayer from "../teams-selection/SelectPlayer.vue";
 import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store";
 import { areSelectedPlayerIdsValid } from "../teams-selection/selected-player-ids";
 
+const router = useRouter();
 const { trpcClient } = useTRPCClientStore();
 
 const selectedPlayer1Id = ref(-1);
 const selectedPlayer2Id = ref(-1);
 const selectedPlayer3Id = ref(-1);
 const selectedPlayer4Id = ref(-1);
+
+const { isLoading, data: players } = useQuery({
+	queryKey: ["players"],
+	async queryFn() {
+		return trpcClient.players.query();
+	},
+	placeholderData: []
+});
 
 const { mutate: startGame, isPending: isMutationPending } = useMutation({
 	async mutationFn() {
@@ -21,6 +31,9 @@ const { mutate: startGame, isPending: isMutationPending } = useMutation({
 			team2Player1Id: selectedPlayer3Id.value,
 			team2Player2Id: selectedPlayer4Id.value
 		});
+	},
+	async onSuccess() {
+		return router.push({ name: "session-game", replace: true });
 	}
 });
 
@@ -38,14 +51,6 @@ const submitButtonClass = computed(() => {
 		"btn-primary": true,
 		"btn-disabled": !enabled
 	};
-});
-
-const { isLoading, data: players } = useQuery({
-	queryKey: ["players"],
-	async queryFn() {
-		return trpcClient.players.query();
-	},
-	placeholderData: []
 });
 </script>
 
