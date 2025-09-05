@@ -10,14 +10,22 @@ type Options = {
 const playerIdSchema = pipe(number(), integer(), minValue(1));
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- tRPC works with type inference
-export function createSessionGameRouter(options: Options) {
+export function createSessionRouter(options: Options) {
 	const {
-		trpcRouter: { router, protectedProcedure },
+		trpcRouter: { router, publicProcedure, protectedProcedure },
 		sessionRepository
 	} = options;
 
 	return router({
-		start: protectedProcedure
+		token: publicProcedure.query(async (procedureOptions) => {
+			return procedureOptions.ctx.session
+				.map((session) => {
+					return session.token;
+				})
+				.unwrapOr(null);
+		}),
+
+		startGame: protectedProcedure
 			.input(
 				object({
 					team1Player1Id: playerIdSchema,

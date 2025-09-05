@@ -6,7 +6,7 @@ import {
 	type Router
 } from "vue-router";
 import * as Sentry from "@sentry/vue";
-import { isError } from "@sindresorhus/is";
+import { isError, isNull } from "@sindresorhus/is";
 import TeamsView from "./views/TeamsView.vue";
 import { useGameStore } from "./game-store/game-store.js";
 import { useTRPCClientStore } from "./trpc-client-store/trpc-client-store";
@@ -18,9 +18,9 @@ export function createRouter(): Router {
 		}
 
 		const { trpcClient } = useTRPCClientStore();
-		const session = await trpcClient.session.query();
+		const sessionToken = await trpcClient.session.token.query();
 
-		if (session === null) {
+		if (isNull(sessionToken)) {
 			return {
 				name: "teams",
 				replace: true
@@ -69,9 +69,9 @@ export function createRouter(): Router {
 				},
 				async beforeEnter() {
 					const { trpcClient } = useTRPCClientStore();
-					const session = await trpcClient.session.query();
+					const sessionToken = await trpcClient.session.token.query();
 
-					if (session === null) {
+					if (isNull(sessionToken)) {
 						return true;
 					}
 
