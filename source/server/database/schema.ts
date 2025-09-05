@@ -124,3 +124,39 @@ export const userSessions = sqliteTable("user_sessions", {
 });
 
 export type UserSession = InferSelectModel<typeof userSessions>;
+
+export const gameSessions = sqliteTable("game_sessions", {
+	sessionId: int().primaryKey({ autoIncrement: true }),
+	userSessionId: int()
+		.notNull()
+		.references(
+			() => {
+				return userSessions.sessionId;
+			},
+			{ onDelete: "cascade" }
+		),
+	team1Player1Id: int()
+		.notNull()
+		.references(() => {
+			return players.playerId;
+		}),
+	team1Player2Id: int()
+		.notNull()
+		.references(() => {
+			return players.playerId;
+		}),
+	team2Player1Id: int()
+		.notNull()
+		.references(() => {
+			return players.playerId;
+		}),
+	team2Player2Id: int()
+		.notNull()
+		.references(() => {
+			return players.playerId;
+		}),
+	state: text({ enum: ["active", "completed"] }).notNull(),
+	...timestamps
+});
+
+export type GameSession = InferSelectModel<typeof gameSessions>;
