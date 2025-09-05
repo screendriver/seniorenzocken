@@ -77,6 +77,14 @@ export function createRouter(): Router {
 				meta: { requiresAuth: true }
 			},
 			{
+				path: "/session-game",
+				name: "session-game",
+				async component() {
+					return import("./views/SessionGameView.vue");
+				},
+				meta: { requiresAuth: true }
+			},
+			{
 				path: "/:pathMatch(.*)*",
 				name: "notFound",
 				async component() {
