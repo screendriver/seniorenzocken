@@ -7,15 +7,21 @@ const timestamps = {
 		.default(sql`(current_timestamp)`)
 };
 
-export const players = sqliteTable("players", {
-	playerId: int().primaryKey({ autoIncrement: true }),
-	firstName: text().notNull(),
-	lastName: text().notNull(),
-	nickname: text().notNull().unique(),
-	totalPoints: int().notNull().default(0),
-	totalGamesCount: int().notNull().default(0),
-	...timestamps
-});
+export const players = sqliteTable(
+	"players",
+	{
+		playerId: int().primaryKey({ autoIncrement: true }),
+		firstName: text().notNull(),
+		lastName: text().notNull(),
+		nickname: text().notNull().unique(),
+		totalPoints: int().notNull().default(0),
+		totalGamesCount: int().notNull().default(0),
+		...timestamps
+	},
+	(table) => {
+		return [index("nickname_index").on(table.nickname)];
+	}
+);
 
 export type Player = InferSelectModel<typeof players>;
 
@@ -124,3 +130,64 @@ export const userSessions = sqliteTable("user_sessions", {
 });
 
 export type UserSession = InferSelectModel<typeof userSessions>;
+
+export const gameSessions = sqliteTable("game_sessions", {
+	sessionId: int().primaryKey({ autoIncrement: true }),
+	userSessionId: int()
+		.notNull()
+		.references(
+			() => {
+				return userSessions.sessionId;
+			},
+			{ onDelete: "cascade" }
+		),
+	team1Player1Id: int()
+		.notNull()
+		.references(() => {
+			return players.playerId;
+		}),
+	team1Player2Id: int()
+		.notNull()
+		.references(() => {
+			return players.playerId;
+		}),
+	team2Player1Id: int()
+		.notNull()
+		.references(() => {
+			return players.playerId;
+		}),
+	team2Player2Id: int()
+		.notNull()
+		.references(() => {
+			return players.playerId;
+		}),
+	state: text({ enum: ["active", "completed"] }).notNull(),
+	...timestamps
+});
+
+export type GameSession = InferSelectModel<typeof gameSessions>;
+
+export const gameRoundHistorySessions = sqliteTable(
+	"game_round_history_sessions",
+	{
+		gameRoundHistoryId: int().primaryKey({ autoIncrement: true }),
+		gameSessionId: int()
+			.notNull()
+			.references(
+				() => {
+					return gameSessions.sessionId;
+				},
+				{ onDelete: "cascade" }
+			),
+		roundNumber: int().notNull(),
+		team1Points: int().notNull(),
+		team2Points: int().notNull(),
+		...timestamps
+	},
+	(table) => {
+		return [
+			index("game_session_id_index").on(table.gameSessionId),
+			index("round_number_index").on(table.roundNumber)
+		];
+	}
+);

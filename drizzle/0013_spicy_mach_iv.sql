@@ -1,0 +1,1 @@
+CREATE INDEX `nickname_index` ON `players` (`nickname`);
