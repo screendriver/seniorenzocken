@@ -30,7 +30,7 @@ const {
 	isError: isMutationError
 } = useMutation({
 	async mutationFn() {
-		return trpcClient.protectedGame.start.mutate({
+		return trpcClient.sessionGame.start.mutate({
 			team1Player1Id: selectedPlayer1Id.value,
 			team1Player2Id: selectedPlayer2Id.value,
 			team2Player1Id: selectedPlayer3Id.value,

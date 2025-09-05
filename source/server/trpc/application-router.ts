@@ -7,7 +7,7 @@ import type { isTurnAround } from "../audio/turn_around.js";
 import type { PlayersRepository } from "../players/players-repository.js";
 import type { SessionRepository } from "../session/session-repository.js";
 import { createGameRouter } from "./routers/game.js";
-import { createProtectedGameRouter } from "./routers/protected-game.js";
+import { createSessionGameRouter } from "./routers/session-game.js";
 import { createAudioRouter } from "./routers/audio.js";
 import type { TRPCRouter } from "./index.js";
 
@@ -26,7 +26,7 @@ export function createTrpcApplicationRouter(options: Options) {
 	const { router, publicProcedure, protectedProcedure } = trpcRouter;
 
 	const gameRouter = createGameRouter({ trpcRouter });
-	const protectedGameRouter = createProtectedGameRouter({ trpcRouter, sessionRepository });
+	const sessionGameRouter = createSessionGameRouter({ trpcRouter, sessionRepository });
 	const audioRouter = createAudioRouter({ trpcRouter, audioRepository, isTurnAround });
 
 	return router({
@@ -69,7 +69,7 @@ export function createTrpcApplicationRouter(options: Options) {
 
 		game: gameRouter,
 
-		protectedGame: protectedGameRouter,
+		sessionGame: sessionGameRouter,
 
 		audio: audioRouter
 	});
