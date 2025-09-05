@@ -6,38 +6,14 @@ import SelectPlayer from "../teams-selection/SelectPlayer.vue";
 import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store";
 import { areSelectedPlayerIdsValid } from "../teams-selection/selected-player-ids";
 
+const { trpcClient } = useTRPCClientStore();
+
 const selectedPlayer1Id = ref(-1);
 const selectedPlayer2Id = ref(-1);
 const selectedPlayer3Id = ref(-1);
 const selectedPlayer4Id = ref(-1);
 
-const submitButtonClass = computed(() => {
-	const selectedPlayerIds = [
-		selectedPlayer1Id.value,
-		selectedPlayer2Id.value,
-		selectedPlayer3Id.value,
-		selectedPlayer4Id.value
-	];
-	const enabled = areSelectedPlayerIdsValid(selectedPlayerIds);
-
-	return {
-		btn: true,
-		"btn-primary": true,
-		"btn-disabled": !enabled
-	};
-});
-
-const { trpcClient } = useTRPCClientStore();
-
-const { isLoading, data: players } = useQuery({
-	queryKey: ["players"],
-	async queryFn() {
-		return trpcClient.players.query();
-	},
-	placeholderData: []
-});
-
-const { mutate: startGame } = useMutation({
+const { mutate: startGame, isPending: isMutationPending } = useMutation({
 	async mutationFn() {
 		return trpcClient.protectedGame.start.mutate({
 			team1Player1Id: selectedPlayer1Id.value,
@@ -46,6 +22,30 @@ const { mutate: startGame } = useMutation({
 			team2Player2Id: selectedPlayer4Id.value
 		});
 	}
+});
+
+const submitButtonClass = computed(() => {
+	const selectedPlayerIds = [
+		selectedPlayer1Id.value,
+		selectedPlayer2Id.value,
+		selectedPlayer3Id.value,
+		selectedPlayer4Id.value
+	];
+	const enabled = areSelectedPlayerIdsValid(selectedPlayerIds) && !isMutationPending.value;
+
+	return {
+		btn: true,
+		"btn-primary": true,
+		"btn-disabled": !enabled
+	};
+});
+
+const { isLoading, data: players } = useQuery({
+	queryKey: ["players"],
+	async queryFn() {
+		return trpcClient.players.query();
+	},
+	placeholderData: []
 });
 </script>
 
