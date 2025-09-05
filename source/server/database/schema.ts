@@ -160,3 +160,28 @@ export const gameSessions = sqliteTable("game_sessions", {
 });
 
 export type GameSession = InferSelectModel<typeof gameSessions>;
+
+export const gameRoundHistorySessions = sqliteTable(
+	"game_round_history_sessions",
+	{
+		gameRoundHistoryId: int().primaryKey({ autoIncrement: true }),
+		gameSessionId: int()
+			.notNull()
+			.references(
+				() => {
+					return gameSessions.sessionId;
+				},
+				{ onDelete: "cascade" }
+			),
+		roundNumber: int().notNull(),
+		team1Points: int().notNull(),
+		team2Points: int().notNull(),
+		...timestamps
+	},
+	(table) => {
+		return [
+			index("game_session_id_index").on(table.gameSessionId),
+			index("round_number_index").on(table.roundNumber)
+		];
+	}
+);
