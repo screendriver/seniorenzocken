@@ -22,15 +22,16 @@ await seedInMemoryDatabase(database);
 
 const audioRepository = createAudioRepository({ database });
 const playersRepository = createPlayersRepository({ database });
+const sessionRepository = createSessionRepository({ database, randomUUID });
 const trpcRouter = createTrpcRouter();
 const trpcApplicationRouter = createTrpcApplicationRouter({
 	trpcRouter,
 	database,
 	audioRepository,
 	playersRepository,
+	sessionRepository,
 	isTurnAround
 });
-const sessionRepository = createSessionRepository({ database, randomUUID });
 const server = createServer({
 	clock: fakeClock,
 	database,
