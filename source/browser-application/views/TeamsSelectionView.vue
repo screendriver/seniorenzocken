@@ -46,9 +46,7 @@ const submitButtonClass = computed(() => {
 		@submit.prevent=""
 		class="bg-neutral col-start-1 col-end-5 grid grid-cols-subgrid rounded-xl py-8 sm:col-start-2 sm:col-end-4 md:col-start-3 md:col-end-7 lg:col-start-4 lg:col-end-10"
 	>
-		<fieldset
-			class="fieldset col-span-full mx-6 grid grid-cols-subgrid items-center gap-2 lg:col-start-2 lg:col-end-6"
-		>
+		<fieldset class="fieldset col-span-full mx-6 grid items-center gap-2 lg:col-start-2 lg:col-end-6">
 			<legend class="fieldset-legend">Team 1</legend>
 
 			<SelectPlayer :player-number="1" :players="players" v-model="selectedPlayer1Id" />
@@ -56,9 +54,7 @@ const submitButtonClass = computed(() => {
 			<SelectPlayer :player-number="2" :players="players" v-model="selectedPlayer2Id" />
 		</fieldset>
 
-		<fieldset
-			class="fieldset col-span-full mx-6 mb-8 grid grid-cols-subgrid items-center gap-2 lg:col-start-2 lg:col-end-6"
-		>
+		<fieldset class="fieldset col-span-full mx-6 mb-8 grid items-center gap-2 lg:col-start-2 lg:col-end-6">
 			<legend class="fieldset-legend">Team 2</legend>
 
 			<SelectPlayer :player-number="3" :players="players" v-model="selectedPlayer3Id" />
