@@ -1,6 +1,5 @@
 import { describe, it, expect, assert, vi } from "vitest";
 import { isErr, isOk } from "true-myth/result";
-import { just, nothing } from "true-myth/maybe";
 import Unit from "true-myth/unit";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { Factory } from "fishery";
@@ -49,9 +48,7 @@ describe("getSession()", () => {
 	it("returns a Result Err when session token could not be found", async () => {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
-		await database
-			.insert(userSessionsDatabaseSchema)
-			.values({ token: "test-token", ipAddress: "127.0.0.1", userAgent: "test-user-agent" });
+		await database.insert(userSessionsDatabaseSchema).values({ token: "test-token" });
 		const randomUUID = vi.fn().mockReturnValue("");
 		const sessionRepostory = createSessionRepository({ database, randomUUID });
 
@@ -65,9 +62,7 @@ describe("getSession()", () => {
 	it("returns a Result Ok when session token could be found", async () => {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
-		await database
-			.insert(userSessionsDatabaseSchema)
-			.values({ token: "test-token", ipAddress: "127.0.0.1", userAgent: "test-user-agent" });
+		await database.insert(userSessionsDatabaseSchema).values({ token: "test-token" });
 		const randomUUID = vi.fn().mockReturnValue("");
 		const sessionRepostory = createSessionRepository({ database, randomUUID });
 
@@ -75,11 +70,7 @@ describe("getSession()", () => {
 
 		assert(isOk(result));
 
-		expect(result.value).toStrictEqual({
-			token: "test-token",
-			ipAddress: just("127.0.0.1"),
-			userAgent: just("test-user-agent")
-		});
+		expect(result.value).toStrictEqual({ token: "test-token" });
 	});
 });
 
@@ -106,11 +97,7 @@ describe("createSession()", () => {
 
 		assert(isOk(result));
 
-		expect(result.value).toStrictEqual({
-			token: "random-uuid",
-			ipAddress: nothing(),
-			userAgent: nothing()
-		});
+		expect(result.value).toStrictEqual({ token: "random-uuid" });
 	});
 
 	it("returns a Result Ok when database insertion succeeded and an IP address and user agent are given", async () => {
@@ -123,11 +110,7 @@ describe("createSession()", () => {
 
 		assert(isOk(result));
 
-		expect(result.value).toStrictEqual({
-			token: "random-uuid",
-			ipAddress: just("127.0.0.1"),
-			userAgent: just("test-user-agent")
-		});
+		expect(result.value).toStrictEqual({ token: "random-uuid" });
 	});
 });
 
