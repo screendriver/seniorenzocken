@@ -6,6 +6,7 @@ import { isNonEmptyArray } from "@sindresorhus/is";
 import SelectPlayer from "../teams-selection/SelectPlayer.vue";
 import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store";
 import { areSelectedPlayerIdsValid } from "../teams-selection/selected-player-ids";
+import AlertErrorMessage from "../alert/AlertErrorMessage.vue";
 
 const router = useRouter();
 const { trpcClient } = useTRPCClientStore();
@@ -23,7 +24,11 @@ const { isLoading, data: players } = useQuery({
 	placeholderData: []
 });
 
-const { mutate: startGame, isPending: isMutationPending } = useMutation({
+const {
+	mutate: startGame,
+	isPending: isMutationPending,
+	isError: isMutationError
+} = useMutation({
 	async mutationFn() {
 		return trpcClient.protectedGame.start.mutate({
 			team1Player1Id: selectedPlayer1Id.value,
@@ -55,6 +60,8 @@ const submitButtonClass = computed(() => {
 </script>
 
 <template>
+	<AlertErrorMessage v-if="isMutationError" error-message="Spiel konnte nicht gestartet werden" />
+
 	<span v-if="isLoading" class="loading loading-spinner loading-md"></span>
 
 	<form
