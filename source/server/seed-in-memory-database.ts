@@ -19,6 +19,7 @@ export async function seedInMemoryDatabase(
 			players: {
 				count: 8,
 				columns: {
+					playerId: drizzleSeed.int({ minValue: 0, isUnique: true }),
 					firstName: drizzleSeed.firstName(),
 					totalPoints: drizzleSeed.int({
 						minValue: 0,
@@ -32,34 +33,6 @@ export async function seedInMemoryDatabase(
 			}
 		};
 	});
-
-	await database.insert(schema.teams).values([
-		{
-			createdAt: "2025-07-10 10:17:51",
-			player1Id: 1,
-			player2Id: 3
-		},
-		{
-			createdAt: "2025-08-10 15:00:00",
-			player1Id: 5,
-			player2Id: 8
-		}
-	]);
-
-	await database.insert(schema.games).values([
-		{
-			team1Id: 1,
-			team2Id: 2,
-			team1Points: 15,
-			team2Points: 7
-		},
-		{
-			team1Id: 1,
-			team2Id: 2,
-			team1Points: 8,
-			team2Points: 15
-		}
-	]);
 
 	await database.insert(schema.gamePointAudios).values([
 		{
