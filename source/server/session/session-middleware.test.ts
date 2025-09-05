@@ -48,14 +48,14 @@ describe("session middleware", () => {
 		const client = createTestClient({ getSession });
 		const response = await client.index.$get(undefined, {
 			headers: {
-				Cookie: "session_token=foobar"
+				Cookie: "seniorenzocken.session_token=foobar"
 			}
 		});
 
 		expect(getSession).toHaveBeenCalledExactlyOnceWith("foobar");
 
 		expect(response.status).toBe(200);
-		expect(response.headers.getSetCookie()).toStrictEqual(["session_token=; Max-Age=0; Path=/"]);
+		expect(response.headers.getSetCookie()).toStrictEqual(["seniorenzocken.session_token=; Max-Age=0; Path=/"]);
 
 		await expect(response.text()).resolves.toBe("OK");
 	});
@@ -65,7 +65,7 @@ describe("session middleware", () => {
 		const client = createTestClient({ getSession });
 		const response = await client.index.$get(undefined, {
 			headers: {
-				Cookie: "session_token=foobar"
+				Cookie: "seniorenzocken.session_token=foobar"
 			}
 		});
 

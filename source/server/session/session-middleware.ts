@@ -4,12 +4,11 @@ import { deleteCookie, getCookie } from "hono/cookie";
 import { just, nothing, of } from "true-myth/maybe";
 import type { SessionRepository } from "../session/session-repository.js";
 import type { HonoEnvironment } from "../hono-environment.js";
+import { cookieName } from "../auth/cookie-name.js";
 
 export type SessionMiddlewareDepdendencies = {
 	readonly sessionRepository: SessionRepository;
 };
-
-const cookieName = "session_token";
 
 export function sessionMiddleware(dependencies: SessionMiddlewareDepdendencies): MiddlewareHandler<HonoEnvironment> {
 	const { sessionRepository } = dependencies;

@@ -128,7 +128,7 @@ describe("authentication handler", () => {
 		expect(createSession).toHaveBeenCalledExactlyOnceWith({ ipAddress: undefined, userAgent: undefined });
 		expect(response.status).toBe(200);
 		expect(response.headers.getSetCookie()).toStrictEqual([
-			"session_token=test-token; Path=/; HttpOnly; SameSite=Lax"
+			"seniorenzocken.session_token=test-token; Path=/; HttpOnly; SameSite=Lax"
 		]);
 		await expect(response.json()).resolves.toStrictEqual({ success: true });
 	});
@@ -150,7 +150,7 @@ describe("authentication handler", () => {
 		expect(createSession).toHaveBeenCalledExactlyOnceWith({ ipAddress: undefined, userAgent: undefined });
 		expect(response.status).toBe(200);
 		expect(response.headers.getSetCookie()).toStrictEqual([
-			"session_token=test-token; Path=/; HttpOnly; Secure; SameSite=Lax"
+			"seniorenzocken.session_token=test-token; Path=/; HttpOnly; Secure; SameSite=Lax"
 		]);
 		await expect(response.json()).resolves.toStrictEqual({ success: true });
 	});

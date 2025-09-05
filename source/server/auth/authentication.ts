@@ -7,6 +7,7 @@ import { safeParse } from "valibot";
 import type { HonoEnvironment } from "../hono-environment.js";
 import type { SessionRepository } from "../session/session-repository.js";
 import { authenticationSchema } from "./authentication-schema.js";
+import { cookieName } from "./cookie-name.js";
 
 const factory = createFactory<HonoEnvironment>();
 
@@ -51,7 +52,7 @@ export function createAuthenticateHandlers(options: AuthenticateHandlersOptions)
 
 		return sessionResult.match({
 			Ok(sessionData) {
-				setCookie(context, "session_token", sessionData.token, {
+				setCookie(context, cookieName, sessionData.token, {
 					httpOnly: true,
 					sameSite: "lax",
 					secure: isRunningInProduction
