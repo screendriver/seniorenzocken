@@ -173,3 +173,23 @@ export const teamMembersSessions = sqliteTable(
 		return [index("team_members_sessions_team_session_index").on(tables.teamSessionId, tables.playerId)];
 	}
 );
+
+export const gameRoundHistorySessions = sqliteTable(
+	"game_round_history_sessions",
+	{
+		gameRoundHistorySessionsId: int("id").primaryKey({ autoIncrement: true }),
+		teamSessionId: int()
+			.notNull()
+			.references(
+				() => {
+					return teamSessions.teamSessionId;
+				},
+				{ onDelete: "cascade" }
+			),
+		gamePoints: int().notNull(),
+		...timestamps
+	},
+	(tables) => {
+		return [index("game_round_history_sessions_team_session_index").on(tables.teamSessionId)];
+	}
+);
