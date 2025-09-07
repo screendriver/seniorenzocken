@@ -131,33 +131,65 @@ export const userSessions = sqliteTable("user_sessions", {
 
 export type UserSession = InferSelectModel<typeof userSessions>;
 
-export const teamSessions = sqliteTable("team_sessions", {
-	teamSessionId: int("id").primaryKey({ autoIncrement: true }),
-	userSessionId: int()
-		.notNull()
-		.references(
-			() => {
-				return userSessions.userSessionId;
-			},
-			{ onDelete: "cascade" }
-		),
-	...timestamps
-});
+export const teamSessions = sqliteTable(
+	"team_sessions",
+	{
+		teamSessionId: int("id").primaryKey({ autoIncrement: true }),
+		userSessionId: int()
+			.notNull()
+			.references(
+				() => {
+					return userSessions.userSessionId;
+				},
+				{ onDelete: "cascade" }
+			),
+		...timestamps
+	},
+	(tables) => {
+		return [index("team_sessions_user_session_index").on(tables.userSessionId)];
+	}
+);
 
-export const teamMembersSessions = sqliteTable("team_members_sessions", {
-	teamMemberSessionId: int("id").primaryKey({ autoIncrement: true }),
-	teamSessionId: int()
-		.notNull()
-		.references(
-			() => {
-				return teamSessions.teamSessionId;
-			},
-			{ onDelete: "cascade" }
-		),
-	playerId: int()
-		.notNull()
-		.references(() => {
-			return players.playerId;
-		}),
-	...timestamps
-});
+export const teamMembersSessions = sqliteTable(
+	"team_members_sessions",
+	{
+		teamMemberSessionId: int("id").primaryKey({ autoIncrement: true }),
+		teamSessionId: int()
+			.notNull()
+			.references(
+				() => {
+					return teamSessions.teamSessionId;
+				},
+				{ onDelete: "cascade" }
+			),
+		playerId: int()
+			.notNull()
+			.references(() => {
+				return players.playerId;
+			}),
+		...timestamps
+	},
+	(tables) => {
+		return [index("team_members_sessions_team_session_index").on(tables.teamSessionId, tables.playerId)];
+	}
+);
+
+export const gameRoundHistorySessions = sqliteTable(
+	"game_round_history_sessions",
+	{
+		gameRoundHistorySessionsId: int("id").primaryKey({ autoIncrement: true }),
+		teamSessionId: int()
+			.notNull()
+			.references(
+				() => {
+					return teamSessions.teamSessionId;
+				},
+				{ onDelete: "cascade" }
+			),
+		gamePoints: int().notNull(),
+		...timestamps
+	},
+	(tables) => {
+		return [index("game_round_history_sessions_team_session_index").on(tables.teamSessionId)];
+	}
+);

@@ -1,0 +1,2 @@
+CREATE INDEX `team_members_sessions_team_session_index` ON `team_members_sessions` (`team_session_id`,`player_id`);--> statement-breakpoint
+CREATE INDEX `team_sessions_user_session_index` ON `team_sessions` (`user_session_id`);

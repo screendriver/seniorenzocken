@@ -23,11 +23,10 @@ export type SessionRepository = {
 	readonly getSession: (sessionToken: string) => Task<Session, Error>;
 	readonly createSession: (options: CreateSessionOptions) => Task<Session, Error>;
 	readonly deleteSession: (sessionToken: string) => Task<Unit, Error>;
-	readonly createTeamSessions: (
+	readonly createTeamsSessions: (
 		sessionToken: string,
 		...teamMembersPlayerIds: readonly number[][]
 	) => Task<Unit, Error>;
-	// readonly getGameSession: (sessionToken: string) => Task<GameSession, Error>;
 };
 
 type WithUserSessionIdOptions<T> = {
@@ -132,7 +131,7 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 			);
 		},
 
-		createTeamSessions(sessionToken, ...teamMembersPlayerIds) {
+		createTeamsSessions(sessionToken, ...teamMembersPlayerIds) {
 			return tryOrElse(
 				(error: unknown) => {
 					return new Error("Could not create team sessions", { cause: error });

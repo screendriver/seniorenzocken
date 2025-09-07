@@ -39,7 +39,7 @@ export function createSessionRouter(options: Options) {
 				const { team1Player1Id, team1Player2Id, team2Player1Id, team2Player2Id } = procedureOptions.input;
 				const { token: sessionToken } = procedureOptions.ctx.session;
 
-				const creationResult = await sessionRepository.createTeamSessions(
+				const creationResult = await sessionRepository.createTeamsSessions(
 					sessionToken,
 					[team1Player1Id, team1Player2Id],
 					[team2Player1Id, team2Player2Id]
