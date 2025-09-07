@@ -145,13 +145,13 @@ describe("deleteSession()", () => {
 	});
 });
 
-describe("createTeamSessions()", () => {
+describe("createTeamsSessions()", () => {
 	it("returns a Result Err when database insertion failed", async () => {
 		const database = createDatabase(":memory:");
 		const randomUUID = vi.fn().mockReturnValue("");
 		const sessionRepostory = createSessionRepository({ database, randomUUID });
 
-		const result = await sessionRepostory.createTeamSessions("");
+		const result = await sessionRepostory.createTeamsSessions("");
 
 		assert(isErr(result));
 
@@ -164,7 +164,7 @@ describe("createTeamSessions()", () => {
 		const randomUUID = vi.fn().mockReturnValue("random-uuid");
 		const sessionRepostory = createSessionRepository({ database, randomUUID });
 
-		const result = await sessionRepostory.createTeamSessions("not-found");
+		const result = await sessionRepostory.createTeamsSessions("not-found");
 
 		assert(isErr(result));
 
@@ -183,7 +183,7 @@ describe("createTeamSessions()", () => {
 		const randomUUID = vi.fn().mockReturnValue("random-uuid");
 		const sessionRepostory = createSessionRepository({ database, randomUUID });
 
-		const result = await sessionRepostory.createTeamSessions("test-token", [7, 16], [5, 10]);
+		const result = await sessionRepostory.createTeamsSessions("test-token", [7, 16], [5, 10]);
 
 		assert(isOk(result));
 
