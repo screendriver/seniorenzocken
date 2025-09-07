@@ -10,7 +10,7 @@ const timestamps = {
 export const players = sqliteTable(
 	"players",
 	{
-		playerId: int().primaryKey({ autoIncrement: true }),
+		playerId: int("id").primaryKey({ autoIncrement: true }),
 		firstName: text().notNull(),
 		lastName: text().notNull(),
 		nickname: text().notNull().unique(),
@@ -28,7 +28,7 @@ export type Player = InferSelectModel<typeof players>;
 export const teams = sqliteTable(
 	"teams",
 	{
-		teamId: int().primaryKey({ autoIncrement: true }),
+		teamId: int("id").primaryKey({ autoIncrement: true }),
 		player1Id: int()
 			.notNull()
 			.references(() => {
@@ -49,7 +49,7 @@ export const teams = sqliteTable(
 export type Team = InferSelectModel<typeof teams>;
 
 export const games = sqliteTable("games", {
-	gameId: int().primaryKey({ autoIncrement: true }),
+	gameId: int("id").primaryKey({ autoIncrement: true }),
 	team1Id: int()
 		.notNull()
 		.references(() => {
@@ -70,7 +70,7 @@ export type Game = InferSelectModel<typeof games>;
 export const gamePointAudios = sqliteTable(
 	"game_point_audios",
 	{
-		gamePointAudioId: int().primaryKey({ autoIncrement: true }),
+		gamePointAudioId: int("id").primaryKey({ autoIncrement: true }),
 		name: text({
 			enum: [
 				"attention.m4a",
@@ -122,7 +122,7 @@ export const gamePointAudios = sqliteTable(
 export type GamePointAudio = InferSelectModel<typeof gamePointAudios>;
 
 export const userSessions = sqliteTable("user_sessions", {
-	sessionId: int().primaryKey({ autoIncrement: true }),
+	userSessionId: int("id").primaryKey({ autoIncrement: true }),
 	token: text().notNull().unique(),
 	ipAddress: text(),
 	userAgent: text(),
@@ -131,63 +131,33 @@ export const userSessions = sqliteTable("user_sessions", {
 
 export type UserSession = InferSelectModel<typeof userSessions>;
 
-export const gameSessions = sqliteTable("game_sessions", {
-	sessionId: int().primaryKey({ autoIncrement: true }),
+export const teamSessions = sqliteTable("team_sessions", {
+	teamSessionId: int("id").primaryKey({ autoIncrement: true }),
 	userSessionId: int()
 		.notNull()
 		.references(
 			() => {
-				return userSessions.sessionId;
+				return userSessions.userSessionId;
 			},
 			{ onDelete: "cascade" }
 		),
-	team1Player1Id: int()
-		.notNull()
-		.references(() => {
-			return players.playerId;
-		}),
-	team1Player2Id: int()
-		.notNull()
-		.references(() => {
-			return players.playerId;
-		}),
-	team2Player1Id: int()
-		.notNull()
-		.references(() => {
-			return players.playerId;
-		}),
-	team2Player2Id: int()
-		.notNull()
-		.references(() => {
-			return players.playerId;
-		}),
-	state: text({ enum: ["active", "completed"] }).notNull(),
 	...timestamps
 });
 
-export type GameSession = InferSelectModel<typeof gameSessions>;
-
-export const gameRoundHistorySessions = sqliteTable(
-	"game_round_history_sessions",
-	{
-		gameRoundHistoryId: int().primaryKey({ autoIncrement: true }),
-		gameSessionId: int()
-			.notNull()
-			.references(
-				() => {
-					return gameSessions.sessionId;
-				},
-				{ onDelete: "cascade" }
-			),
-		roundNumber: int().notNull(),
-		team1Points: int().notNull(),
-		team2Points: int().notNull(),
-		...timestamps
-	},
-	(table) => {
-		return [
-			index("game_session_id_index").on(table.gameSessionId),
-			index("round_number_index").on(table.roundNumber)
-		];
-	}
-);
+export const teamMembersSessions = sqliteTable("team_members_sessions", {
+	teamMemberSessionId: int("id").primaryKey({ autoIncrement: true }),
+	teamSessionId: int()
+		.notNull()
+		.references(
+			() => {
+				return teamSessions.teamSessionId;
+			},
+			{ onDelete: "cascade" }
+		),
+	playerId: int()
+		.notNull()
+		.references(() => {
+			return players.playerId;
+		}),
+	...timestamps
+});
