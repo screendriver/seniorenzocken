@@ -19,6 +19,7 @@ import { sessionMiddleware } from "./session/session-middleware.js";
 import type { HonoEnvironment } from "./hono-environment.js";
 import { createAuthenticateHandlers } from "./auth/authentication.js";
 import { createTRPCContext } from "./trpc/context.js";
+import { createLogoutHandlers } from "./auth/logout.js";
 
 export type ServerOptions = {
 	readonly clock: Clock;
@@ -90,6 +91,8 @@ export function createServer(options: ServerOptions): Hono<HonoEnvironment> {
 				isRunningInProduction
 			})
 		)
+
+		.post("/api/logout", ...createLogoutHandlers({ sessionRepository }))
 
 		.use(
 			"/api/trpc/*",
