@@ -7,12 +7,15 @@ import { safeParse, summarize } from "valibot";
 import { identity } from "es-toolkit";
 import { isUndefined } from "@sindresorhus/is";
 import {
+	players as playersDatabaseSchema,
 	userSessions as userSessionsDatabaseSchema,
 	teamSessions as teamSessionsDatabaseSchema,
-	teamMembersSessions as teamMembersSessionsDatabaseSchema
+	teamMembersSessions as teamMembersSessionsDatabaseSchema,
+	gameRoundHistorySessions as gameRoundHistorySessionsDatabaseSchema
 } from "../database/schema.js";
 import type { Database } from "../database/database.js";
-import { sessionSchema, type Session } from "./session-schema.js";
+import { currentGameRoundSessionsSchema, sessionSchema, type Session } from "./session-schema.js";
+import { mapCurrentGameRoundSessionsFromDatabase, type CurrentGameRoundSession } from "./current-game-round-session.js";
 
 type CreateSessionOptions = {
 	readonly ipAddress?: string | undefined;
@@ -27,6 +30,7 @@ export type SessionRepository = {
 		sessionToken: string,
 		...teamMembersPlayerIds: readonly number[][]
 	) => Task<Unit, Error>;
+	readonly getCurrentGameRoundSession: (sessionToken: string) => Task<CurrentGameRoundSession, Error>;
 };
 
 type WithUserSessionIdOptions<T> = {
@@ -161,6 +165,57 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 					}
 				})
 			);
+		},
+
+		getCurrentGameRoundSession(sessionToken) {
+			return tryOrElse(
+				(error: unknown) => {
+					return new Error("Could not read current game round session", { cause: error });
+				},
+				withUserSessionId({
+					database,
+					sessionToken,
+					async callback(userSessionId) {
+						return database
+							.select({
+								playerNickname: playersDatabaseSchema.nickname,
+								playerFirstName: playersDatabaseSchema.firstName,
+								teamId: teamSessionsDatabaseSchema.teamSessionId
+							})
+							.from(teamSessionsDatabaseSchema)
+							.innerJoin(
+								teamMembersSessionsDatabaseSchema,
+								eq(
+									teamSessionsDatabaseSchema.teamSessionId,
+									teamMembersSessionsDatabaseSchema.teamSessionId
+								)
+							)
+							.innerJoin(
+								playersDatabaseSchema,
+								eq(teamMembersSessionsDatabaseSchema.playerId, playersDatabaseSchema.playerId)
+							)
+							.leftJoin(
+								gameRoundHistorySessionsDatabaseSchema,
+								eq(
+									teamSessionsDatabaseSchema.teamSessionId,
+									gameRoundHistorySessionsDatabaseSchema.teamSessionId
+								)
+							)
+							.where(eq(teamSessionsDatabaseSchema.userSessionId, userSessionId))
+							.orderBy(teamSessionsDatabaseSchema.createdAt, playersDatabaseSchema.nickname);
+					}
+				})
+			)
+				.andThen((databaseRecords) => {
+					const { success, output, issues } = safeParse(currentGameRoundSessionsSchema, databaseRecords);
+
+					if (success) {
+						return Task.resolve(output);
+					}
+
+					return Task.reject(new Error("Could not parse database records", { cause: summarize(issues) }));
+				})
+				.map(mapCurrentGameRoundSessionsFromDatabase);
 		}
 	};
 }
