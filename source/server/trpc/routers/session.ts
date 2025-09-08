@@ -51,6 +51,23 @@ export function createSessionRouter(options: Options) {
 						cause: creationResult.error
 					});
 				}
-			})
+			}),
+
+		currentGameRound: protectedProcedure.query(async (procedureOptions) => {
+			const { token: sessionToken } = procedureOptions.ctx.session;
+
+			return sessionRepository.getCurrentGameRoundSession(sessionToken).match({
+				Resolved(currentGameRound) {
+					return currentGameRound;
+				},
+				Rejected(error) {
+					throw new TRPCError({
+						code: "NOT_FOUND",
+						message: "Could not find current game round",
+						cause: error
+					});
+				}
+			});
+		})
 	});
 }
