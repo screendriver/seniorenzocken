@@ -1,4 +1,3 @@
-// @vitest-environment node
 import { describe, it, expect, vi, type Mock } from "vitest";
 import { Factory } from "fishery";
 import Task from "true-myth/task";
