@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { useMutation } from "@tanstack/vue-query";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import ky from "ky";
 import { useRouter } from "vue-router";
 import AlertErrorMessage from "../alert/AlertErrorMessage.vue";
@@ -21,6 +21,7 @@ const signInButtonClass = ref({
 });
 
 const router = useRouter();
+const queryClient = useQueryClient();
 
 const { mutate, isPending } = useMutation({
 	async mutationFn() {
@@ -36,6 +37,7 @@ const { mutate, isPending } = useMutation({
 	},
 	async onSuccess() {
 		emit("submit");
+		await queryClient.invalidateQueries({ queryKey: ["session"] });
 		await router.push({ name: "teams-selection" });
 	}
 });
