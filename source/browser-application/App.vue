@@ -2,6 +2,7 @@
 import { RouterView } from "vue-router";
 import { useWakeLock } from "@vueuse/core";
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
+import HeaderArea from "./header/HeaderArea.vue";
 import { useGameStore } from "./game-store/game-store.js";
 
 const gameStore = useGameStore();
@@ -38,13 +39,7 @@ function activateWakeLock(): void {
 			<span>Es ist ein unbekannter Fehler augetreten</span>
 		</div>
 
-		<header class="hero absolute -z-10">
-			<img
-				src="./assets/images/watten-karten.jpg"
-				alt="Karten"
-				class="hero-content h-48 w-full max-w-full object-cover p-0 blur-sm"
-			/>
-		</header>
+		<HeaderArea />
 
 		<main
 			@click.once="activateWakeLock()"
