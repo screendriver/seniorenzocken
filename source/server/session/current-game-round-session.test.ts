@@ -5,14 +5,21 @@ import { mapCurrentGameRoundSessionsFromDatabase } from "./current-game-round-se
 describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 	it("returns an array of team names grouped by team id", () => {
 		const currentGameRoundSessions: CurrentGameRoundSessions = [
-			{ playerNickname: "first", playerFirstName: "first-name", teamId: 1 },
-			{ playerNickname: "third", playerFirstName: "third-name", teamId: 2 },
-			{ playerNickname: "second", playerFirstName: "second-name", teamId: 1 },
-			{ playerNickname: "fourth", playerFirstName: "fourth-name", teamId: 2 }
+			{ teamId: 1, playerNickname: "first", playerFirstName: "first-name" },
+			{ teamId: 2, playerNickname: "third", playerFirstName: "third-name" },
+			{ teamId: 1, playerNickname: "second", playerFirstName: "second-name" },
+			{ teamId: 2, playerNickname: "fourth", playerFirstName: "fourth-name" }
 		];
 
-		const teamNames = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessions);
+		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessions);
 
-		expect(teamNames).toStrictEqual({ teamNames: ["first / second", "third / fourth"] });
+		expect(actual).toStrictEqual({
+			teams: [
+				{ id: 1, name: "first / second" },
+				{ id: 2, name: "third / fourth" }
+			],
+			gamePointsPerRound: [0, 2, 3, 4],
+			hasPreviousGameRounds: false
+		});
 	});
 });
