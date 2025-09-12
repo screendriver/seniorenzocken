@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useQuery, useMutation } from "@tanstack/vue-query";
 import { isNonEmptyArray } from "@sindresorhus/is";
+import { assertDefined } from "ts-extras";
 import SelectPlayer from "../teams-selection/SelectPlayer.vue";
-import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store";
-import { areSelectedPlayerIdsValid } from "../teams-selection/selected-player-ids";
+import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
+import { areSelectedPlayerIdsValid } from "../teams-selection/selected-player-ids.js";
 import AlertErrorMessage from "../alert/AlertErrorMessage.vue";
 
 const router = useRouter();
-const { trpcClient } = useTRPCClientStore();
+const trpcClient = inject(trpcCilentInjectionKey);
+
+assertDefined(trpcClient);
 
 const selectedPlayer1Id = ref(-1);
 const selectedPlayer2Id = ref(-1);

@@ -3,6 +3,8 @@ import { mount } from "@vue/test-utils";
 import { createTestingPinia } from "@pinia/testing";
 import type { PartialDeep } from "type-fest";
 import { useGameStore, type GameStore } from "../game-store/game-store.js";
+import { createTRPCClient } from "../trpc/client.js";
+import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
 import TeamsView from "./TeamsView.vue";
 
 vi.mock("vue-router", () => {
@@ -24,7 +26,10 @@ function mountTeamsView(initialGameStoreState?: PartialDeep<GameStore>) {
 						game: initialGameStoreState
 					}
 				})
-			]
+			],
+			provide: {
+				[trpcCilentInjectionKey]: createTRPCClient()
+			}
 		}
 	});
 }

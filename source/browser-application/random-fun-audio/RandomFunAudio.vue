@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import { useTemplateRef, watch } from "vue";
+import { inject, useTemplateRef, watch } from "vue";
 import { onKeyStroke, useMouse, useMousePressed, useTimeoutFn } from "@vueuse/core";
 import { isNull } from "@sindresorhus/is";
+import { assertDefined } from "ts-extras";
 import { storeToRefs } from "pinia";
-import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store.js";
+import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
 import { useGameStore } from "../game-store/game-store.js";
 
+const trpcClient = inject(trpcCilentInjectionKey);
 const audioElementReference = useTemplateRef("audio");
 const gameStore = useGameStore();
 const { isGameRunning } = storeToRefs(gameStore);
-const { trpcClient } = useTRPCClientStore();
 const { x, y } = useMouse();
 const { pressed } = useMousePressed();
+
+assertDefined(trpcClient);
 
 function playEmptyAudio(): void {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- this rule should not complain here

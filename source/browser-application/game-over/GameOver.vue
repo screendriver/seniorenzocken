@@ -1,15 +1,18 @@
 <script setup lang="ts">
+import { inject, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
-import { onMounted, ref } from "vue";
+import { assertDefined } from "ts-extras";
 import { tryOrElse } from "true-myth/task";
 import { useGameStore } from "../game-store/game-store.js";
-import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store.js";
+import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
 
 const router = useRouter();
 const gameStore = useGameStore();
-const { trpcClient } = useTRPCClientStore();
+const trpcClient = inject(trpcCilentInjectionKey);
 const { team1, team2, isAudioPlaying } = storeToRefs(gameStore);
+
+assertDefined(trpcClient);
 
 const wonText = ref("");
 

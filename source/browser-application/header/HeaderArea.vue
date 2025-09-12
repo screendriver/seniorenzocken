@@ -1,13 +1,17 @@
 <script setup lang="ts">
+import { inject } from "vue";
 import { useRouter } from "vue-router";
+import { assertDefined } from "ts-extras";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { isNonEmptyString } from "@sindresorhus/is";
 import ky from "ky";
-import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store";
+import { trpcCilentInjectionKey } from "../trpc-client/trpc-client";
 
 const router = useRouter();
 const queryClient = useQueryClient();
-const { trpcClient } = useTRPCClientStore();
+const trpcClient = inject(trpcCilentInjectionKey);
+
+assertDefined(trpcClient);
 
 const { data: sessionToken } = useQuery({
 	queryKey: ["session"],
