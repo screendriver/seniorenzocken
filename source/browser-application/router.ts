@@ -1,3 +1,4 @@
+import { inject } from "vue";
 import {
 	createRouter as createVueRouter,
 	createWebHistory,
@@ -5,11 +6,12 @@ import {
 	type RouteLocationNormalized,
 	type Router
 } from "vue-router";
+import { assertDefined } from "ts-extras";
 import * as Sentry from "@sentry/vue";
 import { isError, isNull } from "@sindresorhus/is";
 import TeamsView from "./views/TeamsView.vue";
 import { useGameStore } from "./game-store/game-store.js";
-import { useTRPCClientStore } from "./trpc-client-store/trpc-client-store";
+import { trpcCilentInjectionKey } from "./trpc-client/trpc-client";
 
 export function createRouter(): Router {
 	async function authenticationGuard(to: RouteLocationNormalized): Promise<NavigationGuardReturn | undefined> {
@@ -17,7 +19,10 @@ export function createRouter(): Router {
 			return true;
 		}
 
-		const { trpcClient } = useTRPCClientStore();
+		const trpcClient = inject(trpcCilentInjectionKey);
+
+		assertDefined(trpcClient);
+
 		const sessionToken = await trpcClient.session.token.query();
 
 		if (isNull(sessionToken)) {
@@ -68,7 +73,10 @@ export function createRouter(): Router {
 					return import("./views/SignInView.vue");
 				},
 				async beforeEnter() {
-					const { trpcClient } = useTRPCClientStore();
+					const trpcClient = inject(trpcCilentInjectionKey);
+
+					assertDefined(trpcClient);
+
 					const sessionToken = await trpcClient.session.token.query();
 
 					if (isNull(sessionToken)) {

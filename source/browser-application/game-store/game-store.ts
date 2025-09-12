@@ -1,10 +1,11 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
+import { assertDefined } from "ts-extras";
 import { isNonEmptyArray } from "@sindresorhus/is";
 import { type Task, tryOrElse } from "true-myth/task";
 import type { NotPersistedTeam, NotPersistedTeam1, NotPersistedTeam2 } from "../../shared/team.js";
 import type { GameRounds } from "../../shared/game-rounds.js";
-import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store.js";
+import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
 import type { GamePointsPerRound } from "../../shared/game-points.js";
 
 function createEmptyNotPersistedTeam(teamNumber: 1): NotPersistedTeam1;
@@ -20,7 +21,8 @@ function createEmptyNotPersistedTeam(teamNumber: 1 | 2): NotPersistedTeam {
 }
 
 export const useGameStore = defineStore("game", () => {
-	const { trpcClient } = useTRPCClientStore();
+	const trpcClient = inject(trpcCilentInjectionKey);
+
 	const hasError = ref(false);
 	const isAudioPlaying = ref(false);
 	const team1 = ref(createEmptyNotPersistedTeam(1));
@@ -60,6 +62,8 @@ export const useGameStore = defineStore("game", () => {
 				return new Error("Could not create new game", { cause: error });
 			},
 			async () => {
+				assertDefined(trpcClient);
+
 				return trpcClient.game.new.query();
 			}
 		);
@@ -85,6 +89,8 @@ export const useGameStore = defineStore("game", () => {
 				return new Error("Could not start game", { cause: error });
 			},
 			async () => {
+				assertDefined(trpcClient);
+
 				return trpcClient.game.start.mutate({ team1: team1.value, team2: team2.value });
 			}
 		);
@@ -105,6 +111,8 @@ export const useGameStore = defineStore("game", () => {
 				return new Error("Could not start next game round", { cause: error });
 			},
 			async () => {
+				assertDefined(trpcClient);
+
 				return trpcClient.game.nextRound.mutate({
 					team1: team1.value,
 					team2: team2.value,
@@ -135,6 +143,8 @@ export const useGameStore = defineStore("game", () => {
 				return new Error("Could not go back to previous game round", { cause: error });
 			},
 			async () => {
+				assertDefined(trpcClient);
+
 				return trpcClient.game.previousRound.mutate({ gameRounds: gameRounds.value });
 			}
 		);
@@ -157,6 +167,8 @@ export const useGameStore = defineStore("game", () => {
 				return new Error("Could not query for game points playlist", { cause: error });
 			},
 			async () => {
+				assertDefined(trpcClient);
+
 				return trpcClient.audio.gamePointsPlaylist.query({
 					team1: team1.value,
 					team2: team2.value,

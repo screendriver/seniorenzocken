@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, inject, ref, watch } from "vue";
+import { assertDefined } from "ts-extras";
 import { useQuery } from "@tanstack/vue-query";
 import { isDefined } from "@vueuse/core";
 import { isUndefined } from "@sindresorhus/is";
-import { useTRPCClientStore } from "../trpc-client-store/trpc-client-store.js";
+import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
 import { useSessionGameStore } from "../game-store/session-game-store.js";
 
 const sessionGameStore = useSessionGameStore();
-const { trpcClient } = useTRPCClientStore();
+const trpcClient = inject(trpcCilentInjectionKey);
+
+assertDefined(trpcClient);
+
 const selectedGamePoint = ref<Record<number, number>>({});
 
 const { isSuccess, data: currentGameRoundData } = useQuery({
