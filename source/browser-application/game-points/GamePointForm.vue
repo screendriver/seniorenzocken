@@ -1,9 +1,16 @@
 <script setup lang="ts">
+import { inject } from "vue";
 import { storeToRefs } from "pinia";
+import { assertDefined } from "ts-extras";
 import { useGameStore } from "../game-store/game-store.js";
+import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
 import GamePoint from "./GamePoint.vue";
 
-const gameStore = useGameStore();
+const trpcClient = inject(trpcCilentInjectionKey);
+
+assertDefined(trpcClient);
+
+const gameStore = useGameStore(trpcClient);
 
 const { team1, team2, isPreviousGameRoundEnabled, isNextGameRoundEnabled } = storeToRefs(gameStore);
 </script>

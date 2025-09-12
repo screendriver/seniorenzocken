@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { onMounted } from "vue";
+import { inject, onMounted } from "vue";
 import { useOnline } from "@vueuse/core";
 import { isUndefined } from "@sindresorhus/is";
+import { assertDefined } from "ts-extras";
 import { useGameStore } from "../game-store/game-store.js";
+import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
+
+const trpcClient = inject(trpcCilentInjectionKey);
+
+assertDefined(trpcClient);
 
 const isOnline = useOnline();
-const gameStore = useGameStore();
+const gameStore = useGameStore(trpcClient);
 const { isAudioPlaying } = storeToRefs(gameStore);
 
 function onAudioError(): void {

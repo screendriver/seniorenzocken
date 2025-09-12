@@ -112,7 +112,8 @@ describe("<TeamsView />", () => {
 		const wrapper = mountTeamsView({
 			team1: { name: "foo" }
 		});
-		const gameStore = useGameStore();
+		const trpcClient = createTRPCClient();
+		const gameStore = useGameStore(trpcClient);
 
 		const team1NameInput = wrapper.get("#team1-name");
 		await team1NameInput.setValue("bar");
@@ -124,7 +125,8 @@ describe("<TeamsView />", () => {
 		const wrapper = mountTeamsView({
 			team2: { name: "foo" }
 		});
-		const gameStore = useGameStore();
+		const trpcClient = createTRPCClient();
+		const gameStore = useGameStore(trpcClient);
 
 		const team2NameInput = wrapper.get("#team2-name");
 		await team2NameInput.setValue("bar");

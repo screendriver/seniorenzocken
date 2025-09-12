@@ -7,9 +7,12 @@ import { tryOrElse } from "true-myth/task";
 import { useGameStore } from "../game-store/game-store.js";
 import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
 
-const router = useRouter();
-const gameStore = useGameStore();
 const trpcClient = inject(trpcCilentInjectionKey);
+
+assertDefined(trpcClient);
+
+const router = useRouter();
+const gameStore = useGameStore(trpcClient);
 const { team1, team2, isAudioPlaying } = storeToRefs(gameStore);
 
 assertDefined(trpcClient);

@@ -1,15 +1,22 @@
 <script setup lang="ts">
+import { inject } from "vue";
 import canvasConfetti from "canvas-confetti";
 import { storeToRefs } from "pinia";
+import { assertDefined } from "ts-extras";
 import { useConfetti } from "../confetti/use-confetti.js";
 import { useGameStore } from "../game-store/game-store.js";
 import GamePointsAudio from "../game-points/GamePointsAudio.vue";
 import GameOver from "../game-over/GameOver.vue";
 import GamePointForm from "../game-points/GamePointForm.vue";
+import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
 
-useConfetti(canvasConfetti);
+const trpcClient = inject(trpcCilentInjectionKey);
 
-const gameStore = useGameStore();
+assertDefined(trpcClient);
+
+useConfetti(canvasConfetti, trpcClient);
+
+const gameStore = useGameStore(trpcClient);
 const { isAudioPlaying, isGameOver } = storeToRefs(gameStore);
 </script>
 

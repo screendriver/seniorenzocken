@@ -57,7 +57,11 @@ export function createRouter(): Router {
 					return import("./views/GameView.vue");
 				},
 				beforeEnter() {
-					const gameStore = useGameStore();
+					const trpcClient = inject(trpcCilentInjectionKey);
+
+					assertDefined(trpcClient);
+
+					const gameStore = useGameStore(trpcClient);
 
 					if (!gameStore.isGameRunning) {
 						return { name: "teams", replace: true };

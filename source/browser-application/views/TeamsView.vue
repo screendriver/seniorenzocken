@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { computed, onMounted, useTemplateRef } from "vue";
+import { computed, inject, onMounted, useTemplateRef } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { isEmptyString } from "@sindresorhus/is";
+import { assertDefined } from "ts-extras";
 import RandomFunAudio from "../random-fun-audio/RandomFunAudio.vue";
 import { useGameStore } from "../game-store/game-store.js";
+import { trpcCilentInjectionKey } from "../trpc-client/trpc-client";
+
+const trpcClient = inject(trpcCilentInjectionKey);
+
+assertDefined(trpcClient);
 
 const randomFunAudioReference = useTemplateRef("randomFunAudio");
-
 const router = useRouter();
-const gameStore = useGameStore();
+const gameStore = useGameStore(trpcClient);
 const { hasError, team1, team2 } = storeToRefs(gameStore);
 
 const inputClassNames = "input input-bordered col-span-full w-full";

@@ -8,13 +8,14 @@ import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
 import { useGameStore } from "../game-store/game-store.js";
 
 const trpcClient = inject(trpcCilentInjectionKey);
+
+assertDefined(trpcClient);
+
 const audioElementReference = useTemplateRef("audio");
-const gameStore = useGameStore();
+const gameStore = useGameStore(trpcClient);
 const { isGameRunning } = storeToRefs(gameStore);
 const { x, y } = useMouse();
 const { pressed } = useMousePressed();
-
-assertDefined(trpcClient);
 
 function playEmptyAudio(): void {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- this rule should not complain here

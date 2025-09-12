@@ -1,10 +1,12 @@
 import { watchEffect } from "vue";
 import type canvasConfetti from "canvas-confetti";
 import { storeToRefs } from "pinia";
+import type { TRPCClient } from "@trpc/client";
 import { useGameStore } from "../game-store/game-store.js";
+import type { TRPCApplicationRouter } from "../../server-shared/trpc-application-router.js";
 
-export function useConfetti(confetti: typeof canvasConfetti): void {
-	const gameStore = useGameStore();
+export function useConfetti(confetti: typeof canvasConfetti, trpcClient: TRPCClient<TRPCApplicationRouter>): void {
+	const gameStore = useGameStore(trpcClient);
 	const { showConfetti } = storeToRefs(gameStore);
 
 	watchEffect(() => {
