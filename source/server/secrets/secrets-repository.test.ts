@@ -1,5 +1,5 @@
 import { describe, it, expect, assert, vi, type Mock } from "vitest";
-import Task from "true-myth/task";
+import { Task, resolve, reject } from "true-myth/task";
 import { isErr, isOk } from "true-myth/result";
 import type { SecretsClient } from "./secrets-client.js";
 import { createSecretsRepository } from "./secrets-repository.js";
@@ -16,7 +16,7 @@ function createFakeSecretsClient(overrides: Overrides = {}): SecretsClient {
 
 describe("getPrometheusSecrets()", () => {
 	it("returns an Result Err when fetching secrets failed", async () => {
-		const fetchSecret = vi.fn().mockReturnValue(Task.reject(new Error("Oh oh")));
+		const fetchSecret = vi.fn().mockReturnValue(reject(new Error("Oh oh")));
 		const secretsClient = createFakeSecretsClient({ fetchSecret });
 		const secretsRepository = createSecretsRepository({ secretsClient });
 		const secretResult = await secretsRepository.getPrometheusSecrets();
@@ -27,7 +27,7 @@ describe("getPrometheusSecrets()", () => {
 	});
 
 	it("returns an Result Ok when fetching secret succeeded", async () => {
-		const fetchSecret = vi.fn().mockReturnValueOnce(Task.resolve("foo")).mockReturnValueOnce(Task.resolve("bar"));
+		const fetchSecret = vi.fn().mockReturnValueOnce(resolve("foo")).mockReturnValueOnce(Task.resolve("bar"));
 		const secretsClient = createFakeSecretsClient({ fetchSecret });
 		const secretsRepository = createSecretsRepository({ secretsClient });
 		const secretResult = await secretsRepository.getPrometheusSecrets();
@@ -40,7 +40,7 @@ describe("getPrometheusSecrets()", () => {
 
 describe("getSecret()", () => {
 	it("returns an Result Err when fetching secret failed", async () => {
-		const fetchSecret = vi.fn().mockReturnValue(Task.reject(new Error("Oh oh")));
+		const fetchSecret = vi.fn().mockReturnValue(reject(new Error("Oh oh")));
 		const secretsClient = createFakeSecretsClient({ fetchSecret });
 		const secretsRepository = createSecretsRepository({ secretsClient });
 		const secretResult = await secretsRepository.getSecret("FOO");
@@ -51,7 +51,7 @@ describe("getSecret()", () => {
 	});
 
 	it("returns an Result Ok when fetching secret succeeded", async () => {
-		const fetchSecret = vi.fn().mockReturnValue(Task.resolve("bar"));
+		const fetchSecret = vi.fn().mockReturnValue(resolve("bar"));
 		const secretsClient = createFakeSecretsClient({ fetchSecret });
 		const secretsRepository = createSecretsRepository({ secretsClient });
 		const secretResult = await secretsRepository.getSecret("FOO");

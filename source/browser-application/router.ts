@@ -32,7 +32,7 @@ export function createRouter(): Router {
 			}
 		});
 
-		if (isNull(sessionToken)) {
+		if (!isNull(sessionToken)) {
 			return {
 				name: "teams",
 				replace: true

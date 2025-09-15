@@ -1,4 +1,4 @@
-import type { NotPersistedTeam } from "../../shared/team.ts";
+import type { NotPersistedTeam } from "../../shared/team.js";
 
 const pointsWhenGameIsOver = 15;
 

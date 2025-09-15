@@ -1,6 +1,6 @@
 import { describe, it, expect, assert, vi } from "vitest";
 import { isErr, isOk } from "true-myth/result";
-import Unit from "true-myth/unit";
+import { Unit } from "true-myth/unit";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { assertError } from "@sindresorhus/is";
 import { userSessions as userSessionsDatabaseSchema } from "../database/schema.js";

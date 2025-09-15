@@ -1,6 +1,6 @@
 import { of, find, just, isNothing } from "true-myth/maybe";
-import type { GameRound, GameRounds } from "../../shared/game-rounds.ts";
-import type { NotPersistedTeam } from "../../shared/team.ts";
+import type { GameRound, GameRounds } from "../../shared/game-rounds.js";
+import type { NotPersistedTeam } from "../../shared/team.js";
 
 function checkForTurnAround(teamWithZeroMatchTotalGamePoints: NotPersistedTeam) {
 	return (currentGameRound: GameRound) => {
