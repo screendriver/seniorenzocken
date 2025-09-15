@@ -9,6 +9,7 @@ import {
 import { assertDefined } from "ts-extras";
 import * as Sentry from "@sentry/vue";
 import { isError, isNull } from "@sindresorhus/is";
+import { useQueryClient } from "@tanstack/vue-query";
 import TeamsView from "./views/TeamsView.vue";
 import { useGameStore } from "./game-store/game-store.js";
 import { trpcCilentInjectionKey } from "./trpc-client/trpc-client";
@@ -23,7 +24,13 @@ export function createRouter(): Router {
 
 		assertDefined(trpcClient);
 
-		const sessionToken = await trpcClient.session.token.query();
+		const queryClient = useQueryClient();
+		const sessionToken = await queryClient.fetchQuery({
+			queryKey: ["session"],
+			async queryFn() {
+				return trpcClient.session.token.query();
+			}
+		});
 
 		if (isNull(sessionToken)) {
 			return {
@@ -81,7 +88,13 @@ export function createRouter(): Router {
 
 					assertDefined(trpcClient);
 
-					const sessionToken = await trpcClient.session.token.query();
+					const queryClient = useQueryClient();
+					const sessionToken = await queryClient.fetchQuery({
+						queryKey: ["session"],
+						async queryFn() {
+							return trpcClient.session.token.query();
+						}
+					});
 
 					if (isNull(sessionToken)) {
 						return true;
