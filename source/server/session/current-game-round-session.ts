@@ -1,16 +1,6 @@
 import { isArray } from "@sindresorhus/is";
+import type { CurrentGameRoundSession, Team } from "../../shared/current-game-round.js";
 import type { CurrentGameRoundSessions as CurrentGameRoundSessionsFromDatabase } from "./session-schema.js";
-
-type Team = {
-	readonly id: number;
-	readonly name: string;
-};
-
-export type CurrentGameRoundSession = {
-	readonly teams: readonly Team[];
-	readonly gamePointsPerRound: readonly [0, 2, 3, 4];
-	readonly hasPreviousGameRounds: boolean;
-};
 
 export function mapCurrentGameRoundSessionsFromDatabase(
 	currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsFromDatabase

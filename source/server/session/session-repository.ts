@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { safeParse, summarize } from "valibot";
 import { identity } from "es-toolkit";
 import { isUndefined } from "@sindresorhus/is";
+import type { CurrentGameRoundSession } from "../../shared/current-game-round.js";
 import {
 	players as playersDatabaseSchema,
 	userSessions as userSessionsDatabaseSchema,
@@ -15,7 +16,7 @@ import {
 } from "../database/schema.js";
 import type { Database } from "../database/database.js";
 import { currentGameRoundSessionsSchema, sessionSchema, type Session } from "./session-schema.js";
-import { mapCurrentGameRoundSessionsFromDatabase, type CurrentGameRoundSession } from "./current-game-round-session.js";
+import { mapCurrentGameRoundSessionsFromDatabase } from "./current-game-round-session.js";
 
 type CreateSessionOptions = {
 	readonly ipAddress?: string | undefined;

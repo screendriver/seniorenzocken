@@ -114,7 +114,8 @@ export default [
 			"@typescript-eslint/no-shadow": "off",
 			"@typescript-eslint/no-unsafe-type-assertion": "off",
 			"@typescript-eslint/no-unsafe-argument": "off",
-			"destructuring/in-params": "off"
+			"destructuring/in-params": "off",
+			complexity: "off"
 		}
 	},
 	{
