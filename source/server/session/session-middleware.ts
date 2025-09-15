@@ -2,9 +2,9 @@ import type { MiddlewareHandler } from "hono";
 import { createMiddleware } from "hono/factory";
 import { deleteCookie, getCookie } from "hono/cookie";
 import { just, nothing, of } from "true-myth/maybe";
-import type { SessionRepository } from "../session/session-repository.js";
 import type { HonoEnvironment } from "../hono-environment.js";
 import { cookieName } from "../auth/cookie-name.js";
+import type { SessionRepository } from "./session-repository.js";
 
 export type SessionMiddlewareDepdendencies = {
 	readonly sessionRepository: SessionRepository;

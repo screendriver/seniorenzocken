@@ -1,11 +1,11 @@
 import { type Maybe, of, just, find } from "true-myth/maybe";
-import type Result from "true-myth/result";
+import type { Result } from "true-myth/result";
 import { toOkOrErr } from "true-myth/toolbelt";
 import { sample } from "es-toolkit";
-import type { GamePointAudio } from "../database/schema.ts";
-import type { MatchTotalGamePoints } from "../../shared/game-points.ts";
-import type { GameRounds } from "../../shared/game-rounds.ts";
-import type { isTurnAround } from "./turn_around.ts";
+import type { GamePointAudio } from "../database/schema.js";
+import type { MatchTotalGamePoints } from "../../shared/game-points.js";
+import type { GameRounds } from "../../shared/game-rounds.js";
+import type { isTurnAround } from "./turn_around.js";
 
 export type SelectedGamePointAudio = Pick<GamePointAudio, "gamePointAudioId" | "gamePoints" | "name">;
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, type Mock } from "vitest";
 import { Factory } from "fishery";
-import Task from "true-myth/task";
+import { resolve, reject } from "true-myth/task";
 import { Hono } from "hono";
 import { testClient } from "hono/testing";
 import type { SessionRepository } from "../session/session-repository.js";
@@ -9,7 +9,7 @@ import { createAuthenticateHandlers, type AuthenticateHandlersOptions } from "./
 const authenticateHandlersOptionsFactory = Factory.define<AuthenticateHandlersOptions>(() => {
 	return {
 		sessionRepository: {
-			createSession: vi.fn().mockReturnValue(Task.resolve({ token: "test-token" }))
+			createSession: vi.fn().mockReturnValue(resolve({ token: "test-token" }))
 		} as unknown as SessionRepository,
 		seniorenzockenUsername: "test-username",
 		seniorenzockenPassword: "test-password",
@@ -22,7 +22,6 @@ type SessionRepositoryOverrides = {
 	readonly isRunningInProduction?: boolean;
 };
 
-//
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Hono test client infers all routes
 function createTestClient(overrides: SessionRepositoryOverrides = {}) {
 	const options = authenticateHandlersOptionsFactory.build({
@@ -94,7 +93,7 @@ describe("authentication handler", () => {
 	});
 
 	it("returns an HTTP 500 status code when a new session could not be created", async () => {
-		const createSession = vi.fn().mockReturnValue(Task.reject(new Error("Test error")));
+		const createSession = vi.fn().mockReturnValue(reject(new Error("Test error")));
 		const { honoServer } = createTestClient({ createSession });
 
 		const response = await honoServer.request(
@@ -111,7 +110,7 @@ describe("authentication handler", () => {
 	});
 
 	it("returns an HTTP 200 status code when username and password is correct", async () => {
-		const createSession = vi.fn().mockReturnValue(Task.resolve({ token: "test-token" }));
+		const createSession = vi.fn().mockReturnValue(resolve({ token: "test-token" }));
 		const { honoServer } = createTestClient({ createSession });
 
 		const response = await honoServer.request(
@@ -133,7 +132,7 @@ describe("authentication handler", () => {
 	});
 
 	it("sets a secure cookie when running in production", async () => {
-		const createSession = vi.fn().mockReturnValue(Task.resolve({ token: "test-token" }));
+		const createSession = vi.fn().mockReturnValue(resolve({ token: "test-token" }));
 		const { honoServer } = createTestClient({ createSession, isRunningInProduction: true });
 
 		const response = await honoServer.request(
@@ -155,7 +154,7 @@ describe("authentication handler", () => {
 	});
 
 	it("sets IP address and user agent in session", async () => {
-		const createSession = vi.fn().mockReturnValue(Task.resolve({ token: "test-token" }));
+		const createSession = vi.fn().mockReturnValue(resolve({ token: "test-token" }));
 		const { honoServer } = createTestClient({ createSession, isRunningInProduction: true });
 
 		await honoServer.request(
