@@ -6,9 +6,9 @@ import { isEmptyString } from "@sindresorhus/is";
 import { assertDefined } from "ts-extras";
 import RandomFunAudio from "../random-fun-audio/RandomFunAudio.vue";
 import { useGameStore } from "../game-store/game-store.js";
-import { trpcCilentInjectionKey } from "../trpc-client/trpc-client";
+import { trpcClientInjectionKey } from "../trpc/client";
 
-const trpcClient = inject(trpcCilentInjectionKey);
+const trpcClient = inject(trpcClientInjectionKey);
 
 assertDefined(trpcClient);
 

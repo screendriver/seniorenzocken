@@ -5,9 +5,9 @@ import { storeToRefs } from "pinia";
 import { assertDefined } from "ts-extras";
 import { tryOrElse } from "true-myth/task";
 import { useGameStore } from "../game-store/game-store.js";
-import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
+import { trpcClientInjectionKey } from "../trpc/client.js";
 
-const trpcClient = inject(trpcCilentInjectionKey);
+const trpcClient = inject(trpcClientInjectionKey);
 
 assertDefined(trpcClient);
 

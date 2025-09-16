@@ -7,7 +7,7 @@ import { Factory } from "fishery";
 import type { TRPCApplicationRouter } from "../../server-shared/trpc-application-router";
 import type { CurrentGameRoundSession } from "../../shared/current-game-round";
 import { useSessionGameStore } from "../game-store/session-game-store.js";
-import { trpcCilentInjectionKey } from "../trpc-client/trpc-client";
+import { trpcClientInjectionKey } from "../trpc/client.js";
 import SessionGameView from "./SessionGameView.vue";
 
 const currentGameRoundFactory = Factory.define<CurrentGameRoundSession>(() => {
@@ -49,7 +49,7 @@ function createComponentWrapper(options: ComponentWrapperOptions = {}): VueWrapp
 	return mount(SessionGameView, {
 		global: {
 			provide: {
-				[trpcCilentInjectionKey]: fakeTRPCClient
+				[trpcClientInjectionKey]: fakeTRPCClient
 			},
 			plugins: [testingPinia, [VueQueryPlugin, { queryClient }]]
 		}

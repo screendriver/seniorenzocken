@@ -5,8 +5,7 @@ import { createSentryPiniaPlugin } from "@sentry/vue";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import App from "./App.vue";
 import { createRouter } from "./router.js";
-import { createTRPCClient } from "./trpc/client";
-import { trpcCilentInjectionKey } from "./trpc-client/trpc-client";
+import { createTRPCClient, trpcClientInjectionKey } from "./trpc/client.js";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -24,7 +23,7 @@ if (import.meta.env.PROD) {
 
 pinia.use(createSentryPiniaPlugin());
 
-app.provide(trpcCilentInjectionKey, createTRPCClient());
+app.provide(trpcClientInjectionKey, createTRPCClient());
 app.use(pinia);
 app.use(router);
 app.use(VueQueryPlugin, { enableDevtoolsV6Plugin: true });

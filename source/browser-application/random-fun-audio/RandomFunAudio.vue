@@ -4,10 +4,10 @@ import { onKeyStroke, useMouse, useMousePressed, useTimeoutFn } from "@vueuse/co
 import { isNull } from "@sindresorhus/is";
 import { assertDefined } from "ts-extras";
 import { storeToRefs } from "pinia";
-import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
+import { trpcClientInjectionKey } from "../trpc/client.js";
 import { useGameStore } from "../game-store/game-store.js";
 
-const trpcClient = inject(trpcCilentInjectionKey);
+const trpcClient = inject(trpcClientInjectionKey);
 
 assertDefined(trpcClient);
 

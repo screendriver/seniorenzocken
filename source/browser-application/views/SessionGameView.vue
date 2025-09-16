@@ -4,10 +4,10 @@ import { assertDefined } from "ts-extras";
 import { useQuery } from "@tanstack/vue-query";
 import { isDefined } from "@vueuse/core";
 import { isUndefined } from "@sindresorhus/is";
-import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
+import { trpcClientInjectionKey } from "../trpc/client.js";
 import { useSessionGameStore } from "../game-store/session-game-store.js";
 
-const trpcClient = inject(trpcCilentInjectionKey);
+const trpcClient = inject(trpcClientInjectionKey);
 
 assertDefined(trpcClient);
 

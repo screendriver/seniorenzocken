@@ -12,7 +12,7 @@ import { isError, isNull } from "@sindresorhus/is";
 import { useQueryClient } from "@tanstack/vue-query";
 import TeamsView from "./views/TeamsView.vue";
 import { useGameStore } from "./game-store/game-store.js";
-import { trpcCilentInjectionKey } from "./trpc-client/trpc-client";
+import { trpcClientInjectionKey } from "./trpc/client.js";
 
 export function createRouter(): Router {
 	async function authenticationGuard(to: RouteLocationNormalized): Promise<NavigationGuardReturn | undefined> {
@@ -20,7 +20,7 @@ export function createRouter(): Router {
 			return true;
 		}
 
-		const trpcClient = inject(trpcCilentInjectionKey);
+		const trpcClient = inject(trpcClientInjectionKey);
 
 		assertDefined(trpcClient);
 
@@ -64,7 +64,7 @@ export function createRouter(): Router {
 					return import("./views/GameView.vue");
 				},
 				beforeEnter() {
-					const trpcClient = inject(trpcCilentInjectionKey);
+					const trpcClient = inject(trpcClientInjectionKey);
 
 					assertDefined(trpcClient);
 
@@ -84,7 +84,7 @@ export function createRouter(): Router {
 					return import("./views/SignInView.vue");
 				},
 				async beforeEnter() {
-					const trpcClient = inject(trpcCilentInjectionKey);
+					const trpcClient = inject(trpcClientInjectionKey);
 
 					assertDefined(trpcClient);
 
