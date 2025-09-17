@@ -26,6 +26,9 @@ function createFakeTRPCClient(): TRPCClient<TRPCApplicationRouter> {
 		session: {
 			currentGameRound: {
 				query: vi.fn().mockResolvedValue(currentGameRoundFactory.build())
+			},
+			nextGameRound: {
+				mutate: vi.fn().mockResolvedValue(undefined)
 			}
 		}
 	} as unknown as TRPCClient<TRPCApplicationRouter>;
@@ -287,5 +290,24 @@ describe("<SessionGameView />", () => {
 
 		expect(nextGameRoundButton?.text()).toBe("Nächste Runde");
 		expect(nextGameRoundButton?.attributes().disabled).toBeUndefined();
+	});
+
+	it("starts the next game round when the 'Nächste Runde' button is clicked", async () => {
+		const fakeTRPCClient = createFakeTRPCClient();
+
+		using mutateSpy = vi.spyOn(fakeTRPCClient.session.nextGameRound, "mutate").mockResolvedValue(undefined);
+
+		const wrapper = createComponentWrapper({ trpcClient: fakeTRPCClient });
+
+		await flushPromises();
+
+		const nextGameRoundButton = wrapper.findAll("button")[1];
+
+		expect(nextGameRoundButton?.text()).toBe("Nächste Runde");
+
+		await wrapper.findAll("input[type='radio']")[1]?.trigger("change");
+		await nextGameRoundButton?.trigger("click");
+
+		expect(mutateSpy).toHaveBeenCalledExactlyOnceWith({ teamId: 1, gamePoints: 2 });
 	});
 });

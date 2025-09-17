@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, ref } from "vue";
 import { assertDefined } from "ts-extras";
-import { useQuery } from "@tanstack/vue-query";
+import { useMutation, useQuery } from "@tanstack/vue-query";
 import { isDefined } from "@vueuse/core";
 import { trpcClientInjectionKey } from "../trpc/client.js";
 import { useSessionGameStore } from "../game-store/session-game-store.js";
@@ -22,6 +22,15 @@ const { isSuccess, data: currentGameRoundData } = useQuery({
 	queryKey: ["currentGameRound"],
 	async queryFn() {
 		return trpcClient.session.currentGameRound.query();
+	}
+});
+
+const { mutate: nextGameRound } = useMutation({
+	async mutationFn() {
+		return trpcClient.session.nextGameRound.mutate({
+			teamId: selectedRadioButton.value.teamId,
+			gamePoints: selectedRadioButton.value.selectedGamePoint
+		});
 	}
 });
 
@@ -80,7 +89,9 @@ function setSelectedGamePoint(teamId: number, changeEvent: Readonly<Event>): voi
 				Runde zurück
 			</button>
 
-			<button :disabled="!isNextGameRoundEnabled" type="button" class="btn btn-primary">Nächste Runde</button>
+			<button @click="nextGameRound()" :disabled="!isNextGameRoundEnabled" type="button" class="btn btn-primary">
+				Nächste Runde
+			</button>
 		</div>
 	</template>
 </template>

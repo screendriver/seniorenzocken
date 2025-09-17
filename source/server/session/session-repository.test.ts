@@ -3,7 +3,11 @@ import { isErr, isOk } from "true-myth/result";
 import { Unit } from "true-myth/unit";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { assertError } from "@sindresorhus/is";
-import { userSessions as userSessionsDatabaseSchema } from "../database/schema.js";
+import { assertDefined } from "ts-extras";
+import {
+	userSessions as userSessionsDatabaseSchema,
+	teamSessions as teamSessionsDatabaseSchema
+} from "../database/schema.js";
 import { createDatabase } from "../database/database.js";
 import { seedInMemoryDatabase } from "../seed-in-memory-database.js";
 import { createSessionRepository } from "./session-repository.js";
@@ -184,6 +188,48 @@ describe("createTeamsSessions()", () => {
 		const sessionRepostory = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepostory.createTeamsSessions("test-token", [7, 16], [5, 10]);
+
+		assert(isOk(result));
+
+		expect(result.value).toBe(Unit);
+	});
+});
+
+describe("createGameRoundHistorySession()", () => {
+	it("returns a Result Err when database insertion failed", async () => {
+		const database = createDatabase(":memory:");
+		const randomUUID = vi.fn().mockReturnValue("");
+		const sessionRepostory = createSessionRepository({ database, randomUUID });
+
+		const result = await sessionRepostory.createGameRoundHistorySession({ teamId: 0, gamePoints: 0 });
+
+		assert(isErr(result));
+
+		expect(result.error.message).toBe("Could not create game round history session");
+	});
+
+	it("returns a Result Ok when database insertion succeeded", async () => {
+		const database = createDatabase(":memory:");
+		await migrate(database, { migrationsFolder: "./drizzle" });
+		await seedInMemoryDatabase(database);
+		const randomUUID = vi.fn().mockReturnValue("random-uuid");
+		const sessionRepostory = createSessionRepository({ database, randomUUID });
+
+		const [firstUserSessionDatabaseRecord] = await database
+			.insert(userSessionsDatabaseSchema)
+			.values({ token: "test-token" })
+			.returning({ userSessionId: userSessionsDatabaseSchema.userSessionId });
+
+		assertDefined(firstUserSessionDatabaseRecord);
+
+		await database
+			.insert(teamSessionsDatabaseSchema)
+			.values({ userSessionId: firstUserSessionDatabaseRecord.userSessionId });
+		await database
+			.insert(teamSessionsDatabaseSchema)
+			.values({ userSessionId: firstUserSessionDatabaseRecord.userSessionId });
+
+		const result = await sessionRepostory.createGameRoundHistorySession({ teamId: 1, gamePoints: 2 });
 
 		assert(isOk(result));
 

@@ -8,7 +8,7 @@ type Options = {
 	readonly sessionRepository: SessionRepository;
 };
 
-const playerIdSchema = pipe(number(), integer(), minValue(1));
+const databaseIdSchema = pipe(number(), integer(), minValue(1));
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- tRPC works with type inference
 export function createSessionRouter(options: Options) {
@@ -29,10 +29,10 @@ export function createSessionRouter(options: Options) {
 		startGame: protectedProcedure
 			.input(
 				object({
-					team1Player1Id: playerIdSchema,
-					team1Player2Id: playerIdSchema,
-					team2Player1Id: playerIdSchema,
-					team2Player2Id: playerIdSchema
+					team1Player1Id: databaseIdSchema,
+					team1Player2Id: databaseIdSchema,
+					team2Player1Id: databaseIdSchema,
+					team2Player2Id: databaseIdSchema
 				})
 			)
 			.mutation(async (procedureOptions) => {
@@ -68,6 +68,22 @@ export function createSessionRouter(options: Options) {
 					});
 				}
 			});
-		})
+		}),
+
+		nextGameRound: protectedProcedure
+			.input(object({ teamId: pipe(databaseIdSchema), gamePoints: pipe(number(), integer(), minValue(2)) }))
+			.mutation(async (procedureOptions) => {
+				const { teamId, gamePoints } = procedureOptions.input;
+				const creationResult = await sessionRepository.createGameRoundHistorySession({ teamId, gamePoints });
+
+				if (creationResult.isErr) {
+					throw new TRPCError({
+						code: "INTERNAL_SERVER_ERROR",
+						cause: creationResult.error
+					});
+				}
+
+				return undefined;
+			})
 	});
 }
