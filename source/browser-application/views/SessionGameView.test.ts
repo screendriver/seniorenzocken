@@ -140,10 +140,10 @@ describe("<SessionGameView />", () => {
 
 		const radioButtons = wrapper.findAll("input[type='radio']");
 
-		expect(radioButtons[0]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[1]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[2]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[3]?.attributes().disable).toBeUndefined();
+		expect(radioButtons[0]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[1]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[2]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[3]?.attributes().disabled).toBeUndefined();
 
 		expect(radioButtons[4]?.attributes()).toMatchObject({ disabled: "" });
 		expect(radioButtons[5]?.attributes()).toMatchObject({ disabled: "" });
@@ -167,10 +167,10 @@ describe("<SessionGameView />", () => {
 		expect(radioButtons[2]?.attributes()).toMatchObject({ disabled: "" });
 		expect(radioButtons[3]?.attributes()).toMatchObject({ disabled: "" });
 
-		expect(radioButtons[4]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[5]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[6]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[7]?.attributes().disable).toBeUndefined();
+		expect(radioButtons[4]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[5]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[6]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[7]?.attributes().disabled).toBeUndefined();
 	});
 
 	it('renders a disabled "Runde zurück" button when tRPC server response has no previous game rounds', async () => {
