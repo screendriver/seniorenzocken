@@ -6,9 +6,9 @@ import { assertDefined } from "ts-extras";
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 import HeaderArea from "./header/HeaderArea.vue";
 import { useGameStore } from "./game-store/game-store.js";
-import { trpcCilentInjectionKey } from "./trpc-client/trpc-client";
+import { trpcClientInjectionKey } from "./trpc/client.js";
 
-const trpcClient = inject(trpcCilentInjectionKey);
+const trpcClient = inject(trpcClientInjectionKey);
 
 assertDefined(trpcClient);
 

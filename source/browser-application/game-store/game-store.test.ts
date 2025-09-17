@@ -29,7 +29,7 @@ describe("game store", () => {
 	it(
 		"has an initial team1 set",
 		withPinia(() => {
-			const trpcClient = createTRPCClient();
+			const trpcClient = createTRPCClient({ isRunningInProduction: false });
 			const gameStore = useGameStore(trpcClient);
 			const expected = notPersistedTeamFactory.build({ teamNumber: 1 });
 
@@ -40,7 +40,7 @@ describe("game store", () => {
 	it(
 		"has an initial team2 set",
 		withPinia(() => {
-			const trpcClient = createTRPCClient();
+			const trpcClient = createTRPCClient({ isRunningInProduction: false });
 			const gameStore = useGameStore(trpcClient);
 			const expected = notPersistedTeamFactory.build({ teamNumber: 2 });
 

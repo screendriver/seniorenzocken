@@ -8,9 +8,9 @@ import { useGameStore } from "../game-store/game-store.js";
 import GamePointsAudio from "../game-points/GamePointsAudio.vue";
 import GameOver from "../game-over/GameOver.vue";
 import GamePointForm from "../game-points/GamePointForm.vue";
-import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
+import { trpcClientInjectionKey } from "../trpc/client.js";
 
-const trpcClient = inject(trpcCilentInjectionKey);
+const trpcClient = inject(trpcClientInjectionKey);
 
 assertDefined(trpcClient);
 

@@ -7,7 +7,7 @@ import { Factory } from "fishery";
 import type { TRPCApplicationRouter } from "../../server-shared/trpc-application-router";
 import type { CurrentGameRoundSession } from "../../shared/current-game-round";
 import { useSessionGameStore } from "../game-store/session-game-store.js";
-import { trpcCilentInjectionKey } from "../trpc-client/trpc-client";
+import { trpcClientInjectionKey } from "../trpc/client.js";
 import SessionGameView from "./SessionGameView.vue";
 
 const currentGameRoundFactory = Factory.define<CurrentGameRoundSession>(() => {
@@ -26,6 +26,9 @@ function createFakeTRPCClient(): TRPCClient<TRPCApplicationRouter> {
 		session: {
 			currentGameRound: {
 				query: vi.fn().mockResolvedValue(currentGameRoundFactory.build())
+			},
+			nextGameRound: {
+				mutate: vi.fn().mockResolvedValue(undefined)
 			}
 		}
 	} as unknown as TRPCClient<TRPCApplicationRouter>;
@@ -49,7 +52,7 @@ function createComponentWrapper(options: ComponentWrapperOptions = {}): VueWrapp
 	return mount(SessionGameView, {
 		global: {
 			provide: {
-				[trpcCilentInjectionKey]: fakeTRPCClient
+				[trpcClientInjectionKey]: fakeTRPCClient
 			},
 			plugins: [testingPinia, [VueQueryPlugin, { queryClient }]]
 		}
@@ -140,10 +143,10 @@ describe("<SessionGameView />", () => {
 
 		const radioButtons = wrapper.findAll("input[type='radio']");
 
-		expect(radioButtons[0]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[1]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[2]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[3]?.attributes().disable).toBeUndefined();
+		expect(radioButtons[0]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[1]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[2]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[3]?.attributes().disabled).toBeUndefined();
 
 		expect(radioButtons[4]?.attributes()).toMatchObject({ disabled: "" });
 		expect(radioButtons[5]?.attributes()).toMatchObject({ disabled: "" });
@@ -167,10 +170,10 @@ describe("<SessionGameView />", () => {
 		expect(radioButtons[2]?.attributes()).toMatchObject({ disabled: "" });
 		expect(radioButtons[3]?.attributes()).toMatchObject({ disabled: "" });
 
-		expect(radioButtons[4]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[5]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[6]?.attributes().disable).toBeUndefined();
-		expect(radioButtons[7]?.attributes().disable).toBeUndefined();
+		expect(radioButtons[4]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[5]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[6]?.attributes().disabled).toBeUndefined();
+		expect(radioButtons[7]?.attributes().disabled).toBeUndefined();
 	});
 
 	it('renders a disabled "Runde zurück" button when tRPC server response has no previous game rounds', async () => {
@@ -287,5 +290,24 @@ describe("<SessionGameView />", () => {
 
 		expect(nextGameRoundButton?.text()).toBe("Nächste Runde");
 		expect(nextGameRoundButton?.attributes().disabled).toBeUndefined();
+	});
+
+	it("starts the next game round when the 'Nächste Runde' button is clicked", async () => {
+		const fakeTRPCClient = createFakeTRPCClient();
+
+		using mutateSpy = vi.spyOn(fakeTRPCClient.session.nextGameRound, "mutate").mockResolvedValue(undefined);
+
+		const wrapper = createComponentWrapper({ trpcClient: fakeTRPCClient });
+
+		await flushPromises();
+
+		const nextGameRoundButton = wrapper.findAll("button")[1];
+
+		expect(nextGameRoundButton?.text()).toBe("Nächste Runde");
+
+		await wrapper.findAll("input[type='radio']")[1]?.trigger("change");
+		await nextGameRoundButton?.trigger("click");
+
+		expect(mutateSpy).toHaveBeenCalledExactlyOnceWith({ teamId: 1, gamePoints: 2 });
 	});
 });

@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import { computed, inject, ref, watch } from "vue";
+import { computed, inject, ref } from "vue";
 import { assertDefined } from "ts-extras";
-import { useQuery } from "@tanstack/vue-query";
+import { useMutation, useQuery } from "@tanstack/vue-query";
 import { isDefined } from "@vueuse/core";
-import { isUndefined } from "@sindresorhus/is";
-import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
+import { trpcClientInjectionKey } from "../trpc/client.js";
 import { useSessionGameStore } from "../game-store/session-game-store.js";
 
-const trpcClient = inject(trpcCilentInjectionKey);
+type SelectedRadioButton = {
+	readonly teamId: number;
+	readonly selectedGamePoint: number;
+};
+
+const trpcClient = inject(trpcClientInjectionKey);
 
 assertDefined(trpcClient);
 
 const sessionGameStore = useSessionGameStore();
-const selectedGamePoint = ref<Record<number, number>>({});
+const selectedRadioButton = ref<SelectedRadioButton>({ teamId: -1, selectedGamePoint: 0 });
 
 const { isSuccess, data: currentGameRoundData } = useQuery({
 	queryKey: ["currentGameRound"],
@@ -21,23 +25,13 @@ const { isSuccess, data: currentGameRoundData } = useQuery({
 	}
 });
 
-watch(currentGameRoundData, () => {
-	if (isUndefined(currentGameRoundData.value)) {
-		return;
+const { mutate: nextGameRound } = useMutation({
+	async mutationFn() {
+		return trpcClient.session.nextGameRound.mutate({
+			teamId: selectedRadioButton.value.teamId,
+			gamePoints: selectedRadioButton.value.selectedGamePoint
+		});
 	}
-
-	selectedGamePoint.value = currentGameRoundData.value.teams.reduce((previousTeam, team) => {
-		return {
-			...previousTeam,
-			[team.id]: 0
-		};
-	}, {});
-});
-
-const allTeamsHasZeroGamePoints = computed(() => {
-	return Object.values(selectedGamePoint.value).every((gamePoint) => {
-		return gamePoint === 0;
-	});
 });
 
 function isGamePointEnabled(teamId: number): boolean {
@@ -45,13 +39,11 @@ function isGamePointEnabled(teamId: number): boolean {
 		return false;
 	}
 
-	const selectedTeamGamePoint = selectedGamePoint.value[teamId];
-
-	if (isUndefined(selectedTeamGamePoint)) {
+	if (selectedRadioButton.value.selectedGamePoint === 0) {
 		return true;
 	}
 
-	return allTeamsHasZeroGamePoints.value || selectedTeamGamePoint > 0;
+	return selectedRadioButton.value.teamId === teamId && selectedRadioButton.value.selectedGamePoint > 0;
 }
 
 const isPreviousGameRoundEnabled = computed(() => {
@@ -59,14 +51,14 @@ const isPreviousGameRoundEnabled = computed(() => {
 });
 
 const isNextGameRoundEnabled = computed(() => {
-	return !allTeamsHasZeroGamePoints.value && !sessionGameStore.isAudioPlaying;
+	return selectedRadioButton.value.selectedGamePoint > 0 && !sessionGameStore.isAudioPlaying;
 });
 
 function setSelectedGamePoint(teamId: number, changeEvent: Readonly<Event>): void {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- needs a type guard
 	const inputElement = changeEvent.target as HTMLInputElement;
 
-	selectedGamePoint.value[teamId] = Number.parseInt(inputElement.value, 10);
+	selectedRadioButton.value = { teamId, selectedGamePoint: Number.parseInt(inputElement.value, 10) };
 }
 </script>
 
@@ -97,7 +89,9 @@ function setSelectedGamePoint(teamId: number, changeEvent: Readonly<Event>): voi
 				Runde zurück
 			</button>
 
-			<button :disabled="!isNextGameRoundEnabled" type="button" class="btn btn-primary">Nächste Runde</button>
+			<button @click="nextGameRound()" :disabled="!isNextGameRoundEnabled" type="button" class="btn btn-primary">
+				Nächste Runde
+			</button>
 		</div>
 	</template>
 </template>

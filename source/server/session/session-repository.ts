@@ -23,6 +23,11 @@ type CreateSessionOptions = {
 	readonly userAgent?: string | undefined;
 };
 
+type CreateGameRoundHistorySessionOptions = {
+	readonly teamId: number;
+	readonly gamePoints: number;
+};
+
 export type SessionRepository = {
 	readonly getSession: (sessionToken: string) => Task<Session, Error>;
 	readonly createSession: (options: CreateSessionOptions) => Task<Session, Error>;
@@ -32,6 +37,7 @@ export type SessionRepository = {
 		...teamMembersPlayerIds: readonly number[][]
 	) => Task<Unit, Error>;
 	readonly getCurrentGameRoundSession: (sessionToken: string) => Task<CurrentGameRoundSession, Error>;
+	readonly createGameRoundHistorySession: (options: CreateGameRoundHistorySessionOptions) => Task<Unit, Error>;
 };
 
 type WithUserSessionIdOptions<T> = {
@@ -217,6 +223,24 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 					return Task.reject(new Error("Could not parse database records", { cause: summarize(issues) }));
 				})
 				.map(mapCurrentGameRoundSessionsFromDatabase);
+		},
+
+		createGameRoundHistorySession(options) {
+			return tryOrElse(
+				(error: unknown) => {
+					return new Error("Could not create game round history session", { cause: error });
+				},
+				async () => {
+					const { teamId, gamePoints } = options;
+
+					await database.insert(gameRoundHistorySessionsDatabaseSchema).values({
+						teamSessionId: teamId,
+						gamePoints
+					});
+
+					return Unit;
+				}
+			);
 		}
 	};
 }

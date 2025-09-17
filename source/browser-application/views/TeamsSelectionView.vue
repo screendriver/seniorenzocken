@@ -5,12 +5,12 @@ import { useQuery, useMutation } from "@tanstack/vue-query";
 import { isNonEmptyArray } from "@sindresorhus/is";
 import { assertDefined } from "ts-extras";
 import SelectPlayer from "../teams-selection/SelectPlayer.vue";
-import { trpcCilentInjectionKey } from "../trpc-client/trpc-client.js";
+import { trpcClientInjectionKey } from "../trpc/client.js";
 import { areSelectedPlayerIdsValid } from "../teams-selection/selected-player-ids.js";
 import AlertErrorMessage from "../alert/AlertErrorMessage.vue";
 
 const router = useRouter();
-const trpcClient = inject(trpcCilentInjectionKey);
+const trpcClient = inject(trpcClientInjectionKey);
 
 assertDefined(trpcClient);
 

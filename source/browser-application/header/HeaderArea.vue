@@ -5,11 +5,11 @@ import { assertDefined } from "ts-extras";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { isNonEmptyString } from "@sindresorhus/is";
 import ky from "ky";
-import { trpcCilentInjectionKey } from "../trpc-client/trpc-client";
+import { trpcClientInjectionKey } from "../trpc/client.js";
 
 const router = useRouter();
 const queryClient = useQueryClient();
-const trpcClient = inject(trpcCilentInjectionKey);
+const trpcClient = inject(trpcClientInjectionKey);
 
 assertDefined(trpcClient);
 
