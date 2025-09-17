@@ -23,7 +23,7 @@ if (import.meta.env.PROD) {
 
 pinia.use(createSentryPiniaPlugin());
 
-app.provide(trpcClientInjectionKey, createTRPCClient());
+app.provide(trpcClientInjectionKey, createTRPCClient({ isRunningInProduction: import.meta.env.PROD }));
 app.use(pinia);
 app.use(router);
 app.use(VueQueryPlugin, { enableDevtoolsV6Plugin: true });

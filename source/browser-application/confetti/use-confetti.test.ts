@@ -17,7 +17,7 @@ describe("useConfetti()", () => {
 	it(
 		"does not call given confetti function when confetti should not be shown",
 		withPinia(async () => {
-			const trpcClient = createTRPCClient();
+			const trpcClient = createTRPCClient({ isRunningInProduction: false });
 			const gameStore = useGameStore(trpcClient);
 			gameStore.showConfetti = false;
 
@@ -31,7 +31,7 @@ describe("useConfetti()", () => {
 	it(
 		"calls given confetti function when confetti should be shown",
 		withPinia(async () => {
-			const trpcClient = createTRPCClient();
+			const trpcClient = createTRPCClient({ isRunningInProduction: false });
 			const gameStore = useGameStore(trpcClient);
 			gameStore.showConfetti = true;
 

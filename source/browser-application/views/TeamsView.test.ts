@@ -27,7 +27,7 @@ function mountTeamsView(initialGameStoreState?: PartialDeep<GameStore>) {
 				})
 			],
 			provide: {
-				[trpcClientInjectionKey]: createTRPCClient()
+				[trpcClientInjectionKey]: createTRPCClient({ isRunningInProduction: false })
 			}
 		}
 	});
@@ -111,7 +111,7 @@ describe("<TeamsView />", () => {
 		const wrapper = mountTeamsView({
 			team1: { name: "foo" }
 		});
-		const trpcClient = createTRPCClient();
+		const trpcClient = createTRPCClient({ isRunningInProduction: false });
 		const gameStore = useGameStore(trpcClient);
 
 		const team1NameInput = wrapper.get("#team1-name");
@@ -124,7 +124,7 @@ describe("<TeamsView />", () => {
 		const wrapper = mountTeamsView({
 			team2: { name: "foo" }
 		});
-		const trpcClient = createTRPCClient();
+		const trpcClient = createTRPCClient({ isRunningInProduction: false });
 		const gameStore = useGameStore(trpcClient);
 
 		const team2NameInput = wrapper.get("#team2-name");
