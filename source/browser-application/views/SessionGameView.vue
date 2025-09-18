@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { computed, inject, ref } from "vue";
+import { inject, watch } from "vue";
 import { assertDefined } from "ts-extras";
-import { useMutation, useQuery } from "@tanstack/vue-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { isDefined } from "@vueuse/core";
 import { trpcClientInjectionKey } from "../trpc/client.js";
-import { useSessionGameStore } from "../game-store/session-game-store.js";
-
-type SelectedRadioButton = {
-	readonly teamId: number;
-	readonly selectedGamePoint: number;
-};
+import { useGamePoints } from "../game-points/game-points.js";
 
 const trpcClient = inject(trpcClientInjectionKey);
 
 assertDefined(trpcClient);
 
-const sessionGameStore = useSessionGameStore();
-const selectedRadioButton = ref<SelectedRadioButton>({ teamId: -1, selectedGamePoint: 0 });
+const queryClient = useQueryClient();
+const {
+	selectedGamePoints,
+	isPreviousGameRoundEnabled,
+	isNextGameRoundEnabled,
+	selectedGamePoint,
+	isGamePointEnabled,
+	fillSelectedGamePoints,
+	clearSelectedGamePoints
+} = useGamePoints();
 
 const { isSuccess, data: currentGameRoundData } = useQuery({
 	queryKey: ["currentGameRound"],
@@ -27,39 +30,25 @@ const { isSuccess, data: currentGameRoundData } = useQuery({
 
 const { mutate: nextGameRound } = useMutation({
 	async mutationFn() {
-		return trpcClient.session.nextGameRound.mutate({
-			teamId: selectedRadioButton.value.teamId,
-			gamePoints: selectedRadioButton.value.selectedGamePoint
+		return selectedGamePoint.value.match({
+			async Just(selected) {
+				return trpcClient.session.nextGameRound.mutate({
+					teamId: selected.teamId,
+					gamePoints: selected.selectedGamePoint
+				});
+			},
+			Nothing() {
+				throw new Error("No game point selected");
+			}
 		});
+	},
+	async onSuccess() {
+		clearSelectedGamePoints();
+		await queryClient.invalidateQueries({ queryKey: ["currentGameRound"] });
 	}
 });
 
-function isGamePointEnabled(teamId: number): boolean {
-	if (sessionGameStore.isAudioPlaying) {
-		return false;
-	}
-
-	if (selectedRadioButton.value.selectedGamePoint === 0) {
-		return true;
-	}
-
-	return selectedRadioButton.value.teamId === teamId && selectedRadioButton.value.selectedGamePoint > 0;
-}
-
-const isPreviousGameRoundEnabled = computed(() => {
-	return currentGameRoundData.value?.hasPreviousGameRounds === true && !sessionGameStore.isAudioPlaying;
-});
-
-const isNextGameRoundEnabled = computed(() => {
-	return selectedRadioButton.value.selectedGamePoint > 0 && !sessionGameStore.isAudioPlaying;
-});
-
-function setSelectedGamePoint(teamId: number, changeEvent: Readonly<Event>): void {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- needs a type guard
-	const inputElement = changeEvent.target as HTMLInputElement;
-
-	selectedRadioButton.value = { teamId, selectedGamePoint: Number.parseInt(inputElement.value, 10) };
-}
+watch(currentGameRoundData, fillSelectedGamePoints);
 </script>
 
 <template>
@@ -72,13 +61,13 @@ function setSelectedGamePoint(teamId: number, changeEvent: Readonly<Event>): voi
 					<input
 						v-for="gamePointPerRound in currentGameRoundData.gamePointsPerRound"
 						type="radio"
+						v-model.number="selectedGamePoints[team.id]"
+						class="btn join-item btn-outline flex-grow"
 						:key="`${team.id}-${gamePointPerRound}`"
-						:value="gamePointPerRound.toString()"
+						:value="gamePointPerRound"
 						:disabled="!isGamePointEnabled(team.id)"
 						:name="team.name"
 						:aria-label="gamePointPerRound.toString()"
-						@change="setSelectedGamePoint(team.id, $event)"
-						class="btn join-item btn-outline flex-grow"
 					/>
 				</div>
 			</section>
