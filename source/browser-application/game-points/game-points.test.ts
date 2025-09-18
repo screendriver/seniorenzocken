@@ -1,6 +1,7 @@
-import { describe, it, expect, type TestFunction } from "vitest";
+import { describe, it, expect, assert, type TestFunction } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { Factory } from "fishery";
+import { isJust, isNothing } from "true-myth/maybe";
 import { useSessionGameStore } from "../game-store/session-game-store.js";
 import type { CurrentGameRoundSession } from "../../shared/current-game-round.js";
 import { useGamePoints } from "./game-points.js";
@@ -155,6 +156,69 @@ describe("isNextGameRoundEnabled", () => {
 			selectedGamePoints.value = { 1: 0, 2: 2 };
 
 			expect(isNextGameRoundEnabled.value).toBe(true);
+		})
+	);
+});
+
+describe("selectedGamePoint", () => {
+	it(
+		"returns a Nothing when there are no selected game points",
+		withPinia(() => {
+			const { selectedGamePoint } = useGamePoints();
+
+			assert(isNothing(selectedGamePoint.value));
+		})
+	);
+
+	it(
+		"returns a Nothing when all teams have 0 game points",
+		withPinia(() => {
+			const currentGameRoundSession = currentGameRoundSessionFactory.build({
+				teams: [{ id: 1 }, { id: 2 }]
+			});
+
+			const { selectedGamePoint, selectedGamePoints, fillSelectedGamePoints } = useGamePoints();
+
+			fillSelectedGamePoints(currentGameRoundSession);
+			selectedGamePoints.value = { 1: 0, 2: 0 };
+
+			assert(isNothing(selectedGamePoint.value));
+		})
+	);
+
+	it(
+		"returns a Just when one teams has more than 0 game points",
+		withPinia(() => {
+			const currentGameRoundSession = currentGameRoundSessionFactory.build({
+				teams: [{ id: 1 }, { id: 2 }]
+			});
+
+			const { selectedGamePoint, selectedGamePoints, fillSelectedGamePoints } = useGamePoints();
+
+			fillSelectedGamePoints(currentGameRoundSession);
+			selectedGamePoints.value = { 1: 0, 2: 2 };
+
+			assert(isJust(selectedGamePoint.value));
+
+			expect(selectedGamePoint.value.value).toStrictEqual({ teamId: 2, selectedGamePoint: 2 });
+		})
+	);
+
+	it(
+		"returns a Just with the first team found that has more than 0 game points",
+		withPinia(() => {
+			const currentGameRoundSession = currentGameRoundSessionFactory.build({
+				teams: [{ id: 1 }, { id: 2 }, { id: 3 }]
+			});
+
+			const { selectedGamePoint, selectedGamePoints, fillSelectedGamePoints } = useGamePoints();
+
+			fillSelectedGamePoints(currentGameRoundSession);
+			selectedGamePoints.value = { 1: 4, 2: 0, 3: 2 };
+
+			assert(isJust(selectedGamePoint.value));
+
+			expect(selectedGamePoint.value.value).toStrictEqual({ teamId: 1, selectedGamePoint: 4 });
 		})
 	);
 });
