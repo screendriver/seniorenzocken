@@ -1,5 +1,5 @@
 export PATH := "./node_modules/.bin:" + env_var("PATH")
-export NODE_OPTIONS := "--disable-warning=ExperimentalWarning"
+export NODE_OPTIONS := "--max-old-space-size=4096 --disable-warning=ExperimentalWarning"
 
 default:
 	@just --list
