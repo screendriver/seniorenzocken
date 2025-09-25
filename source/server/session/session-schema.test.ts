@@ -11,9 +11,11 @@ const sessionFactory = Factory.define(() => {
 
 const currentGameRoundSessionFactory = Factory.define(() => {
 	return {
+		playerId: 1,
 		playerNickname: "test-nickname",
 		playerFirstName: "test-first-name",
-		teamId: 1
+		teamId: 1,
+		gamePoints: null
 	};
 });
 
@@ -94,19 +96,19 @@ describe("currentGameRoundSessionsSchema", () => {
 		expect(parseResult.success).toBe(false);
 	});
 
-	it.each([{ listLength: 0 }, { listLength: 1 }, { listLength: 2 }, { listLength: 3 }])(
-		"fails parsing when given array has only $listLength element(s)",
-		(input) => {
-			const parseResult = safeParse(
-				currentGameRoundSessionsSchema,
-				currentGameRoundSessionFactory.buildList(input.listLength)
-			);
+	it("fails parsing when given array is empty", () => {
+		const parseResult = safeParse(currentGameRoundSessionsSchema, []);
 
-			expect(parseResult.success).toBe(false);
-		}
-	);
+		expect(parseResult.success).toBe(false);
+	});
 
 	it.each<{ propertyName: keyof CurrentGameRoundSessions[number]; propertyValue: unknown }>([
+		{ propertyName: "playerId", propertyValue: undefined },
+		{ propertyName: "playerId", propertyValue: null },
+		{ propertyName: "playerId", propertyValue: "not-a-number" },
+		{ propertyName: "playerId", propertyValue: -1 },
+		{ propertyName: "playerId", propertyValue: 1.1 },
+		{ propertyName: "playerId", propertyValue: 0 },
 		{ propertyName: "playerNickname", propertyValue: undefined },
 		{ propertyName: "playerNickname", propertyValue: null },
 		{ propertyName: "playerNickname", propertyValue: 42 },
@@ -120,14 +122,38 @@ describe("currentGameRoundSessionsSchema", () => {
 		{ propertyName: "teamId", propertyValue: "not-a-number" },
 		{ propertyName: "teamId", propertyValue: -1 },
 		{ propertyName: "teamId", propertyValue: 1.1 },
-		{ propertyName: "teamId", propertyValue: 0 }
+		{ propertyName: "teamId", propertyValue: 0 },
+		{ propertyName: "gamePoints", propertyValue: undefined },
+		{ propertyName: "gamePoints", propertyValue: "not-a-number" },
+		{ propertyName: "gamePoints", propertyValue: -1 },
+		{ propertyName: "gamePoints", propertyValue: 1.1 }
 	])("fails parsing when $propertyName equals $propertyValue", (input) => {
 		const { propertyName, propertyValue } = input;
 		const parseResult = safeParse(
 			currentGameRoundSessionsSchema,
-			currentGameRoundSessionFactory.buildList(4, { [propertyName]: propertyValue })
+			currentGameRoundSessionFactory.buildList(1, { [propertyName]: propertyValue })
 		);
 
 		expect(parseResult.success).toBe(false);
+	});
+
+	it.each<{ propertyName: keyof CurrentGameRoundSessions[number]; propertyValue: unknown }>([
+		{ propertyName: "playerId", propertyValue: 1 },
+		{ propertyName: "playerId", propertyValue: 2 },
+		{ propertyName: "playerNickname", propertyValue: "test-nickname" },
+		{ propertyName: "playerFirstName", propertyValue: "test-nickname" },
+		{ propertyName: "teamId", propertyValue: 1 },
+		{ propertyName: "teamId", propertyValue: 2 },
+		{ propertyName: "gamePoints", propertyValue: null },
+		{ propertyName: "gamePoints", propertyValue: 0 },
+		{ propertyName: "gamePoints", propertyValue: 2 }
+	])("succeeds parsing when $propertyName equals $propertyValue", (input) => {
+		const { propertyName, propertyValue } = input;
+		const parseResult = safeParse(
+			currentGameRoundSessionsSchema,
+			currentGameRoundSessionFactory.buildList(1, { [propertyName]: propertyValue })
+		);
+
+		expect(parseResult.success).toBe(true);
 	});
 });
