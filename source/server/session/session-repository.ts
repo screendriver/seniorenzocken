@@ -185,9 +185,11 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 					async callback(userSessionId) {
 						return database
 							.select({
+								playerId: playersDatabaseSchema.playerId,
 								playerNickname: playersDatabaseSchema.nickname,
 								playerFirstName: playersDatabaseSchema.firstName,
-								teamId: teamSessionsDatabaseSchema.teamSessionId
+								teamId: teamSessionsDatabaseSchema.teamSessionId,
+								gamePoints: gameRoundHistorySessionsDatabaseSchema.gamePoints
 							})
 							.from(teamSessionsDatabaseSchema)
 							.innerJoin(

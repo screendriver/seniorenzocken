@@ -1,6 +1,7 @@
 export type Team = {
 	readonly id: number;
 	readonly name: string;
+	readonly gamePoints: number;
 };
 
 export type CurrentGameRoundSession = {

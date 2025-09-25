@@ -13,8 +13,8 @@ import SessionGameView from "./SessionGameView.vue";
 const currentGameRoundFactory = Factory.define<CurrentGameRoundSession>(() => {
 	return {
 		teams: [
-			{ id: 1, name: "One" },
-			{ id: 2, name: "Two" }
+			{ id: 1, name: "One", gamePoints: 0 },
+			{ id: 2, name: "Two", gamePoints: 0 }
 		],
 		gamePointsPerRound: [0, 2, 3, 4],
 		hasPreviousGameRounds: false
