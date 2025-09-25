@@ -1,22 +1,65 @@
 import { describe, it, expect } from "vitest";
+import type { CurrentGameRoundSession } from "../../shared/current-game-round.js";
 import type { CurrentGameRoundSessions } from "./session-schema.js";
 import { mapCurrentGameRoundSessionsFromDatabase } from "./current-game-round-session.js";
 
 describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 	it("returns an array of team names grouped by team id", () => {
 		const currentGameRoundSessions: CurrentGameRoundSessions = [
-			{ teamId: 1, playerNickname: "first", playerFirstName: "first-name" },
-			{ teamId: 2, playerNickname: "third", playerFirstName: "third-name" },
-			{ teamId: 1, playerNickname: "second", playerFirstName: "second-name" },
-			{ teamId: 2, playerNickname: "fourth", playerFirstName: "fourth-name" }
+			{ teamId: 1, playerId: 1, playerNickname: "first", playerFirstName: "first-name", gamePoints: 0 },
+			{ teamId: 2, playerId: 2, playerNickname: "third", playerFirstName: "third-name", gamePoints: 0 },
+			{ teamId: 1, playerId: 3, playerNickname: "second", playerFirstName: "second-name", gamePoints: 0 },
+			{ teamId: 2, playerId: 4, playerNickname: "fourth", playerFirstName: "fourth-name", gamePoints: 0 }
 		];
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessions);
 
-		expect(actual).toStrictEqual({
+		expect(actual).toStrictEqual<CurrentGameRoundSession>({
 			teams: [
-				{ id: 1, name: "first / second" },
-				{ id: 2, name: "third / fourth" }
+				{ id: 1, name: "first / second", gamePoints: 0 },
+				{ id: 2, name: "third / fourth", gamePoints: 0 }
+			],
+			gamePointsPerRound: [0, 2, 3, 4],
+			hasPreviousGameRounds: false
+		});
+	});
+
+	it("sums up game points per team when there is only one game round", () => {
+		const currentGameRoundSessions: CurrentGameRoundSessions = [
+			{ teamId: 1, playerId: 1, playerNickname: "first", playerFirstName: "first-name", gamePoints: 2 },
+			{ teamId: 1, playerId: 2, playerNickname: "second", playerFirstName: "second-name", gamePoints: 2 },
+			{ teamId: 2, playerId: 3, playerNickname: "third", playerFirstName: "third-name", gamePoints: 0 },
+			{ teamId: 2, playerId: 4, playerNickname: "fourth", playerFirstName: "fourth-name", gamePoints: 0 }
+		];
+
+		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessions);
+
+		expect(actual).toStrictEqual<CurrentGameRoundSession>({
+			teams: [
+				{ id: 1, name: "first / second", gamePoints: 2 },
+				{ id: 2, name: "third / fourth", gamePoints: 0 }
+			],
+			gamePointsPerRound: [0, 2, 3, 4],
+			hasPreviousGameRounds: false
+		});
+	});
+
+	it("sums up game points per team when there are multiple game rounds", () => {
+		const currentGameRoundSessions: CurrentGameRoundSessions = [
+			{ teamId: 1, playerId: 1, playerNickname: "first", playerFirstName: "first-name", gamePoints: 2 },
+			{ teamId: 1, playerId: 1, playerNickname: "first", playerFirstName: "first-name", gamePoints: 4 },
+			{ teamId: 1, playerId: 2, playerNickname: "second", playerFirstName: "second-name", gamePoints: 2 },
+			{ teamId: 1, playerId: 4, playerNickname: "second", playerFirstName: "second-name", gamePoints: 4 },
+			{ teamId: 2, playerId: 3, playerNickname: "third", playerFirstName: "third-name", gamePoints: 0 },
+			{ teamId: 2, playerId: 4, playerNickname: "fourth", playerFirstName: "fourth-name", gamePoints: 0 }
+		];
+
+		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessions);
+
+		expect(actual).toStrictEqual<CurrentGameRoundSession>({
+			teams: [
+				{ id: 1, name: "first / second", gamePoints: 6 },
+				{ id: 2, name: "third / fourth", gamePoints: 0 }
 			],
 			gamePointsPerRound: [0, 2, 3, 4],
 			hasPreviousGameRounds: false
