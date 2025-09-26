@@ -1,3 +1,4 @@
+import { of, type Maybe } from "true-myth/maybe";
 import {
 	array,
 	minLength,
@@ -9,6 +10,7 @@ import {
 	pipe,
 	string,
 	nullable,
+	transform,
 	type InferOutput
 } from "valibot";
 
@@ -27,8 +29,10 @@ const currentGameRoundSessionSchema = object({
 	playerNickname: nonEmptyStringSchema,
 	playerFirstName: nonEmptyStringSchema,
 	teamId: idSchema,
-	gamePoints: nullable(pipe(number(), integer(), minValue(0)), 0)
+	gamePoints: pipe(nullable(pipe(number(), integer(), minValue(0))), transform<number | null, Maybe<number>>(of))
 });
+
+export type CurrentGameRoundSession = InferOutput<typeof currentGameRoundSessionSchema>;
 
 export const currentGameRoundSessionsSchema = pipe(array(currentGameRoundSessionSchema), minLength(1));
 
