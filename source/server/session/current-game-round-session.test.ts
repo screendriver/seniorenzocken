@@ -70,13 +70,11 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
 
-		expect(actual).toStrictEqual<CurrentGameRoundSession>({
+		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
 			teams: [
 				{ teamId: 1, name: "first / second", gamePoints: 2 },
 				{ teamId: 2, name: "third / fourth", gamePoints: 0 }
-			],
-			gamePointsPerRound: [0, 2, 3, 4],
-			hasPreviousGameRounds: false
+			]
 		});
 	});
 
@@ -122,13 +120,34 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
 
-		expect(actual).toStrictEqual<CurrentGameRoundSession>({
+		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
 			teams: [
 				{ teamId: 1, name: "first / second", gamePoints: 6 },
 				{ teamId: 2, name: "third / fourth", gamePoints: 0 }
-			],
-			gamePointsPerRound: [0, 2, 3, 4],
-			hasPreviousGameRounds: false
+			]
+		});
+	});
+
+	it("sets hasPreviousGameRounds to true when one of the teams has previous game rounds", () => {
+		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 1,
+				hasPreviousGameRounds: true
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 2 }),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 3,
+				hasPreviousGameRounds: true
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 4 })
+		];
+
+		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
+
+		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
+			hasPreviousGameRounds: true
 		});
 	});
 });

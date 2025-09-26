@@ -28,6 +28,9 @@ export function mapCurrentGameRoundSessionsFromDatabase(
 	const groupedTeams = Object.groupBy(currentGameRoundSessionsFromDatabase, (currentGameRoundSession) => {
 		return currentGameRoundSession.teamId;
 	});
+	const hasPreviousGameRounds = currentGameRoundSessionsFromDatabase.some((currentGameRoundSession) => {
+		return currentGameRoundSession.hasPreviousGameRounds;
+	});
 
 	const teams = Object.entries(groupedTeams)
 		.filter((entries): entries is [string, CurrentGameRoundSessionsDatabaseSelect] => {
@@ -55,5 +58,5 @@ export function mapCurrentGameRoundSessionsFromDatabase(
 			return { teamId: Number.parseInt(teamId, 10), name, gamePoints };
 		});
 
-	return { teams, gamePointsPerRound: [0, 2, 3, 4], hasPreviousGameRounds: false };
+	return { teams, gamePointsPerRound: [0, 2, 3, 4], hasPreviousGameRounds };
 }
