@@ -84,6 +84,21 @@ export function createSessionRouter(options: Options) {
 				}
 
 				return undefined;
-			})
+			}),
+
+		previousGameRound: protectedProcedure.mutation(async (procedureOptions) => {
+			const { token: sessionToken } = procedureOptions.ctx.session;
+
+			const deletionResult = await sessionRepository.deleteLastGameRoundHistorySession(sessionToken);
+
+			if (deletionResult.isErr) {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					cause: deletionResult.error
+				});
+			}
+
+			return undefined;
+		})
 	});
 }
