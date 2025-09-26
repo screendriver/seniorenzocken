@@ -15,7 +15,11 @@ import {
 	gameRoundHistorySessions as gameRoundHistorySessionsDatabaseSchema
 } from "../database/raw-database-schema.js";
 import type { Database } from "../database/database.js";
-import { currentGameRoundSessionsSchema, sessionSchema, type Session } from "./session-database-schema.js";
+import {
+	currentGameRoundSessionsDatabaseSelectSchema,
+	sessionDatabaseSelectSchema,
+	type SessionDatabaseSelect
+} from "./session-database-schema.js";
 import { mapCurrentGameRoundSessionsFromDatabase } from "./current-game-round-session.js";
 
 type CreateSessionOptions = {
@@ -29,8 +33,8 @@ type CreateGameRoundHistorySessionOptions = {
 };
 
 export type SessionRepository = {
-	readonly getSession: (sessionToken: string) => Task<Session, Error>;
-	readonly createSession: (options: CreateSessionOptions) => Task<Session, Error>;
+	readonly getSession: (sessionToken: string) => Task<SessionDatabaseSelect, Error>;
+	readonly createSession: (options: CreateSessionOptions) => Task<SessionDatabaseSelect, Error>;
 	readonly deleteSession: (sessionToken: string) => Task<Unit, Error>;
 	readonly createTeamsSessions: (
 		sessionToken: string,
@@ -91,7 +95,7 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 						.limit(1);
 				}
 			).andThen((sessionsFromDatabase) => {
-				const { success, output, issues } = safeParse(sessionSchema, sessionsFromDatabase[0]);
+				const { success, output, issues } = safeParse(sessionDatabaseSelectSchema, sessionsFromDatabase[0]);
 
 				if (success) {
 					return Task.resolve(output);
@@ -117,7 +121,7 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 						.returning({ token: userSessionsDatabaseSchema.token });
 				}
 			).andThen((databaseRecords) => {
-				const { success, output, issues } = safeParse(sessionSchema, databaseRecords[0]);
+				const { success, output, issues } = safeParse(sessionDatabaseSelectSchema, databaseRecords[0]);
 
 				if (success) {
 					return Task.resolve({ token: output.token });
@@ -216,7 +220,10 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 				})
 			)
 				.andThen((databaseRecords) => {
-					const { success, output, issues } = safeParse(currentGameRoundSessionsSchema, databaseRecords);
+					const { success, output, issues } = safeParse(
+						currentGameRoundSessionsDatabaseSelectSchema,
+						databaseRecords
+					);
 
 					if (success) {
 						return Task.resolve(output);

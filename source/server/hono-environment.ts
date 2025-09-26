@@ -1,8 +1,8 @@
 import type { Maybe } from "true-myth/maybe";
-import type { Session } from "./session/session-database-schema.js";
+import type { SessionDatabaseSelect } from "./session/session-database-schema.js";
 
 export type HonoEnvironment = {
 	Variables: {
-		session: Maybe<Session>;
+		session: Maybe<SessionDatabaseSelect>;
 	};
 };

@@ -3,17 +3,17 @@ import { identity } from "es-toolkit";
 import { first, isJust, just, isInstance as isMaybe, type Maybe } from "true-myth/maybe";
 import type { CurrentGameRoundSession, Team } from "../../shared/current-game-round.js";
 import type {
-	CurrentGameRoundSession as CurrentGameRoundSessionFromDatabase,
-	CurrentGameRoundSessions as CurrentGameRoundSessionsFromDatabase
+	CurrentGameRoundSessionDatabaseSelect,
+	CurrentGameRoundSessionsDatabaseSelect
 } from "./session-database-schema.js";
 
 function calculateGamePoints(
-	currentGameRoundSession: CurrentGameRoundSessionFromDatabase,
+	currentGameRoundSessionFromDatabase: CurrentGameRoundSessionDatabaseSelect,
 	uniquePlayers: ReadonlyMap<number, Maybe<number>>
 ): Maybe<number> {
-	const { gamePoints: gamePointsFromDatabase } = currentGameRoundSession;
+	const { gamePoints: gamePointsFromDatabase } = currentGameRoundSessionFromDatabase;
 
-	const currentGamePoints = uniquePlayers.get(currentGameRoundSession.playerId);
+	const currentGamePoints = uniquePlayers.get(currentGameRoundSessionFromDatabase.playerId);
 
 	if (isJust(gamePointsFromDatabase) && isMaybe(currentGamePoints) && isJust(currentGamePoints)) {
 		return just(gamePointsFromDatabase.value + currentGamePoints.value);
@@ -23,14 +23,14 @@ function calculateGamePoints(
 }
 
 export function mapCurrentGameRoundSessionsFromDatabase(
-	currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsFromDatabase
+	currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect
 ): CurrentGameRoundSession {
 	const groupedTeams = Object.groupBy(currentGameRoundSessionsFromDatabase, (currentGameRoundSession) => {
 		return currentGameRoundSession.teamId;
 	});
 
 	const teams = Object.entries(groupedTeams)
-		.filter((entries): entries is [string, CurrentGameRoundSessionsFromDatabase] => {
+		.filter((entries): entries is [string, CurrentGameRoundSessionsDatabaseSelect] => {
 			const [, teamMembers] = entries;
 
 			return isArray(teamMembers);

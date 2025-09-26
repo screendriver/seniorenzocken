@@ -16,15 +16,15 @@ import {
 
 const nonEmptyStringSchema = pipe(string(), nonEmpty());
 
-export const sessionSchema = object({
+export const sessionDatabaseSelectSchema = object({
 	token: nonEmptyStringSchema
 });
 
-export type Session = InferOutput<typeof sessionSchema>;
+export type SessionDatabaseSelect = InferOutput<typeof sessionDatabaseSelectSchema>;
 
 const idSchema = pipe(number(), integer(), minValue(1));
 
-const currentGameRoundSessionSchema = object({
+const currentGameRoundSessionDatabaseSelectSchema = object({
 	playerId: idSchema,
 	playerNickname: nonEmptyStringSchema,
 	playerFirstName: nonEmptyStringSchema,
@@ -32,8 +32,11 @@ const currentGameRoundSessionSchema = object({
 	gamePoints: pipe(nullable(pipe(number(), integer(), minValue(0))), transform<number | null, Maybe<number>>(of))
 });
 
-export type CurrentGameRoundSession = InferOutput<typeof currentGameRoundSessionSchema>;
+export type CurrentGameRoundSessionDatabaseSelect = InferOutput<typeof currentGameRoundSessionDatabaseSelectSchema>;
 
-export const currentGameRoundSessionsSchema = pipe(array(currentGameRoundSessionSchema), minLength(1));
+export const currentGameRoundSessionsDatabaseSelectSchema = pipe(
+	array(currentGameRoundSessionDatabaseSelectSchema),
+	minLength(1)
+);
 
-export type CurrentGameRoundSessions = InferOutput<typeof currentGameRoundSessionsSchema>;
+export type CurrentGameRoundSessionsDatabaseSelect = InferOutput<typeof currentGameRoundSessionsDatabaseSelectSchema>;

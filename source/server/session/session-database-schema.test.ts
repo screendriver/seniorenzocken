@@ -2,9 +2,9 @@ import { describe, it, expect, assert } from "vitest";
 import { safeParse } from "valibot";
 import { Factory } from "fishery";
 import {
-	currentGameRoundSessionsSchema,
-	sessionSchema,
-	type CurrentGameRoundSessions
+	currentGameRoundSessionsDatabaseSelectSchema,
+	sessionDatabaseSelectSchema,
+	type CurrentGameRoundSessionsDatabaseSelect
 } from "./session-database-schema.js";
 
 const sessionFactory = Factory.define(() => {
@@ -23,57 +23,57 @@ const currentGameRoundSessionFactory = Factory.define(() => {
 	};
 });
 
-describe("sessionSchema", () => {
+describe("sessionDatabaseSelectSchema", () => {
 	it("fails parsing when given data is undefined", () => {
-		const parseResult = safeParse(sessionSchema, undefined);
+		const parseResult = safeParse(sessionDatabaseSelectSchema, undefined);
 
 		expect(parseResult.success).toBe(false);
 	});
 
 	it("fails parsing when given data is null", () => {
-		const parseResult = safeParse(sessionSchema, null);
+		const parseResult = safeParse(sessionDatabaseSelectSchema, null);
 
 		expect(parseResult.success).toBe(false);
 	});
 
 	it("fails parsing when given data is not an object", () => {
-		const parseResult = safeParse(sessionSchema, "not-an-object");
+		const parseResult = safeParse(sessionDatabaseSelectSchema, "not-an-object");
 
 		expect(parseResult.success).toBe(false);
 	});
 
 	it("fails parsing when given data is an empty object", () => {
-		const parseResult = safeParse(sessionSchema, {});
+		const parseResult = safeParse(sessionDatabaseSelectSchema, {});
 
 		expect(parseResult.success).toBe(false);
 	});
 
 	it("fails parsing when given object.token is undefined", () => {
-		const parseResult = safeParse(sessionSchema, sessionFactory.build({ token: undefined }));
+		const parseResult = safeParse(sessionDatabaseSelectSchema, sessionFactory.build({ token: undefined }));
 
 		expect(parseResult.success).toBe(false);
 	});
 
 	it("fails parsing when given object.token is null", () => {
-		const parseResult = safeParse(sessionSchema, sessionFactory.build({ token: null }));
+		const parseResult = safeParse(sessionDatabaseSelectSchema, sessionFactory.build({ token: null }));
 
 		expect(parseResult.success).toBe(false);
 	});
 
 	it("fails parsing when given object.token is an empty string", () => {
-		const parseResult = safeParse(sessionSchema, sessionFactory.build({ token: "" }));
+		const parseResult = safeParse(sessionDatabaseSelectSchema, sessionFactory.build({ token: "" }));
 
 		expect(parseResult.success).toBe(false);
 	});
 
 	it("fails parsing when given object.token is not a string", () => {
-		const parseResult = safeParse(sessionSchema, sessionFactory.build({ token: 42 }));
+		const parseResult = safeParse(sessionDatabaseSelectSchema, sessionFactory.build({ token: 42 }));
 
 		expect(parseResult.success).toBe(false);
 	});
 
 	it("succeeds parsing when given object.token is not an empty string", () => {
-		const parseResult = safeParse(sessionSchema, sessionFactory.build({ token: "test-token" }));
+		const parseResult = safeParse(sessionDatabaseSelectSchema, sessionFactory.build({ token: "test-token" }));
 
 		assert(parseResult.success);
 
@@ -81,32 +81,32 @@ describe("sessionSchema", () => {
 	});
 });
 
-describe("currentGameRoundSessionsSchema", () => {
+describe("currentGameRoundSessionsDatabaseSelectSchema", () => {
 	it("fails parsing when given data is undefined", () => {
-		const parseResult = safeParse(currentGameRoundSessionsSchema, undefined);
+		const parseResult = safeParse(currentGameRoundSessionsDatabaseSelectSchema, undefined);
 
 		expect(parseResult.success).toBe(false);
 	});
 
 	it("fails parsing when given data is null", () => {
-		const parseResult = safeParse(currentGameRoundSessionsSchema, null);
+		const parseResult = safeParse(currentGameRoundSessionsDatabaseSelectSchema, null);
 
 		expect(parseResult.success).toBe(false);
 	});
 
 	it("fails parsing when given data is not an array", () => {
-		const parseResult = safeParse(currentGameRoundSessionsSchema, "not-an-array");
+		const parseResult = safeParse(currentGameRoundSessionsDatabaseSelectSchema, "not-an-array");
 
 		expect(parseResult.success).toBe(false);
 	});
 
 	it("fails parsing when given array is empty", () => {
-		const parseResult = safeParse(currentGameRoundSessionsSchema, []);
+		const parseResult = safeParse(currentGameRoundSessionsDatabaseSelectSchema, []);
 
 		expect(parseResult.success).toBe(false);
 	});
 
-	it.each<{ propertyName: keyof CurrentGameRoundSessions[number]; propertyValue: unknown }>([
+	it.each<{ propertyName: keyof CurrentGameRoundSessionsDatabaseSelect[number]; propertyValue: unknown }>([
 		{ propertyName: "playerId", propertyValue: undefined },
 		{ propertyName: "playerId", propertyValue: null },
 		{ propertyName: "playerId", propertyValue: "not-a-number" },
@@ -134,14 +134,14 @@ describe("currentGameRoundSessionsSchema", () => {
 	])("fails parsing when $propertyName equals $propertyValue", (input) => {
 		const { propertyName, propertyValue } = input;
 		const parseResult = safeParse(
-			currentGameRoundSessionsSchema,
+			currentGameRoundSessionsDatabaseSelectSchema,
 			currentGameRoundSessionFactory.buildList(1, { [propertyName]: propertyValue })
 		);
 
 		expect(parseResult.success).toBe(false);
 	});
 
-	it.each<{ propertyName: keyof CurrentGameRoundSessions[number]; propertyValue: unknown }>([
+	it.each<{ propertyName: keyof CurrentGameRoundSessionsDatabaseSelect[number]; propertyValue: unknown }>([
 		{ propertyName: "playerId", propertyValue: 1 },
 		{ propertyName: "playerId", propertyValue: 2 },
 		{ propertyName: "playerNickname", propertyValue: "test-nickname" },
@@ -154,7 +154,7 @@ describe("currentGameRoundSessionsSchema", () => {
 	])("succeeds parsing when $propertyName equals $propertyValue", (input) => {
 		const { propertyName, propertyValue } = input;
 		const parseResult = safeParse(
-			currentGameRoundSessionsSchema,
+			currentGameRoundSessionsDatabaseSelectSchema,
 			currentGameRoundSessionFactory.buildList(1, { [propertyName]: propertyValue })
 		);
 
