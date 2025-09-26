@@ -48,6 +48,16 @@ const { mutate: nextGameRound } = useMutation({
 	}
 });
 
+const { mutate: previousGameRound } = useMutation({
+	async mutationFn() {
+		return trpcClient.session.previousGameRound.mutate();
+	},
+	async onSuccess() {
+		clearSelectedGamePoints();
+		await queryClient.invalidateQueries({ queryKey: ["currentGameRound"] });
+	}
+});
+
 watch(currentGameRoundData, fillSelectedGamePoints);
 </script>
 
@@ -74,7 +84,12 @@ watch(currentGameRoundData, fillSelectedGamePoints);
 		</template>
 
 		<div class="join col-span-4 justify-center self-start md:col-span-8 lg:col-span-12">
-			<button :disabled="!isPreviousGameRoundEnabled" type="button" class="btn btn-primary join-item">
+			<button
+				@click="previousGameRound()"
+				:disabled="!isPreviousGameRoundEnabled"
+				type="button"
+				class="btn btn-primary join-item"
+			>
 				Runde zurück
 			</button>
 
