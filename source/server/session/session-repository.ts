@@ -2,10 +2,10 @@ import type { randomUUID } from "node:crypto";
 import { Task, tryOrElse } from "true-myth/task";
 import { Unit } from "true-myth/unit";
 import { first } from "true-myth/maybe";
-import { exists, eq } from "drizzle-orm";
+import { exists, eq, desc } from "drizzle-orm";
 import { safeParse, summarize } from "valibot";
 import { identity } from "es-toolkit";
-import { isUndefined } from "@sindresorhus/is";
+import { isNonEmptyArray, isUndefined } from "@sindresorhus/is";
 import type { CurrentGameRoundSession } from "../../shared/current-game-round.js";
 import {
 	players as playersDatabaseSchema,
@@ -42,6 +42,7 @@ export type SessionRepository = {
 	) => Task<Unit, Error>;
 	readonly getCurrentGameRoundSession: (sessionToken: string) => Task<CurrentGameRoundSession, Error>;
 	readonly createGameRoundHistorySession: (options: CreateGameRoundHistorySessionOptions) => Task<Unit, Error>;
+	readonly deleteLastGameRoundHistorySession: (sessionToken: string) => Task<Unit, Error>;
 };
 
 type WithUserSessionIdOptions<T> = {
@@ -257,6 +258,52 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 						teamSessionId: teamId,
 						gamePoints
 					});
+
+					return Unit;
+				}
+			);
+		},
+
+		deleteLastGameRoundHistorySession(sessionToken) {
+			return tryOrElse(
+				(error: unknown) => {
+					return new Error("Could not delete last game round history session", { cause: error });
+				},
+				async () => {
+					const latestRound = await database
+						.select({
+							gameRoundHistorySessionsId:
+								gameRoundHistorySessionsDatabaseSchema.gameRoundHistorySessionsId
+						})
+						.from(gameRoundHistorySessionsDatabaseSchema)
+						.innerJoin(
+							teamSessionsDatabaseSchema,
+							eq(
+								gameRoundHistorySessionsDatabaseSchema.teamSessionId,
+								teamSessionsDatabaseSchema.teamSessionId
+							)
+						)
+						.innerJoin(
+							userSessionsDatabaseSchema,
+							eq(teamSessionsDatabaseSchema.userSessionId, userSessionsDatabaseSchema.userSessionId)
+						)
+						.where(eq(userSessionsDatabaseSchema.token, sessionToken))
+						.orderBy(
+							desc(gameRoundHistorySessionsDatabaseSchema.createdAt),
+							desc(gameRoundHistorySessionsDatabaseSchema.gameRoundHistorySessionsId)
+						)
+						.limit(1);
+
+					if (isNonEmptyArray(latestRound)) {
+						await database
+							.delete(gameRoundHistorySessionsDatabaseSchema)
+							.where(
+								eq(
+									gameRoundHistorySessionsDatabaseSchema.gameRoundHistorySessionsId,
+									latestRound[0].gameRoundHistorySessionsId
+								)
+							);
+					}
 
 					return Unit;
 				}
