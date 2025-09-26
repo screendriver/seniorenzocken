@@ -1,6 +1,7 @@
 import { describe, it, expect, assert } from "vitest";
 import { safeParse } from "valibot";
 import { Factory } from "fishery";
+import { just, nothing } from "true-myth/maybe";
 import {
 	currentGameRoundSessionsDatabaseSelectSchema,
 	sessionDatabaseSelectSchema,
@@ -19,7 +20,8 @@ const currentGameRoundSessionFactory = Factory.define(() => {
 		playerNickname: "test-nickname",
 		playerFirstName: "test-first-name",
 		teamId: 1,
-		gamePoints: null
+		gamePoints: null,
+		hasPreviousGameRounds: 0
 	};
 });
 
@@ -130,7 +132,13 @@ describe("currentGameRoundSessionsDatabaseSelectSchema", () => {
 		{ propertyName: "gamePoints", propertyValue: undefined },
 		{ propertyName: "gamePoints", propertyValue: "not-a-number" },
 		{ propertyName: "gamePoints", propertyValue: -1 },
-		{ propertyName: "gamePoints", propertyValue: 1.1 }
+		{ propertyName: "gamePoints", propertyValue: 1.1 },
+		{ propertyName: "hasPreviousGameRounds", propertyValue: undefined },
+		{ propertyName: "hasPreviousGameRounds", propertyValue: null },
+		{ propertyName: "hasPreviousGameRounds", propertyValue: "not-a-number" },
+		{ propertyName: "hasPreviousGameRounds", propertyValue: -1 },
+		{ propertyName: "hasPreviousGameRounds", propertyValue: 2 },
+		{ propertyName: "hasPreviousGameRounds", propertyValue: 1.1 }
 	])("fails parsing when $propertyName equals $propertyValue", (input) => {
 		const { propertyName, propertyValue } = input;
 		const parseResult = safeParse(
@@ -141,23 +149,33 @@ describe("currentGameRoundSessionsDatabaseSelectSchema", () => {
 		expect(parseResult.success).toBe(false);
 	});
 
-	it.each<{ propertyName: keyof CurrentGameRoundSessionsDatabaseSelect[number]; propertyValue: unknown }>([
-		{ propertyName: "playerId", propertyValue: 1 },
-		{ propertyName: "playerId", propertyValue: 2 },
-		{ propertyName: "playerNickname", propertyValue: "test-nickname" },
-		{ propertyName: "playerFirstName", propertyValue: "test-nickname" },
-		{ propertyName: "teamId", propertyValue: 1 },
-		{ propertyName: "teamId", propertyValue: 2 },
-		{ propertyName: "gamePoints", propertyValue: null },
-		{ propertyName: "gamePoints", propertyValue: 0 },
-		{ propertyName: "gamePoints", propertyValue: 2 }
+	it.each<{
+		propertyName: keyof CurrentGameRoundSessionsDatabaseSelect[number];
+		propertyValue: unknown;
+		expectedPropertyValue: unknown;
+	}>([
+		{ propertyName: "playerId", propertyValue: 1, expectedPropertyValue: 1 },
+		{ propertyName: "playerId", propertyValue: 2, expectedPropertyValue: 2 },
+		{ propertyName: "playerNickname", propertyValue: "test-nickname", expectedPropertyValue: "test-nickname" },
+		{ propertyName: "playerFirstName", propertyValue: "test-nickname", expectedPropertyValue: "test-nickname" },
+		{ propertyName: "teamId", propertyValue: 1, expectedPropertyValue: 1 },
+		{ propertyName: "teamId", propertyValue: 2, expectedPropertyValue: 2 },
+		{ propertyName: "gamePoints", propertyValue: null, expectedPropertyValue: nothing() },
+		{ propertyName: "gamePoints", propertyValue: 0, expectedPropertyValue: just(0) },
+		{ propertyName: "gamePoints", propertyValue: 2, expectedPropertyValue: just(2) },
+		{ propertyName: "hasPreviousGameRounds", propertyValue: 0, expectedPropertyValue: false },
+		{ propertyName: "hasPreviousGameRounds", propertyValue: 1, expectedPropertyValue: true }
 	])("succeeds parsing when $propertyName equals $propertyValue", (input) => {
-		const { propertyName, propertyValue } = input;
+		const { propertyName, propertyValue, expectedPropertyValue } = input;
 		const parseResult = safeParse(
 			currentGameRoundSessionsDatabaseSelectSchema,
 			currentGameRoundSessionFactory.buildList(1, { [propertyName]: propertyValue })
 		);
 
-		expect(parseResult.success).toBe(true);
+		assert(parseResult.success);
+
+		for (const parsedGameRoundSession of parseResult.output) {
+			expect(parsedGameRoundSession[propertyName]).toStrictEqual(expectedPropertyValue);
+		}
 	});
 });

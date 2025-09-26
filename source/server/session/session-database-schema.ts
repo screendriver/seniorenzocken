@@ -11,6 +11,7 @@ import {
 	string,
 	nullable,
 	transform,
+	picklist,
 	type InferOutput
 } from "valibot";
 
@@ -29,7 +30,13 @@ const currentGameRoundSessionDatabaseSelectSchema = object({
 	playerNickname: nonEmptyStringSchema,
 	playerFirstName: nonEmptyStringSchema,
 	teamId: idSchema,
-	gamePoints: pipe(nullable(pipe(number(), integer(), minValue(0))), transform<number | null, Maybe<number>>(of))
+	gamePoints: pipe(nullable(pipe(number(), integer(), minValue(0))), transform<number | null, Maybe<number>>(of)),
+	hasPreviousGameRounds: pipe(
+		picklist([0, 1]),
+		transform((hasPreviousRounds) => {
+			return hasPreviousRounds === 1;
+		})
+	)
 });
 
 export type CurrentGameRoundSessionDatabaseSelect = InferOutput<typeof currentGameRoundSessionDatabaseSelectSchema>;
