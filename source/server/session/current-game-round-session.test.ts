@@ -1,16 +1,31 @@
 import { describe, it, expect } from "vitest";
 import { just, nothing } from "true-myth/maybe";
+import { Factory } from "fishery";
 import type { CurrentGameRoundSession } from "../../shared/current-game-round.js";
-import type { CurrentGameRoundSessionsDatabaseSelect } from "./session-database-schema.js";
+import type {
+	CurrentGameRoundSessionDatabaseSelect,
+	CurrentGameRoundSessionsDatabaseSelect
+} from "./session-database-schema.js";
 import { mapCurrentGameRoundSessionsFromDatabase } from "./current-game-round-session.js";
+
+const currentGameRoundSessionDatabaseSelectFactory = Factory.define<CurrentGameRoundSessionDatabaseSelect>(() => {
+	return {
+		teamId: 1,
+		playerId: 1,
+		playerNickname: "first",
+		playerFirstName: "first-name",
+		gamePoints: nothing(),
+		hasPreviousGameRounds: false
+	};
+});
 
 describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 	it("returns an array of team names grouped by team id", () => {
 		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
-			{ teamId: 1, playerId: 1, playerNickname: "first", playerFirstName: "first-name", gamePoints: nothing() },
-			{ teamId: 2, playerId: 2, playerNickname: "third", playerFirstName: "third-name", gamePoints: nothing() },
-			{ teamId: 1, playerId: 3, playerNickname: "second", playerFirstName: "second-name", gamePoints: nothing() },
-			{ teamId: 2, playerId: 4, playerNickname: "fourth", playerFirstName: "fourth-name", gamePoints: nothing() }
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 1, playerId: 1, playerNickname: "first" }),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 2, playerNickname: "third" }),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 1, playerId: 3, playerNickname: "second" }),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 4, playerNickname: "fourth" })
 		];
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
@@ -27,10 +42,30 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 	it("sums up game points per team when there is only one game round", () => {
 		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
-			{ teamId: 1, playerId: 1, playerNickname: "first", playerFirstName: "first-name", gamePoints: just(2) },
-			{ teamId: 1, playerId: 2, playerNickname: "second", playerFirstName: "second-name", gamePoints: just(2) },
-			{ teamId: 2, playerId: 3, playerNickname: "third", playerFirstName: "third-name", gamePoints: nothing() },
-			{ teamId: 2, playerId: 4, playerNickname: "fourth", playerFirstName: "fourth-name", gamePoints: nothing() }
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 1,
+				playerNickname: "first",
+				gamePoints: just(2)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 2,
+				playerNickname: "second",
+				gamePoints: just(2)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 2,
+				playerId: 3,
+				playerNickname: "third",
+				gamePoints: nothing()
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 2,
+				playerId: 4,
+				playerNickname: "fourth",
+				gamePoints: nothing()
+			})
 		];
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
@@ -47,12 +82,42 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 	it("sums up game points per team when there are multiple game rounds", () => {
 		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
-			{ teamId: 1, playerId: 1, playerNickname: "first", playerFirstName: "first-name", gamePoints: just(2) },
-			{ teamId: 1, playerId: 1, playerNickname: "first", playerFirstName: "first-name", gamePoints: just(4) },
-			{ teamId: 1, playerId: 2, playerNickname: "second", playerFirstName: "second-name", gamePoints: just(2) },
-			{ teamId: 1, playerId: 4, playerNickname: "second", playerFirstName: "second-name", gamePoints: just(4) },
-			{ teamId: 2, playerId: 3, playerNickname: "third", playerFirstName: "third-name", gamePoints: just(0) },
-			{ teamId: 2, playerId: 4, playerNickname: "fourth", playerFirstName: "fourth-name", gamePoints: just(0) }
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 1,
+				playerNickname: "first",
+				gamePoints: just(2)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 1,
+				playerNickname: "first",
+				gamePoints: just(4)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 2,
+				playerNickname: "second",
+				gamePoints: just(2)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 2,
+				playerNickname: "second",
+				gamePoints: just(4)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 2,
+				playerId: 3,
+				playerNickname: "third",
+				gamePoints: just(0)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 2,
+				playerId: 4,
+				playerNickname: "fourth",
+				gamePoints: just(0)
+			})
 		];
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
