@@ -1,7 +1,7 @@
 import { eq, or, sql } from "drizzle-orm";
 import { type Task, tryOrElse } from "true-myth/task";
 import type { Database } from "../database/database.js";
-import { gamePointAudios, type GamePointAudio } from "../database/schema.js";
+import { gamePointAudios, type GamePointAudio } from "../database/raw-database-schema.js";
 import type { MatchTotalGamePoints } from "../../shared/game-points.js";
 
 export type ReadAudio = Pick<GamePointAudio, "gamePointAudioId" | "gamePoints" | "name">;

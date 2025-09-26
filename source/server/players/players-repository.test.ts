@@ -3,7 +3,7 @@ import { isErr, isOk } from "true-myth/result";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { stripIndent } from "common-tags";
 import { createDatabase } from "../database/database.js";
-import { players as playersDatabaseSchema } from "../database/schema.js";
+import { players as playersDatabaseSchema } from "../database/raw-database-schema.js";
 import { createPlayersRepository } from "./players-repository.js";
 
 describe("allPlayers()", () => {

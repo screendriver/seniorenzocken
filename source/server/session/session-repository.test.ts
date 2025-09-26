@@ -7,7 +7,7 @@ import { assertDefined } from "ts-extras";
 import {
 	userSessions as userSessionsDatabaseSchema,
 	teamSessions as teamSessionsDatabaseSchema
-} from "../database/schema.js";
+} from "../database/raw-database-schema.js";
 import { createDatabase } from "../database/database.js";
 import { seedInMemoryDatabase } from "../seed-in-memory-database.js";
 import { createSessionRepository } from "./session-repository.js";
