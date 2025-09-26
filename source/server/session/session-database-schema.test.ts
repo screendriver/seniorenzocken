@@ -1,7 +1,11 @@
 import { describe, it, expect, assert } from "vitest";
 import { safeParse } from "valibot";
 import { Factory } from "fishery";
-import { currentGameRoundSessionsSchema, sessionSchema, type CurrentGameRoundSessions } from "./session-schema.js";
+import {
+	currentGameRoundSessionsSchema,
+	sessionSchema,
+	type CurrentGameRoundSessions
+} from "./session-database-schema.js";
 
 const sessionFactory = Factory.define(() => {
 	return {

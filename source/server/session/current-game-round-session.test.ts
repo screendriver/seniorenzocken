@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { just, nothing } from "true-myth/maybe";
 import type { CurrentGameRoundSession } from "../../shared/current-game-round.js";
-import type { CurrentGameRoundSessions } from "./session-schema.js";
+import type { CurrentGameRoundSessions } from "./session-database-schema.js";
 import { mapCurrentGameRoundSessionsFromDatabase } from "./current-game-round-session.js";
 
 describe("mapCurrentGameRoundSessionsFromDatabase()", () => {

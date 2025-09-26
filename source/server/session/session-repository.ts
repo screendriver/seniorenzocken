@@ -15,7 +15,7 @@ import {
 	gameRoundHistorySessions as gameRoundHistorySessionsDatabaseSchema
 } from "../database/raw-database-schema.js";
 import type { Database } from "../database/database.js";
-import { currentGameRoundSessionsSchema, sessionSchema, type Session } from "./session-schema.js";
+import { currentGameRoundSessionsSchema, sessionSchema, type Session } from "./session-database-schema.js";
 import { mapCurrentGameRoundSessionsFromDatabase } from "./current-game-round-session.js";
 
 type CreateSessionOptions = {

@@ -5,7 +5,7 @@ import type { CurrentGameRoundSession, Team } from "../../shared/current-game-ro
 import type {
 	CurrentGameRoundSession as CurrentGameRoundSessionFromDatabase,
 	CurrentGameRoundSessions as CurrentGameRoundSessionsFromDatabase
-} from "./session-schema.js";
+} from "./session-database-schema.js";
 
 function calculateGamePoints(
 	currentGameRoundSession: CurrentGameRoundSessionFromDatabase,
