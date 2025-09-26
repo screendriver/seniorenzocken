@@ -1,10 +1,10 @@
 import type { Context } from "hono";
 import type { Maybe } from "true-myth/maybe";
 import type { HonoEnvironment } from "../hono-environment.js";
-import type { Session } from "../session/session-schema.js";
+import type { SessionDatabaseSelect } from "../session/session-database-schema.js";
 
 export type TRPCRouterContext = {
-	readonly session: Maybe<Session>;
+	readonly session: Maybe<SessionDatabaseSelect>;
 };
 
 type CreateContextOptions = {

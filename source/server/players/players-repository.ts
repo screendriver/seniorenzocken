@@ -1,7 +1,7 @@
 import { Task, tryOrElse } from "true-myth/task";
 import { safeParse, summarize } from "valibot";
 import type { Database } from "../database/database.js";
-import { players as playersDatabaseSchema } from "../database/schema.js";
+import { players as playersDatabaseSchema } from "../database/raw-database-schema.js";
 import { type Players, playersSchema } from "./player-schema.js";
 
 export type PlayersRepository = {

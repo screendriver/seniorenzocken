@@ -2,7 +2,7 @@ import type { randomUUID } from "node:crypto";
 import { Task, tryOrElse } from "true-myth/task";
 import { Unit } from "true-myth/unit";
 import { first } from "true-myth/maybe";
-import { eq } from "drizzle-orm";
+import { exists, eq } from "drizzle-orm";
 import { safeParse, summarize } from "valibot";
 import { identity } from "es-toolkit";
 import { isUndefined } from "@sindresorhus/is";
@@ -13,9 +13,13 @@ import {
 	teamSessions as teamSessionsDatabaseSchema,
 	teamMembersSessions as teamMembersSessionsDatabaseSchema,
 	gameRoundHistorySessions as gameRoundHistorySessionsDatabaseSchema
-} from "../database/schema.js";
+} from "../database/raw-database-schema.js";
 import type { Database } from "../database/database.js";
-import { currentGameRoundSessionsSchema, sessionSchema, type Session } from "./session-schema.js";
+import {
+	currentGameRoundSessionsDatabaseSelectSchema,
+	sessionDatabaseSelectSchema,
+	type SessionDatabaseSelect
+} from "./session-database-schema.js";
 import { mapCurrentGameRoundSessionsFromDatabase } from "./current-game-round-session.js";
 
 type CreateSessionOptions = {
@@ -29,8 +33,8 @@ type CreateGameRoundHistorySessionOptions = {
 };
 
 export type SessionRepository = {
-	readonly getSession: (sessionToken: string) => Task<Session, Error>;
-	readonly createSession: (options: CreateSessionOptions) => Task<Session, Error>;
+	readonly getSession: (sessionToken: string) => Task<SessionDatabaseSelect, Error>;
+	readonly createSession: (options: CreateSessionOptions) => Task<SessionDatabaseSelect, Error>;
 	readonly deleteSession: (sessionToken: string) => Task<Unit, Error>;
 	readonly createTeamsSessions: (
 		sessionToken: string,
@@ -91,7 +95,7 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 						.limit(1);
 				}
 			).andThen((sessionsFromDatabase) => {
-				const { success, output, issues } = safeParse(sessionSchema, sessionsFromDatabase[0]);
+				const { success, output, issues } = safeParse(sessionDatabaseSelectSchema, sessionsFromDatabase[0]);
 
 				if (success) {
 					return Task.resolve(output);
@@ -117,7 +121,7 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 						.returning({ token: userSessionsDatabaseSchema.token });
 				}
 			).andThen((databaseRecords) => {
-				const { success, output, issues } = safeParse(sessionSchema, databaseRecords[0]);
+				const { success, output, issues } = safeParse(sessionDatabaseSelectSchema, databaseRecords[0]);
 
 				if (success) {
 					return Task.resolve({ token: output.token });
@@ -183,13 +187,24 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 					database,
 					sessionToken,
 					async callback(userSessionId) {
+						const existsQuery = database
+							.select()
+							.from(gameRoundHistorySessionsDatabaseSchema)
+							.where(
+								eq(
+									gameRoundHistorySessionsDatabaseSchema.teamSessionId,
+									teamSessionsDatabaseSchema.teamSessionId
+								)
+							);
+
 						return database
 							.select({
 								playerId: playersDatabaseSchema.playerId,
 								playerNickname: playersDatabaseSchema.nickname,
 								playerFirstName: playersDatabaseSchema.firstName,
 								teamId: teamSessionsDatabaseSchema.teamSessionId,
-								gamePoints: gameRoundHistorySessionsDatabaseSchema.gamePoints
+								gamePoints: gameRoundHistorySessionsDatabaseSchema.gamePoints,
+								hasPreviousGameRounds: exists(existsQuery)
 							})
 							.from(teamSessionsDatabaseSchema)
 							.innerJoin(
@@ -216,7 +231,10 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 				})
 			)
 				.andThen((databaseRecords) => {
-					const { success, output, issues } = safeParse(currentGameRoundSessionsSchema, databaseRecords);
+					const { success, output, issues } = safeParse(
+						currentGameRoundSessionsDatabaseSelectSchema,
+						databaseRecords
+					);
 
 					if (success) {
 						return Task.resolve(output);

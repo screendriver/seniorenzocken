@@ -3,7 +3,7 @@ import { sql, lt } from "drizzle-orm";
 import { type Task, tryOrElse } from "true-myth/task";
 import type { Cron } from "croner";
 import type { Database } from "./database.js";
-import * as schema from "./schema.js";
+import * as schema from "./raw-database-schema.js";
 
 const logger = pino({ base: null });
 

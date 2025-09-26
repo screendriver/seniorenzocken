@@ -1,7 +1,7 @@
 import { desc } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import type { Database } from "../database/database.js";
-import { games, teams } from "../database/schema.js";
+import { games, teams } from "../database/raw-database-schema.js";
 import type { AudioRepository } from "../audio/repository.js";
 import type { isTurnAround } from "../audio/turn_around.js";
 import type { PlayersRepository } from "../players/players-repository.js";

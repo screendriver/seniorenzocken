@@ -1,42 +1,62 @@
 import { isArray } from "@sindresorhus/is";
 import { identity } from "es-toolkit";
-import { first } from "true-myth/maybe";
+import { first, isJust, just, isInstance as isMaybe, type Maybe } from "true-myth/maybe";
 import type { CurrentGameRoundSession, Team } from "../../shared/current-game-round.js";
-import type { CurrentGameRoundSessions as CurrentGameRoundSessionsFromDatabase } from "./session-schema.js";
+import type {
+	CurrentGameRoundSessionDatabaseSelect,
+	CurrentGameRoundSessionsDatabaseSelect
+} from "./session-database-schema.js";
+
+function calculateGamePoints(
+	currentGameRoundSessionFromDatabase: CurrentGameRoundSessionDatabaseSelect,
+	uniquePlayers: ReadonlyMap<number, Maybe<number>>
+): Maybe<number> {
+	const { gamePoints: gamePointsFromDatabase } = currentGameRoundSessionFromDatabase;
+
+	const currentGamePoints = uniquePlayers.get(currentGameRoundSessionFromDatabase.playerId);
+
+	if (isJust(gamePointsFromDatabase) && isMaybe(currentGamePoints) && isJust(currentGamePoints)) {
+		return just(gamePointsFromDatabase.value + currentGamePoints.value);
+	}
+
+	return gamePointsFromDatabase;
+}
 
 export function mapCurrentGameRoundSessionsFromDatabase(
-	currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsFromDatabase
+	currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect
 ): CurrentGameRoundSession {
 	const groupedTeams = Object.groupBy(currentGameRoundSessionsFromDatabase, (currentGameRoundSession) => {
 		return currentGameRoundSession.teamId;
 	});
+	const hasPreviousGameRounds = currentGameRoundSessionsFromDatabase.some((currentGameRoundSession) => {
+		return currentGameRoundSession.hasPreviousGameRounds;
+	});
 
 	const teams = Object.entries(groupedTeams)
-		.filter((entries): entries is [string, CurrentGameRoundSessionsFromDatabase] => {
+		.filter((entries): entries is [string, CurrentGameRoundSessionsDatabaseSelect] => {
 			const [, teamMembers] = entries;
 
 			return isArray(teamMembers);
 		})
-		.map<Team>(([teamId, teamMembers]) => {
+		.map<Team>(([teamId, currentGameRoundSessions]) => {
 			const uniqueNicknames = new Set<string>();
-			const uniquePlayers = new Map<number, number>();
+			const uniquePlayers = new Map<number, Maybe<number>>();
 
-			for (const teamMember of teamMembers) {
-				let { gamePoints } = teamMember;
+			for (const currentGameRoundSession of currentGameRoundSessions) {
+				const gamePoints = calculateGamePoints(currentGameRoundSession, uniquePlayers);
 
-				if (uniquePlayers.has(teamMember.playerId)) {
-					gamePoints += uniquePlayers.get(teamMember.playerId) ?? 0;
-				}
-
-				uniqueNicknames.add(teamMember.playerNickname);
-				uniquePlayers.set(teamMember.playerId, gamePoints);
+				uniqueNicknames.add(currentGameRoundSession.playerNickname);
+				uniquePlayers.set(currentGameRoundSession.playerId, gamePoints);
 			}
 
 			const name = Array.from(uniqueNicknames).join(" / ");
-			const gamePoints = first(Array.from(uniquePlayers.values())).andThen(identity).unwrapOr(0);
+			const gamePoints = first(Array.from(uniquePlayers.values()))
+				.andThen(identity)
+				.andThen(identity)
+				.unwrapOr(0);
 
-			return { id: Number.parseInt(teamId, 10), name, gamePoints };
+			return { teamId: Number.parseInt(teamId, 10), name, gamePoints };
 		});
 
-	return { teams, gamePointsPerRound: [0, 2, 3, 4], hasPreviousGameRounds: false };
+	return { teams, gamePointsPerRound: [0, 2, 3, 4], hasPreviousGameRounds };
 }

@@ -12,7 +12,7 @@ import mime from "mime";
 import * as Sentry from "@sentry/node";
 import type { Clock } from "./clock/clock.js";
 import type { Database } from "./database/database.js";
-import { gamePointAudios } from "./database/schema.js";
+import { gamePointAudios } from "./database/raw-database-schema.js";
 import type { TRPCApplicationRouter } from "./trpc/application-router.js";
 import type { SessionRepository } from "./session/session-repository.js";
 import { sessionMiddleware } from "./session/session-middleware.js";

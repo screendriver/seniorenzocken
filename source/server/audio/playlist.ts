@@ -2,7 +2,7 @@ import { type Maybe, of, just, find } from "true-myth/maybe";
 import type { Result } from "true-myth/result";
 import { toOkOrErr } from "true-myth/toolbelt";
 import { sample } from "es-toolkit";
-import type { GamePointAudio } from "../database/schema.js";
+import type { GamePointAudio } from "../database/raw-database-schema.js";
 import type { MatchTotalGamePoints } from "../../shared/game-points.js";
 import type { GameRounds } from "../../shared/game-rounds.js";
 import type { isTurnAround } from "./turn_around.js";

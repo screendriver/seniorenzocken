@@ -97,7 +97,7 @@ describe("isNextGameRoundEnabled", () => {
 		"returns false when there are selected game points but all of them equals -1",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }]
 			});
 
 			const { isNextGameRoundEnabled, fillSelectedGamePoints } = useGamePoints();
@@ -112,7 +112,7 @@ describe("isNextGameRoundEnabled", () => {
 		"returns false when there are selected game points but all of them equals 0",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }]
 			});
 
 			const { isNextGameRoundEnabled, fillSelectedGamePoints, selectedGamePoints } = useGamePoints();
@@ -128,7 +128,7 @@ describe("isNextGameRoundEnabled", () => {
 		"returns false when there are selected game points, one of them equals 0 but audio is playing",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }]
 			});
 
 			const sessionGameStore = useSessionGameStore();
@@ -147,7 +147,7 @@ describe("isNextGameRoundEnabled", () => {
 		"returns true when there are selected game points, one of them equals 0 and audio is not playing",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }]
 			});
 
 			const { isNextGameRoundEnabled, fillSelectedGamePoints, selectedGamePoints } = useGamePoints();
@@ -174,7 +174,7 @@ describe("selectedGamePoint", () => {
 		"returns a Nothing when all teams have 0 game points",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }]
 			});
 
 			const { selectedGamePoint, selectedGamePoints, fillSelectedGamePoints } = useGamePoints();
@@ -190,7 +190,7 @@ describe("selectedGamePoint", () => {
 		"returns a Just when one teams has more than 0 game points",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }]
 			});
 
 			const { selectedGamePoint, selectedGamePoints, fillSelectedGamePoints } = useGamePoints();
@@ -208,7 +208,7 @@ describe("selectedGamePoint", () => {
 		"returns a Just with the first team found that has more than 0 game points",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }, { id: 3 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }, { teamId: 3 }]
 			});
 
 			const { selectedGamePoint, selectedGamePoints, fillSelectedGamePoints } = useGamePoints();
@@ -240,7 +240,7 @@ describe("isGamePointEnabled()", () => {
 		"returns true when all selected game points are empty",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }]
 			});
 
 			const { isGamePointEnabled, fillSelectedGamePoints } = useGamePoints();
@@ -255,7 +255,7 @@ describe("isGamePointEnabled()", () => {
 		"returns true when team id could not be found",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }]
 			});
 
 			const { isGamePointEnabled, fillSelectedGamePoints, selectedGamePoints } = useGamePoints();
@@ -271,7 +271,7 @@ describe("isGamePointEnabled()", () => {
 		"returns true when found game point is greater than minimum game points",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }]
 			});
 
 			const { isGamePointEnabled, fillSelectedGamePoints, selectedGamePoints } = useGamePoints();
@@ -287,7 +287,7 @@ describe("isGamePointEnabled()", () => {
 		"returns false when found game point is not greater than minimum game points",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }]
 			});
 
 			const { isGamePointEnabled, fillSelectedGamePoints, selectedGamePoints } = useGamePoints();
@@ -305,7 +305,7 @@ describe("clearSelectedGamePoints()", () => {
 		"clears previously filled selected game points",
 		withPinia(() => {
 			const currentGameRoundSession = currentGameRoundSessionFactory.build({
-				teams: [{ id: 1 }, { id: 2 }]
+				teams: [{ teamId: 1 }, { teamId: 2 }]
 			});
 
 			const { selectedGamePoints, fillSelectedGamePoints, clearSelectedGamePoints } = useGamePoints();
