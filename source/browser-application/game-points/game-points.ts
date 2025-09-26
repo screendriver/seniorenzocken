@@ -84,7 +84,7 @@ export function useGamePoints(): UseGamePoints {
 				return gameRoundData.teams.reduce((previousSelectedRadioButtons, team) => {
 					return {
 						...previousSelectedRadioButtons,
-						[team.id]: -1
+						[team.teamId]: -1
 					};
 				}, {});
 			})

@@ -52,7 +52,7 @@ export function mapCurrentGameRoundSessionsFromDatabase(
 				.andThen(identity)
 				.unwrapOr(0);
 
-			return { id: Number.parseInt(teamId, 10), name, gamePoints };
+			return { teamId: Number.parseInt(teamId, 10), name, gamePoints };
 		});
 
 	return { teams, gamePointsPerRound: [0, 2, 3, 4], hasPreviousGameRounds: false };

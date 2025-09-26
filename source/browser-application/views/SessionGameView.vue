@@ -53,7 +53,7 @@ watch(currentGameRoundData, fillSelectedGamePoints);
 
 <template>
 	<template v-if="isSuccess && isDefined(currentGameRoundData)">
-		<template v-for="team in currentGameRoundData.teams" :key="team.id">
+		<template v-for="team in currentGameRoundData.teams" :key="team.teamId">
 			<section class="bg-primary col-span-4 rounded-lg border p-4 shadow-md md:col-start-3 lg:col-start-5">
 				<h2 class="mb-4 text-xl font-bold">{{ team.name }}</h2>
 
@@ -61,11 +61,11 @@ watch(currentGameRoundData, fillSelectedGamePoints);
 					<input
 						v-for="gamePointPerRound in currentGameRoundData.gamePointsPerRound"
 						type="radio"
-						v-model.number="selectedGamePoints[team.id]"
+						v-model.number="selectedGamePoints[team.teamId]"
 						class="btn join-item btn-outline flex-grow"
-						:key="`${team.id}-${gamePointPerRound}`"
+						:key="`${team.teamId}-${gamePointPerRound}`"
 						:value="gamePointPerRound"
-						:disabled="!isGamePointEnabled(team.id)"
+						:disabled="!isGamePointEnabled(team.teamId)"
 						:name="team.name"
 						:aria-label="gamePointPerRound.toString()"
 					/>

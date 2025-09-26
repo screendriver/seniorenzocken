@@ -17,8 +17,8 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		expect(actual).toStrictEqual<CurrentGameRoundSession>({
 			teams: [
-				{ id: 1, name: "first / second", gamePoints: 0 },
-				{ id: 2, name: "third / fourth", gamePoints: 0 }
+				{ teamId: 1, name: "first / second", gamePoints: 0 },
+				{ teamId: 2, name: "third / fourth", gamePoints: 0 }
 			],
 			gamePointsPerRound: [0, 2, 3, 4],
 			hasPreviousGameRounds: false
@@ -37,8 +37,8 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		expect(actual).toStrictEqual<CurrentGameRoundSession>({
 			teams: [
-				{ id: 1, name: "first / second", gamePoints: 2 },
-				{ id: 2, name: "third / fourth", gamePoints: 0 }
+				{ teamId: 1, name: "first / second", gamePoints: 2 },
+				{ teamId: 2, name: "third / fourth", gamePoints: 0 }
 			],
 			gamePointsPerRound: [0, 2, 3, 4],
 			hasPreviousGameRounds: false
@@ -59,8 +59,8 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		expect(actual).toStrictEqual<CurrentGameRoundSession>({
 			teams: [
-				{ id: 1, name: "first / second", gamePoints: 6 },
-				{ id: 2, name: "third / fourth", gamePoints: 0 }
+				{ teamId: 1, name: "first / second", gamePoints: 6 },
+				{ teamId: 2, name: "third / fourth", gamePoints: 0 }
 			],
 			gamePointsPerRound: [0, 2, 3, 4],
 			hasPreviousGameRounds: false
