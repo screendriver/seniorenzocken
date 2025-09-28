@@ -50,10 +50,7 @@ export function mapCurrentGameRoundSessionsFromDatabase(
 			}
 
 			const name = Array.from(uniqueNicknames).join(" / ");
-			const gamePoints = first(Array.from(uniquePlayers.values()))
-				.andThen(identity)
-				.andThen(identity)
-				.unwrapOr(0);
+			const gamePoints = first(Array.from(uniquePlayers.values())).andThen(identity).flatten().unwrapOr(0);
 
 			return { teamId: Number.parseInt(teamId, 10), name, gamePoints };
 		});

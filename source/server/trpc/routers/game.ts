@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { object, parse, pipe, nonEmpty } from "valibot";
 import { last } from "true-myth/maybe";
-import { identity } from "es-toolkit";
 import type { TRPCRouter } from "../index.js";
 import {
 	type NotPersistedTeam,
@@ -156,7 +155,7 @@ export function createGameRouter(options: Options) {
 				const remainingGameRounds = gameRounds.toSpliced(-1);
 
 				return last(remainingGameRounds)
-					.andThen(identity)
+					.flatten()
 					.match({
 						Just(previousGameRound) {
 							return {

@@ -4,7 +4,6 @@ import { Unit } from "true-myth/unit";
 import { first } from "true-myth/maybe";
 import { exists, eq, desc } from "drizzle-orm";
 import { safeParse, summarize } from "valibot";
-import { identity } from "es-toolkit";
 import { isNonEmptyArray, isUndefined } from "@sindresorhus/is";
 import type { CurrentGameRoundSession } from "../../shared/current-game-round.js";
 import {
@@ -62,7 +61,7 @@ function withUserSessionId<T>(options: WithUserSessionIdOptions<T>) {
 			.limit(1);
 
 		const userSessionId = first(userSessionsDatabaseRecords)
-			.andThen(identity)
+			.flatten()
 			.map((userSessionDatabaseRecord) => {
 				return userSessionDatabaseRecord.userSessionId;
 			});
