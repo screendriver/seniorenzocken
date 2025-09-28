@@ -50,7 +50,7 @@ function activateWakeLock(): void {
 
 		<main
 			@click.once="activateWakeLock()"
-			class="mx-6 grid min-h-screen grid-cols-4 items-center gap-4 md:mx-auto md:grid-cols-8 lg:max-w-7xl lg:grid-cols-12"
+			class="mx-6 grid w-full flex-1 grid-cols-4 items-center gap-4 md:mx-auto md:grid-cols-8 lg:max-w-7xl lg:grid-cols-12"
 		>
 			<RouterView />
 		</main>
