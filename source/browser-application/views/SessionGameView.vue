@@ -65,7 +65,14 @@ watch(currentGameRoundData, fillSelectedGamePoints);
 	<template v-if="isSuccess && isDefined(currentGameRoundData)">
 		<template v-for="team in currentGameRoundData.teams" :key="team.teamId">
 			<section class="bg-primary col-span-4 rounded-lg border p-4 shadow-md md:col-start-3 lg:col-start-5">
-				<h2 class="mb-4 text-xl font-bold">{{ team.name }}</h2>
+				<h2 class="mb-4 flex items-center justify-between text-xl font-bold">
+					{{ team.name }}
+					<mark class="badge badge-accent rounded-md">
+						<span class="countdown">
+							<span :style="{ '--value': team.gamePoints }" />
+						</span>
+					</mark>
+				</h2>
 
 				<div class="join mt-4 flex justify-between">
 					<input
