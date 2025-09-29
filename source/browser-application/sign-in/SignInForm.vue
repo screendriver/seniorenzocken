@@ -7,10 +7,6 @@ import AlertErrorMessage from "../alert/AlertErrorMessage.vue";
 import UsernameInput from "./UsernameInput.vue";
 import PasswordInput from "./PasswordInput.vue";
 
-const emit = defineEmits<{
-	submit: [];
-}>();
-
 const username = ref("");
 const password = ref("");
 const signInFailed = ref(false);
@@ -23,7 +19,7 @@ const signInButtonClass = ref({
 const router = useRouter();
 const queryClient = useQueryClient();
 
-const { mutate, isPending } = useMutation({
+const { mutate: authenticate, isPending } = useMutation({
 	async mutationFn() {
 		return ky.post("/api/authenticate", {
 			json: {
@@ -36,7 +32,6 @@ const { mutate, isPending } = useMutation({
 		signInFailed.value = true;
 	},
 	async onSuccess() {
-		emit("submit");
 		await queryClient.invalidateQueries({ queryKey: ["session"] });
 		await router.push({ name: "teams-selection" });
 	}
@@ -58,7 +53,7 @@ watch(isPending, () => {
 		class="bg-neutral col-start-1 col-end-5 grid grid-cols-subgrid rounded-xl sm:col-start-2 sm:col-end-4 md:col-start-3 md:col-end-7 lg:col-start-4 lg:col-end-10"
 	>
 		<form
-			@submit.prevent="mutate()"
+			@submit.prevent="authenticate()"
 			class="col-span-full mx-6 my-8 grid grid-flow-col grid-cols-subgrid grid-rows-3 items-center gap-2 lg:col-start-2 lg:col-end-6"
 		>
 			<UsernameInput v-model="username" />

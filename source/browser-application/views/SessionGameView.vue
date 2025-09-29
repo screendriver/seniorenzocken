@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { inject, watch } from "vue";
+import { inject, useTemplateRef, watch } from "vue";
 import { assertDefined } from "ts-extras";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { isDefined } from "@vueuse/core";
+import RandomFunAudioNew from "../random-fun-audio/RandomFunAudioNew.vue";
 import { trpcClientInjectionKey } from "../trpc/client.js";
 import { useGamePoints } from "../game-points/game-points.js";
 
@@ -10,6 +11,7 @@ const trpcClient = inject(trpcClientInjectionKey);
 
 assertDefined(trpcClient);
 
+const randomFunAudioReference = useTemplateRef("randomFunAudio");
 const queryClient = useQueryClient();
 const {
 	selectedGamePoints,
@@ -62,6 +64,8 @@ watch(currentGameRoundData, fillSelectedGamePoints);
 </script>
 
 <template>
+	<RandomFunAudioNew ref="randomFunAudio" />
+
 	<template v-if="isSuccess && isDefined(currentGameRoundData)">
 		<template v-for="team in currentGameRoundData.teams" :key="team.teamId">
 			<section class="bg-primary col-span-4 rounded-lg border p-4 shadow-md md:col-start-3 lg:col-start-5">
@@ -79,6 +83,7 @@ watch(currentGameRoundData, fillSelectedGamePoints);
 						v-for="gamePointPerRound in currentGameRoundData.gamePointsPerRound"
 						type="radio"
 						v-model.number="selectedGamePoints[team.teamId]"
+						@change="randomFunAudioReference?.playEmptyAudio()"
 						class="btn join-item btn-outline flex-grow"
 						:key="`${team.teamId}-${gamePointPerRound}`"
 						:value="gamePointPerRound"
