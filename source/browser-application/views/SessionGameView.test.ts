@@ -17,7 +17,8 @@ const currentGameRoundFactory = Factory.define<CurrentGameRoundSession>(() => {
 			{ teamId: 2, name: "Two", gamePoints: 0 }
 		],
 		gamePointsPerRound: [0, 2, 3, 4],
-		hasPreviousGameRounds: false
+		hasPreviousGameRounds: false,
+		isGameOver: false
 	};
 });
 

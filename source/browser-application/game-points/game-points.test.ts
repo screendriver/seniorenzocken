@@ -10,7 +10,8 @@ const currentGameRoundSessionFactory = Factory.define<CurrentGameRoundSession>((
 	return {
 		teams: [],
 		gamePointsPerRound: [0, 2, 3, 4],
-		hasPreviousGameRounds: false
+		hasPreviousGameRounds: false,
+		isGameOver: false
 	};
 });
 

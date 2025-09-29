@@ -8,4 +8,5 @@ export type CurrentGameRoundSession = {
 	readonly teams: readonly Team[];
 	readonly gamePointsPerRound: readonly [0, 2, 3, 4];
 	readonly hasPreviousGameRounds: boolean;
+	readonly isGameOver: boolean;
 };

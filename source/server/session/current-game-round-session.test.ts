@@ -36,7 +36,8 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 				{ teamId: 2, name: "third / fourth", gamePoints: 0 }
 			],
 			gamePointsPerRound: [0, 2, 3, 4],
-			hasPreviousGameRounds: false
+			hasPreviousGameRounds: false,
+			isGameOver: false
 		});
 	});
 

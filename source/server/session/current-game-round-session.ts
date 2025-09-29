@@ -55,5 +55,5 @@ export function mapCurrentGameRoundSessionsFromDatabase(
 			return { teamId: Number.parseInt(teamId, 10), name, gamePoints };
 		});
 
-	return { teams, gamePointsPerRound: [0, 2, 3, 4], hasPreviousGameRounds };
+	return { teams, gamePointsPerRound: [0, 2, 3, 4], hasPreviousGameRounds, isGameOver: false };
 }
