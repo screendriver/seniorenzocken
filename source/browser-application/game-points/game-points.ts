@@ -91,6 +91,8 @@ export function useGamePoints(): UseGamePoints {
 				}, {});
 			})
 			.exhaustive();
+
+		isGameOver.value = currentGameRoundSession?.isGameOver ?? false;
 	}
 
 	function clearSelectedGamePoints(): void {
