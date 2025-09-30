@@ -21,6 +21,7 @@ export type UseGamePoints = {
 	readonly isPreviousGameRoundEnabled: ComputedRef<boolean>;
 	readonly isNextGameRoundEnabled: ComputedRef<boolean>;
 	readonly selectedGamePoint: ComputedRef<Maybe<SelectedGamePoint>>;
+	readonly isGameOver: Ref<boolean, boolean>;
 	readonly isGamePointEnabled: (teamId: number) => boolean;
 	readonly fillSelectedGamePoints: (currentGameRoundSession: CurrentGameRoundSession | undefined) => void;
 	readonly clearSelectedGamePoints: () => void;
@@ -30,6 +31,7 @@ export function useGamePoints(): UseGamePoints {
 	const sessionGameStore = useSessionGameStore();
 	const hasPreviousGameRounds = ref(false);
 	const selectedGamePoints = ref<SelectedGamePoints>({});
+	const isGameOver = ref(false);
 
 	const allSelectedGamePointsEmtpy = computed(() => {
 		return Object.values(selectedGamePoints.value).every((selectedGamePoint) => {
@@ -100,6 +102,7 @@ export function useGamePoints(): UseGamePoints {
 		isPreviousGameRoundEnabled,
 		isNextGameRoundEnabled,
 		selectedGamePoint,
+		isGameOver,
 		isGamePointEnabled,
 		fillSelectedGamePoints,
 		clearSelectedGamePoints

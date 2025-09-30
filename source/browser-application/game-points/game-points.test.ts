@@ -224,6 +224,28 @@ describe("selectedGamePoint", () => {
 	);
 });
 
+describe("isGameOver", () => {
+	it(
+		"returns false by default",
+		withPinia(() => {
+			const { isGameOver } = useGamePoints();
+
+			expect(isGameOver.value).toBe(false);
+		})
+	);
+
+	it(
+		"returns true when setting it to true",
+		withPinia(() => {
+			const { isGameOver } = useGamePoints();
+
+			isGameOver.value = true;
+
+			expect(isGameOver.value).toBe(true);
+		})
+	);
+});
+
 describe("isGamePointEnabled()", () => {
 	it(
 		"returns false when audio is playing",
