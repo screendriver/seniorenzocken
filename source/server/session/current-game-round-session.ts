@@ -7,6 +7,8 @@ import type {
 	CurrentGameRoundSessionsDatabaseSelect
 } from "./session-database-schema.js";
 
+const gameOverGamePoints = 15;
+
 function calculateGamePoints(
 	currentGameRoundSessionFromDatabase: CurrentGameRoundSessionDatabaseSelect,
 	uniquePlayers: ReadonlyMap<number, Maybe<number>>
@@ -54,6 +56,9 @@ export function mapCurrentGameRoundSessionsFromDatabase(
 
 			return { teamId: Number.parseInt(teamId, 10), name, gamePoints };
 		});
+	const isGameOver = teams.some((team) => {
+		return team.gamePoints >= gameOverGamePoints;
+	});
 
-	return { teams, gamePointsPerRound: [0, 2, 3, 4], hasPreviousGameRounds, isGameOver: false };
+	return { teams, gamePointsPerRound: [0, 2, 3, 4], hasPreviousGameRounds, isGameOver };
 }

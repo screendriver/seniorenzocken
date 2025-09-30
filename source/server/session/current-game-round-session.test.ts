@@ -151,4 +151,86 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 			hasPreviousGameRounds: true
 		});
 	});
+
+	it("sets isGameOver to false when no team reached game over game points", () => {
+		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 1,
+				gamePoints: just(14)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 2, gamePoints: just(6) }),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 3,
+				gamePoints: just(14)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 4, gamePoints: just(6) })
+		];
+
+		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
+
+		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
+			isGameOver: false
+		});
+	});
+
+	it("sets isGameOver to true when at least one team reached game over game points", () => {
+		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 1,
+				gamePoints: just(12)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 2, gamePoints: just(0) }),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 3,
+				gamePoints: just(12)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 4, gamePoints: just(0) }),
+
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 1,
+				gamePoints: just(3)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 2, gamePoints: just(0) }),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 3,
+				gamePoints: just(3)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 4, gamePoints: just(0) })
+		];
+
+		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
+
+		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
+			isGameOver: true
+		});
+	});
+
+	it("sets isGameOver to true when at least one team surpassed game over game points", () => {
+		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 1,
+				gamePoints: just(16)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 2, gamePoints: just(2) }),
+			currentGameRoundSessionDatabaseSelectFactory.build({
+				teamId: 1,
+				playerId: 3,
+				gamePoints: just(16)
+			}),
+			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 4, gamePoints: just(2) })
+		];
+
+		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
+
+		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
+			isGameOver: true
+		});
+	});
 });
