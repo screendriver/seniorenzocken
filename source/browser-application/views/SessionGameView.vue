@@ -3,6 +3,7 @@ import { inject, useTemplateRef, watch } from "vue";
 import { assertDefined } from "ts-extras";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { isDefined } from "@vueuse/core";
+import { useRouter } from "vue-router";
 import RandomFunAudioNew from "../random-fun-audio/RandomFunAudioNew.vue";
 import { trpcClientInjectionKey } from "../trpc/client.js";
 import { useGamePoints } from "../game-points/game-points.js";
@@ -18,10 +19,12 @@ const {
 	isPreviousGameRoundEnabled,
 	isNextGameRoundEnabled,
 	selectedGamePoint,
+	isGameOver,
 	isGamePointEnabled,
 	fillSelectedGamePoints,
 	clearSelectedGamePoints
 } = useGamePoints();
+const router = useRouter();
 
 const { isSuccess, data: currentGameRoundData } = useQuery({
 	queryKey: ["currentGameRound"],
@@ -61,6 +64,12 @@ const { mutate: previousGameRound } = useMutation({
 });
 
 watch(currentGameRoundData, fillSelectedGamePoints);
+
+watch(isGameOver, async (isGameOverValue) => {
+	if (isGameOverValue) {
+		await router.push({ name: "game-over", replace: true });
+	}
+});
 </script>
 
 <template>

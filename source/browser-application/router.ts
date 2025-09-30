@@ -123,7 +123,7 @@ export function createRouter(): Router {
 				path: "/game-over",
 				name: "game-over",
 				async component() {
-					return import("./views/GameOver.vue");
+					return import("./views/GameOverView.vue");
 				},
 				meta: { requiresAuth: true }
 			},
