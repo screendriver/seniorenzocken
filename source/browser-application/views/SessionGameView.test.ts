@@ -4,11 +4,13 @@ import { createTestingPinia } from "@pinia/testing";
 import type { TRPCClient } from "@trpc/client";
 import { VueQueryPlugin, QueryClient } from "@tanstack/vue-query";
 import { Factory } from "fishery";
+import { type Router, createRouter, createMemoryHistory } from "vue-router";
 import type { TRPCApplicationRouter } from "../../server-shared/trpc-application-router";
 import type { CurrentGameRoundSession } from "../../shared/current-game-round";
 import { useSessionGameStore } from "../game-store/session-game-store.js";
 import { trpcClientInjectionKey } from "../trpc/client.js";
 import SessionGameView from "./SessionGameView.vue";
+import GameOverView from "./GameOverView.vue";
 
 const currentGameRoundFactory = Factory.define<CurrentGameRoundSession>(() => {
 	return {
@@ -37,6 +39,7 @@ function createFakeTRPCClient(): TRPCClient<TRPCApplicationRouter> {
 
 type ComponentWrapperOptions = {
 	readonly trpcClient?: TRPCClient<TRPCApplicationRouter>;
+	readonly router?: Router;
 };
 
 function createComponentWrapper(options: ComponentWrapperOptions = {}): VueWrapper {
@@ -48,6 +51,12 @@ function createComponentWrapper(options: ComponentWrapperOptions = {}): VueWrapp
 		}
 	});
 	const testingPinia = createTestingPinia({ createSpy: vi.fn });
+	const router =
+		options.router ??
+		createRouter({
+			history: createMemoryHistory(),
+			routes: [{ path: "/", component: SessionGameView }]
+		});
 	const fakeTRPCClient = options.trpcClient ?? createFakeTRPCClient();
 
 	return mount(SessionGameView, {
@@ -55,7 +64,7 @@ function createComponentWrapper(options: ComponentWrapperOptions = {}): VueWrapp
 			provide: {
 				[trpcClientInjectionKey]: fakeTRPCClient
 			},
-			plugins: [testingPinia, [VueQueryPlugin, { queryClient }]]
+			plugins: [testingPinia, router, [VueQueryPlugin, { queryClient }]]
 		}
 	});
 }
@@ -310,5 +319,31 @@ describe("<SessionGameView />", () => {
 		await nextGameRoundButton?.trigger("click");
 
 		expect(mutateSpy).toHaveBeenCalledExactlyOnceWith({ teamId: 1, gamePoints: 2 });
+	});
+
+	it("navigates to /game-over route when game is over", async () => {
+		const fakeTRPCClient = createFakeTRPCClient();
+
+		using querySpy = vi.spyOn(fakeTRPCClient.session.currentGameRound, "query").mockResolvedValue(
+			currentGameRoundFactory.build({
+				isGameOver: true
+			})
+		);
+
+		const router = createRouter({
+			history: createMemoryHistory(),
+			routes: [
+				{ path: "/", component: SessionGameView },
+				{ path: "/game-over", name: "game-over", component: GameOverView }
+			]
+		});
+		const push = vi.spyOn(router, "push");
+
+		createComponentWrapper({ trpcClient: fakeTRPCClient, router });
+
+		await flushPromises();
+
+		expect(querySpy).toHaveBeenCalledWith();
+		expect(push).toHaveBeenCalledExactlyOnceWith({ name: "game-over", replace: true });
 	});
 });
