@@ -120,6 +120,14 @@ export function createRouter(): Router {
 				meta: { requiresAuth: true }
 			},
 			{
+				path: "/game-over",
+				name: "game-over",
+				async component() {
+					return import("./views/GameOver.vue");
+				},
+				meta: { requiresAuth: true }
+			},
+			{
 				path: "/:pathMatch(.*)*",
 				name: "notFound",
 				async component() {
