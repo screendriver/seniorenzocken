@@ -15,7 +15,7 @@ export default mergeConfig(
 					extends: true,
 					test: {
 						include: ["browser-application/**/*.test.ts"],
-						name: "browser-application",
+						name: { label: "browser-application", color: "magenta" },
 						environment: "happy-dom"
 					}
 				},
@@ -23,7 +23,7 @@ export default mergeConfig(
 					extends: true,
 					test: {
 						include: ["server/**/*.test.ts"],
-						name: "server",
+						name: { label: "server", color: "green" },
 						environment: "node"
 					}
 				},
@@ -31,7 +31,7 @@ export default mergeConfig(
 					extends: true,
 					test: {
 						include: ["shared/**/*.test.ts"],
-						name: "shared",
+						name: { label: "shared", color: "cyan" },
 						environment: "node"
 					}
 				}
