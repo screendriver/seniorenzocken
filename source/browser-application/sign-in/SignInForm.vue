@@ -20,6 +20,7 @@ const router = useRouter();
 const queryClient = useQueryClient();
 
 const { mutate: authenticate, isPending } = useMutation({
+	mutationKey: ["authenticate"],
 	async mutationFn() {
 		return ky.post("/api/authenticate", {
 			json: {

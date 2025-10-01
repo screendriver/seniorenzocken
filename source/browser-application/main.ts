@@ -32,9 +32,13 @@ const queryClient = new QueryClient({
 
 	mutationCache: new MutationCache({
 		onError(error, variables, onMutateResult, mutation) {
-			Sentry.captureException(error, {
-				extra: { mutationKey: mutation.options.mutationKey }
-			});
+			const { mutationKey } = mutation.options;
+
+			if (mutationKey?.includes("authenticate") === true) {
+				return;
+			}
+
+			Sentry.captureException(error, { extra: { mutationKey } });
 		}
 	})
 });
