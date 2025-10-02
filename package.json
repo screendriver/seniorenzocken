@@ -22,7 +22,7 @@
 		"@vueuse/core": "13.9.0",
 		"canvas-confetti": "1.9.3",
 		"croner": "9.1.0",
-		"drizzle-orm": "0.44.5",
+		"drizzle-orm": "0.44.6",
 		"es-toolkit": "1.39.10",
 		"hono": "4.9.7",
 		"ky": "1.11.0",
