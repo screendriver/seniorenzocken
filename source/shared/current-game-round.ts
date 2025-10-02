@@ -4,9 +4,20 @@ export type Team = {
 	readonly gamePoints: number;
 };
 
-export type CurrentGameRoundSession = {
+type BaseCurrentGameRoundSession = {
 	readonly teams: readonly Team[];
 	readonly gamePointsPerRound: readonly [0, 2, 3, 4];
 	readonly hasPreviousGameRounds: boolean;
-	readonly isGameOver: boolean;
 };
+
+export type CurrentGameRoundSessionGameNotOver = BaseCurrentGameRoundSession & {
+	readonly isGameOver: false;
+	readonly winnerTeam?: undefined;
+};
+
+export type CurrentGameRoundSessionGameOver = BaseCurrentGameRoundSession & {
+	readonly isGameOver: true;
+	readonly winnerTeam: Team;
+};
+
+export type CurrentGameRoundSession = CurrentGameRoundSessionGameNotOver | CurrentGameRoundSessionGameOver;

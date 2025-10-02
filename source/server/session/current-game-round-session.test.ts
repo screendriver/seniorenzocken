@@ -173,6 +173,7 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
 			isGameOver: false
 		});
+		expect(actual).not.toHaveProperty("winnerTeam");
 	});
 
 	it("sets isGameOver to true when at least one team reached game over game points", () => {
@@ -207,7 +208,12 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
 
 		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
-			isGameOver: true
+			isGameOver: true,
+			winnerTeam: {
+				teamId: 1,
+				name: "first",
+				gamePoints: 15
+			}
 		});
 	});
 
@@ -230,7 +236,12 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
 
 		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
-			isGameOver: true
+			isGameOver: true,
+			winnerTeam: {
+				teamId: 1,
+				name: "first",
+				gamePoints: 16
+			}
 		});
 	});
 });
