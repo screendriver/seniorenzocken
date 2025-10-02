@@ -1,6 +1,6 @@
 import { isArray } from "@sindresorhus/is";
 import { identity } from "es-toolkit";
-import { first, isJust, just, isInstance as isMaybe, type Maybe } from "true-myth/maybe";
+import { first, isJust, just, isInstance as isMaybe, find, type Maybe } from "true-myth/maybe";
 import type { CurrentGameRoundSession, Team } from "../../shared/current-game-round.js";
 import type {
 	CurrentGameRoundSessionDatabaseSelect,
@@ -56,9 +56,18 @@ export function mapCurrentGameRoundSessionsFromDatabase(
 
 			return { teamId: Number.parseInt(teamId, 10), name, gamePoints };
 		});
-	const isGameOver = teams.some((team) => {
+	const teamWithGameOverGamePoints = find((team) => {
 		return team.gamePoints >= gameOverGamePoints;
-	});
+	}, teams);
 
-	return { teams, gamePointsPerRound: [0, 2, 3, 4], hasPreviousGameRounds, isGameOver };
+	const baseCurrentGameRoundSession = { teams, gamePointsPerRound: [0, 2, 3, 4], hasPreviousGameRounds } as const;
+
+	return teamWithGameOverGamePoints.match<CurrentGameRoundSession>({
+		Just(winnerTeam) {
+			return { ...baseCurrentGameRoundSession, isGameOver: true, winnerTeam };
+		},
+		Nothing() {
+			return { ...baseCurrentGameRoundSession, isGameOver: false };
+		}
+	});
 }
