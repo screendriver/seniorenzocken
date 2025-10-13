@@ -70,7 +70,7 @@
 		"prettier-plugin-tailwindcss": "0.6.14",
 		"rust-just": "1.43.0",
 		"tsx": "4.20.6",
-		"type-fest": "5.0.1",
+		"type-fest": "5.1.0",
 		"typescript": "5.9.3",
 		"vite": "7.1.9",
 		"vite-plugin-vue-devtools": "8.0.2",
