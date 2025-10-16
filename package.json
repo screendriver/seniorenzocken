@@ -10,7 +10,7 @@
 		"@hono/prometheus": "1.0.2",
 		"@hono/trpc-server": "0.4.0",
 		"@infisical/sdk": "4.0.6",
-		"@kalimahapps/vue-icons": "1.9.2",
+		"@kalimahapps/vue-icons": "1.9.5",
 		"@libsql/client": "0.15.15",
 		"@sentry/node": "10.20.0",
 		"@sentry/vue": "10.20.0",
