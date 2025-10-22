@@ -36,6 +36,12 @@ export default [
 		}
 	},
 	{
+		files: ["source/server-shared/player.ts", "source/server-shared/trpc-application-router.ts"],
+		rules: {
+			"no-barrel-files/no-barrel-files": "off"
+		}
+	},
+	{
 		...typescriptConfig,
 		files: ["**/*.ts"]
 	},
