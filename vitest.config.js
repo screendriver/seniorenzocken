@@ -16,7 +16,7 @@ export default mergeConfig(
 					test: {
 						include: ["browser-application/**/*.test.ts"],
 						name: { label: "browser-application", color: "magenta" },
-						environment: "happy-dom"
+						environment: "jsdom"
 					}
 				},
 				{
