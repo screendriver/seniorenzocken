@@ -1,11 +1,11 @@
-// @vitest-environment happy-dom
 import { randomUUID } from "node:crypto";
 import { describe, it, expect, vi, type TestFunction } from "vitest";
 import { serve } from "@hono/node-server";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
-import { createTRPCClient, httpLink } from "@trpc/client";
+import { createTRPCClient, unstable_localLink } from "@trpc/client";
 import { stripIndent } from "common-tags";
+import { nothing } from "true-myth/maybe";
 import { createFakeClock } from "./clock/fake-clock.js";
 import { type ServerOptions, createServer } from "./server.js";
 import { createDatabase } from "./database/database.js";
@@ -19,6 +19,7 @@ import type { HonoEnvironment } from "./hono-environment.js";
 
 type TestFunctionOptions = {
 	readonly server: Hono<HonoEnvironment>;
+	readonly trpcApplicationRouter: TRPCApplicationRouter;
 };
 
 function withServer(testFunction: (options: TestFunctionOptions) => Promise<void>): TestFunction {
@@ -52,7 +53,7 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 		};
 		const server = createServer(serverOptions);
 
-		await testFunction({ server });
+		await testFunction({ server, trpcApplicationRouter });
 	};
 }
 
@@ -119,11 +120,20 @@ describe("server", () => {
 
 	it(
 		"uses the given tRPC server on /api/trpc/ route",
-		withServer(async ({ server }) => {
+		withServer(async ({ server, trpcApplicationRouter }) => {
 			const listeningServer = serve({ fetch: server.fetch });
 
 			const trpcClient = createTRPCClient<TRPCApplicationRouter>({
-				links: [httpLink({ url: "/api/trpc" })]
+				links: [
+					unstable_localLink({
+						router: trpcApplicationRouter,
+						async createContext() {
+							return {
+								session: nothing()
+							};
+						}
+					})
+				]
 			});
 
 			await expect(trpcClient.teams.query()).resolves.toStrictEqual([]);
