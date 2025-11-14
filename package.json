@@ -15,7 +15,7 @@
 		"@sentry/node": "10.25.0",
 		"@sentry/vue": "10.25.0",
 		"@sindresorhus/is": "7.1.1",
-		"@tanstack/vue-query": "5.91.0",
+		"@tanstack/vue-query": "5.91.1",
 		"@tanstack/vue-query-devtools": "6.0.0",
 		"@trpc/client": "11.7.1",
 		"@trpc/server": "11.7.1",
