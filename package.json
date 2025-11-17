@@ -23,7 +23,7 @@
 		"canvas-confetti": "1.9.4",
 		"croner": "9.1.0",
 		"drizzle-orm": "0.44.7",
-		"es-toolkit": "1.41.0",
+		"es-toolkit": "1.42.0",
 		"hono": "4.10.6",
 		"ky": "1.14.0",
 		"mime": "4.1.0",
