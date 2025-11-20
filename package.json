@@ -78,6 +78,6 @@
 		"vue-tsc": "3.1.4"
 	},
 	"overrides": {
-		"@vue/devtools-kit": "8.0.3"
+		"@vue/devtools-kit": "8.0.5"
 	}
 }
