@@ -67,7 +67,7 @@
 		"globals": "16.5.0",
 		"jsdom": "27.2.0",
 		"prettier": "3.7.3",
-		"prettier-plugin-tailwindcss": "0.7.1",
+		"prettier-plugin-tailwindcss": "0.7.2",
 		"rust-just": "1.43.1",
 		"tsx": "4.21.0",
 		"type-fest": "5.2.0",
