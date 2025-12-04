@@ -60,7 +60,7 @@
 		"common-tags": "1.8.2",
 		"concurrently": "9.2.1",
 		"daisyui": "5.5.8",
-		"drizzle-kit": "0.31.7",
+		"drizzle-kit": "0.31.8",
 		"drizzle-seed": "0.3.1",
 		"eslint": "9.39.1",
 		"fishery": "2.3.1",
