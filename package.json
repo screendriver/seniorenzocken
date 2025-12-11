@@ -48,7 +48,7 @@
 		"@enormora/eslint-config-vitest": "0.0.10",
 		"@enormora/eslint-config-vue-ts": "0.0.13",
 		"@pinia/testing": "1.0.3",
-		"@tailwindcss/vite": "4.1.17",
+		"@tailwindcss/vite": "4.1.18",
 		"@tanstack/eslint-plugin-query": "5.91.2",
 		"@tsconfig/node24": "24.0.3",
 		"@types/canvas-confetti": "1.9.0",
