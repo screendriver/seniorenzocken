@@ -50,7 +50,7 @@
 		"@pinia/testing": "1.0.3",
 		"@tailwindcss/vite": "4.1.18",
 		"@tanstack/eslint-plugin-query": "5.91.2",
-		"@tsconfig/node24": "24.0.3",
+		"@tsconfig/node24": "24.0.4",
 		"@types/canvas-confetti": "1.9.0",
 		"@types/common-tags": "1.8.4",
 		"@types/jsdom": "27.0.0",
