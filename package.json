@@ -54,7 +54,7 @@
 		"@types/canvas-confetti": "1.9.0",
 		"@types/common-tags": "1.8.4",
 		"@types/jsdom": "27.0.0",
-		"@vitejs/plugin-vue": "6.0.3",
+		"@vitejs/plugin-vue": "6.0.4",
 		"@vue/test-utils": "2.4.6",
 		"@vue/typescript-plugin": "3.2.4",
 		"common-tags": "1.8.2",
