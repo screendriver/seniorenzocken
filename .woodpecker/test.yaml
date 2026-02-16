@@ -4,7 +4,7 @@ when:
 
 steps:
     - name: test
-      image: node:24.13.0
+      image: node:24.13.1
       commands:
           - npm clean-install
           - npx just test
