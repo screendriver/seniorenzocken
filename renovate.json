@@ -8,6 +8,11 @@
 	},
 	"packageRules": [
 		{
+			"groupName": "Vite dependencies",
+			"groupSlug": "vite",
+			"matchPackageNames": ["vite", "@vitejs/*", "@tailwindcss/vite", "vite-plugin-*", "vitest", "@vitest/*"]
+		},
+		{
 			"groupName": "Pinia dependencies",
 			"groupSlug": "pinia",
 			"matchPackageNames": ["@pinia/*", "pinia"]
