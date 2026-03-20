@@ -11,7 +11,7 @@
 		"@hono/trpc-server": "0.4.2",
 		"@infisical/sdk": "5.0.0",
 		"@kalimahapps/vue-icons": "1.9.5",
-		"@libsql/client": "0.17.0",
+		"@libsql/client": "0.17.2",
 		"@sentry/node": "10.44.0",
 		"@sentry/vue": "10.44.0",
 		"@sindresorhus/is": "7.2.0",
