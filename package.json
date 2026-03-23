@@ -62,6 +62,7 @@
 		"daisyui": "5.5.19",
 		"drizzle-kit": "0.31.10",
 		"drizzle-seed": "0.3.1",
+		"esbuild": "0.27.4",
 		"eslint": "9.39.2",
 		"fishery": "2.4.0",
 		"globals": "17.4.0",
