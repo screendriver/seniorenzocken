@@ -31,9 +31,6 @@ export default defineConfig({
 		minify: "esbuild",
 		sourcemap: true
 	},
-	esbuild: {
-		legalComments: "none"
-	},
 	server: {
 		host: true,
 		port: 5173,
