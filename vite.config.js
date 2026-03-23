@@ -28,10 +28,8 @@ export default defineConfig({
 	],
 	build: {
 		outDir: "target/distribution/browser-application",
+		minify: "esbuild",
 		sourcemap: true
-	},
-	esbuild: {
-		legalComments: "none"
 	},
 	server: {
 		host: true,
