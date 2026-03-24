@@ -69,7 +69,7 @@
 		"jsdom": "29.0.1",
 		"prettier": "3.8.1",
 		"prettier-plugin-tailwindcss": "0.7.2",
-		"rust-just": "1.47.1",
+		"rust-just": "1.48.0",
 		"tsx": "4.21.0",
 		"type-fest": "5.5.0",
 		"typescript": "5.9.3",
