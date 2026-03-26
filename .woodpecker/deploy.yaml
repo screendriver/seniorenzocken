@@ -3,6 +3,13 @@ when:
     - event: manual
 
 steps:
+    - name: build
+      image: node:24.14.1
+      commands:
+          - npm clean-install
+          - npx just compile
+          - npx just build-browser-application
+
     - name: publish-container-image
       image: woodpeckerci/plugin-docker-buildx:6.0.4
       settings:

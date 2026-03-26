@@ -1,5 +1,5 @@
 .git
 .output
-target
 **/node_modules/
 **/*.test.ts
+**/*.d.ts*
