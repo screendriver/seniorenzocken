@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/node:24.14.0 AS builder
+FROM public.ecr.aws/docker/library/node:24.14.1 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm clean-install
