@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/node:24.14.0-alpine
+FROM public.ecr.aws/docker/library/node:24.14.1-alpine
 ENV NODE_ENV=production
 WORKDIR /app
 COPY package.json package-lock.json ./
