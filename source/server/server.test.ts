@@ -1,6 +1,5 @@
 import { randomUUID } from "node:crypto";
 import { describe, it, expect, vi, type TestFunction } from "vitest";
-import { serve } from "@hono/node-server";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
 import { createTRPCClient, unstable_localLink } from "@trpc/client";
@@ -120,9 +119,7 @@ describe("server", () => {
 
 	it(
 		"uses the given tRPC server on /api/trpc/ route",
-		withServer(async ({ server, trpcApplicationRouter }) => {
-			const listeningServer = serve({ fetch: server.fetch });
-
+		withServer(async ({ trpcApplicationRouter }) => {
 			const trpcClient = createTRPCClient<TRPCApplicationRouter>({
 				links: [
 					unstable_localLink({
@@ -137,8 +134,6 @@ describe("server", () => {
 			});
 
 			await expect(trpcClient.teams.query()).resolves.toStrictEqual([]);
-
-			listeningServer.close();
 		})
 	);
 

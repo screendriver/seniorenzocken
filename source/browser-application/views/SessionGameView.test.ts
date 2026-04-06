@@ -42,7 +42,9 @@ type ComponentWrapperOptions = {
 	readonly router?: Router;
 };
 
-function createComponentWrapper(options: ComponentWrapperOptions = {}): VueWrapper {
+type SessionGameViewComponentInstance = InstanceType<typeof SessionGameView>;
+
+function createComponentWrapper(options: ComponentWrapperOptions = {}): VueWrapper<SessionGameViewComponentInstance> {
 	const queryClient = new QueryClient({
 		defaultOptions: {
 			queries: {
