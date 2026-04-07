@@ -66,7 +66,7 @@
 		"eslint": "9.39.2",
 		"fishery": "2.4.0",
 		"globals": "17.4.0",
-		"jsdom": "29.0.1",
+		"jsdom": "29.0.2",
 		"prettier": "3.8.1",
 		"prettier-plugin-tailwindcss": "0.7.2",
 		"rust-just": "1.49.0",
