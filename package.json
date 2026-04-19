@@ -7,7 +7,7 @@
 	},
 	"dependencies": {
 		"@hono/node-server": "1.19.14",
-		"@hono/prometheus": "1.0.2",
+		"@hono/prometheus": "1.0.3",
 		"@hono/trpc-server": "0.4.2",
 		"@infisical/sdk": "5.0.1",
 		"@kalimahapps/vue-icons": "1.9.5",
