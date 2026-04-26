@@ -9,7 +9,7 @@ export default defineConfig({
 		vueDevTools(),
 		tailwindcss(),
 		{
-			name: "Umami",
+			name: "Tracking scripts",
 			apply: "build",
 			transformIndexHtml() {
 				return [
@@ -20,6 +20,15 @@ export default defineConfig({
 							src: "https://statistics.82r.de/tasty.js",
 							"data-website-id": "16d1825d-3f6c-46fb-9243-1d281224605e",
 							"capture performance metrics": "true"
+						},
+						injectTo: "head"
+					},
+					{
+						tag: "script",
+						attrs: {
+							defer: true,
+							src: "https://pulse.82r.de/api/script.js",
+							"data-site-id": "9f88a1ebc565"
 						},
 						injectTo: "head"
 					}
