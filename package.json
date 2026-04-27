@@ -55,7 +55,7 @@
 		"@types/common-tags": "1.8.4",
 		"@types/jsdom": "28.0.1",
 		"@vitejs/plugin-vue": "6.0.6",
-		"@vue/test-utils": "2.4.8",
+		"@vue/test-utils": "2.4.9",
 		"@vue/typescript-plugin": "3.2.7",
 		"common-tags": "1.8.2",
 		"concurrently": "9.2.1",
