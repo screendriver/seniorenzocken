@@ -14,7 +14,7 @@
 		"@libsql/client": "0.17.3",
 		"@sentry/node": "10.52.0",
 		"@sentry/vue": "10.52.0",
-		"@sindresorhus/is": "8.0.0",
+		"@sindresorhus/is": "8.1.0",
 		"@tanstack/vue-query": "5.92.9",
 		"@tanstack/vue-query-devtools": "6.1.5",
 		"@trpc/client": "11.17.0",
