@@ -53,7 +53,7 @@
 		"@tsconfig/node24": "24.0.4",
 		"@types/canvas-confetti": "1.9.0",
 		"@types/common-tags": "1.8.4",
-		"@types/jsdom": "28.0.1",
+		"@types/jsdom": "28.0.2",
 		"@vitejs/plugin-vue": "6.0.6",
 		"@vue/test-utils": "2.4.10",
 		"@vue/typescript-plugin": "3.2.8",
