@@ -27,7 +27,22 @@ export default defineConfig({
 	build: {
 		outDir: "target/distribution/browser-application",
 		minify: "esbuild",
-		sourcemap: true
+		rolldownOptions: {
+			output: {
+				codeSplitting: {
+					groups: [
+						{
+							name: "react",
+							test: /node_modules\/(?:react|react-dom|react-router)\//
+						},
+						{
+							name: "react-query",
+							test: /node_modules\/(?:@tanstack|@trpc)\//
+						}
+					]
+				}
+			}
+		}
 	},
 	server: {
 		host: true,
