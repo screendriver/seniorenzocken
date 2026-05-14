@@ -10,12 +10,22 @@
 		{
 			"groupName": "Vite dependencies",
 			"groupSlug": "vite",
-			"matchPackageNames": ["vite", "@vitejs/*", "@tailwindcss/vite", "vite-plugin-*", "vitest", "@vitest/*"]
+			"matchPackageNames": ["vite", "@tailwindcss/vite", "vitest", "@vitest/*"]
 		},
 		{
-			"groupName": "Pinia dependencies",
-			"groupSlug": "pinia",
-			"matchPackageNames": ["@pinia/*", "pinia"]
+			"groupName": "React dependencies",
+			"groupSlug": "react",
+			"matchPackageNames": [
+				"react",
+				"react-dom",
+				"react-router-dom",
+				"@types/react",
+				"@types/react-dom",
+				"@vitejs/plugin-react",
+				"@testing-library/react",
+				"@testing-library/user-event",
+				"@radix-ui/*"
+			]
 		},
 		{
 			"groupName": "tRPC dependencies",
