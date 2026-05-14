@@ -5,7 +5,7 @@ default:
 	@just --list
 
 compile:
-	vue-tsc --build
+	tsc --build
 
 lint:
 	prettier --check .

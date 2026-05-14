@@ -1,51 +1,28 @@
-import { describe, it, expect, vi, type TestFunction } from "vitest";
-import type canvasConfetti from "canvas-confetti";
-import { createPinia, setActivePinia } from "pinia";
-import { useGameStore } from "../game-store/game-store.js";
-import { createTRPCClient } from "../trpc/client.js";
-import { useConfetti } from "./use-confetti.js";
+import { describe, expect, it } from "vitest";
+import { shouldLaunchConfetti } from "./use-confetti.js";
 
-function withPinia(testFunction: () => Promise<void>): TestFunction {
-	return async () => {
-		setActivePinia(createPinia());
+describe(shouldLaunchConfetti, () => {
+	it("returns true when show confetti changes from false to true", () => {
+		const result = shouldLaunchConfetti(false, true);
 
-		await testFunction();
-	};
-}
+		expect(result).toBe(true);
+	});
 
-describe("useConfetti()", () => {
-	it(
-		"does not call given confetti function when confetti should not be shown",
-		withPinia(async () => {
-			const trpcClient = createTRPCClient({ isRunningInProduction: false });
-			const gameStore = useGameStore(trpcClient);
-			gameStore.showConfetti = false;
+	it("returns false when show confetti stays true", () => {
+		const result = shouldLaunchConfetti(true, true);
 
-			const confetti = vi.fn() as unknown as typeof canvasConfetti;
-			useConfetti(confetti, trpcClient);
+		expect(result).toBe(false);
+	});
 
-			expect(confetti).not.toHaveBeenCalled();
-		})
-	);
+	it("returns false when show confetti stays false", () => {
+		const result = shouldLaunchConfetti(false, false);
 
-	it(
-		"calls given confetti function when confetti should be shown",
-		withPinia(async () => {
-			const trpcClient = createTRPCClient({ isRunningInProduction: false });
-			const gameStore = useGameStore(trpcClient);
-			gameStore.showConfetti = true;
+		expect(result).toBe(false);
+	});
 
-			const confetti = vi.fn().mockResolvedValue(undefined) as unknown as typeof canvasConfetti;
-			useConfetti(confetti, trpcClient);
+	it("returns false when show confetti changes from true to false", () => {
+		const result = shouldLaunchConfetti(true, false);
 
-			await confetti();
-
-			expect(confetti).toHaveBeenCalledWith({
-				particleCount: 100,
-				spread: 70,
-				origin: { y: 0.6 }
-			});
-			expect(gameStore.showConfetti).toBe(false);
-		})
-	);
+		expect(result).toBe(false);
+	});
 });

@@ -6,10 +6,9 @@
 		"noEmit": true,
 		"lib": ["ESNext.Disposable", "ES2024", "DOM", "DOM.Iterable"],
 		"moduleDetection": "force",
-		"jsx": "preserve",
-		"jsxImportSource": "vue"
+		"jsx": "react-jsx"
 	},
 	"types": ["canvas-confetti", "lodash.sample"],
 	"references": [{ "path": "../shared/tsconfig.json" }, { "path": "../server-shared/tsconfig.json" }],
-	"include": ["./**/*.ts", "./**/*.vue"]
+	"include": ["./**/*.ts", "./**/*.tsx"]
 }

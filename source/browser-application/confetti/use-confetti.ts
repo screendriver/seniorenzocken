@@ -1,29 +1,34 @@
-import { watchEffect } from "vue";
+import { useEffect } from "react";
 import type canvasConfetti from "canvas-confetti";
-import { storeToRefs } from "pinia";
-import type { TRPCClient } from "@trpc/client";
-import { useGameStore } from "../game-store/game-store.js";
-import type { TRPCApplicationRouter } from "../../server-shared/trpc-application-router.js";
+import { useApplicationContext } from "../context/app-context.js";
 
-export function useConfetti(confetti: typeof canvasConfetti, trpcClient: TRPCClient<TRPCApplicationRouter>): void {
-	const gameStore = useGameStore(trpcClient);
-	const { showConfetti } = storeToRefs(gameStore);
+export function shouldLaunchConfetti(previousShowConfetti: boolean, currentShowConfetti: boolean): boolean {
+	return !previousShowConfetti && currentShowConfetti;
+}
 
-	watchEffect(() => {
-		if (!showConfetti.value) {
-			return;
-		}
+export function useConfetti(confetti: typeof canvasConfetti): void {
+	const applicationContext = useApplicationContext();
+	const { gameStore } = applicationContext;
 
-		async function runConfetti(): Promise<void> {
+	useEffect(() => {
+		async function launchConfetti(): Promise<void> {
 			await confetti({
 				particleCount: 100,
 				spread: 70,
 				origin: { y: 0.6 }
 			});
 
-			showConfetti.value = false;
+			gameStore.setState({ showConfetti: false });
 		}
 
-		void runConfetti();
-	});
+		const unsubscribe = gameStore.subscribe((state, previousState) => {
+			if (!shouldLaunchConfetti(previousState.showConfetti, state.showConfetti)) {
+				return;
+			}
+
+			void launchConfetti();
+		});
+
+		return unsubscribe;
+	}, [confetti, gameStore]);
 }

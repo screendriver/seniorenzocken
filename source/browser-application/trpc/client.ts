@@ -1,8 +1,5 @@
-import type { InjectionKey } from "vue";
 import { createTRPCClient as createRealTRPCClient, httpLink, type TRPCClient, loggerLink } from "@trpc/client";
 import type { TRPCApplicationRouter } from "../../server-shared/trpc-application-router.js";
-
-export const trpcClientInjectionKey = Symbol("tRPC-client") as InjectionKey<TRPCClient<TRPCApplicationRouter>>;
 
 type TRPCClientOptions = {
 	readonly isRunningInProduction: boolean;

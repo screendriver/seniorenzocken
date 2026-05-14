@@ -1,8 +1,8 @@
-import "@tanstack/vue-query";
+import "@tanstack/react-query";
 
-type QueryKey = ["session" | "players" | "currentGameRound" | "randomFunAudio", ...(readonly unknown[])];
+type QueryKey = readonly unknown[];
 
-declare module "@tanstack/vue-query" {
+declare module "@tanstack/react-query" {
 	interface Register {
 		queryKey: QueryKey;
 	}
