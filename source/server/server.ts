@@ -26,6 +26,7 @@ export type ServerOptions = {
 	readonly database: Database;
 	readonly trpcApplicationRouter: TRPCApplicationRouter;
 	readonly sessionRepository: SessionRepository;
+	readonly browserApplicationPath: string;
 	readonly metricsUsername: string;
 	readonly metricsPassword: string;
 	readonly seniorenzockenUsername: string;
@@ -39,6 +40,7 @@ export function createServer(options: ServerOptions): Hono<HonoEnvironment> {
 		database,
 		trpcApplicationRouter,
 		sessionRepository,
+		browserApplicationPath,
 		metricsUsername,
 		metricsPassword,
 		seniorenzockenUsername,
@@ -151,7 +153,28 @@ export function createServer(options: ServerOptions): Hono<HonoEnvironment> {
 			}
 		)
 
-		.use("/*", serveStatic({ root: "./browser-application" }))
+		.use(
+			"/*",
+			serveStatic({
+				root: browserApplicationPath,
+				async onFound(path, context) {
+					if (path.includes("/assets/")) {
+						context.res.headers.set("Cache-Control", "public, max-age=31536000, immutable");
+						return;
+					}
 
-		.get("*", serveStatic({ path: "./browser-application/index.html" }));
+					context.res.headers.set("Cache-Control", "no-cache");
+				}
+			})
+		)
+
+		.get(
+			"*",
+			serveStatic({
+				path: `${browserApplicationPath}/index.html`,
+				async onFound(_path, context) {
+					context.res.headers.set("Cache-Control", "no-cache");
+				}
+			})
+		);
 }

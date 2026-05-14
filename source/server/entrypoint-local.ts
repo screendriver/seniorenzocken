@@ -37,6 +37,7 @@ const server = createServer({
 	database,
 	trpcApplicationRouter,
 	sessionRepository,
+	browserApplicationPath: "./browser-application",
 	metricsUsername: "hello",
 	metricsPassword: "world",
 	seniorenzockenUsername: "foo",

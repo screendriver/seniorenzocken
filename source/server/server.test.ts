@@ -1,4 +1,6 @@
 import { randomUUID } from "node:crypto";
+import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import { describe, it, expect, vi, type TestFunction } from "vitest";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
@@ -21,7 +23,24 @@ type TestFunctionOptions = {
 	readonly trpcApplicationRouter: TRPCApplicationRouter;
 };
 
-function withServer(testFunction: (options: TestFunctionOptions) => Promise<void>): TestFunction {
+type BrowserApplicationPathTestFunctionOptions = {
+	readonly browserApplicationPath: string;
+};
+
+type WithBrowserApplicationPathOptions = {
+	readonly files?: Record<string, string>;
+};
+
+type WithServerOptions = {
+	readonly browserApplicationPath: string;
+};
+
+function withServer(
+	testFunction: (options: TestFunctionOptions) => Promise<void>,
+	withServerOptions: WithServerOptions = {
+		browserApplicationPath: "./browser-application"
+	}
+): TestFunction {
 	return async () => {
 		const fakeClock = createFakeClock();
 		const database = createDatabase(":memory:");
@@ -44,6 +63,7 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 			database,
 			trpcApplicationRouter,
 			sessionRepository: createSessionRepository({ database, randomUUID }),
+			browserApplicationPath: withServerOptions.browserApplicationPath,
 			metricsUsername: "foo",
 			metricsPassword: "bar",
 			seniorenzockenUsername: "hello",
@@ -53,6 +73,41 @@ function withServer(testFunction: (options: TestFunctionOptions) => Promise<void
 		const server = createServer(serverOptions);
 
 		await testFunction({ server, trpcApplicationRouter });
+	};
+}
+
+function withBrowserApplicationPath(
+	testFunction: (options: BrowserApplicationPathTestFunctionOptions) => Promise<void>,
+	withBrowserApplicationPathOptions: WithBrowserApplicationPathOptions = {}
+): TestFunction {
+	return async () => {
+		const browserApplicationPath = await mkdtemp("./target/test-browser-application-");
+
+		try {
+			for (const [filePath, fileContent] of Object.entries(withBrowserApplicationPathOptions.files ?? {})) {
+				const fileLocation = join(browserApplicationPath, filePath);
+
+				await mkdir(dirname(fileLocation), { recursive: true });
+				await writeFile(fileLocation, fileContent);
+			}
+
+			await testFunction({ browserApplicationPath });
+		} finally {
+			await rm(browserApplicationPath, { recursive: true, force: true });
+		}
+	};
+}
+
+function withServerAndBrowserApplicationPath(
+	testFunction: (options: TestFunctionOptions) => Promise<void>,
+	withBrowserApplicationPathOptions: WithBrowserApplicationPathOptions = {}
+): TestFunction {
+	return async (testContext) => {
+		await withBrowserApplicationPath(async (browserApplicationPathTestFunctionOptions) => {
+			const { browserApplicationPath } = browserApplicationPathTestFunctionOptions;
+
+			await withServer(testFunction, { browserApplicationPath })(testContext);
+		}, withBrowserApplicationPathOptions)(testContext);
 	};
 }
 
@@ -180,5 +235,99 @@ describe("server", () => {
 
 			expect(responseBlob.size).toBe(884);
 		})
+	);
+});
+
+describe("cache headers", () => {
+	it(
+		"returns immutable cache headers for browser assets",
+		withServerAndBrowserApplicationPath(
+			async (testFunctionOptions) => {
+				const { server } = testFunctionOptions;
+				const response = await server.request("/assets/index-BThKbJIQ.js");
+
+				expect(response.status).toBe(200);
+				expect(response.headers.get("Cache-Control")).toBe("public, max-age=31536000, immutable");
+			},
+			{
+				files: {
+					"index.html": "<!DOCTYPE html><html></html>",
+					"assets/index-BThKbJIQ.js": "// test js"
+				}
+			}
+		)
+	);
+
+	it(
+		"returns immutable cache headers for browser stylesheets",
+		withServerAndBrowserApplicationPath(
+			async (testFunctionOptions) => {
+				const { server } = testFunctionOptions;
+				const response = await server.request("/assets/index-BLpnfDeo.css");
+
+				expect(response.status).toBe(200);
+				expect(response.headers.get("Cache-Control")).toBe("public, max-age=31536000, immutable");
+			},
+			{
+				files: {
+					"index.html": "<!DOCTYPE html><html></html>",
+					"assets/index-BLpnfDeo.css": "/* test css */"
+				}
+			}
+		)
+	);
+
+	it(
+		"returns no-cache headers for index.html",
+		withServerAndBrowserApplicationPath(
+			async (testFunctionOptions) => {
+				const { server } = testFunctionOptions;
+				const response = await server.request("/index.html");
+
+				expect(response.status).toBe(200);
+				expect(response.headers.get("Cache-Control")).toBe("no-cache");
+			},
+			{
+				files: {
+					"index.html": "<!DOCTYPE html><html></html>"
+				}
+			}
+		)
+	);
+
+	it(
+		"returns no-cache headers for the root path",
+		withServerAndBrowserApplicationPath(
+			async (testFunctionOptions) => {
+				const { server } = testFunctionOptions;
+				const response = await server.request("/");
+
+				expect(response.status).toBe(200);
+				expect(response.headers.get("Cache-Control")).toBe("no-cache");
+			},
+			{
+				files: {
+					"index.html": "<!DOCTYPE html><html></html>"
+				}
+			}
+		)
+	);
+
+	it(
+		"returns no-cache headers for single page application fallback routes",
+		withServerAndBrowserApplicationPath(
+			async (testFunctionOptions) => {
+				const { server } = testFunctionOptions;
+				const response = await server.request("/teams-selection");
+
+				expect(response.status).toBe(200);
+				expect(response.headers.get("Cache-Control")).toBe("no-cache");
+			},
+			{
+				files: {
+					"index.html": "<!DOCTYPE html><html></html>"
+				}
+			}
+		)
 	);
 });

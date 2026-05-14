@@ -63,6 +63,7 @@ const server = createServer({
 	database,
 	trpcApplicationRouter,
 	sessionRepository,
+	browserApplicationPath: "./browser-application",
 	metricsUsername: prometheusSecrets.username,
 	metricsPassword: prometheusSecrets.password,
 	seniorenzockenUsername: seniorenzockenSecrets.seniorenzockenUsername,
