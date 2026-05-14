@@ -1,3 +1,3 @@
 # Senioren zocken
 
-Source code of [seniorenzocken.net](https://www.seniorenzocken.net)
+Source code of [seniorenzocken.net](https://seniorenzocken.net)
