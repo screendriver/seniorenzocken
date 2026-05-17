@@ -4,6 +4,7 @@ import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
 import { all } from "true-myth/task";
 import { Cron } from "croner";
+import pino from "pino";
 import { createClock } from "./clock/clock.js";
 import { createDatabase } from "./database/database.js";
 import { createServer } from "./server.js";
@@ -20,8 +21,23 @@ import { startCleanupDatabaseCronJob } from "./database/cleanup.js";
 
 const infisicalAccessToken = await readFile("/run/secrets/infisical_access_token", "utf8");
 
+const logger = pino({ base: null });
 const infisicalSDK = createInfisicalSDK(infisicalAccessToken.trim());
-const secretsClient = createSecretsClient({ infisicalSDK });
+const secretsClient = createSecretsClient({
+	infisicalSDK,
+	retryOptions: {
+		retries: Number.POSITIVE_INFINITY,
+		minTimeout: 2000,
+		maxTimeout: 30_000,
+		maxRetryTime: 300_000,
+		factor: 2
+	},
+	logRetry(retryContext) {
+		const { attemptNumber, retryDelay, retriesLeft, error } = retryContext;
+
+		logger.warn({ attemptNumber, retryDelay, retriesLeft, error }, "Could not fetch Infisical secret; retrying");
+	}
+});
 const secretsRepository = createSecretsRepository({ secretsClient });
 
 const prometheusSecretsResult = await secretsRepository.getPrometheusSecrets();

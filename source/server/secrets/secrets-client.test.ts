@@ -62,6 +62,37 @@ describe("fetchSecret()", () => {
 		expect(result.value).toBe("bar");
 	});
 
+	it("retries when fetching the secret fails temporarily", async () => {
+		const getSecret = vi.fn().mockRejectedValueOnce(new Error("Infisical is starting")).mockResolvedValueOnce({
+			secretKey: "FOO",
+			secretValue: "bar"
+		});
+		const retryContexts: unknown[] = [];
+		const logRetry = (retryContext: unknown): void => {
+			retryContexts.push(retryContext);
+		};
+		const fakeInfisicalSDK = createFakeInfisicalSDK({ getSecret });
+		const secretsClient = createSecretsClient({
+			infisicalSDK: fakeInfisicalSDK,
+			retryOptions: {
+				retries: 1,
+				minTimeout: 0,
+				maxTimeout: 0,
+				maxRetryTime: 1000,
+				factor: 1
+			},
+			logRetry
+		});
+
+		const result = await secretsClient.fetchSecret("FOO");
+
+		assert(isOk(result));
+
+		expect(result.value).toBe("bar");
+		expect(getSecret).toHaveBeenCalledTimes(2);
+		expect(retryContexts).toHaveLength(1);
+	});
+
 	it("uses the correct options when calling getSecret()", async () => {
 		const getSecret = vi.fn().mockResolvedValue({});
 		const fakeInfisicalSDK = createFakeInfisicalSDK({ getSecret });
