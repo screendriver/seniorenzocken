@@ -40,10 +40,6 @@ const secretsClient = createSecretsClient({
 });
 const secretsRepository = createSecretsRepository({ secretsClient });
 
-const prometheusSecretsResult = await secretsRepository.getPrometheusSecrets();
-const prometheusSecrets = prometheusSecretsResult.unwrapOrElse((error) => {
-	throw new Error("Could not fetch Prometheus secrets", { cause: error });
-});
 const seniorenzockenSecretsResult = await all([
 	secretsRepository.getSecret("SENIORENZOCKEN_USERNAME"),
 	secretsRepository.getSecret("SENIORENZOCKEN_PASSWORD")
@@ -80,8 +76,6 @@ const server = createServer({
 	trpcApplicationRouter,
 	sessionRepository,
 	browserApplicationPath: "./browser-application",
-	metricsUsername: prometheusSecrets.username,
-	metricsPassword: prometheusSecrets.password,
 	seniorenzockenUsername: seniorenzockenSecrets.seniorenzockenUsername,
 	seniorenzockenPassword: seniorenzockenSecrets.seniorenzockenPassword,
 	isRunningInProduction: true

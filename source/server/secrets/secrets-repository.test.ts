@@ -1,5 +1,5 @@
 import { describe, it, expect, assert, vi, type Mock } from "vitest";
-import { Task, resolve, reject } from "true-myth/task";
+import { resolve, reject } from "true-myth/task";
 import { isErr, isOk } from "true-myth/result";
 import type { SecretsClient } from "./secrets-client.js";
 import { createSecretsRepository } from "./secrets-repository.js";
@@ -13,30 +13,6 @@ function createFakeSecretsClient(overrides: Overrides = {}): SecretsClient {
 		fetchSecret: overrides.fetchSecret ?? vi.fn()
 	};
 }
-
-describe("getPrometheusSecrets()", () => {
-	it("returns an Result Err when fetching secrets failed", async () => {
-		const fetchSecret = vi.fn().mockReturnValue(reject(new Error("Oh oh")));
-		const secretsClient = createFakeSecretsClient({ fetchSecret });
-		const secretsRepository = createSecretsRepository({ secretsClient });
-		const secretResult = await secretsRepository.getPrometheusSecrets();
-
-		assert(isErr(secretResult));
-
-		expect(secretResult.error.message).toBe("Oh oh");
-	});
-
-	it("returns an Result Ok when fetching secret succeeded", async () => {
-		const fetchSecret = vi.fn().mockReturnValueOnce(resolve("foo")).mockReturnValueOnce(Task.resolve("bar"));
-		const secretsClient = createFakeSecretsClient({ fetchSecret });
-		const secretsRepository = createSecretsRepository({ secretsClient });
-		const secretResult = await secretsRepository.getPrometheusSecrets();
-
-		assert(isOk(secretResult));
-
-		expect(secretResult.value).toStrictEqual({ username: "foo", password: "bar" });
-	});
-});
 
 describe("getSecret()", () => {
 	it("returns an Result Err when fetching secret failed", async () => {

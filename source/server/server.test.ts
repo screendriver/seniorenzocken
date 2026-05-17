@@ -5,7 +5,6 @@ import { describe, it, expect, vi, type TestFunction } from "vitest";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
 import { createTRPCClient, unstable_localLink } from "@trpc/client";
-import { stripIndent } from "common-tags";
 import { nothing } from "true-myth/maybe";
 import { createFakeClock } from "./clock/fake-clock.js";
 import { type ServerOptions, createServer } from "./server.js";
@@ -64,8 +63,6 @@ function withServer(
 			trpcApplicationRouter,
 			sessionRepository: createSessionRepository({ database, randomUUID }),
 			browserApplicationPath: withServerOptions.browserApplicationPath,
-			metricsUsername: "foo",
-			metricsPassword: "bar",
 			seniorenzockenUsername: "hello",
 			seniorenzockenPassword: "world",
 			isRunningInProduction: false
@@ -122,53 +119,6 @@ describe("server", () => {
 				status: "OK",
 				timestamp: "2025-07-24T09:10:20.153Z"
 			});
-		})
-	);
-
-	it(
-		"returns a 401 status code when no basic auth is given on /metrics route",
-		withServer(async ({ server }) => {
-			const response = await server.request("/metrics");
-
-			expect(response.status).toBe(401);
-			await expect(response.text()).resolves.toBe("Unauthorized");
-		})
-	);
-
-	it(
-		"returns a 401 status code when wrong credentials are given on /metrics route",
-		withServer(async ({ server }) => {
-			const response = await server.request("/metrics", {
-				headers: {
-					Authorization: "Basic nothing"
-				}
-			});
-
-			expect(response.status).toBe(401);
-			await expect(response.text()).resolves.toBe("Unauthorized");
-		})
-	);
-
-	it(
-		"returns a 200 status code with metrics when correct credentials are given on /metrics route",
-		withServer(async ({ server }) => {
-			const response = await server.request("/metrics", {
-				headers: {
-					Authorization: "Basic Zm9vOmJhcg=="
-				}
-			});
-
-			expect(response.status).toBe(200);
-
-			const responseText = await response.text();
-
-			expect(responseText.trimEnd()).toBe(stripIndent`
-				# HELP http_request_duration_seconds Duration of HTTP requests in seconds
-				# TYPE http_request_duration_seconds histogram
-
-				# HELP http_requests_total Total number of HTTP requests
-				# TYPE http_requests_total counter
-			`);
 		})
 	);
 

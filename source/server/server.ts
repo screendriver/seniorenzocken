@@ -4,8 +4,6 @@ import { compress } from "hono/compress";
 import { validator } from "hono/validator";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
-import { basicAuth } from "hono/basic-auth";
-import { prometheus } from "@hono/prometheus";
 import { eq } from "drizzle-orm";
 import { safeParse, object, pipe, string, transform, number, integer } from "valibot";
 import mime from "mime";
@@ -27,8 +25,6 @@ export type ServerOptions = {
 	readonly trpcApplicationRouter: TRPCApplicationRouter;
 	readonly sessionRepository: SessionRepository;
 	readonly browserApplicationPath: string;
-	readonly metricsUsername: string;
-	readonly metricsPassword: string;
 	readonly seniorenzockenUsername: string;
 	readonly seniorenzockenPassword: string;
 	readonly isRunningInProduction: boolean;
@@ -41,14 +37,10 @@ export function createServer(options: ServerOptions): Hono<HonoEnvironment> {
 		trpcApplicationRouter,
 		sessionRepository,
 		browserApplicationPath,
-		metricsUsername,
-		metricsPassword,
 		seniorenzockenUsername,
 		seniorenzockenPassword,
 		isRunningInProduction
 	} = options;
-
-	const { printMetrics, registerMetrics } = prometheus();
 
 	return new Hono<HonoEnvironment>()
 		.onError((error, context) => {
@@ -70,17 +62,6 @@ export function createServer(options: ServerOptions): Hono<HonoEnvironment> {
 		.get("/health", (context) => {
 			return context.json({ status: "OK", timestamp: clock.now });
 		})
-
-		.use("*", registerMetrics)
-		.use(
-			"/metrics",
-			basicAuth({
-				username: metricsUsername,
-				password: metricsPassword,
-				realm: "metrics"
-			})
-		)
-		.get("/metrics", printMetrics)
 
 		.use(sessionMiddleware({ sessionRepository }))
 

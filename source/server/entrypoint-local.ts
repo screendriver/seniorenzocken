@@ -38,8 +38,6 @@ const server = createServer({
 	trpcApplicationRouter,
 	sessionRepository,
 	browserApplicationPath: "./browser-application",
-	metricsUsername: "hello",
-	metricsPassword: "world",
 	seniorenzockenUsername: "foo",
 	seniorenzockenPassword: "bar",
 	isRunningInProduction: false
