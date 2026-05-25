@@ -1,6 +1,5 @@
 import { Hono, type Context } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { compress } from "hono/compress";
 import { validator } from "hono/validator";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
@@ -56,8 +55,6 @@ export function createServer(options: ServerOptions): Hono<HonoEnvironment> {
 			Sentry.captureException(error);
 			return context.json({ error: "Internal server error" }, 500);
 		})
-
-		.use(compress())
 
 		.get("/health", (context) => {
 			return context.json({ status: "OK", timestamp: clock.now });

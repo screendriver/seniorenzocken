@@ -123,6 +123,21 @@ describe("server", () => {
 	);
 
 	it(
+		"does not compress HTTP responses itself",
+		withServer(async ({ server }) => {
+			const response = await server.request("/health", {
+				headers: new Headers({
+					"Accept-Encoding": "gzip, deflate, br, zstd"
+				})
+			});
+			const actualContentEncoding = response.headers.get("Content-Encoding");
+			const expectedContentEncoding = null;
+
+			expect(actualContentEncoding).toBe(expectedContentEncoding);
+		})
+	);
+
+	it(
 		"uses the given tRPC server on /api/trpc/ route",
 		withServer(async ({ trpcApplicationRouter }) => {
 			const trpcClient = createTRPCClient<TRPCApplicationRouter>({
