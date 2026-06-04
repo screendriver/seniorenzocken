@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, type FormEvent, type FunctionComponent } from "react";
+import { Fragment, useEffect, useRef, type FunctionComponent, type SubmitEvent as ReactSubmitEvent } from "react";
 import { useStore } from "zustand";
 import { isEmptyString } from "@sindresorhus/is";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +29,7 @@ export const TeamsRoute: FunctionComponent = () => {
 
 	const isSubmitDisabled = hasError || isEmptyString(team1.name) || isEmptyString(team2.name);
 
-	function handleSubmit(formSubmissionEvent: FormEvent<HTMLFormElement>): void {
+	function handleSubmit(formSubmissionEvent: ReactSubmitEvent<HTMLFormElement>): void {
 		formSubmissionEvent.preventDefault();
 		randomFunAudioReference.current?.playEmptyAudio();
 		const startGame = async (): Promise<void> => {
