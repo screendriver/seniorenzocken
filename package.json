@@ -67,7 +67,7 @@
 		"concurrently": "10.0.3",
 		"drizzle-kit": "0.31.10",
 		"drizzle-seed": "0.3.1",
-		"esbuild": "0.28.0",
+		"esbuild": "0.28.1",
 		"eslint": "9.39.4",
 		"fishery": "2.4.0",
 		"globals": "17.6.0",
