@@ -28,7 +28,7 @@
 		"es-toolkit": "1.47.1",
 		"hono": "4.12.25",
 		"ky": "2.0.2",
-		"lucide-react": "1.17.0",
+		"lucide-react": "1.18.0",
 		"mime": "4.1.0",
 		"p-pipe": "4.0.0",
 		"p-retry": "8.0.0",
