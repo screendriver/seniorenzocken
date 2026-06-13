@@ -52,7 +52,7 @@
 		"@enormora/eslint-config-react-tsx": "0.0.30",
 		"@enormora/eslint-config-typescript": "0.0.36",
 		"@enormora/eslint-config-vitest": "0.0.15",
-		"@tailwindcss/vite": "4.3.0",
+		"@tailwindcss/vite": "4.3.1",
 		"@tanstack/eslint-plugin-query": "5.101.0",
 		"@testing-library/react": "16.3.2",
 		"@testing-library/user-event": "14.6.1",
