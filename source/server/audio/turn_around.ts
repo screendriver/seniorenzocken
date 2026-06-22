@@ -1,44 +1,90 @@
-import { of, find, just, isNothing } from "true-myth/maybe";
+import { of, just, nothing, type Maybe } from "true-myth/maybe";
 import type { GameRound, GameRounds } from "../../shared/game-rounds.js";
-import type { NotPersistedTeam } from "../../shared/team.js";
 
-function checkForTurnAround(teamWithZeroMatchTotalGamePoints: NotPersistedTeam) {
-	return (currentGameRound: GameRound) => {
-		return find((gameRound) => {
-			return gameRound.team.teamNumber === teamWithZeroMatchTotalGamePoints.teamNumber;
-		}, currentGameRound).mapOr(false, (gameRound) => {
-			return gameRound.team.matchTotalGamePoints > 0;
-		});
-	};
-}
+const minimumMatchTotalGamePointDifference = 6;
+const minimumTrailingTeamScoredGamePoints = 2;
+
+type TeamNumber = 1 | 2;
+
+type TeamMatchTotalGamePoints = {
+	readonly teamNumber: TeamNumber;
+	readonly matchTotalGamePoints: number;
+};
+
+type PreviousRoundScoreComparison = {
+	readonly previousTrailingTeam: TeamMatchTotalGamePoints;
+	readonly previousLeadingTeam: TeamMatchTotalGamePoints;
+};
 
 type Options = {
 	readonly gameRounds: GameRounds;
 };
 
+function getLastTwoGameRounds(gameRounds: GameRounds): Maybe<readonly [GameRound, GameRound]> {
+	const previousGameRound = of(gameRounds.at(-2));
+	const currentGameRound = of(gameRounds.at(-1));
+
+	return previousGameRound.andThen((previousGameRoundValue) => {
+		return currentGameRound.map((currentGameRoundValue) => {
+			return [previousGameRoundValue, currentGameRoundValue] as const;
+		});
+	});
+}
+
+function getTeamMatchTotalGamePoints(gameRound: GameRound, teamNumber: TeamNumber): TeamMatchTotalGamePoints {
+	const teamGameRound = teamNumber === 1 ? gameRound[0] : gameRound[1];
+
+	return {
+		teamNumber,
+		matchTotalGamePoints: teamGameRound.team.matchTotalGamePoints
+	};
+}
+
+function getPreviousRoundScoreComparison(previousGameRound: GameRound): Maybe<PreviousRoundScoreComparison> {
+	const previousTeam1 = getTeamMatchTotalGamePoints(previousGameRound, 1);
+	const previousTeam2 = getTeamMatchTotalGamePoints(previousGameRound, 2);
+	const previousMatchTotalGamePointDifference = Math.abs(
+		previousTeam1.matchTotalGamePoints - previousTeam2.matchTotalGamePoints
+	);
+
+	if (previousMatchTotalGamePointDifference < minimumMatchTotalGamePointDifference) {
+		return nothing();
+	}
+
+	if (previousTeam1.matchTotalGamePoints > previousTeam2.matchTotalGamePoints) {
+		return just({
+			previousLeadingTeam: previousTeam1,
+			previousTrailingTeam: previousTeam2
+		});
+	}
+
+	return just({
+		previousLeadingTeam: previousTeam2,
+		previousTrailingTeam: previousTeam1
+	});
+}
+
+function didPreviousTrailingTeamScoreEnoughGamePoints(
+	previousTrailingTeam: TeamMatchTotalGamePoints,
+	currentGameRound: GameRound
+): boolean {
+	const currentTrailingTeam = getTeamMatchTotalGamePoints(currentGameRound, previousTrailingTeam.teamNumber);
+	const trailingTeamScoredGamePoints =
+		currentTrailingTeam.matchTotalGamePoints - previousTrailingTeam.matchTotalGamePoints;
+
+	return trailingTeamScoredGamePoints >= minimumTrailingTeamScoredGamePoints;
+}
+
 export function isTurnAround(options: Options): boolean {
 	const { gameRounds } = options;
-	const lastTwoGameRounds = gameRounds.slice(-2);
-	const previousGameRound = of(lastTwoGameRounds[0]);
-	const currentGameRound = of(lastTwoGameRounds[1]);
 
-	if (isNothing(previousGameRound) || isNothing(currentGameRound)) {
-		return false;
-	}
+	return getLastTwoGameRounds(gameRounds)
+		.andThen(([previousGameRound, currentGameRound]) => {
+			return getPreviousRoundScoreComparison(previousGameRound).map((previousRoundScoreComparison) => {
+				const { previousTrailingTeam } = previousRoundScoreComparison;
 
-	const previousGameRoundHasAtLeastTenMatchTotalGamePoints = previousGameRound.value.some((gameRound) => {
-		return gameRound.team.matchTotalGamePoints >= 10;
-	});
-
-	if (!previousGameRoundHasAtLeastTenMatchTotalGamePoints) {
-		return false;
-	}
-
-	const teamWithZeroMatchTotalGamePoints = find((gameRound) => {
-		return gameRound.team.matchTotalGamePoints === 0;
-	}, previousGameRound.value).map((gameRound) => {
-		return gameRound.team;
-	});
-
-	return just(checkForTurnAround).ap(teamWithZeroMatchTotalGamePoints).ap(currentGameRound).unwrapOr(false);
+				return didPreviousTrailingTeamScoreEnoughGamePoints(previousTrailingTeam, currentGameRound);
+			});
+		})
+		.unwrapOr(false);
 }

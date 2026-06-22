@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Factory } from "fishery";
+import type { GameRound, GameRounds } from "../../shared/game-rounds.js";
+import type { MatchTotalGamePoints } from "../../shared/game-points.js";
 import type { NotPersistedTeam1, NotPersistedTeam2 } from "../../shared/team.js";
 import { isTurnAround } from "./turn_around.js";
 
@@ -23,294 +25,102 @@ const notPersistedTeam2Factory = Factory.define<NotPersistedTeam2>(() => {
 	};
 });
 
+function createGameRound(
+	team1MatchTotalGamePoints: MatchTotalGamePoints,
+	team2MatchTotalGamePoints: MatchTotalGamePoints
+): GameRound {
+	return [
+		{
+			team: notPersistedTeam1Factory.build({ matchTotalGamePoints: team1MatchTotalGamePoints }),
+			hasWonGameRound: false
+		},
+		{
+			team: notPersistedTeam2Factory.build({ matchTotalGamePoints: team2MatchTotalGamePoints }),
+			hasWonGameRound: false
+		}
+	];
+}
+
+function createTurnAround(gameRounds: GameRounds): boolean {
+	return isTurnAround({ gameRounds });
+}
+
 describe("isTurnAround()", () => {
-	it("returns false when given game rounds are empty", () => {
-		const turnAround = isTurnAround({ gameRounds: [] });
+	it("returns false for no game rounds", () => {
+		const actualTurnAround = createTurnAround([]);
 
-		expect(turnAround).toBe(false);
+		expect(actualTurnAround).toBe(false);
 	});
 
-	it("returns false when given game rounds has just one game round", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				]
-			]
-		});
+	it("returns false for only one game round", () => {
+		const actualTurnAround = createTurnAround([createGameRound(0, 0)]);
 
-		expect(turnAround).toBe(false);
+		expect(actualTurnAround).toBe(false);
 	});
 
-	it("returns false when given game rounds has just one game round and one team has 10 match total game points", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false }
-				]
-			]
-		});
+	it("returns false when the previous score difference is less than 6 even if the trailing team scores", () => {
+		const actualTurnAround = createTurnAround([createGameRound(10, 5), createGameRound(10, 7)]);
 
-		expect(turnAround).toBe(false);
+		expect(actualTurnAround).toBe(false);
 	});
 
-	it("returns false when given game rounds has just one game round and one team has more than 10 match total game points", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				]
-			]
-		});
+	it("returns true when team 1 led by exactly 6 and team 2 then scores 2", () => {
+		const actualTurnAround = createTurnAround([createGameRound(10, 4), createGameRound(10, 6)]);
 
-		expect(turnAround).toBe(false);
+		expect(actualTurnAround).toBe(true);
 	});
 
-	it("returns false when given game rounds has not reached 10 match total game points", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{
-						team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 6 }),
-						hasWonGameRound: false
-					},
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{
-						team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 9 }),
-						hasWonGameRound: false
-					},
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{
-						team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 9 }),
-						hasWonGameRound: false
-					},
-					{
-						team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }),
-						hasWonGameRound: false
-					}
-				]
-			]
-		});
+	it("returns true when team 1 led by more than 6 and team 2 then scores at least 2", () => {
+		const actualTurnAround = createTurnAround([createGameRound(11, 3), createGameRound(11, 6)]);
 
-		expect(turnAround).toBe(false);
+		expect(actualTurnAround).toBe(true);
 	});
 
-	it("returns true when team 1 has reached 10 match total game points and team 2 made its first match total game points", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false }
-				]
-			]
-		});
+	it("returns true when team 2 led by exactly 6 and team 1 then scores 2", () => {
+		const actualTurnAround = createTurnAround([createGameRound(4, 10), createGameRound(6, 10)]);
 
-		expect(turnAround).toBe(true);
+		expect(actualTurnAround).toBe(true);
 	});
 
-	it("returns true when team 1 has reached more than 10 match total game points and team 2 made its first match total game points", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false }
-				]
-			]
-		});
+	it("returns true when team 2 led by more than 6 and team 1 then scores at least 2", () => {
+		const actualTurnAround = createTurnAround([createGameRound(3, 11), createGameRound(6, 11)]);
 
-		expect(turnAround).toBe(true);
+		expect(actualTurnAround).toBe(true);
 	});
 
-	it("returns false when team 1 has reached more than 10 match total game points and team 2 made more than once new match total game points", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 5 }), hasWonGameRound: false }
-				]
-			]
-		});
+	it("returns false when the team that was already leading scores and the trailing team does not", () => {
+		const actualTurnAround = createTurnAround([createGameRound(10, 4), createGameRound(12, 4)]);
 
-		expect(turnAround).toBe(false);
+		expect(actualTurnAround).toBe(false);
 	});
 
-	it("returns true when team 2 has reached 10 match total game points and team 1 made its first match total game points", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false }
-				]
-			]
-		});
+	it("returns false when the previous trailing team does not increase its score", () => {
+		const actualTurnAround = createTurnAround([createGameRound(10, 4), createGameRound(10, 4)]);
 
-		expect(turnAround).toBe(true);
+		expect(actualTurnAround).toBe(false);
 	});
 
-	it("returns true when team 2 has reached more than 10 match total game points and team 1 made its first match total game points", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false }
-				]
-			]
-		});
+	it("returns true even when the trailing team already had points before", () => {
+		const actualTurnAround = createTurnAround([createGameRound(10, 4), createGameRound(10, 6)]);
 
-		expect(turnAround).toBe(true);
+		expect(actualTurnAround).toBe(true);
 	});
 
-	it("returns false when team 2 has reached more than 10 match total game points and team 1 made more than once match total game points", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 4 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 11 }), hasWonGameRound: false }
-				]
-			]
-		});
+	it("returns true repeatedly when consecutive rounds satisfy the rule", () => {
+		const firstActualTurnAround = createTurnAround([createGameRound(12, 4), createGameRound(12, 6)]);
+		const secondActualTurnAround = createTurnAround([
+			createGameRound(12, 4),
+			createGameRound(12, 6),
+			createGameRound(12, 8)
+		]);
 
-		expect(turnAround).toBe(false);
+		expect(firstActualTurnAround).toBe(true);
+		expect(secondActualTurnAround).toBe(true);
 	});
 
-	it("returns false when team 1 has reached 10 match total game points and team 1 made its first match total game points but the order of game rounds is reversed", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build(), hasWonGameRound: false }
-				]
-			]
-		});
+	it("returns false when game rounds are in reversed chronological order and the previously trailing team did not actually gain points", () => {
+		const actualTurnAround = createTurnAround([createGameRound(10, 8), createGameRound(10, 6)]);
 
-		expect(turnAround).toBe(false);
-	});
-
-	it("returns false when team 2 has reached 10 match total game points and team 1 made its first match total game points but the order of game rounds is reversed", () => {
-		const turnAround = isTurnAround({
-			gameRounds: [
-				[
-					{ team: notPersistedTeam1Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 10 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 6 }), hasWonGameRound: false }
-				],
-				[
-					{ team: notPersistedTeam1Factory.build(), hasWonGameRound: false },
-					{ team: notPersistedTeam2Factory.build({ matchTotalGamePoints: 2 }), hasWonGameRound: false }
-				]
-			]
-		});
-
-		expect(turnAround).toBe(false);
+		expect(actualTurnAround).toBe(false);
 	});
 });
