@@ -11,7 +11,7 @@ steps:
           - npx just build-browser-application
 
     - name: publish-container-image
-      image: woodpeckerci/plugin-docker-buildx:6.1.0
+      image: woodpeckerci/plugin-docker-buildx:6.1.1
       settings:
           repo:
               from_secret: repository
