@@ -15,7 +15,7 @@ export default defineConfig({
 						tag: "script",
 						attrs: {
 							defer: true,
-							src: "https://pulse.82r.de/api/script.js",
+							src: "/_runtime/script.js",
 							"data-site-id": "9f88a1ebc565"
 						},
 						injectTo: "head"
