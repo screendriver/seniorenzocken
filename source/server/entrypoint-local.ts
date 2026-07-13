@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
-import { createFakeClock } from "./clock/fake-clock.js";
+import { createDeterministicWallClock } from "@enormora/wall-clock/deterministic-wall-clock";
 import { createDatabase } from "./database/database.js";
 import { createServer } from "./server.js";
 import { seedInMemoryDatabase } from "./seed-in-memory-database.js";
@@ -12,7 +12,9 @@ import { createTrpcRouter } from "./trpc/index.js";
 import { createTrpcApplicationRouter } from "./trpc/application-router.js";
 import { createSessionRepository } from "./session/session-repository.js";
 
-const fakeClock = createFakeClock();
+const clock = createDeterministicWallClock({
+	initialCurrentTimestampInMilliseconds: Date.parse("2025-07-24T09:10:20.153Z")
+});
 
 const database = createDatabase(":memory:");
 
@@ -33,7 +35,7 @@ const trpcApplicationRouter = createTrpcApplicationRouter({
 	isTurnAround
 });
 const server = createServer({
-	clock: fakeClock,
+	clock,
 	database,
 	trpcApplicationRouter,
 	sessionRepository,

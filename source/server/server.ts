@@ -3,11 +3,11 @@ import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
+import type { WallClock } from "@enormora/wall-clock/wall-clock";
 import { eq } from "drizzle-orm";
 import { safeParse, object, pipe, string, transform, number, integer } from "valibot";
 import mime from "mime";
 import * as Sentry from "@sentry/node";
-import type { Clock } from "./clock/clock.js";
 import type { Database } from "./database/database.js";
 import { gamePointAudios } from "./database/raw-database-schema.js";
 import type { TRPCApplicationRouter } from "./trpc/application-router.js";
@@ -19,7 +19,7 @@ import { createTRPCContext } from "./trpc/context.js";
 import { createLogoutHandlers } from "./auth/logout.js";
 
 export type ServerOptions = {
-	readonly clock: Clock;
+	readonly clock: WallClock;
 	readonly database: Database;
 	readonly trpcApplicationRouter: TRPCApplicationRouter;
 	readonly sessionRepository: SessionRepository;
@@ -59,7 +59,7 @@ export function createServer(options: ServerOptions): Hono<HonoEnvironment> {
 		})
 
 		.get("/health", (context) => {
-			return context.json({ status: "OK", timestamp: clock.now });
+			return context.json({ status: "OK", timestamp: clock.currentDate });
 		})
 
 		.use(sessionMiddleware({ sessionRepository }))

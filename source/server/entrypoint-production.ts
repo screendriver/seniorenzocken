@@ -5,7 +5,7 @@ import { serve } from "@hono/node-server";
 import { all } from "true-myth/task";
 import { Cron } from "croner";
 import pino from "pino";
-import { createClock } from "./clock/clock.js";
+import { createWallClock } from "@enormora/wall-clock/wall-clock";
 import { createDatabase } from "./database/database.js";
 import { createServer } from "./server.js";
 import { createAudioRepository } from "./audio/repository.js";
@@ -50,7 +50,7 @@ const seniorenzockenSecrets = seniorenzockenSecretsResult.unwrapOrElse((error) =
 	throw new Error("Could not fetch Seniorenzocken secrets", { cause: error });
 });
 
-const clock = createClock();
+const clock = createWallClock();
 
 const database = createDatabase("file:database.sqlite");
 

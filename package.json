@@ -6,6 +6,7 @@
 		"node": "24.18.0"
 	},
 	"dependencies": {
+		"@enormora/wall-clock": "0.0.3",
 		"@hono/node-server": "2.0.8",
 		"@hono/trpc-server": "0.4.2",
 		"@infisical/sdk": "5.0.2",

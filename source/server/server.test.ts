@@ -6,7 +6,7 @@ import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
 import { createTRPCClient, unstable_localLink } from "@trpc/client";
 import { nothing } from "true-myth/maybe";
-import { createFakeClock } from "./clock/fake-clock.js";
+import { createDeterministicWallClock } from "@enormora/wall-clock/deterministic-wall-clock";
 import { type ServerOptions, createServer } from "./server.js";
 import { createDatabase } from "./database/database.js";
 import { seedInMemoryDatabase } from "./seed-in-memory-database.js";
@@ -41,7 +41,9 @@ function withServer(
 	}
 ): TestFunction {
 	return async () => {
-		const fakeClock = createFakeClock();
+		const clock = createDeterministicWallClock({
+			initialCurrentTimestampInMilliseconds: Date.parse("2025-07-24T09:10:20.153Z")
+		});
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await seedInMemoryDatabase(database);
@@ -58,7 +60,7 @@ function withServer(
 			isTurnAround: vi.fn().mockReturnValue(false)
 		});
 		const serverOptions: ServerOptions = {
-			clock: fakeClock,
+			clock,
 			database,
 			trpcApplicationRouter,
 			sessionRepository: createSessionRepository({ database, randomUUID }),
