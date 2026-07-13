@@ -11,7 +11,7 @@ const oneHundredMillisecondsOfSilence = Buffer.from(
 const seedNumber = 42;
 
 export async function seedInMemoryDatabase(
-	database: LibSQLDatabase<typeof schema> & { $client: Client }
+	database: LibSQLDatabase<typeof schema> & { readonly $client: Client }
 ): Promise<void> {
 	// @ts-expect-error currently a bug in drizzle-seed
 	await seed(database, { players: schema.players }, { seed: seedNumber }).refine((drizzleSeed) => {

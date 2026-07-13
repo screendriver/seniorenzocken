@@ -53,16 +53,16 @@ const browserRuntime: BrowserRuntime = {
 		await navigator.wakeLock.request("screen");
 	},
 	setTimeout(callback, delayMilliseconds) {
-		return globalThis.setTimeout(callback, delayMilliseconds);
+		return setTimeout(callback, delayMilliseconds);
 	},
 	clearTimeout(timeoutId) {
-		globalThis.clearTimeout(timeoutId);
+		clearTimeout(timeoutId);
 	},
 	addWindowEventListener(eventName, listener) {
-		globalThis.addEventListener(eventName, listener);
+		addEventListener(eventName, listener);
 	},
 	removeWindowEventListener(eventName, listener) {
-		globalThis.removeEventListener(eventName, listener);
+		removeEventListener(eventName, listener);
 	},
 	isOnline() {
 		return navigator.onLine;

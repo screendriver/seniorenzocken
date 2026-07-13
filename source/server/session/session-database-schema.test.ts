@@ -108,7 +108,10 @@ describe("currentGameRoundSessionsDatabaseSelectSchema", () => {
 		expect(parseResult.success).toBe(false);
 	});
 
-	it.each<{ propertyName: keyof CurrentGameRoundSessionsDatabaseSelect[number]; propertyValue: unknown }>([
+	it.each<{
+		readonly propertyName: keyof CurrentGameRoundSessionsDatabaseSelect[number];
+		readonly propertyValue: unknown;
+	}>([
 		{ propertyName: "playerId", propertyValue: undefined },
 		{ propertyName: "playerId", propertyValue: null },
 		{ propertyName: "playerId", propertyValue: "not-a-number" },
@@ -150,9 +153,9 @@ describe("currentGameRoundSessionsDatabaseSelectSchema", () => {
 	});
 
 	it.each<{
-		propertyName: keyof CurrentGameRoundSessionsDatabaseSelect[number];
-		propertyValue: unknown;
-		expectedPropertyValue: unknown;
+		readonly propertyName: keyof CurrentGameRoundSessionsDatabaseSelect[number];
+		readonly propertyValue: unknown;
+		readonly expectedPropertyValue: unknown;
 	}>([
 		{ propertyName: "playerId", propertyValue: 1, expectedPropertyValue: 1 },
 		{ propertyName: "playerId", propertyValue: 2, expectedPropertyValue: 2 },

@@ -17,6 +17,17 @@ type SecretsClientDependencies = {
 	readonly logRetry?: (retryContext: RetryContext) => void;
 };
 
+type RetryOptionsWithLogging = {
+	readonly logRetry: ((retryContext: RetryContext) => void) | undefined;
+	readonly retryOptions: Required<
+		Pick<RetryOptions, "factor" | "maxRetryTime" | "maxTimeout" | "minTimeout" | "retries">
+	>;
+};
+
+type RetriedInfisicalTaskOptions<Value> = RetryOptionsWithLogging & {
+	readonly createTask: () => Task<Value, Error>;
+};
+
 async function runTaskOrThrow<Value>(task: Task<Value, Error>): Promise<Value> {
 	const result = await task;
 
@@ -29,12 +40,7 @@ function normalizeUnknownError(errorReason: unknown): Error {
 	return isError(errorReason) ? errorReason : new Error("Could not fetch Infisical secret", { cause: errorReason });
 }
 
-function createRetryOptions(options: {
-	readonly logRetry: ((retryContext: RetryContext) => void) | undefined;
-	readonly retryOptions: Required<
-		Pick<RetryOptions, "factor" | "maxRetryTime" | "maxTimeout" | "minTimeout" | "retries">
-	>;
-}): RetryOptions {
+function createRetryOptions(options: RetryOptionsWithLogging): RetryOptions {
 	const { logRetry, retryOptions } = options;
 
 	if (isUndefined(logRetry)) {
@@ -57,13 +63,7 @@ function createRetryOptions(options: {
 	};
 }
 
-function runInfisicalTaskWithRetry<Value>(options: {
-	readonly createTask: () => Task<Value, Error>;
-	readonly logRetry: ((retryContext: RetryContext) => void) | undefined;
-	readonly retryOptions: Required<
-		Pick<RetryOptions, "factor" | "maxRetryTime" | "maxTimeout" | "minTimeout" | "retries">
-	>;
-}): Task<Value, Error> {
+function runInfisicalTaskWithRetry<Value>(options: RetriedInfisicalTaskOptions<Value>): Task<Value, Error> {
 	const { createTask, logRetry, retryOptions } = options;
 
 	const retryOptionsWithLogging = createRetryOptions({ logRetry, retryOptions });

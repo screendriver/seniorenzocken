@@ -3,6 +3,6 @@ import type { SessionDatabaseSelect } from "./session/session-database-schema.js
 
 export type HonoEnvironment = {
 	Variables: {
-		session: Maybe<SessionDatabaseSelect>;
+		readonly session: Maybe<SessionDatabaseSelect>;
 	};
 };

@@ -1,4 +1,4 @@
-import { Hono, type Context } from "hono";
+import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
 import { serveStatic } from "@hono/node-server/serve-static";
@@ -41,7 +41,9 @@ export function createServer(options: ServerOptions): Hono<HonoEnvironment> {
 		isRunningInProduction
 	} = options;
 
-	return new Hono<HonoEnvironment>()
+	const server = new Hono<HonoEnvironment>();
+
+	return server
 		.onError((error, context) => {
 			if (error instanceof HTTPException) {
 				if (error.status === 401 && error.message === "Unauthorized") {
@@ -80,8 +82,7 @@ export function createServer(options: ServerOptions): Hono<HonoEnvironment> {
 				router: trpcApplicationRouter,
 				endpoint: "/api/trpc",
 				createContext(_contextOptions, honoContext) {
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- @hono/trpc-server gives us Context<any> here
-					return createTRPCContext({ honoContext: honoContext as unknown as Context<HonoEnvironment> });
+					return createTRPCContext({ honoContext });
 				}
 			})
 		)

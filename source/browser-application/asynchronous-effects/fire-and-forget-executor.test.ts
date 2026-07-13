@@ -12,7 +12,7 @@ describe("createFireAndForgetExecutor()", () => {
 
 		fireAndForgetExecutor.execute(asynchronousFunction);
 
-		expect(asynchronousFunction).toHaveBeenCalledOnce();
+		expect(asynchronousFunction).toHaveBeenCalledExactlyOnceWith();
 		expect(logErrorFake).not.toHaveBeenCalled();
 	});
 
