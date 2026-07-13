@@ -81,9 +81,7 @@ export function generateAudioPlaylist(options: Options): Result<readonly Selecte
 				return find((audio) => {
 					return audio.name === "turn_around.m4a";
 				}, allAudios).map((turnAroundAudio) => {
-					audioPlaylistValue.unshift(turnAroundAudio);
-
-					return audioPlaylistValue;
+					return [turnAroundAudio, ...audioPlaylistValue];
 				});
 			}
 

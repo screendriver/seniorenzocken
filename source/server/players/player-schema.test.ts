@@ -39,7 +39,7 @@ describe("playerSchema", () => {
 		expect(parseResult.success).toBe(false);
 	});
 
-	it.each<{ propertyName: keyof Player; value: unknown }>([
+	it.each<{ readonly propertyName: keyof Player; readonly value: unknown }>([
 		{ propertyName: "playerId", value: undefined },
 		{ propertyName: "playerId", value: null },
 		{ propertyName: "playerId", value: "not-a-number" },
@@ -77,7 +77,7 @@ describe("playerSchema", () => {
 		expect(parseResult.success).toBe(false);
 	});
 
-	it.each<{ propertyName: keyof Player; value: unknown }>([
+	it.each<{ readonly propertyName: keyof Player; readonly value: unknown }>([
 		{ propertyName: "playerId", value: 1 },
 		{ propertyName: "firstName", value: "non-empty-string" },
 		{ propertyName: "lastName", value: "non-empty-string" },
@@ -120,7 +120,7 @@ describe("playersSchema", () => {
 		expect(parseResult.success).toBe(false);
 	});
 
-	it.each<{ propertyName: keyof Player; value: unknown }>([
+	it.each<{ readonly propertyName: keyof Player; readonly value: unknown }>([
 		{ propertyName: "playerId", value: undefined },
 		{ propertyName: "playerId", value: null },
 		{ propertyName: "playerId", value: "not-a-number" },
@@ -158,7 +158,7 @@ describe("playersSchema", () => {
 		expect(parseResult.success).toBe(false);
 	});
 
-	it.each<{ propertyName: keyof Player; value: unknown }>([
+	it.each<{ readonly propertyName: keyof Player; readonly value: unknown }>([
 		{ propertyName: "playerId", value: 1 },
 		{ propertyName: "firstName", value: "non-empty-string" },
 		{ propertyName: "lastName", value: "non-empty-string" },

@@ -1,4 +1,3 @@
-import type { Context } from "hono";
 import type { Maybe } from "true-myth/maybe";
 import type { HonoEnvironment } from "../hono-environment.js";
 import type { SessionDatabaseSelect } from "../session/session-database-schema.js";
@@ -7,8 +6,12 @@ export type TRPCRouterContext = {
 	readonly session: Maybe<SessionDatabaseSelect>;
 };
 
+type HonoContextWithSession = {
+	get: (sessionKey: keyof HonoEnvironment["Variables"]) => HonoEnvironment["Variables"]["session"];
+};
+
 type CreateContextOptions = {
-	readonly honoContext: Context<HonoEnvironment>;
+	readonly honoContext: HonoContextWithSession;
 };
 
 export function createTRPCContext(options: CreateContextOptions): TRPCRouterContext {

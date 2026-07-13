@@ -7,19 +7,26 @@ import { vitestConfig } from "@enormora/eslint-config-vitest";
 import pluginTanStackQuery from "@tanstack/eslint-plugin-query";
 import globals from "globals";
 
+const [javaScriptAndTypeScriptBaseConfig] = baseConfig;
+
 export default [
 	{
 		ignores: ["drizzle/**/*", "source/browser-application/*.d.ts", "tailwind.config.js", "target/**/*"]
 	},
 	{
-		...baseConfig,
+		...javaScriptAndTypeScriptBaseConfig,
 		files: ["**/*.{js,jsx,cjs,mjs,ts,mts,cts,tsx}"],
 		rules: {
-			...baseConfig.rules,
+			...javaScriptAndTypeScriptBaseConfig.rules,
 
 			"@cspell/spellchecker": "off",
+			"@stylistic/array-bracket-spacing": ["error", "never"],
+			"@stylistic/no-extra-parens": "off",
 			"@stylistic/quotes": ["error", "double", { avoidEscape: true }],
 			"@stylistic/no-tabs": "off",
+			"dprint/typescript": "off",
+			"import/no-unused-modules": "off",
+			"restricted-syntax/no-unnecessary-arrow-function": "off",
 			"@stylistic/indent": [
 				"error",
 				"tab",
@@ -53,6 +60,7 @@ export default [
 			"functional/type-declaration-immutability": "off",
 			"functional/prefer-immutable-types": "off",
 			"import/max-dependencies": "off",
+			"import/extensions": "off",
 			"import/no-useless-path-segments": ["error", { noUselessIndex: false }],
 			"max-statements": "off",
 			"no-void": ["error", { allowAsStatement: true }]
@@ -108,7 +116,7 @@ export default [
 		},
 		settings: {
 			react: {
-				version: "detect"
+				version: "19.2"
 			}
 		}
 	},
@@ -142,7 +150,11 @@ export default [
 			"@typescript-eslint/no-unsafe-argument": "off",
 			"destructuring/in-params": "off",
 			complexity: "off",
-			"sonarjs/assertions-in-tests": "off"
+			"sonarjs/assertions-in-tests": "off",
+			"sonarjs/no-hardcoded-passwords": "off",
+			"unicorn/no-unreadable-for-of-expression": "off",
+			"unicorn/no-unreadable-new-expression": "off",
+			"unicorn/try-complexity": "off"
 		}
 	},
 	{

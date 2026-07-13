@@ -37,7 +37,7 @@ export type SessionRepository = {
 	readonly deleteSession: (sessionToken: string) => Task<Unit, Error>;
 	readonly createTeamsSessions: (
 		sessionToken: string,
-		...teamMembersPlayerIds: readonly number[][]
+		...teamMembersPlayerIds: readonly (readonly number[])[]
 	) => Task<Unit, Error>;
 	readonly getCurrentGameRoundSession: (sessionToken: string) => Task<CurrentGameRoundSession, Error>;
 	readonly createGameRoundHistorySession: (options: CreateGameRoundHistorySessionOptions) => Task<Unit, Error>;

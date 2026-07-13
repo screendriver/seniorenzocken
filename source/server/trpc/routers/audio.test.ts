@@ -61,7 +61,7 @@ function createAudioRouterOptions(overrides: Overrides): AudioRouterOptions & {}
 }
 
 describe("gamePointsPlaylist()", () => {
-	it.each<{ input: GamePointsPlaylistInput; expectedErrorMessage: string }>([
+	it.each<{ readonly input: GamePointsPlaylistInput; readonly expectedErrorMessage: string }>([
 		{
 			input: gamePointsPlaylistInputFactory.build({ team1: undefined }) as GamePointsPlaylistInput,
 			expectedErrorMessage: "Invalid type: Expected Object but received undefined"

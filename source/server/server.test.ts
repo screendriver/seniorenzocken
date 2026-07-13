@@ -27,7 +27,7 @@ type BrowserApplicationPathTestFunctionOptions = {
 };
 
 type WithBrowserApplicationPathOptions = {
-	readonly files?: Record<string, string>;
+	readonly files?: Readonly<Record<string, string>>;
 };
 
 type WithServerOptions = {

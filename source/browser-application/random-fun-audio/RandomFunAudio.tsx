@@ -18,7 +18,11 @@ type RandomAudioSchedulerInput = {
 	readonly browserRuntime: BrowserRuntime;
 	readonly isGameRunning: boolean;
 	readonly queryRandomFunAudioUrl: () => Promise<string>;
-	readonly timeoutReference: { current: TimeoutId | null };
+	readonly timeoutReference: TimeoutReference;
+};
+
+type TimeoutReference = {
+	current: TimeoutId | null;
 };
 
 function scheduleRandomAudio(input: RandomAudioSchedulerInput): void {
@@ -48,60 +52,62 @@ function scheduleRandomAudio(input: RandomAudioSchedulerInput): void {
 	}, getRandomDelay(browserRuntime.getRandomFraction()));
 }
 
-export const RandomFunAudio = forwardRef<RandomFunAudioHandle>(function RandomFunAudio(_properties, reference) {
-	const applicationContext = useApplicationContext();
-	const { browserRuntime, gameStore, trpc } = applicationContext;
-	const queryClient = useQueryClient();
-	const audioElementReference = useRef<HTMLAudioElement>(null);
-	const isGameRunning = useStore(gameStore, (state) => {
-		return state.isGameRunning;
-	});
+export const RandomFunAudio = forwardRef<RandomFunAudioHandle>(
+	function RandomFunAudioComponent(_properties, reference) {
+		const applicationContext = useApplicationContext();
+		const { browserRuntime, gameStore, trpc } = applicationContext;
+		const queryClient = useQueryClient();
+		const audioElementReference = useRef<HTMLAudioElement>(null);
+		const isGameRunning = useStore(gameStore, (state) => {
+			return state.isGameRunning;
+		});
 
-	useEffect(() => {
-		const timeoutReference = { current: null as TimeoutId | null };
-		const randomAudioSchedulerInput: RandomAudioSchedulerInput = {
-			audioElementReference,
-			browserRuntime,
-			isGameRunning,
-			async queryRandomFunAudioUrl() {
-				return queryClient.fetchQuery(trpc.audio.getRandomFunAudio.queryOptions());
-			},
-			timeoutReference
-		};
+		useEffect(() => {
+			const timeoutReference: TimeoutReference = { current: null };
+			const randomAudioSchedulerInput: RandomAudioSchedulerInput = {
+				audioElementReference,
+				browserRuntime,
+				isGameRunning,
+				async queryRandomFunAudioUrl() {
+					return queryClient.fetchQuery(trpc.audio.getRandomFunAudio.queryOptions());
+				},
+				timeoutReference
+			};
 
-		const onActivity = (): void => {
-			scheduleRandomAudio(randomAudioSchedulerInput);
-		};
-		browserRuntime.addWindowEventListener("keydown", onActivity);
-		browserRuntime.addWindowEventListener("mousemove", onActivity);
-		browserRuntime.addWindowEventListener("mousedown", onActivity);
-		return () => {
-			browserRuntime.removeWindowEventListener("keydown", onActivity);
-			browserRuntime.removeWindowEventListener("mousemove", onActivity);
-			browserRuntime.removeWindowEventListener("mousedown", onActivity);
-			const scheduledTimeoutId = timeoutReference.current;
-			if (scheduledTimeoutId !== null) {
-				browserRuntime.clearTimeout(scheduledTimeoutId);
-			}
-		};
-	}, [browserRuntime, isGameRunning, queryClient, trpc.audio.getRandomFunAudio]);
-
-	useImperativeHandle(reference, () => {
-		return {
-			playEmptyAudio() {
-				const audioElement = audioElementReference.current;
-				if (audioElement === null) {
-					return;
+			const onActivity = (): void => {
+				scheduleRandomAudio(randomAudioSchedulerInput);
+			};
+			browserRuntime.addWindowEventListener("keydown", onActivity);
+			browserRuntime.addWindowEventListener("mousemove", onActivity);
+			browserRuntime.addWindowEventListener("mousedown", onActivity);
+			return () => {
+				browserRuntime.removeWindowEventListener("keydown", onActivity);
+				browserRuntime.removeWindowEventListener("mousemove", onActivity);
+				browserRuntime.removeWindowEventListener("mousedown", onActivity);
+				const scheduledTimeoutId = randomAudioSchedulerInput.timeoutReference.current;
+				if (scheduledTimeoutId !== null) {
+					browserRuntime.clearTimeout(scheduledTimeoutId);
 				}
-				void audioElement.play();
-			}
-		};
-	});
+			};
+		}, [browserRuntime, isGameRunning, queryClient, trpc.audio.getRandomFunAudio]);
 
-	return (
-		<audio
-			ref={audioElementReference}
-			src="data:audio/mp4;base64,AAAAHGZ0eXBNNEEgAAACAE00QSBpc29taXNvMgAAAAhmcmVlAAAAPW1kYXTeAgBMYXZjNjAuMzEuMTAyAEIgCMEYOCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHAAAAxNtb292AAAAbG12aGQAAAAAAAAAAAAAAAAAAAPoAAAAZAABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACPXRyYWsAAABcdGtoZAAAAAMAAAAAAAAAAAAAAAEAAAAAAAAAZAAAAAAAAAAAAAAAAQEAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAACRlZHRzAAAAHGVsc3QAAAAAAAAAAQAAAGQAAAQAAAEAAAAAAbVtZGlhAAAAIG1kaGQAAAAAAAAAAAAAAAAAAKxEAAAVOlXEAAAAAAAtaGRscgAAAAAAAAAAc291bgAAAAAAAAAAAAAAAFNvdW5kSGFuZGxlcgAAAAFgbWluZgAAABBzbWhkAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAEkc3RibAAAAGpzdHNkAAAAAAAAAAEAAABabXA0YQAAAAAAAAABAAAAAAAAAAAAAgAQAAAAAKxEAAAAAAA2ZXNkcwAAAAADgICAJQABAASAgIAXQBUAAAAAAfQAAAANcQWAgIAFEhBW5QAGgICAAQIAAAAgc3R0cwAAAAAAAAACAAAABQAABAAAAAABAAABOgAAABxzdHNjAAAAAAAAAAEAAAABAAAABgAAAAEAAAAsc3RzegAAAAAAAAAAAAAABgAAABcAAAAGAAAABgAAAAYAAAAGAAAABgAAABRzdGNvAAAAAAAAAAEAAAAsAAAAGnNncGQBAAAAcm9sbAAAAAIAAAAB//8AAAAcc2JncAAAAAByb2xsAAAAAQAAAAYAAAABAAAAYnVkdGEAAABabWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAbWRpcmFwcGwAAAAAAAAAAAAAAAAtaWxzdAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY2MC4xNi4xMDA="
-		/>
-	);
-});
+		useImperativeHandle(reference, () => {
+			return {
+				playEmptyAudio() {
+					const audioElement = audioElementReference.current;
+					if (audioElement === null) {
+						return;
+					}
+					void audioElement.play();
+				}
+			};
+		});
+
+		return (
+			<audio
+				ref={audioElementReference}
+				src="data:audio/mp4;base64,AAAAHGZ0eXBNNEEgAAACAE00QSBpc29taXNvMgAAAAhmcmVlAAAAPW1kYXTeAgBMYXZjNjAuMzEuMTAyAEIgCMEYOCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHCEQBGCMHAAAAxNtb292AAAAbG12aGQAAAAAAAAAAAAAAAAAAAPoAAAAZAABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACPXRyYWsAAABcdGtoZAAAAAMAAAAAAAAAAAAAAAEAAAAAAAAAZAAAAAAAAAAAAAAAAQEAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAACRlZHRzAAAAHGVsc3QAAAAAAAAAAQAAAGQAAAQAAAEAAAAAAbVtZGlhAAAAIG1kaGQAAAAAAAAAAAAAAAAAAKxEAAAVOlXEAAAAAAAtaGRscgAAAAAAAAAAc291bgAAAAAAAAAAAAAAAFNvdW5kSGFuZGxlcgAAAAFgbWluZgAAABBzbWhkAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAEkc3RibAAAAGpzdHNkAAAAAAAAAAEAAABabXA0YQAAAAAAAAABAAAAAAAAAAAAAgAQAAAAAKxEAAAAAAA2ZXNkcwAAAAADgICAJQABAASAgIAXQBUAAAAAAfQAAAANcQWAgIAFEhBW5QAGgICAAQIAAAAgc3R0cwAAAAAAAAACAAAABQAABAAAAAABAAABOgAAABxzdHNjAAAAAAAAAAEAAAABAAAABgAAAAEAAAAsc3RzegAAAAAAAAAAAAAABgAAABcAAAAGAAAABgAAAAYAAAAGAAAABgAAABRzdGNvAAAAAAAAAAEAAAAsAAAAGnNncGQBAAAAcm9sbAAAAAIAAAAB//8AAAAcc2JncAAAAAByb2xsAAAAAQAAAAYAAAABAAAAYnVkdGEAAABabWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAbWRpcmFwcGwAAAAAAAAAAAAAAAAtaWxzdAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY2MC4xNi4xMDA="
+			/>
+		);
+	}
+);

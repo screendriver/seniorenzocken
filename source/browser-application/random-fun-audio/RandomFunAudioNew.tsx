@@ -13,7 +13,7 @@ function getRandomDelay(randomFraction: number): number {
 }
 
 export const RandomFunAudioNew = forwardRef<RandomFunAudioNewHandle>(
-	function RandomFunAudioNew(_properties, reference) {
+	function RandomFunAudioNewComponent(_properties, reference) {
 		const applicationContext = useApplicationContext();
 		const { browserRuntime, trpc } = applicationContext;
 		const queryClient = useQueryClient();

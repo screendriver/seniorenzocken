@@ -39,7 +39,7 @@ export type GameStoreState = {
 	readonly startGame: () => Task<void, Error>;
 	readonly nextGameRound: () => Task<void, Error>;
 	readonly previousGameRound: () => Task<void, Error>;
-	readonly generateGamePointsAudioPlaylist: () => Task<string[], Error>;
+	readonly generateGamePointsAudioPlaylist: () => Task<readonly string[], Error>;
 };
 
 export function createGameStore(trpcClient: TRPCClient<TRPCApplicationRouter>): StoreApi<GameStoreState> {
