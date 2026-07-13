@@ -27,7 +27,7 @@
 		"croner": "10.0.1",
 		"drizzle-orm": "0.45.2",
 		"es-toolkit": "1.49.0",
-		"hono": "4.12.29",
+		"hono": "4.12.30",
 		"ky": "2.0.2",
 		"lucide-react": "1.24.0",
 		"mime": "4.1.0",
