@@ -38,7 +38,7 @@
 		"react-dom": "19.2.7",
 		"react-router-dom": "7.18.1",
 		"tailwind-merge": "3.6.0",
-		"tailwindcss": "4.3.2",
+		"tailwindcss": "4.3.3",
 		"true-myth": "9.4.0",
 		"ts-extras": "1.2.0",
 		"ts-pattern": "5.9.0",
