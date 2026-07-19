@@ -2,7 +2,10 @@ FROM public.ecr.aws/docker/library/node:26.4.0-alpine
 ENV NODE_ENV=production
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm clean-install --omit=dev
+# Keep the production install lockfile-reproducible and verify the native
+# dependency selected for the target platform.
+RUN npm clean-install --omit=dev \
+	&& node --input-type=module --eval "import '@libsql/client';"
 
 COPY drizzle ./drizzle
 COPY target/build/source/server ./source/server
