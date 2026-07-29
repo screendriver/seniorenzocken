@@ -23,7 +23,7 @@ export const RandomFunAudioNew = forwardRef<RandomFunAudioNewHandle>(
 		const timeoutReference = useRef<TimeoutId | null>(null);
 
 		const restartTimer = useCallback((): void => {
-			if (audioElementReference.current === null || !emptyAudioAlreadyPlayed) {
+			if (!emptyAudioAlreadyPlayed || audioElementReference.current === null) {
 				return;
 			}
 			if (timeoutReference.current !== null) {

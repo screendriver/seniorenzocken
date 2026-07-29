@@ -20,7 +20,7 @@ export const GameOverRoute: FunctionComponent = () => {
 	const currentGameRoundQuery = useQuery(trpc.session.currentGameRound.queryOptions());
 	const currentGameRound = currentGameRoundQuery.data;
 
-	if (currentGameRoundQuery.fetchStatus === "fetching" && currentGameRound === undefined) {
+	if (currentGameRound === undefined && currentGameRoundQuery.fetchStatus === "fetching") {
 		return (
 			<section className="col-span-full flex items-center justify-center py-16">
 				<Loader2 className="size-8 animate-spin text-slate-300" />
