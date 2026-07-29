@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"engines": {
-		"node": "24.18.0"
+		"node": "24.18.1"
 	},
 	"dependencies": {
 		"@enormora/wall-clock": "0.0.3",
