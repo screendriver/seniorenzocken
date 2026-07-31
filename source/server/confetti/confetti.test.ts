@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
 import { Factory } from "fishery";
 import type { NotPersistedTeam } from "../../shared/team.js";
 import { shouldShowConfetti } from "./confetti.js";
@@ -13,53 +14,53 @@ const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
 	};
 });
 
-describe("shouldShowConfetti()", () => {
-	it("returns false when given current round game points for both teams equals 0", () => {
+suite("shouldShowConfetti()", function () {
+	test("returns false when given current round game points for both teams equals 0", function () {
 		const team1 = notPersistedTeamFactory.build({ teamNumber: 1, currentRoundGamePoints: 0 });
 		const team2 = notPersistedTeamFactory.build({ teamNumber: 2, currentRoundGamePoints: 0 });
 
-		expect(shouldShowConfetti(team1, team2)).toBe(false);
+		assert.strictEqual(shouldShowConfetti(team1, team2), false);
 	});
 
-	it("returns false when given current round game points for team 1 equals 2", () => {
+	test("returns false when given current round game points for team 1 equals 2", function () {
 		const team1 = notPersistedTeamFactory.build({ teamNumber: 1, currentRoundGamePoints: 2 });
 		const team2 = notPersistedTeamFactory.build({ teamNumber: 2, currentRoundGamePoints: 0 });
 
-		expect(shouldShowConfetti(team1, team2)).toBe(false);
+		assert.strictEqual(shouldShowConfetti(team1, team2), false);
 	});
 
-	it("returns false when given current round game points for team 1 equals 3", () => {
+	test("returns false when given current round game points for team 1 equals 3", function () {
 		const team1 = notPersistedTeamFactory.build({ teamNumber: 1, currentRoundGamePoints: 3 });
 		const team2 = notPersistedTeamFactory.build({ teamNumber: 2, currentRoundGamePoints: 0 });
 
-		expect(shouldShowConfetti(team1, team2)).toBe(false);
+		assert.strictEqual(shouldShowConfetti(team1, team2), false);
 	});
 
-	it("returns true when given current round game points for team 1 equals 4", () => {
+	test("returns true when given current round game points for team 1 equals 4", function () {
 		const team1 = notPersistedTeamFactory.build({ teamNumber: 1, currentRoundGamePoints: 4 });
 		const team2 = notPersistedTeamFactory.build({ teamNumber: 2, currentRoundGamePoints: 0 });
 
-		expect(shouldShowConfetti(team1, team2)).toBe(true);
+		assert.strictEqual(shouldShowConfetti(team1, team2), true);
 	});
 
-	it("returns false when given current round game points for team 2 equals 2", () => {
+	test("returns false when given current round game points for team 2 equals 2", function () {
 		const team1 = notPersistedTeamFactory.build({ teamNumber: 1, currentRoundGamePoints: 0 });
 		const team2 = notPersistedTeamFactory.build({ teamNumber: 2, currentRoundGamePoints: 2 });
 
-		expect(shouldShowConfetti(team1, team2)).toBe(false);
+		assert.strictEqual(shouldShowConfetti(team1, team2), false);
 	});
 
-	it("returns false when given current round game points for team 2 equals 3", () => {
+	test("returns false when given current round game points for team 2 equals 3", function () {
 		const team1 = notPersistedTeamFactory.build({ teamNumber: 1, currentRoundGamePoints: 0 });
 		const team2 = notPersistedTeamFactory.build({ teamNumber: 2, currentRoundGamePoints: 3 });
 
-		expect(shouldShowConfetti(team1, team2)).toBe(false);
+		assert.strictEqual(shouldShowConfetti(team1, team2), false);
 	});
 
-	it("returns true when given current round game points for team 2 equals 4", () => {
+	test("returns true when given current round game points for team 2 equals 4", function () {
 		const team1 = notPersistedTeamFactory.build({ teamNumber: 1, currentRoundGamePoints: 0 });
 		const team2 = notPersistedTeamFactory.build({ teamNumber: 2, currentRoundGamePoints: 4 });
 
-		expect(shouldShowConfetti(team1, team2)).toBe(true);
+		assert.strictEqual(shouldShowConfetti(team1, team2), true);
 	});
 });

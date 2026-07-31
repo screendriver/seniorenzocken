@@ -1,10 +1,12 @@
-import { describe, it, expect, vi } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
+import { assert as sinonAssert, fake } from "sinon";
 import { createFireAndForgetExecutor } from "./fire-and-forget-executor.js";
 
-describe("createFireAndForgetExecutor()", () => {
-	it("executes the asynchronous function", () => {
-		const asynchronousFunction = vi.fn().mockResolvedValue(undefined);
-		const logErrorFake = vi.fn();
+suite("createFireAndForgetExecutor()", function () {
+	test("executes the asynchronous function", function () {
+		const asynchronousFunction = fake.resolves(undefined);
+		const logErrorFake = fake<[string, unknown], undefined>();
 		function logError(message: string, error: unknown): void {
 			logErrorFake(message, error);
 		}
@@ -12,16 +14,16 @@ describe("createFireAndForgetExecutor()", () => {
 
 		fireAndForgetExecutor.execute(asynchronousFunction);
 
-		expect(asynchronousFunction).toHaveBeenCalledExactlyOnceWith();
-		expect(logErrorFake).not.toHaveBeenCalled();
+		sinonAssert.calledOnceWithExactly(asynchronousFunction);
+		sinonAssert.notCalled(logErrorFake);
 	});
 
-	it("logs errors from rejected promises", async () => {
+	test("logs errors from rejected promises", async function () {
 		const rejectedPromise = Promise.reject(new Error("boom"));
-		const asynchronousFunction = vi.fn().mockImplementation(async () => {
+		const asynchronousFunction = fake(async () => {
 			return rejectedPromise;
 		});
-		const logErrorFake = vi.fn();
+		const logErrorFake = fake<[string, unknown], undefined>();
 		function logError(message: string, error: unknown): void {
 			logErrorFake(message, error);
 		}
@@ -29,13 +31,13 @@ describe("createFireAndForgetExecutor()", () => {
 
 		fireAndForgetExecutor.execute(asynchronousFunction);
 
-		await expect(rejectedPromise).rejects.toThrow("boom");
+		await assert.rejects(rejectedPromise, /boom/u);
 
 		await fireAndForgetExecutor.waitUntilAllSettled();
 
-		expect(logErrorFake).toHaveBeenCalledExactlyOnceWith(
-			"failed to execute a fire and forget promise",
-			expect.any(Error)
-		);
+		sinonAssert.calledOnce(logErrorFake);
+		const [message, error] = logErrorFake.firstCall.args;
+		assert.strictEqual(message, "failed to execute a fire and forget promise");
+		assert.ok(error instanceof Error);
 	});
 });

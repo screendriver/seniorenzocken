@@ -1,12 +1,13 @@
-import { describe, it, expect, assert } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { isOk } from "true-myth/result";
 import { seedInMemoryDatabase } from "../seed-in-memory-database.js";
 import { createDatabase } from "../database/database.js";
 import { createAudioRepository } from "./repository.js";
 
-describe("readGamePointsAudios()", () => {
-	it("returns the selected audio files in correct order", async () => {
+suite("readGamePointsAudios()", function () {
+	test("returns the selected audio files in correct order", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await seedInMemoryDatabase(database);
@@ -18,9 +19,9 @@ describe("readGamePointsAudios()", () => {
 			team2MatchTotalGamePoints: 10
 		});
 
-		assert(isOk(allAudios));
+		assert.ok(isOk(allAudios));
 
-		expect(allAudios.value).toStrictEqual([
+		assert.deepStrictEqual(allAudios.value, [
 			{
 				gamePointAudioId: 1,
 				gamePoints: null,
@@ -60,8 +61,8 @@ describe("readGamePointsAudios()", () => {
 	});
 });
 
-describe("readAllFunAudios()", () => {
-	it("returns all fun audio files", async () => {
+suite("readAllFunAudios()", function () {
+	test("returns all fun audio files", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await seedInMemoryDatabase(database);
@@ -70,9 +71,9 @@ describe("readAllFunAudios()", () => {
 
 		const allFunAudios = await audioRepository.readAllFunAudios();
 
-		assert(isOk(allFunAudios));
+		assert.ok(isOk(allFunAudios));
 
-		expect(allFunAudios.value).toStrictEqual([
+		assert.deepStrictEqual(allFunAudios.value, [
 			{
 				gamePointAudioId: 24,
 				name: "der_is_guad.m4a"

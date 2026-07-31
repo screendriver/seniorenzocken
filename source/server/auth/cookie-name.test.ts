@@ -1,8 +1,9 @@
-import { describe, it, expect } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
 import { cookieName } from "./cookie-name.js";
 
-describe("cookieName", () => {
-	it("has the correct name", () => {
-		expect(cookieName).toBe("seniorenzocken.session_token");
+suite("cookieName", function () {
+	test("has the correct name", function () {
+		assert.strictEqual(cookieName, "seniorenzocken.session_token");
 	});
 });

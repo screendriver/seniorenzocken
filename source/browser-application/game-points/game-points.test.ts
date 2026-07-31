@@ -1,46 +1,53 @@
-import { describe, it, expect } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import assert from "node:assert";
+import { suite, test } from "mocha";
 import { isNothing } from "true-myth/maybe";
+import { getReactTestingLibrary } from "../test-support/mocha-jsdom.js";
 import { useGamePoints } from "./game-points.js";
 
-describe("useGamePoints()", () => {
-	it("returns empty selected game points by default", () => {
+suite("useGamePoints()", function () {
+	test("returns empty selected game points by default", async function () {
+		const { renderHook } = await getReactTestingLibrary();
 		const { result } = renderHook(useGamePoints);
 
-		expect(result.current.selectedGamePoints).toStrictEqual({});
+		assert.deepStrictEqual(result.current.selectedGamePoints, {});
 	});
 
-	it("disables previous game round by default", () => {
+	test("disables previous game round by default", async function () {
+		const { renderHook } = await getReactTestingLibrary();
 		const { result } = renderHook(useGamePoints);
 
-		expect(result.current.isPreviousGameRoundEnabled).toBe(false);
+		assert.strictEqual(result.current.isPreviousGameRoundEnabled, false);
 	});
 
-	it("returns Nothing when no game point is selected", () => {
+	test("returns Nothing when no game point is selected", async function () {
+		const { renderHook } = await getReactTestingLibrary();
 		const { result } = renderHook(useGamePoints);
 
-		expect(isNothing(result.current.selectedGamePoint)).toBe(true);
+		assert.strictEqual(isNothing(result.current.selectedGamePoint), true);
 	});
 
-	it("enables game points by default", () => {
+	test("enables game points by default", async function () {
+		const { renderHook } = await getReactTestingLibrary();
 		const { result } = renderHook(useGamePoints);
 
-		expect(result.current.isGamePointEnabled(0)).toBe(true);
+		assert.strictEqual(result.current.isGamePointEnabled(0), true);
 	});
 
-	it("disables next game round when all selected game points are below the minimum", () => {
+	test("disables next game round when all selected game points are below the minimum", async function () {
+		const { renderHook } = await getReactTestingLibrary();
 		const { result } = renderHook(useGamePoints);
 
-		expect(result.current.isNextGameRoundEnabled).toBe(false);
+		assert.strictEqual(result.current.isNextGameRoundEnabled, false);
 	});
 
-	it("enables next game round when a team has selected at least two game points", () => {
+	test("enables next game round when a team has selected at least two game points", async function () {
+		const { act, renderHook } = await getReactTestingLibrary();
 		const { result } = renderHook(useGamePoints);
 
 		act(() => {
 			result.current.setSelectedGamePoints({ 1: 2 });
 		});
 
-		expect(result.current.isNextGameRoundEnabled).toBe(true);
+		assert.strictEqual(result.current.isNextGameRoundEnabled, true);
 	});
 });

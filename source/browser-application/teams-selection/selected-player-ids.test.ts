@@ -1,20 +1,21 @@
-import { describe, it, expect } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
 import { areSelectedPlayerIdsValid } from "./selected-player-ids.js";
 
-describe("areSelectedPlayerIdsValid()", () => {
-	it("returns false when given selected player ids is an empty Array", () => {
-		expect(areSelectedPlayerIdsValid([])).toBe(false);
+suite("areSelectedPlayerIdsValid()", function () {
+	test("returns false when given selected player ids is an empty Array", function () {
+		assert.strictEqual(areSelectedPlayerIdsValid([]), false);
 	});
 
-	it("returns false when not every selected player has an id", () => {
-		expect(areSelectedPlayerIdsValid([1, 2, -1, 4])).toBe(false);
+	test("returns false when not every selected player has an id", function () {
+		assert.strictEqual(areSelectedPlayerIdsValid([1, 2, -1, 4]), false);
 	});
 
-	it("returns false when multiple selected players have the same id", () => {
-		expect(areSelectedPlayerIdsValid([1, 2, 3, 1])).toBe(false);
+	test("returns false when multiple selected players have the same id", function () {
+		assert.strictEqual(areSelectedPlayerIdsValid([1, 2, 3, 1]), false);
 	});
 
-	it("returns true when all selected players have a different id", () => {
-		expect(areSelectedPlayerIdsValid([1, 2, 3, 4])).toBe(true);
+	test("returns true when all selected players have a different id", function () {
+		assert.strictEqual(areSelectedPlayerIdsValid([1, 2, 3, 4]), true);
 	});
 });

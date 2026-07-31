@@ -10,7 +10,12 @@
 		{
 			"groupName": "Vite dependencies",
 			"groupSlug": "vite",
-			"matchPackageNames": ["vite", "@tailwindcss/vite", "vitest", "@vitest/*"]
+			"matchPackageNames": ["vite", "@tailwindcss/vite"]
+		},
+		{
+			"groupName": "Test tooling",
+			"groupSlug": "test-tooling",
+			"matchPackageNames": ["mocha", "@types/mocha", "sinon", "@types/sinon", "eslint-plugin-mocha"]
 		},
 		{
 			"groupName": "React dependencies",

@@ -1,4 +1,6 @@
-import { describe, it, expect, assert, vi } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
+import { fake } from "sinon";
 import { isErr, isOk } from "true-myth/result";
 import { Unit } from "true-myth/unit";
 import { migrate } from "drizzle-orm/libsql/migrator";
@@ -13,207 +15,209 @@ import { createDatabase } from "../database/database.js";
 import { seedInMemoryDatabase } from "../seed-in-memory-database.js";
 import { createSessionRepository } from "./session-repository.js";
 
-describe("getSession()", () => {
-	it("returns a Result Err when database selection failed", async () => {
+const testRandomUuid = "00000000-0000-0000-0000-000000000000";
+
+suite("getSession()", function () {
+	test("returns a Result Err when database selection failed", async function () {
 		const database = createDatabase(":memory:");
-		const randomUUID = vi.fn().mockReturnValue("");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.getSession("");
 
-		assert(isErr(result));
+		assert.ok(isErr(result));
 
-		expect(result.error.message).toBe("Could not retrieve session");
+		assert.strictEqual(result.error.message, "Could not retrieve session");
 	});
 
-	it("returns a Result Err when parsing of session data from database failed", async () => {
+	test("returns a Result Err when parsing of session data from database failed", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
-		const randomUUID = vi.fn().mockReturnValue("");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.getSession("");
 
-		assert(isErr(result));
+		assert.ok(isErr(result));
 
-		expect(result.error.message).toBe("Could not parse session from database");
+		assert.strictEqual(result.error.message, "Could not parse session from database");
 	});
 
-	it("returns a Result Err when session token could not be found", async () => {
+	test("returns a Result Err when session token could not be found", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await database.insert(userSessionsDatabaseSchema).values({ token: "test-token" });
-		const randomUUID = vi.fn().mockReturnValue("");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.getSession("not-found");
 
-		assert(isErr(result));
+		assert.ok(isErr(result));
 
-		expect(result.error.message).toBe("Could not parse session from database");
+		assert.strictEqual(result.error.message, "Could not parse session from database");
 	});
 
-	it("returns a Result Ok when session token could be found", async () => {
+	test("returns a Result Ok when session token could be found", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await database.insert(userSessionsDatabaseSchema).values({ token: "test-token" });
-		const randomUUID = vi.fn().mockReturnValue("");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.getSession("test-token");
 
-		assert(isOk(result));
+		assert.ok(isOk(result));
 
-		expect(result.value).toStrictEqual({ token: "test-token" });
+		assert.deepStrictEqual(result.value, { token: "test-token" });
 	});
 });
 
-describe("createSession()", () => {
-	it("returns a Result Err when database insertion failed", async () => {
+suite("createSession()", function () {
+	test("returns a Result Err when database insertion failed", async function () {
 		const database = createDatabase(":memory:");
-		const randomUUID = vi.fn().mockReturnValue("");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.createSession({});
 
-		assert(isErr(result));
+		assert.ok(isErr(result));
 
-		expect(result.error.message).toBe("Could not create session");
+		assert.strictEqual(result.error.message, "Could not create session");
 	});
 
-	it("returns a Result Ok when database insertion succeeded and only a token is given", async () => {
+	test("returns a Result Ok when database insertion succeeded and only a token is given", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
-		const randomUUID = vi.fn().mockReturnValue("random-uuid");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.createSession({});
 
-		assert(isOk(result));
+		assert.ok(isOk(result));
 
-		expect(result.value).toStrictEqual({ token: "random-uuid" });
+		assert.deepStrictEqual(result.value, { token: testRandomUuid });
 	});
 
-	it("returns a Result Ok when database insertion succeeded and an IP address and user agent are given", async () => {
+	test("returns a Result Ok when database insertion succeeded and an IP address and user agent are given", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
-		const randomUUID = vi.fn().mockReturnValue("random-uuid");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.createSession({ ipAddress: "127.0.0.1", userAgent: "test-user-agent" });
 
-		assert(isOk(result));
+		assert.ok(isOk(result));
 
-		expect(result.value).toStrictEqual({ token: "random-uuid" });
+		assert.deepStrictEqual(result.value, { token: testRandomUuid });
 	});
 });
 
-describe("deleteSession()", () => {
-	it("returns a Result Err when database deletion failed", async () => {
+suite("deleteSession()", function () {
+	test("returns a Result Err when database deletion failed", async function () {
 		const database = createDatabase(":memory:");
-		const randomUUID = vi.fn().mockReturnValue("");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.deleteSession("");
 
-		assert(isErr(result));
+		assert.ok(isErr(result));
 
-		expect(result.error.message).toBe("Could not delete session");
+		assert.strictEqual(result.error.message, "Could not delete session");
 	});
 
-	it("returns a Result Ok when session token did not exist", async () => {
+	test("returns a Result Ok when session token did not exist", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await database.insert(userSessionsDatabaseSchema).values({ token: "test-token" });
-		const randomUUID = vi.fn().mockReturnValue("");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.deleteSession("not-found");
 
-		assert(isOk(result));
+		assert.ok(isOk(result));
 
-		expect(result.value).toBe(Unit);
+		assert.strictEqual(result.value, Unit);
 	});
 
-	it("returns a Result Ok when session token was successfully deleted", async () => {
+	test("returns a Result Ok when session token was successfully deleted", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await database.insert(userSessionsDatabaseSchema).values({ token: "test-token" });
-		const randomUUID = vi.fn().mockReturnValue("");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.deleteSession("test-token");
 
-		assert(isOk(result));
+		assert.ok(isOk(result));
 
-		expect(result.value).toBe(Unit);
+		assert.strictEqual(result.value, Unit);
 	});
 });
 
-describe("createTeamsSessions()", () => {
-	it("returns a Result Err when database insertion failed", async () => {
+suite("createTeamsSessions()", function () {
+	test("returns a Result Err when database insertion failed", async function () {
 		const database = createDatabase(":memory:");
-		const randomUUID = vi.fn().mockReturnValue("");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.createTeamsSessions("");
 
-		assert(isErr(result));
+		assert.ok(isErr(result));
 
-		expect(result.error.message).toBe("Could not create team sessions");
+		assert.strictEqual(result.error.message, "Could not create team sessions");
 	});
 
-	it("returns a Result Err when session token could not be found in database", async () => {
+	test("returns a Result Err when session token could not be found in database", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
-		const randomUUID = vi.fn().mockReturnValue("random-uuid");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.createTeamsSessions("not-found");
 
-		assert(isErr(result));
+		assert.ok(isErr(result));
 
-		expect(result.error.message).toBe("Could not create team sessions");
+		assert.strictEqual(result.error.message, "Could not create team sessions");
 
 		assertError(result.error.cause);
 
-		expect(result.error.cause.message).toBe("User session could not be found");
+		assert.strictEqual(result.error.cause.message, "User session could not be found");
 	});
 
-	it("returns a Result Ok when database insertion succeeded", async () => {
+	test("returns a Result Ok when database insertion succeeded", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await seedInMemoryDatabase(database);
 		await database.insert(userSessionsDatabaseSchema).values({ token: "test-token" });
-		const randomUUID = vi.fn().mockReturnValue("random-uuid");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.createTeamsSessions("test-token", [7, 16], [5, 10]);
 
-		assert(isOk(result));
+		assert.ok(isOk(result));
 
-		expect(result.value).toBe(Unit);
+		assert.strictEqual(result.value, Unit);
 	});
 });
 
-describe("createGameRoundHistorySession()", () => {
-	it("returns a Result Err when database insertion failed", async () => {
+suite("createGameRoundHistorySession()", function () {
+	test("returns a Result Err when database insertion failed", async function () {
 		const database = createDatabase(":memory:");
-		const randomUUID = vi.fn().mockReturnValue("");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.createGameRoundHistorySession({ teamId: 0, gamePoints: 0 });
 
-		assert(isErr(result));
+		assert.ok(isErr(result));
 
-		expect(result.error.message).toBe("Could not create game round history session");
+		assert.strictEqual(result.error.message, "Could not create game round history session");
 	});
 
-	it("returns a Result Ok when database insertion succeeded", async () => {
+	test("returns a Result Ok when database insertion succeeded", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await seedInMemoryDatabase(database);
-		const randomUUID = vi.fn().mockReturnValue("random-uuid");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const [firstUserSessionDatabaseRecord] = await database
@@ -229,44 +233,44 @@ describe("createGameRoundHistorySession()", () => {
 
 		const result = await sessionRepository.createGameRoundHistorySession({ teamId: 1, gamePoints: 2 });
 
-		assert(isOk(result));
+		assert.ok(isOk(result));
 
-		expect(result.value).toBe(Unit);
+		assert.strictEqual(result.value, Unit);
 	});
 });
 
-describe("deleteLastGameRoundHistorySession()", () => {
-	it("returns a Result Err when database deletion failed", async () => {
+suite("deleteLastGameRoundHistorySession()", function () {
+	test("returns a Result Err when database deletion failed", async function () {
 		const database = createDatabase(":memory:");
-		const randomUUID = vi.fn().mockReturnValue("");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.deleteLastGameRoundHistorySession("test-token");
 
-		assert(isErr(result));
+		assert.ok(isErr(result));
 
-		expect(result.error.message).toBe("Could not delete last game round history session");
+		assert.strictEqual(result.error.message, "Could not delete last game round history session");
 	});
 
-	it("returns a Result Ok when there is no last game round history session", async () => {
+	test("returns a Result Ok when there is no last game round history session", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await seedInMemoryDatabase(database);
-		const randomUUID = vi.fn().mockReturnValue("random-uuid");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const result = await sessionRepository.deleteLastGameRoundHistorySession("test-token");
 
-		assert(isOk(result));
+		assert.ok(isOk(result));
 
-		expect(result.value).toBe(Unit);
+		assert.strictEqual(result.value, Unit);
 	});
 
-	it("deletes the very last game round history session and returns a Result Ok when database deletion succeeded", async () => {
+	test("deletes the very last game round history session and returns a Result Ok when database deletion succeeded", async function () {
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });
 		await seedInMemoryDatabase(database);
-		const randomUUID = vi.fn().mockReturnValue("random-uuid");
+		const randomUUID = fake.returns<[], typeof testRandomUuid>(testRandomUuid);
 		const sessionRepository = createSessionRepository({ database, randomUUID });
 
 		const [firstUserSessionDatabaseRecord] = await database
@@ -298,11 +302,11 @@ describe("deleteLastGameRoundHistorySession()", () => {
 
 		const result = await sessionRepository.deleteLastGameRoundHistorySession("test-token");
 
-		assert(isOk(result));
+		assert.ok(isOk(result));
 
-		expect(result.value).toBe(Unit);
+		assert.strictEqual(result.value, Unit);
 
-		await expect(database.select().from(gameRoundHistorySessionsDatabaseSchema)).resolves.toStrictEqual([
+		assert.deepStrictEqual(await database.select().from(gameRoundHistorySessionsDatabaseSchema), [
 			{
 				createdAt: "2025-09-26 15:30:00",
 				gamePoints: 2,

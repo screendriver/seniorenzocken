@@ -1,4 +1,6 @@
-import { describe, it, assert, vi, expect } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
+import { fake } from "sinon";
 import { Factory } from "fishery";
 import { isErr, isOk } from "true-myth/result";
 import { generateAudioPlaylist, type SelectedGamePointAudio, type Options } from "./playlist.js";
@@ -19,12 +21,12 @@ const optionsFactory = Factory.define<Options>(() => {
 		gameRounds: [],
 		isStretched: false,
 		hasWon: false,
-		isTurnAround: vi.fn().mockReturnValue(false)
+		isTurnAround: fake.returns(false)
 	};
 });
 
-describe("generateAudioPlaylist()", () => {
-	it("returns an Result Err when attention.m4a could not be found", () => {
+suite("generateAudioPlaylist()", function () {
+	test("returns an Result Err when attention.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 }),
@@ -32,10 +34,10 @@ describe("generateAudioPlaylist()", () => {
 			]
 		});
 
-		expect(isErr(generateAudioPlaylist(options))).toBe(true);
+		assert.strictEqual(isErr(generateAudioPlaylist(options)), true);
 	});
 
-	it("returns an Result Err when to.m4a could not be found", () => {
+	test("returns an Result Err when to.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -43,10 +45,10 @@ describe("generateAudioPlaylist()", () => {
 			]
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when zero.m4a could not be found", () => {
+	test("returns an Result Err when zero.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -54,10 +56,10 @@ describe("generateAudioPlaylist()", () => {
 			]
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when two.m4a could not be found", () => {
+	test("returns an Result Err when two.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -67,10 +69,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 2
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when three.m4a could not be found", () => {
+	test("returns an Result Err when three.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -80,10 +82,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 3
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when four.m4a could not be found", () => {
+	test("returns an Result Err when four.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -93,10 +95,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 4
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when five.m4a could not be found", () => {
+	test("returns an Result Err when five.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -106,10 +108,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 5
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when six.m4a could not be found", () => {
+	test("returns an Result Err when six.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -119,10 +121,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 6
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when seven.m4a could not be found", () => {
+	test("returns an Result Err when seven.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -132,10 +134,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 7
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when eight.m4a could not be found", () => {
+	test("returns an Result Err when eight.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -145,10 +147,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 8
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when nine.m4a could not be found", () => {
+	test("returns an Result Err when nine.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -158,10 +160,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 9
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when ten.m4a could not be found", () => {
+	test("returns an Result Err when ten.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -171,10 +173,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 10
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when eleven.m4a could not be found", () => {
+	test("returns an Result Err when eleven.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -184,10 +186,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 11
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when twelve.m4a could not be found", () => {
+	test("returns an Result Err when twelve.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -197,10 +199,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 12
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when thirteen.m4a could not be found", () => {
+	test("returns an Result Err when thirteen.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -210,10 +212,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 13
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when fourteen.m4a could not be found", () => {
+	test("returns an Result Err when fourteen.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -223,10 +225,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 14
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when fifteen.m4a could not be found", () => {
+	test("returns an Result Err when fifteen.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -236,10 +238,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 15
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when sixteen.m4a could not be found", () => {
+	test("returns an Result Err when sixteen.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -249,10 +251,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 16
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when seventeen.m4a could not be found", () => {
+	test("returns an Result Err when seventeen.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -262,10 +264,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 18
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when eighteen.m4a could not be found", () => {
+	test("returns an Result Err when eighteen.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -275,10 +277,10 @@ describe("generateAudioPlaylist()", () => {
 			team1MatchTotalGamePoints: 18
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when turn_around.m4a could not be found", () => {
+	test("returns an Result Err when turn_around.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -286,13 +288,13 @@ describe("generateAudioPlaylist()", () => {
 				selectedGamePointAudioFactory.build({ name: "to.m4a" }),
 				selectedGamePointAudioFactory.build({ name: "zero.m4a", gamePoints: 0 })
 			],
-			isTurnAround: vi.fn().mockReturnValue(true)
+			isTurnAround: fake.returns(true)
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when gspandt.m4a could not be found", () => {
+	test("returns an Result Err when gspandt.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -302,10 +304,10 @@ describe("generateAudioPlaylist()", () => {
 			isStretched: true
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Err when won.m4a could not be found", () => {
+	test("returns an Result Err when won.m4a could not be found", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -315,10 +317,10 @@ describe("generateAudioPlaylist()", () => {
 			hasWon: true
 		});
 
-		assert(isErr(generateAudioPlaylist(options)));
+		assert.ok(isErr(generateAudioPlaylist(options)));
 	});
 
-	it("returns an Result Ok with turn_around.m4a when one team has a turn around", () => {
+	test("returns an Result Ok with turn_around.m4a when one team has a turn around", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "turn_around.m4a" }),
@@ -329,14 +331,14 @@ describe("generateAudioPlaylist()", () => {
 			],
 			team1MatchTotalGamePoints: 2,
 			team2MatchTotalGamePoints: 12,
-			isTurnAround: vi.fn().mockReturnValue(true)
+			isTurnAround: fake.returns(true)
 		});
 
 		const audioPlaylist = generateAudioPlaylist(options);
 
-		assert(isOk(audioPlaylist));
+		assert.ok(isOk(audioPlaylist));
 
-		expect(audioPlaylist.value).toStrictEqual([
+		assert.deepStrictEqual(audioPlaylist.value, [
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
@@ -365,7 +367,7 @@ describe("generateAudioPlaylist()", () => {
 		]);
 	});
 
-	it("returns an Result Ok without turn_around.m4a, gspandt.m4a and won.m4a when no team is stretched and no team has won", () => {
+	test("returns an Result Ok without turn_around.m4a, gspandt.m4a and won.m4a when no team is stretched and no team has won", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -381,9 +383,9 @@ describe("generateAudioPlaylist()", () => {
 
 		const audioPlaylist = generateAudioPlaylist(options);
 
-		assert(isOk(audioPlaylist));
+		assert.ok(isOk(audioPlaylist));
 
-		expect(audioPlaylist.value).toStrictEqual([
+		assert.deepStrictEqual(audioPlaylist.value, [
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
@@ -407,7 +409,7 @@ describe("generateAudioPlaylist()", () => {
 		]);
 	});
 
-	it("returns an Result Ok with gspandt.m4a but without won.m4a when one team is stretched but no team has won", () => {
+	test("returns an Result Ok with gspandt.m4a but without won.m4a when one team is stretched but no team has won", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -424,9 +426,9 @@ describe("generateAudioPlaylist()", () => {
 
 		const audioPlaylist = generateAudioPlaylist(options);
 
-		assert(isOk(audioPlaylist));
+		assert.ok(isOk(audioPlaylist));
 
-		expect(audioPlaylist.value).toStrictEqual([
+		assert.deepStrictEqual(audioPlaylist.value, [
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
@@ -455,7 +457,7 @@ describe("generateAudioPlaylist()", () => {
 		]);
 	});
 
-	it("returns an Result Ok with gspandt.m4a and won.m4a when one team is stretched and has won", () => {
+	test("returns an Result Ok with gspandt.m4a and won.m4a when one team is stretched and has won", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "attention.m4a" }),
@@ -473,9 +475,9 @@ describe("generateAudioPlaylist()", () => {
 
 		const audioPlaylist = generateAudioPlaylist(options);
 
-		assert(isOk(audioPlaylist));
+		assert.ok(isOk(audioPlaylist));
 
-		expect(audioPlaylist.value).toStrictEqual([
+		assert.deepStrictEqual(audioPlaylist.value, [
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,
@@ -509,7 +511,7 @@ describe("generateAudioPlaylist()", () => {
 		]);
 	});
 
-	it("returns an Result Ok with turn_around.m4a, gspandt.m4a and won.m4a when one team is stretched and has won", () => {
+	test("returns an Result Ok with turn_around.m4a, gspandt.m4a and won.m4a when one team is stretched and has won", function () {
 		const options = optionsFactory.build({
 			allAudios: [
 				selectedGamePointAudioFactory.build({ name: "turn_around.m4a" }),
@@ -524,14 +526,14 @@ describe("generateAudioPlaylist()", () => {
 			team2MatchTotalGamePoints: 15,
 			isStretched: true,
 			hasWon: true,
-			isTurnAround: vi.fn().mockReturnValue(true)
+			isTurnAround: fake.returns(true)
 		});
 
 		const audioPlaylist = generateAudioPlaylist(options);
 
-		assert(isOk(audioPlaylist));
+		assert.ok(isOk(audioPlaylist));
 
-		expect(audioPlaylist.value).toStrictEqual([
+		assert.deepStrictEqual(audioPlaylist.value, [
 			{
 				gamePointAudioId: 0,
 				gamePoints: null,

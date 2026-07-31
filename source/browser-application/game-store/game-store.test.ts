@@ -1,4 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
+import { assert as sinonAssert, fake } from "sinon";
 import type { TRPCClient } from "@trpc/client";
 import type { NotPersistedTeam1, NotPersistedTeam2 } from "../../shared/team.js";
 import type { GameRounds } from "../../shared/game-rounds.js";
@@ -45,7 +47,7 @@ function createFakeTrpcClient(options: FakeTrpcClientOptions = {}): TRPCClient<T
 			new: {
 				query:
 					newGameQuery ??
-					vi.fn().mockResolvedValue({
+					fake.resolves({
 						team1: { ...emptyTeam1, name: "Team A" },
 						team2: { ...emptyTeam2, name: "Team B" },
 						isGameRunning: false,
@@ -57,14 +59,14 @@ function createFakeTrpcClient(options: FakeTrpcClientOptions = {}): TRPCClient<T
 			start: {
 				mutate:
 					startGameMutation ??
-					vi.fn().mockResolvedValue({
+					fake.resolves({
 						isGameRunning: true
 					})
 			},
 			nextRound: {
 				mutate:
 					nextRoundMutation ??
-					vi.fn().mockResolvedValue({
+					fake.resolves({
 						team1: { ...emptyTeam1, matchTotalGamePoints: 2 },
 						team2: { ...emptyTeam2, matchTotalGamePoints: 0 },
 						isGameRunning: true,
@@ -76,7 +78,7 @@ function createFakeTrpcClient(options: FakeTrpcClientOptions = {}): TRPCClient<T
 			previousRound: {
 				mutate:
 					previousRoundMutation ??
-					vi.fn().mockResolvedValue({
+					fake.resolves({
 						team1: { ...emptyTeam1 },
 						team2: { ...emptyTeam2 },
 						gameRounds: []
@@ -85,62 +87,62 @@ function createFakeTrpcClient(options: FakeTrpcClientOptions = {}): TRPCClient<T
 		},
 		audio: {
 			gamePointsPlaylist: {
-				query: gamePointsPlaylistQuery ?? vi.fn().mockResolvedValue(["/api/audio/1"])
+				query: gamePointsPlaylistQuery ?? fake.resolves(["/api/audio/1"])
 			}
 		}
 	} as unknown as TRPCClient<TRPCApplicationRouter>;
 }
 
-describe("game store", () => {
-	it("has an initial team1 set", () => {
+suite("game store", function () {
+	test("has an initial team1 set", function () {
 		const gameStore = createGameStore(createFakeTrpcClient());
 
-		expect(gameStore.getState().team1).toStrictEqual(emptyTeam1);
+		assert.deepStrictEqual(gameStore.getState().team1, emptyTeam1);
 	});
 
-	it("has an initial team2 set", () => {
+	test("has an initial team2 set", function () {
 		const gameStore = createGameStore(createFakeTrpcClient());
 
-		expect(gameStore.getState().team2).toStrictEqual(emptyTeam2);
+		assert.deepStrictEqual(gameStore.getState().team2, emptyTeam2);
 	});
 
-	it("updates team names explicitly", () => {
+	test("updates team names explicitly", function () {
 		const gameStore = createGameStore(createFakeTrpcClient());
 
 		gameStore.getState().setTeam1Name("Alice");
 		gameStore.getState().setTeam2Name("Bob");
 
-		expect(gameStore.getState().team1.name).toBe("Alice");
-		expect(gameStore.getState().team2.name).toBe("Bob");
+		assert.strictEqual(gameStore.getState().team1.name, "Alice");
+		assert.strictEqual(gameStore.getState().team2.name, "Bob");
 	});
 
-	it("loads a new game and clears the error state", async () => {
+	test("loads a new game and clears the error state", async function () {
 		const gameStore = createGameStore(createFakeTrpcClient());
 		gameStore.setState({ hasError: true });
 
 		const result = await gameStore.getState().newGame();
 
-		expect(result.isOk).toBe(true);
-		expect(gameStore.getState().team1.name).toBe("Team A");
-		expect(gameStore.getState().team2.name).toBe("Team B");
-		expect(gameStore.getState().hasError).toBe(false);
+		assert.strictEqual(result.isOk, true);
+		assert.strictEqual(gameStore.getState().team1.name, "Team A");
+		assert.strictEqual(gameStore.getState().team2.name, "Team B");
+		assert.strictEqual(gameStore.getState().hasError, false);
 	});
 
-	it("stores an error when loading a new game fails", async () => {
+	test("stores an error when loading a new game fails", async function () {
 		const gameStore = createGameStore(
 			createFakeTrpcClient({
-				newGameQuery: vi.fn().mockRejectedValue(new Error("boom"))
+				newGameQuery: fake.rejects(new Error("boom"))
 			})
 		);
 
 		const result = await gameStore.getState().newGame();
 
-		expect(result.isErr).toBe(true);
-		expect(gameStore.getState().hasError).toBe(true);
+		assert.strictEqual(result.isErr, true);
+		assert.strictEqual(gameStore.getState().hasError, true);
 	});
 
-	it("starts a game and marks it as running", async () => {
-		const startGameMutation = vi.fn().mockResolvedValue({ isGameRunning: true });
+	test("starts a game and marks it as running", async function () {
+		const startGameMutation = fake.resolves({ isGameRunning: true });
 		const gameStore = createGameStore(
 			createFakeTrpcClient({
 				startGameMutation
@@ -151,16 +153,16 @@ describe("game store", () => {
 
 		const result = await gameStore.getState().startGame();
 
-		expect(result.isOk).toBe(true);
-		expect(startGameMutation).toHaveBeenCalledWith({
+		assert.strictEqual(result.isOk, true);
+		sinonAssert.calledWith(startGameMutation, {
 			team1: { ...emptyTeam1, name: "Alice" },
 			team2: { ...emptyTeam2, name: "Bob" }
 		});
-		expect(gameStore.getState().isGameRunning).toBe(true);
+		assert.strictEqual(gameStore.getState().isGameRunning, true);
 	});
 
-	it("advances to the next game round and enables audio playback", async () => {
-		const nextRoundMutation = vi.fn().mockResolvedValue({
+	test("advances to the next game round and enables audio playback", async function () {
+		const nextRoundMutation = fake.resolves({
 			team1: { ...emptyTeam1, matchTotalGamePoints: 2 },
 			team2: { ...emptyTeam2, matchTotalGamePoints: 0 },
 			isGameRunning: true,
@@ -176,19 +178,19 @@ describe("game store", () => {
 
 		const result = await gameStore.getState().nextGameRound();
 
-		expect(result.isOk).toBe(true);
-		expect(nextRoundMutation).toHaveBeenCalledWith({
+		assert.strictEqual(result.isOk, true);
+		sinonAssert.calledWith(nextRoundMutation, {
 			team1: emptyTeam1,
 			team2: emptyTeam2,
 			gameRounds: []
 		});
-		expect(gameStore.getState().showConfetti).toBe(true);
-		expect(gameStore.getState().isAudioPlaying).toBe(true);
-		expect(gameStore.getState().team1.matchTotalGamePoints).toBe(2);
+		assert.strictEqual(gameStore.getState().showConfetti, true);
+		assert.strictEqual(gameStore.getState().isAudioPlaying, true);
+		assert.strictEqual(gameStore.getState().team1.matchTotalGamePoints, 2);
 	});
 
-	it("restores the previous game round", async () => {
-		const previousRoundMutation = vi.fn().mockResolvedValue({
+	test("restores the previous game round", async function () {
+		const previousRoundMutation = fake.resolves({
 			team1: { ...emptyTeam1, name: "Reset" },
 			team2: { ...emptyTeam2, name: "Reset" },
 			gameRounds: []
@@ -201,16 +203,16 @@ describe("game store", () => {
 
 		const result = await gameStore.getState().previousGameRound();
 
-		expect(result.isOk).toBe(true);
-		expect(previousRoundMutation).toHaveBeenCalledWith({
+		assert.strictEqual(result.isOk, true);
+		sinonAssert.calledWith(previousRoundMutation, {
 			gameRounds: []
 		});
-		expect(gameStore.getState().team1.name).toBe("Reset");
-		expect(gameStore.getState().gameRounds).toStrictEqual([]);
+		assert.strictEqual(gameStore.getState().team1.name, "Reset");
+		assert.deepStrictEqual(gameStore.getState().gameRounds, []);
 	});
 
-	it("queries the game points audio playlist with the current game state", async () => {
-		const gamePointsPlaylistQuery = vi.fn().mockResolvedValue(["/api/audio/1"]);
+	test("queries the game points audio playlist with the current game state", async function () {
+		const gamePointsPlaylistQuery = fake.resolves(["/api/audio/1"]);
 		const gameStore = createGameStore(
 			createFakeTrpcClient({
 				gamePointsPlaylistQuery
@@ -224,8 +226,8 @@ describe("game store", () => {
 
 		const result = await gameStore.getState().generateGamePointsAudioPlaylist();
 
-		expect(result.isOk).toBe(true);
-		expect(gamePointsPlaylistQuery).toHaveBeenCalledWith({
+		assert.strictEqual(result.isOk, true);
+		sinonAssert.calledWith(gamePointsPlaylistQuery, {
 			team1: { ...emptyTeam1, matchTotalGamePoints: 4 },
 			team2: { ...emptyTeam2, matchTotalGamePoints: 2 },
 			gameRounds: [],

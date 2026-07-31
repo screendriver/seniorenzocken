@@ -1,54 +1,67 @@
-import { describe, it, expect, assert, vi, type Mock } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
+import { assert as sinonAssert, fake, stub } from "sinon";
 import { isErr, isOk } from "true-myth/result";
 import { stripIndent } from "common-tags";
 import type { InitializedInfisicalSDK } from "./infisical/infisical-sdk.js";
 import { createSecretsClient } from "./secrets-client.js";
 
 type Overrides = {
-	readonly listSecrets?: Mock;
-	readonly getSecret?: Mock;
+	readonly listSecrets?: ReturnType<InitializedInfisicalSDK["secrets"]>["listSecrets"];
+	readonly getSecret?: ReturnType<InitializedInfisicalSDK["secrets"]>["getSecret"];
 };
 
 function createFakeInfisicalSDK(overrides: Overrides = {}): InitializedInfisicalSDK {
 	return {
-		secrets: vi.fn().mockReturnValue({
-			listSecrets: overrides.listSecrets ?? vi.fn().mockReturnValue([{}, {}]),
-			getSecret: overrides.getSecret ?? vi.fn().mockReturnValue({})
-		})
+		secrets: () => {
+			return {
+				listSecrets:
+					overrides.listSecrets ??
+					(async () => {
+						return [];
+					}),
+				getSecret:
+					overrides.getSecret ??
+					(async () => {
+						return {};
+					})
+			};
+		}
 	} as unknown as InitializedInfisicalSDK;
 }
 
-describe("fetchSecret()", () => {
-	it("returns an Result Err when infisical request fails", async () => {
-		const getSecret = vi.fn().mockRejectedValue(new Error("Oh oh"));
+suite("fetchSecret()", function () {
+	test("returns an Result Err when infisical request fails", async function () {
+		const getSecret = fake.rejects(new Error("Oh oh"));
 		const fakeInfisicalSDK = createFakeInfisicalSDK({ getSecret });
 		const secretsClient = createSecretsClient({ infisicalSDK: fakeInfisicalSDK });
 
 		const result = await secretsClient.fetchSecret("FOO");
 
-		assert(isErr(result));
+		assert.ok(isErr(result));
 
-		expect(result.error.message).toBe('Could not fetch "FOO" secret');
+		assert.strictEqual(result.error.message, 'Could not fetch "FOO" secret');
 	});
 
-	it("returns an Result Err when infisical does not respond with the expected data", async () => {
-		const getSecret = vi.fn().mockResolvedValue({ secrets: "not-expected" });
+	test("returns an Result Err when infisical does not respond with the expected data", async function () {
+		const getSecret = fake.resolves({ secrets: "not-expected" });
 		const fakeInfisicalSDK = createFakeInfisicalSDK({ getSecret });
 		const secretsClient = createSecretsClient({ infisicalSDK: fakeInfisicalSDK });
 
 		const result = await secretsClient.fetchSecret("FOO");
 
-		assert(isErr(result));
+		assert.ok(isErr(result));
 
-		expect(result.error.message).toBe(
+		assert.strictEqual(
+			result.error.message,
 			stripIndent`
 				× Invalid key: Expected "secretValue" but received undefined
 				  → at secretValue`
 		);
 	});
 
-	it("returns an Result Ok when infisical responds with the expected data", async () => {
-		const getSecret = vi.fn().mockResolvedValue({
+	test("returns an Result Ok when infisical responds with the expected data", async function () {
+		const getSecret = fake.resolves({
 			secretKey: "FOO",
 			secretValue: "bar"
 		});
@@ -57,13 +70,13 @@ describe("fetchSecret()", () => {
 
 		const result = await secretsClient.fetchSecret("FOO");
 
-		assert(isOk(result));
+		assert.ok(isOk(result));
 
-		expect(result.value).toBe("bar");
+		assert.strictEqual(result.value, "bar");
 	});
 
-	it("retries when fetching the secret fails temporarily", async () => {
-		const getSecret = vi.fn().mockRejectedValueOnce(new Error("Infisical is starting")).mockResolvedValueOnce({
+	test("retries when fetching the secret fails temporarily", async function () {
+		const getSecret = stub().onFirstCall().rejects(new Error("Infisical is starting")).onSecondCall().resolves({
 			secretKey: "FOO",
 			secretValue: "bar"
 		});
@@ -86,21 +99,21 @@ describe("fetchSecret()", () => {
 
 		const result = await secretsClient.fetchSecret("FOO");
 
-		assert(isOk(result));
+		assert.ok(isOk(result));
 
-		expect(result.value).toBe("bar");
-		expect(getSecret).toHaveBeenCalledTimes(2);
-		expect(retryContexts).toHaveLength(1);
+		assert.strictEqual(result.value, "bar");
+		sinonAssert.callCount(getSecret, 2);
+		assert.strictEqual(retryContexts.length, 1);
 	});
 
-	it("uses the correct options when calling getSecret()", async () => {
-		const getSecret = vi.fn().mockResolvedValue({});
+	test("uses the correct options when calling getSecret()", async function () {
+		const getSecret = fake.resolves({});
 		const fakeInfisicalSDK = createFakeInfisicalSDK({ getSecret });
 		const secretsClient = createSecretsClient({ infisicalSDK: fakeInfisicalSDK });
 
 		await secretsClient.fetchSecret("FOO");
 
-		expect(getSecret).toHaveBeenCalledExactlyOnceWith({
+		sinonAssert.calledOnceWithExactly(getSecret, {
 			environment: "production",
 			projectId: "18270c59-19de-480c-9c14-a99fda39c0db",
 			secretName: "FOO"

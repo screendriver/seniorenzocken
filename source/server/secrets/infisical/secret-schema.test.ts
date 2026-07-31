@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
 import { parse } from "valibot";
 import { Factory } from "fishery";
 import { secretSchema } from "./secret-schema.js";
@@ -9,62 +10,62 @@ const secretFactory = Factory.define(() => {
 	};
 });
 
-describe("secretSchema", () => {
-	it("fails parsing when given object is undefined", () => {
-		expect(() => {
+suite("secretSchema", function () {
+	test("fails parsing when given object is undefined", function () {
+		assert.throws(() => {
 			return parse(secretSchema, undefined);
-		}).toThrow();
+		});
 	});
 
-	it("fails parsing when given object is null", () => {
-		expect(() => {
+	test("fails parsing when given object is null", function () {
+		assert.throws(() => {
 			return parse(secretSchema, null);
-		}).toThrow();
+		});
 	});
 
-	it("fails parsing when given data is not an object", () => {
-		expect(() => {
+	test("fails parsing when given data is not an object", function () {
+		assert.throws(() => {
 			return parse(secretSchema, "not-an-object");
-		}).toThrow();
+		});
 	});
 
-	it("fails parsing when given object.secretValue is undefined", () => {
+	test("fails parsing when given object.secretValue is undefined", function () {
 		const secret = secretFactory.build({ secretValue: undefined });
 
-		expect(() => {
+		assert.throws(() => {
 			return parse(secretSchema, secret);
-		}).toThrow();
+		});
 	});
 
-	it("fails parsing when given object.secretValue is null", () => {
+	test("fails parsing when given object.secretValue is null", function () {
 		const secret = secretFactory.build({ secretValue: null });
 
-		expect(() => {
+		assert.throws(() => {
 			return parse(secretSchema, secret);
-		}).toThrow();
+		});
 	});
 
-	it("fails parsing when given object.secretValue is not a string", () => {
+	test("fails parsing when given object.secretValue is not a string", function () {
 		const secret = secretFactory.build({ secretValue: 42 });
 
-		expect(() => {
+		assert.throws(() => {
 			return parse(secretSchema, secret);
-		}).toThrow();
+		});
 	});
 
-	it("fails parsing when given object.secretValue is an empty string", () => {
+	test("fails parsing when given object.secretValue is an empty string", function () {
 		const secret = secretFactory.build({ secretValue: "" });
 
-		expect(() => {
+		assert.throws(() => {
 			return parse(secretSchema, secret);
-		}).toThrow();
+		});
 	});
 
-	it("succeeds parsing when given object.secretValue is not an empty string", () => {
+	test("succeeds parsing when given object.secretValue is not an empty string", function () {
 		const secret = secretFactory.build({ secretValue: "foo" });
 
 		const parseResult = parse(secretSchema, secret);
 
-		expect(parseResult).toStrictEqual({ secretValue: "foo" });
+		assert.deepStrictEqual(parseResult, { secretValue: "foo" });
 	});
 });

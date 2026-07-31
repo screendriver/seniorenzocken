@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
 import { safeParse } from "valibot";
 import { Factory } from "fishery";
 import { playerSchema, playersSchema, type Player } from "./player-schema.js";
@@ -14,164 +15,146 @@ const playerFactory = Factory.define<unknown>(() => {
 	};
 });
 
-describe("playerSchema", () => {
-	it("fails parsing when given data is undefined", () => {
+type PlayerPropertyTestCase = {
+	readonly propertyName: keyof Player;
+	readonly value: unknown;
+};
+
+const invalidPlayerPropertyTestCases: readonly PlayerPropertyTestCase[] = [
+	{ propertyName: "playerId", value: undefined },
+	{ propertyName: "playerId", value: null },
+	{ propertyName: "playerId", value: "not-a-number" },
+	{ propertyName: "playerId", value: -1 },
+	{ propertyName: "playerId", value: 1.1 },
+	{ propertyName: "firstName", value: undefined },
+	{ propertyName: "firstName", value: null },
+	{ propertyName: "firstName", value: 42 },
+	{ propertyName: "firstName", value: "" },
+	{ propertyName: "lastName", value: undefined },
+	{ propertyName: "lastName", value: null },
+	{ propertyName: "lastName", value: 42 },
+	{ propertyName: "lastName", value: "" },
+	{ propertyName: "nickname", value: undefined },
+	{ propertyName: "nickname", value: null },
+	{ propertyName: "nickname", value: 42 },
+	{ propertyName: "nickname", value: "" },
+	{ propertyName: "totalPoints", value: undefined },
+	{ propertyName: "totalPoints", value: null },
+	{ propertyName: "totalPoints", value: "not-a-number" },
+	{ propertyName: "totalPoints", value: -1 },
+	{ propertyName: "totalPoints", value: -1 },
+	{ propertyName: "totalPoints", value: 1.1 },
+	{ propertyName: "totalGamesCount", value: undefined },
+	{ propertyName: "totalGamesCount", value: null },
+	{ propertyName: "totalGamesCount", value: "not-a-number" },
+	{ propertyName: "totalGamesCount", value: -1 },
+	{ propertyName: "totalGamesCount", value: -1 },
+	{ propertyName: "totalGamesCount", value: 1.1 }
+];
+
+const validPlayerPropertyTestCases: readonly PlayerPropertyTestCase[] = [
+	{ propertyName: "playerId", value: 1 },
+	{ propertyName: "firstName", value: "non-empty-string" },
+	{ propertyName: "lastName", value: "non-empty-string" },
+	{ propertyName: "nickname", value: "non-empty-string" },
+	{ propertyName: "totalPoints", value: 0 },
+	{ propertyName: "totalPoints", value: 1 },
+	{ propertyName: "totalGamesCount", value: 0 },
+	{ propertyName: "totalGamesCount", value: 1 }
+];
+
+suite("playerSchema", function () {
+	test("fails parsing when given data is undefined", function () {
 		const parseResult = safeParse(playerSchema, undefined);
 
-		expect(parseResult.success).toBe(false);
+		assert.strictEqual(parseResult.success, false);
 	});
 
-	it("fails parsing when given data is null", () => {
+	test("fails parsing when given data is null", function () {
 		const parseResult = safeParse(playerSchema, null);
 
-		expect(parseResult.success).toBe(false);
+		assert.strictEqual(parseResult.success, false);
 	});
 
-	it("fails parsing when given data is not an object", () => {
+	test("fails parsing when given data is not an object", function () {
 		const parseResult = safeParse(playerSchema, "not-an-object");
 
-		expect(parseResult.success).toBe(false);
+		assert.strictEqual(parseResult.success, false);
 	});
 
-	it("fails parsing when given data is an empty object", () => {
+	test("fails parsing when given data is an empty object", function () {
 		const parseResult = safeParse(playerSchema, {});
 
-		expect(parseResult.success).toBe(false);
+		assert.strictEqual(parseResult.success, false);
 	});
 
-	it.each<{ readonly propertyName: keyof Player; readonly value: unknown }>([
-		{ propertyName: "playerId", value: undefined },
-		{ propertyName: "playerId", value: null },
-		{ propertyName: "playerId", value: "not-a-number" },
-		{ propertyName: "playerId", value: -1 },
-		{ propertyName: "playerId", value: 1.1 },
-		{ propertyName: "firstName", value: undefined },
-		{ propertyName: "firstName", value: null },
-		{ propertyName: "firstName", value: 42 },
-		{ propertyName: "firstName", value: "" },
-		{ propertyName: "lastName", value: undefined },
-		{ propertyName: "lastName", value: null },
-		{ propertyName: "lastName", value: 42 },
-		{ propertyName: "lastName", value: "" },
-		{ propertyName: "nickname", value: undefined },
-		{ propertyName: "nickname", value: null },
-		{ propertyName: "nickname", value: 42 },
-		{ propertyName: "nickname", value: "" },
-		{ propertyName: "totalPoints", value: undefined },
-		{ propertyName: "totalPoints", value: null },
-		{ propertyName: "totalPoints", value: "not-a-number" },
-		{ propertyName: "totalPoints", value: -1 },
-		{ propertyName: "totalPoints", value: -1 },
-		{ propertyName: "totalPoints", value: 1.1 },
-		{ propertyName: "totalGamesCount", value: undefined },
-		{ propertyName: "totalGamesCount", value: null },
-		{ propertyName: "totalGamesCount", value: "not-a-number" },
-		{ propertyName: "totalGamesCount", value: -1 },
-		{ propertyName: "totalGamesCount", value: -1 },
-		{ propertyName: "totalGamesCount", value: 1.1 }
-	])("fails parsing when $propertyName equals $value", (input) => {
-		const { propertyName, value } = input;
-		const player = playerFactory.build({ [propertyName]: value });
-		const parseResult = safeParse(playerSchema, player);
+	for (const testCase of invalidPlayerPropertyTestCases) {
+		const { propertyName, value } = testCase;
 
-		expect(parseResult.success).toBe(false);
-	});
+		test(`fails parsing when ${propertyName} equals ${String(value)}`, function () {
+			const player = playerFactory.build({ [propertyName]: value });
+			const parseResult = safeParse(playerSchema, player);
 
-	it.each<{ readonly propertyName: keyof Player; readonly value: unknown }>([
-		{ propertyName: "playerId", value: 1 },
-		{ propertyName: "firstName", value: "non-empty-string" },
-		{ propertyName: "lastName", value: "non-empty-string" },
-		{ propertyName: "nickname", value: "non-empty-string" },
-		{ propertyName: "totalPoints", value: 0 },
-		{ propertyName: "totalPoints", value: 1 },
-		{ propertyName: "totalGamesCount", value: 0 },
-		{ propertyName: "totalGamesCount", value: 1 }
-	])("succeeds parsing when $propertyName equals $value", (input) => {
-		const { propertyName, value } = input;
-		const player = playerFactory.build({ [propertyName]: value });
-		const parseResult = safeParse(playerSchema, player);
+			assert.strictEqual(parseResult.success, false);
+		});
+	}
 
-		expect(parseResult.success).toBe(true);
-	});
+	for (const testCase of validPlayerPropertyTestCases) {
+		const { propertyName, value } = testCase;
+
+		test(`succeeds parsing when ${propertyName} equals ${String(value)}`, function () {
+			const player = playerFactory.build({ [propertyName]: value });
+			const parseResult = safeParse(playerSchema, player);
+
+			assert.strictEqual(parseResult.success, true);
+		});
+	}
 });
 
-describe("playersSchema", () => {
-	it("fails parsing when given data is undefined", () => {
+suite("playersSchema", function () {
+	test("fails parsing when given data is undefined", function () {
 		const parseResult = safeParse(playersSchema, undefined);
 
-		expect(parseResult.success).toBe(false);
+		assert.strictEqual(parseResult.success, false);
 	});
 
-	it("fails parsing when given data is null", () => {
+	test("fails parsing when given data is null", function () {
 		const parseResult = safeParse(playersSchema, null);
 
-		expect(parseResult.success).toBe(false);
+		assert.strictEqual(parseResult.success, false);
 	});
 
-	it("fails parsing when given data is not an array", () => {
+	test("fails parsing when given data is not an array", function () {
 		const parseResult = safeParse(playersSchema, "not-an-array");
 
-		expect(parseResult.success).toBe(false);
+		assert.strictEqual(parseResult.success, false);
 	});
 
-	it("fails parsing when given data is an empty array", () => {
+	test("fails parsing when given data is an empty array", function () {
 		const parseResult = safeParse(playersSchema, []);
 
-		expect(parseResult.success).toBe(false);
+		assert.strictEqual(parseResult.success, false);
 	});
 
-	it.each<{ readonly propertyName: keyof Player; readonly value: unknown }>([
-		{ propertyName: "playerId", value: undefined },
-		{ propertyName: "playerId", value: null },
-		{ propertyName: "playerId", value: "not-a-number" },
-		{ propertyName: "playerId", value: -1 },
-		{ propertyName: "playerId", value: 1.1 },
-		{ propertyName: "firstName", value: undefined },
-		{ propertyName: "firstName", value: null },
-		{ propertyName: "firstName", value: 42 },
-		{ propertyName: "firstName", value: "" },
-		{ propertyName: "lastName", value: undefined },
-		{ propertyName: "lastName", value: null },
-		{ propertyName: "lastName", value: 42 },
-		{ propertyName: "lastName", value: "" },
-		{ propertyName: "nickname", value: undefined },
-		{ propertyName: "nickname", value: null },
-		{ propertyName: "nickname", value: 42 },
-		{ propertyName: "nickname", value: "" },
-		{ propertyName: "totalPoints", value: undefined },
-		{ propertyName: "totalPoints", value: null },
-		{ propertyName: "totalPoints", value: "not-a-number" },
-		{ propertyName: "totalPoints", value: -1 },
-		{ propertyName: "totalPoints", value: -1 },
-		{ propertyName: "totalPoints", value: 1.1 },
-		{ propertyName: "totalGamesCount", value: undefined },
-		{ propertyName: "totalGamesCount", value: null },
-		{ propertyName: "totalGamesCount", value: "not-a-number" },
-		{ propertyName: "totalGamesCount", value: -1 },
-		{ propertyName: "totalGamesCount", value: -1 },
-		{ propertyName: "totalGamesCount", value: 1.1 }
-	])("fails parsing when [0][$propertyName] equals $value", (input) => {
-		const { propertyName, value } = input;
-		const players = playerFactory.buildList(1, { [propertyName]: value });
-		const parseResult = safeParse(playersSchema, players);
+	for (const testCase of invalidPlayerPropertyTestCases) {
+		const { propertyName, value } = testCase;
 
-		expect(parseResult.success).toBe(false);
-	});
+		test(`fails parsing when [0][${propertyName}] equals ${String(value)}`, function () {
+			const players = playerFactory.buildList(1, { [propertyName]: value });
+			const parseResult = safeParse(playersSchema, players);
 
-	it.each<{ readonly propertyName: keyof Player; readonly value: unknown }>([
-		{ propertyName: "playerId", value: 1 },
-		{ propertyName: "firstName", value: "non-empty-string" },
-		{ propertyName: "lastName", value: "non-empty-string" },
-		{ propertyName: "nickname", value: "non-empty-string" },
-		{ propertyName: "totalPoints", value: 0 },
-		{ propertyName: "totalPoints", value: 1 },
-		{ propertyName: "totalGamesCount", value: 0 },
-		{ propertyName: "totalGamesCount", value: 1 }
-	])("succeeds parsing when [0][$propertyName] equals $value", (input) => {
-		const { propertyName, value } = input;
-		const players = playerFactory.buildList(1, { [propertyName]: value });
-		const parseResult = safeParse(playersSchema, players);
+			assert.strictEqual(parseResult.success, false);
+		});
+	}
 
-		expect(parseResult.success).toBe(true);
-	});
+	for (const testCase of validPlayerPropertyTestCases) {
+		const { propertyName, value } = testCase;
+
+		test(`succeeds parsing when [0][${propertyName}] equals ${String(value)}`, function () {
+			const players = playerFactory.buildList(1, { [propertyName]: value });
+			const parseResult = safeParse(playersSchema, players);
+
+			assert.strictEqual(parseResult.success, true);
+		});
+	}
 });

@@ -1,32 +1,37 @@
-import { describe, it, expect } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
+import * as React from "react";
 import { redirectAuthenticatedSessionFromSignIn, redirectUnauthenticatedSession } from "./router.js";
+import { installReactGlobal } from "./test-support/mocha-jsdom.js";
 
-describe("redirectUnauthenticatedSession()", () => {
-	it("redirects to teams when there is no session token", () => {
+installReactGlobal(React);
+
+suite("redirectUnauthenticatedSession()", function () {
+	test("redirects to teams when there is no session token", function () {
 		const redirectResponse = redirectUnauthenticatedSession(null);
 
-		expect(redirectResponse).toBeInstanceOf(Response);
-		expect(redirectResponse?.headers.get("Location")).toBe("/teams");
+		assert.ok(redirectResponse instanceof Response);
+		assert.strictEqual(redirectResponse.headers.get("Location"), "/teams");
 	});
 
-	it("does not redirect when there is a session token", () => {
+	test("does not redirect when there is a session token", function () {
 		const redirectResponse = redirectUnauthenticatedSession("session-token");
 
-		expect(redirectResponse).toBeNull();
+		assert.strictEqual(redirectResponse, null);
 	});
 });
 
-describe("redirectAuthenticatedSessionFromSignIn()", () => {
-	it("redirects to teams selection when there is a session token", () => {
+suite("redirectAuthenticatedSessionFromSignIn()", function () {
+	test("redirects to teams selection when there is a session token", function () {
 		const redirectResponse = redirectAuthenticatedSessionFromSignIn("session-token");
 
-		expect(redirectResponse).toBeInstanceOf(Response);
-		expect(redirectResponse?.headers.get("Location")).toBe("/teams-selection");
+		assert.ok(redirectResponse instanceof Response);
+		assert.strictEqual(redirectResponse.headers.get("Location"), "/teams-selection");
 	});
 
-	it("does not redirect when there is no session token", () => {
+	test("does not redirect when there is no session token", function () {
 		const redirectResponse = redirectAuthenticatedSessionFromSignIn(null);
 
-		expect(redirectResponse).toBeNull();
+		assert.strictEqual(redirectResponse, null);
 	});
 });

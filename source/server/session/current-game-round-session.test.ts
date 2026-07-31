@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
 import { just, nothing } from "true-myth/maybe";
 import { Factory } from "fishery";
-import type { CurrentGameRoundSession } from "../../shared/current-game-round.js";
 import type {
 	CurrentGameRoundSessionDatabaseSelect,
 	CurrentGameRoundSessionsDatabaseSelect
@@ -19,8 +19,8 @@ const currentGameRoundSessionDatabaseSelectFactory = Factory.define<CurrentGameR
 	};
 });
 
-describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
-	it("returns an array of team names grouped by team id", () => {
+suite("mapCurrentGameRoundSessionsFromDatabase()", function () {
+	test("returns an array of team names grouped by team id", function () {
 		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
 			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 1, playerId: 1, playerNickname: "first" }),
 			currentGameRoundSessionDatabaseSelectFactory.build({ teamId: 2, playerId: 2, playerNickname: "third" }),
@@ -30,7 +30,7 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
 
-		expect(actual).toStrictEqual<CurrentGameRoundSession>({
+		assert.deepStrictEqual(actual, {
 			teams: [
 				{ teamId: 1, name: "first / second", gamePoints: 0 },
 				{ teamId: 2, name: "third / fourth", gamePoints: 0 }
@@ -41,7 +41,7 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 		});
 	});
 
-	it("sums up game points per team when there is only one game round", () => {
+	test("sums up game points per team when there is only one game round", function () {
 		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
 			currentGameRoundSessionDatabaseSelectFactory.build({
 				teamId: 1,
@@ -71,7 +71,9 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
 
-		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
+		assert.deepStrictEqual(actual, {
+			...actual,
+
 			teams: [
 				{ teamId: 1, name: "first / second", gamePoints: 2 },
 				{ teamId: 2, name: "third / fourth", gamePoints: 0 }
@@ -79,7 +81,7 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 		});
 	});
 
-	it("sums up game points per team when there are multiple game rounds", () => {
+	test("sums up game points per team when there are multiple game rounds", function () {
 		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
 			currentGameRoundSessionDatabaseSelectFactory.build({
 				teamId: 1,
@@ -121,7 +123,9 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
 
-		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
+		assert.deepStrictEqual(actual, {
+			...actual,
+
 			teams: [
 				{ teamId: 1, name: "first / second", gamePoints: 6 },
 				{ teamId: 2, name: "third / fourth", gamePoints: 0 }
@@ -129,7 +133,7 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 		});
 	});
 
-	it("sets hasPreviousGameRounds to true when one of the teams has previous game rounds", () => {
+	test("sets hasPreviousGameRounds to true when one of the teams has previous game rounds", function () {
 		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
 			currentGameRoundSessionDatabaseSelectFactory.build({
 				teamId: 1,
@@ -147,12 +151,14 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
 
-		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
+		assert.deepStrictEqual(actual, {
+			...actual,
+
 			hasPreviousGameRounds: true
 		});
 	});
 
-	it("sets isGameOver to false when no team reached game over game points", () => {
+	test("sets isGameOver to false when no team reached game over game points", function () {
 		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
 			currentGameRoundSessionDatabaseSelectFactory.build({
 				teamId: 1,
@@ -170,13 +176,15 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
 
-		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
+		assert.deepStrictEqual(actual, {
+			...actual,
+
 			isGameOver: false
 		});
-		expect(actual).not.toHaveProperty("winnerTeam");
+		assert.ok(!Object.hasOwn(actual, "winnerTeam"));
 	});
 
-	it("sets isGameOver to true when at least one team reached game over game points", () => {
+	test("sets isGameOver to true when at least one team reached game over game points", function () {
 		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
 			currentGameRoundSessionDatabaseSelectFactory.build({
 				teamId: 1,
@@ -207,7 +215,9 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
 
-		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
+		assert.deepStrictEqual(actual, {
+			...actual,
+
 			isGameOver: true,
 			winnerTeam: {
 				teamId: 1,
@@ -217,7 +227,7 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 		});
 	});
 
-	it("sets isGameOver to true when at least one team surpassed game over game points", () => {
+	test("sets isGameOver to true when at least one team surpassed game over game points", function () {
 		const currentGameRoundSessionsFromDatabase: CurrentGameRoundSessionsDatabaseSelect = [
 			currentGameRoundSessionDatabaseSelectFactory.build({
 				teamId: 1,
@@ -235,7 +245,9 @@ describe("mapCurrentGameRoundSessionsFromDatabase()", () => {
 
 		const actual = mapCurrentGameRoundSessionsFromDatabase(currentGameRoundSessionsFromDatabase);
 
-		expect(actual).toMatchObject<Partial<CurrentGameRoundSession>>({
+		assert.deepStrictEqual(actual, {
+			...actual,
+
 			isGameOver: true,
 			winnerTeam: {
 				teamId: 1,

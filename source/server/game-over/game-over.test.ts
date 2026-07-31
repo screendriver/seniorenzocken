@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
 import { Factory } from "fishery";
 import type { NotPersistedTeam } from "../../shared/team.js";
 import { isGameOver } from "./game-over.js";
@@ -13,25 +14,25 @@ const notPersistedTeamFactory = Factory.define<NotPersistedTeam>(() => {
 	};
 });
 
-describe("isGameOver()", () => {
-	it("returns false when every given team has less than 15 match total game points", () => {
+suite("isGameOver()", function () {
+	test("returns false when every given team has less than 15 match total game points", function () {
 		const team1 = notPersistedTeamFactory.build({ matchTotalGamePoints: 12 });
 		const team2 = notPersistedTeamFactory.build({ matchTotalGamePoints: 12 });
 
-		expect(isGameOver(team1, team2)).toBe(false);
+		assert.strictEqual(isGameOver(team1, team2), false);
 	});
 
-	it("returns true when one of the given team has 15 match total game points", () => {
+	test("returns true when one of the given team has 15 match total game points", function () {
 		const team1 = notPersistedTeamFactory.build({ matchTotalGamePoints: 15 });
 		const team2 = notPersistedTeamFactory.build({ matchTotalGamePoints: 14 });
 
-		expect(isGameOver(team1, team2)).toBe(true);
+		assert.strictEqual(isGameOver(team1, team2), true);
 	});
 
-	it("returns true when one of the given team has more than 15 game points", () => {
+	test("returns true when one of the given team has more than 15 game points", function () {
 		const team1 = notPersistedTeamFactory.build({ matchTotalGamePoints: 12 });
 		const team2 = notPersistedTeamFactory.build({ matchTotalGamePoints: 16 });
 
-		expect(isGameOver(team1, team2)).toBe(true);
+		assert.strictEqual(isGameOver(team1, team2), true);
 	});
 });

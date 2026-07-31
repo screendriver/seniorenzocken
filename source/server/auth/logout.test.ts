@@ -1,4 +1,6 @@
-import { describe, it, expect, vi, type Mock } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
+import { assert as sinonAssert, fake } from "sinon";
 import { Factory } from "fishery";
 import { Task } from "true-myth/task";
 import { Hono } from "hono";
@@ -10,20 +12,20 @@ import { createLogoutHandlers, type LogoutHandlersOptions } from "./logout.js";
 const logoutHandlersOptionsFactory = Factory.define<LogoutHandlersOptions>(() => {
 	return {
 		sessionRepository: {
-			deleteSession: vi.fn().mockReturnValue(Task.resolve(Unit))
+			deleteSession: fake.returns(Task.resolve(Unit))
 		} as unknown as SessionRepository
 	};
 });
 
 type SessionRepositoryOverrides = {
-	readonly deleteSession?: Mock;
+	readonly deleteSession?: SessionRepository["deleteSession"];
 };
 
 //
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Hono test client infers all routes
 function createTestClient(overrides: SessionRepositoryOverrides = {}) {
 	const options = logoutHandlersOptionsFactory.build({
-		sessionRepository: { deleteSession: overrides.deleteSession ?? vi.fn().mockReturnValue(Task.resolve(Unit)) }
+		sessionRepository: { deleteSession: overrides.deleteSession ?? fake.returns(Task.resolve(Unit)) }
 	});
 	const handlers = createLogoutHandlers(options);
 
@@ -32,24 +34,24 @@ function createTestClient(overrides: SessionRepositoryOverrides = {}) {
 	return { testClient: testClient(server), honoServer: server };
 }
 
-describe("logout handler", () => {
-	it("returns exactly one handler", async () => {
+suite("logout handler", function () {
+	test("returns exactly one handler", async function () {
 		const options = logoutHandlersOptionsFactory.build();
 		const handlers = createLogoutHandlers(options);
 
-		expect(handlers).toHaveLength(1);
+		assert.strictEqual(handlers.length, 1);
 	});
 
-	it("returns an HTTP 400 status code when there is no cookie set", async () => {
+	test("returns an HTTP 400 status code when there is no cookie set", async function () {
 		const { testClient } = createTestClient();
 
 		const response = await testClient.index.$post();
 
-		expect(response.status).toBe(400);
+		assert.strictEqual(response.status, 400);
 	});
 
-	it("returns an HTTP 204 status code and deletes the cookie", async () => {
-		const deleteSession = vi.fn().mockReturnValue(Task.resolve(Unit));
+	test("returns an HTTP 204 status code and deletes the cookie", async function () {
+		const deleteSession = fake.returns(Task.resolve(Unit));
 		const { testClient } = createTestClient({ deleteSession });
 
 		const response = await testClient.index.$post(undefined, {
@@ -60,15 +62,15 @@ describe("logout handler", () => {
 			}
 		});
 
-		expect(deleteSession).toHaveBeenCalledExactlyOnceWith("foo-bar");
+		sinonAssert.calledOnceWithExactly(deleteSession, "foo-bar");
 
-		expect(response.status).toBe(204);
+		assert.strictEqual(response.status, 204);
 
-		expect(response.headers.getSetCookie()).toStrictEqual(["seniorenzocken.session_token=; Max-Age=0; Path=/"]);
+		assert.deepStrictEqual(response.headers.getSetCookie(), ["seniorenzocken.session_token=; Max-Age=0; Path=/"]);
 	});
 
-	it("still returns an HTTP 204 status code and deletes the cookie even when deleting the session war rejected", async () => {
-		const deleteSession = vi.fn().mockReturnValue(Task.reject(new Error("test")));
+	test("still returns an HTTP 204 status code and deletes the cookie even when deleting the session war rejected", async function () {
+		const deleteSession = fake.returns(Task.reject(new Error("test")));
 		const { testClient } = createTestClient({ deleteSession });
 
 		const response = await testClient.index.$post(undefined, {
@@ -79,10 +81,10 @@ describe("logout handler", () => {
 			}
 		});
 
-		expect(deleteSession).toHaveBeenCalledExactlyOnceWith("foo-bar");
+		sinonAssert.calledOnceWithExactly(deleteSession, "foo-bar");
 
-		expect(response.status).toBe(204);
+		assert.strictEqual(response.status, 204);
 
-		expect(response.headers.getSetCookie()).toStrictEqual(["seniorenzocken.session_token=; Max-Age=0; Path=/"]);
+		assert.deepStrictEqual(response.headers.getSetCookie(), ["seniorenzocken.session_token=; Max-Age=0; Path=/"]);
 	});
 });

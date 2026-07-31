@@ -3,8 +3,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isNonEmptyString } from "@sindresorhus/is";
 import { useNavigate } from "react-router-dom";
 import { useApplicationContext } from "../context/app-context.js";
-import wattenCardsImage from "../assets/images/watten-karten.jpg";
 import { Button } from "../ui/button.js";
+
+const wattenCardsImageUrl = new URL("../assets/images/watten-karten.jpg", import.meta.url);
+const wattenCardsImage = wattenCardsImageUrl.href;
 
 export const HeaderArea: FunctionComponent = () => {
 	const navigate = useNavigate();

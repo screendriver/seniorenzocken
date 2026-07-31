@@ -1,9 +1,9 @@
 import { baseConfig } from "@enormora/eslint-config-base";
 import { browserConfig } from "@enormora/eslint-config-browser";
+import { mochaNodeAssertConfig } from "@enormora/eslint-config-mocha-node-assert";
 import { typescriptConfig } from "@enormora/eslint-config-typescript";
 import { nodeConfig, nodeConfigFileConfig, nodeEntryPointFileConfig } from "@enormora/eslint-config-node";
 import { reactTsxConfig } from "@enormora/eslint-config-react-tsx";
-import { vitestConfig } from "@enormora/eslint-config-vitest";
 import pluginTanStackQuery from "@tanstack/eslint-plugin-query";
 import globals from "globals";
 
@@ -139,11 +139,9 @@ export default [
 		}
 	},
 	{
-		...vitestConfig,
+		...mochaNodeAssertConfig,
 		files: ["**/*.test.ts", "**/*.test.tsx"],
 		rules: {
-			...vitestConfig.rules,
-
 			"@typescript-eslint/no-magic-numbers": "off",
 			"@typescript-eslint/no-shadow": "off",
 			"@typescript-eslint/no-unsafe-type-assertion": "off",
@@ -154,7 +152,8 @@ export default [
 			"sonarjs/no-hardcoded-passwords": "off",
 			"unicorn/no-unreadable-for-of-expression": "off",
 			"unicorn/no-unreadable-new-expression": "off",
-			"unicorn/try-complexity": "off"
+			"unicorn/try-complexity": "off",
+			"sonarjs/no-nested-functions": "off"
 		}
 	},
 	{
@@ -166,7 +165,26 @@ export default [
 	},
 	{
 		...nodeConfigFileConfig,
-		files: ["drizzle.config.js", "eslint.config.js", "prettier.config.js", "vite.config.js", "vitest.config.js"]
+		files: [
+			"drizzle.config.js",
+			"eslint.config.js",
+			"prettier.config.js",
+			"vite.config.js",
+			"source/browser-application/test-support/mocha-jsdom.ts"
+		]
+	},
+	{
+		files: ["mocha.shared.config.cjs", "mocha.node.config.cjs", "mocha.browser.config.cjs"],
+		languageOptions: {
+			globals: {
+				module: "readonly",
+				require: "readonly"
+			}
+		},
+		rules: {
+			"import/extensions": "off",
+			"import/no-commonjs": "off"
+		}
 	},
 	{
 		...nodeEntryPointFileConfig,

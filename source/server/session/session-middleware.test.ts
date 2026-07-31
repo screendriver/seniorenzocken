@@ -1,4 +1,6 @@
-import { describe, it, expect, vi, type Mock } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
+import { assert as sinonAssert, fake } from "sinon";
 import { Hono } from "hono";
 import { testClient } from "hono/testing";
 import { Task } from "true-myth/task";
@@ -6,12 +8,16 @@ import { sessionMiddleware } from "./session-middleware.js";
 import type { SessionRepository } from "./session-repository.js";
 
 type SessionRepositoryOverrides = {
-	readonly getSession?: Mock;
+	readonly getSession?: SessionRepository["getSession"];
 };
 
 function createSessionRepository(overrides: SessionRepositoryOverrides = {}): SessionRepository {
 	return {
-		getSession: overrides.getSession ?? vi.fn()
+		getSession:
+			overrides.getSession ??
+			(() => {
+				return Task.reject(new Error("getSession was not expected"));
+			})
 	} as unknown as SessionRepository;
 }
 
@@ -33,18 +39,18 @@ function createTestClient(overrides: SessionRepositoryOverrides = {}) {
 	return testClient(server);
 }
 
-describe("session middleware", () => {
-	it("calls next middleware when there is no Cookie present", async () => {
+suite("session middleware", function () {
+	test("calls next middleware when there is no Cookie present", async function () {
 		const client = createTestClient();
 		const response = await client.index.$get();
 
-		expect(response.status).toBe(200);
+		assert.strictEqual(response.status, 200);
 
-		await expect(response.text()).resolves.toBe("OK");
+		assert.strictEqual(await response.text(), "OK");
 	});
 
-	it("calls next middleware when there is a Cookie present but an invalid one", async () => {
-		const getSession = vi.fn().mockResolvedValue(Task.reject(new Error("Test error")));
+	test("calls next middleware when there is a Cookie present but an invalid one", async function () {
+		const getSession = fake.resolves(Task.reject(new Error("Test error")));
 		const client = createTestClient({ getSession });
 		const response = await client.index.$get(undefined, {
 			headers: {
@@ -52,16 +58,16 @@ describe("session middleware", () => {
 			}
 		});
 
-		expect(getSession).toHaveBeenCalledExactlyOnceWith("foobar");
+		sinonAssert.calledOnceWithExactly(getSession, "foobar");
 
-		expect(response.status).toBe(200);
-		expect(response.headers.getSetCookie()).toStrictEqual(["seniorenzocken.session_token=; Max-Age=0; Path=/"]);
+		assert.strictEqual(response.status, 200);
+		assert.deepStrictEqual(response.headers.getSetCookie(), ["seniorenzocken.session_token=; Max-Age=0; Path=/"]);
 
-		await expect(response.text()).resolves.toBe("OK");
+		assert.strictEqual(await response.text(), "OK");
 	});
 
-	it("calls next middleware when there is a valid Cookie present", async () => {
-		const getSession = vi.fn().mockResolvedValue(Task.resolve({ token: "test-token" }));
+	test("calls next middleware when there is a valid Cookie present", async function () {
+		const getSession = fake.resolves(Task.resolve({ token: "test-token" }));
 		const client = createTestClient({ getSession });
 		const response = await client.index.$get(undefined, {
 			headers: {
@@ -69,10 +75,10 @@ describe("session middleware", () => {
 			}
 		});
 
-		expect(getSession).toHaveBeenCalledExactlyOnceWith("foobar");
+		sinonAssert.calledOnceWithExactly(getSession, "foobar");
 
-		expect(response.status).toBe(200);
+		assert.strictEqual(response.status, 200);
 
-		await expect(response.text()).resolves.toBe("test-token");
+		assert.strictEqual(await response.text(), "test-token");
 	});
 });

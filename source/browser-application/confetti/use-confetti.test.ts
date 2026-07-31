@@ -1,28 +1,29 @@
-import { describe, expect, it } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
 import { shouldLaunchConfetti } from "./use-confetti.js";
 
-describe(shouldLaunchConfetti, () => {
-	it("returns true when show confetti changes from false to true", () => {
+suite("shouldLaunchConfetti()", function () {
+	test("returns true when show confetti changes from false to true", function () {
 		const result = shouldLaunchConfetti(false, true);
 
-		expect(result).toBe(true);
+		assert.strictEqual(result, true);
 	});
 
-	it("returns false when show confetti stays true", () => {
+	test("returns false when show confetti stays true", function () {
 		const result = shouldLaunchConfetti(true, true);
 
-		expect(result).toBe(false);
+		assert.strictEqual(result, false);
 	});
 
-	it("returns false when show confetti stays false", () => {
+	test("returns false when show confetti stays false", function () {
 		const result = shouldLaunchConfetti(false, false);
 
-		expect(result).toBe(false);
+		assert.strictEqual(result, false);
 	});
 
-	it("returns false when show confetti changes from true to false", () => {
+	test("returns false when show confetti changes from true to false", function () {
 		const result = shouldLaunchConfetti(true, false);
 
-		expect(result).toBe(false);
+		assert.strictEqual(result, false);
 	});
 });

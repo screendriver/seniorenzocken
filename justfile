@@ -15,10 +15,17 @@ lint-fix:
 	prettier --log-level warn --write .
 	eslint --fix .
 
-test-unit *options:
-	vitest {{options}}
+test-unit-node *options:
+	tsx ./node_modules/mocha/bin/mocha.js --config mocha.node.config.cjs {{options}}
 
-test: compile lint (test-unit "--run") check-database-consistency
+test-unit-browser *options:
+	tsx ./node_modules/mocha/bin/mocha.js --config mocha.browser.config.cjs {{options}}
+
+test-unit:
+	just test-unit-node
+	just test-unit-browser
+
+test: compile lint test-unit check-database-consistency
 
 [group("database")]
 generate-database-migrations: compile

@@ -1,20 +1,21 @@
-import { describe, it, expect } from "vitest";
+import assert from "node:assert";
+import { suite, test } from "mocha";
 import { isStretched } from "./stretched.js";
 
-describe("isStretched()", () => {
-	it("returns false when given match total game points equals 0", () => {
-		expect(isStretched(0)).toBe(false);
+suite("isStretched()", function () {
+	test("returns false when given match total game points equals 0", function () {
+		assert.strictEqual(isStretched(0), false);
 	});
 
-	it("returns false when given match total game points equals 11", () => {
-		expect(isStretched(11)).toBe(false);
+	test("returns false when given match total game points equals 11", function () {
+		assert.strictEqual(isStretched(11), false);
 	});
 
-	it("returns true when given match total game points equals 12", () => {
-		expect(isStretched(12)).toBe(true);
+	test("returns true when given match total game points equals 12", function () {
+		assert.strictEqual(isStretched(12), true);
 	});
 
-	it("returns true when given match total game points is greater than 12", () => {
-		expect(isStretched(13)).toBe(true);
+	test("returns true when given match total game points is greater than 12", function () {
+		assert.strictEqual(isStretched(13), true);
 	});
 });
