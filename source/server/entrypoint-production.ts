@@ -1,10 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { readFile } from "node:fs/promises";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
-import { all } from "true-myth/task";
 import { Cron } from "croner";
-import pino from "pino";
 import { createWallClock } from "@enormora/wall-clock/wall-clock";
 import { createDatabase } from "./database/database.js";
 import { createServer } from "./server.js";
@@ -13,42 +10,17 @@ import { createPlayersRepository } from "./players/players-repository.js";
 import { isTurnAround } from "./audio/turn_around.js";
 import { createTrpcRouter } from "./trpc/index.js";
 import { createTrpcApplicationRouter } from "./trpc/application-router.js";
-import { createInfisicalSDK } from "./secrets/infisical/infisical-sdk.js";
-import { createSecretsClient } from "./secrets/secrets-client.js";
-import { createSecretsRepository } from "./secrets/secrets-repository.js";
+import { readRequiredSecret } from "./read-required-secret.js";
 import { createSessionRepository } from "./session/session-repository.js";
 import { startCleanupDatabaseCronJob } from "./database/cleanup.js";
 
-const infisicalAccessToken = await readFile("/run/secrets/infisical_access_token", "utf8");
+const seniorenzockenUsernameSecretPath = "/run/secrets/seniorenzocken_username";
+const seniorenzockenPasswordSecretPath = "/run/secrets/seniorenzocken_password";
 
-const logger = pino({ base: null });
-const infisicalSDK = createInfisicalSDK(infisicalAccessToken.trim());
-const secretsClient = createSecretsClient({
-	infisicalSDK,
-	retryOptions: {
-		retries: Number.POSITIVE_INFINITY,
-		minTimeout: 2000,
-		maxTimeout: 30_000,
-		maxRetryTime: 300_000,
-		factor: 2
-	},
-	logRetry(retryContext) {
-		const { attemptNumber, retryDelay, retriesLeft, error } = retryContext;
-
-		logger.warn({ attemptNumber, retryDelay, retriesLeft, error }, "Could not fetch Infisical secret; retrying");
-	}
-});
-const secretsRepository = createSecretsRepository({ secretsClient });
-
-const seniorenzockenSecretsResult = await all([
-	secretsRepository.getSecret("SENIORENZOCKEN_USERNAME"),
-	secretsRepository.getSecret("SENIORENZOCKEN_PASSWORD")
-]).map((secrets) => {
-	return { seniorenzockenUsername: secrets[0], seniorenzockenPassword: secrets[1] };
-});
-const seniorenzockenSecrets = seniorenzockenSecretsResult.unwrapOrElse((error) => {
-	throw new Error("Could not fetch Seniorenzocken secrets", { cause: error });
-});
+const [seniorenzockenUsername, seniorenzockenPassword] = await Promise.all([
+	readRequiredSecret(seniorenzockenUsernameSecretPath),
+	readRequiredSecret(seniorenzockenPasswordSecretPath)
+]);
 
 const clock = createWallClock();
 
@@ -76,8 +48,8 @@ const server = createServer({
 	trpcApplicationRouter,
 	sessionRepository,
 	browserApplicationPath: "./browser-application",
-	seniorenzockenUsername: seniorenzockenSecrets.seniorenzockenUsername,
-	seniorenzockenPassword: seniorenzockenSecrets.seniorenzockenPassword,
+	seniorenzockenUsername,
+	seniorenzockenPassword,
 	isRunningInProduction: true
 });
 
