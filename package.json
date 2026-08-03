@@ -49,9 +49,9 @@
 	},
 	"devDependencies": {
 		"@enormora/eslint-config-base": "0.0.55",
-		"@enormora/eslint-config-browser": "0.0.31",
+		"@enormora/eslint-config-browser": "0.0.32",
 		"@enormora/eslint-config-mocha-node-assert": "0.0.9",
-		"@enormora/eslint-config-node": "0.0.40",
+		"@enormora/eslint-config-node": "0.0.41",
 		"@enormora/eslint-config-react-tsx": "0.0.53",
 		"@enormora/eslint-config-typescript": "0.0.62",
 		"@tailwindcss/vite": "4.3.3",
