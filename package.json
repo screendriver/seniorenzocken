@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"engines": {
-		"node": "24.19.0"
+		"node": "26.7.0"
 	},
 	"dependencies": {
 		"@enormora/wall-clock": "0.0.3",
@@ -58,7 +58,6 @@
 		"@tanstack/eslint-plugin-query": "5.101.4",
 		"@testing-library/react": "16.3.2",
 		"@testing-library/user-event": "14.6.3",
-		"@tsconfig/node24": "24.0.4",
 		"@types/canvas-confetti": "1.9.0",
 		"@types/common-tags": "1.8.4",
 		"@types/jsdom": "28.0.3",
