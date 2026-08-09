@@ -93,11 +93,13 @@ function withBrowserApplicationPath(
 		const browserApplicationPath = await mkdtemp("./target/test-browser-application-");
 
 		try {
-			for (const [filePath, fileContent] of Object.entries(withBrowserApplicationPathOptions.files ?? {})) {
-				const fileLocation = join(browserApplicationPath, filePath);
+			if (withBrowserApplicationPathOptions.files !== undefined) {
+				for (const [filePath, fileContent] of Object.entries(withBrowserApplicationPathOptions.files)) {
+					const fileLocation = join(browserApplicationPath, filePath);
 
-				await mkdir(dirname(fileLocation), { recursive: true });
-				await writeFile(fileLocation, fileContent);
+					await mkdir(dirname(fileLocation), { recursive: true });
+					await writeFile(fileLocation, fileContent);
+				}
 			}
 
 			await testFunction({ browserApplicationPath });
