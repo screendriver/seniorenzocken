@@ -48,12 +48,12 @@
 		"@libsql/linux-arm64-musl": "0.5.29"
 	},
 	"devDependencies": {
-		"@enormora/eslint-config-base": "0.0.60",
-		"@enormora/eslint-config-browser": "0.0.35",
-		"@enormora/eslint-config-mocha-node-assert": "0.0.15",
-		"@enormora/eslint-config-node": "0.0.45",
-		"@enormora/eslint-config-react-tsx": "0.0.59",
-		"@enormora/eslint-config-typescript": "0.0.68",
+		"@enormora/eslint-config-base": "0.0.61",
+		"@enormora/eslint-config-browser": "0.0.36",
+		"@enormora/eslint-config-mocha-node-assert": "0.0.16",
+		"@enormora/eslint-config-node": "0.0.46",
+		"@enormora/eslint-config-react-tsx": "0.0.60",
+		"@enormora/eslint-config-typescript": "0.0.69",
 		"@tailwindcss/vite": "4.3.3",
 		"@tanstack/eslint-plugin-query": "5.101.4",
 		"@testing-library/react": "16.3.2",
