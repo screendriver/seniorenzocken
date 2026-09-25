@@ -3,7 +3,7 @@ import { HTTPException } from "hono/http-exception";
 import { validator } from "hono/validator";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
-import type { WallClock } from "@enormora/wall-clock/wall-clock";
+import type { Clock } from "@enormora/clock/clock";
 import { eq } from "drizzle-orm";
 import { safeParse, object, pipe, string, transform, number, integer } from "valibot";
 import mime from "mime";
@@ -19,7 +19,7 @@ import { createTRPCContext } from "./trpc/context.js";
 import { createLogoutHandlers } from "./auth/logout.js";
 
 export type ServerOptions = {
-	readonly clock: WallClock;
+	readonly clock: Clock;
 	readonly database: Database;
 	readonly trpcApplicationRouter: TRPCApplicationRouter;
 	readonly sessionRepository: SessionRepository;

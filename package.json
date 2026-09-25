@@ -6,7 +6,7 @@
 		"node": "26.8.2"
 	},
 	"dependencies": {
-		"@enormora/wall-clock": "0.0.3",
+		"@enormora/clock": "0.0.2",
 		"@hono/node-server": "2.1.1",
 		"@hono/trpc-server": "0.4.2",
 		"@libsql/client": "0.18.0",

@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
 import { Cron } from "croner";
-import { createWallClock } from "@enormora/wall-clock/wall-clock";
+import { createClock } from "@enormora/clock/clock";
 import { createDatabase } from "./database/database.js";
 import { createServer } from "./server.js";
 import { createAudioRepository } from "./audio/repository.js";
@@ -22,7 +22,7 @@ const [seniorenzockenUsername, seniorenzockenPassword] = await Promise.all([
 	readRequiredSecret(seniorenzockenPasswordSecretPath)
 ]);
 
-const clock = createWallClock();
+const clock = createClock();
 
 const database = createDatabase("file:database.sqlite");
 
