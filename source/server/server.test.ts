@@ -7,7 +7,7 @@ import { migrate } from "drizzle-orm/libsql/migrator";
 import type { Hono } from "hono";
 import { createTRPCClient, unstable_localLink } from "@trpc/client";
 import { nothing } from "true-myth/maybe";
-import { createDeterministicWallClock } from "@enormora/wall-clock/deterministic-wall-clock";
+import { createDeterministicClock } from "@enormora/clock/deterministic-clock";
 import { type ServerOptions, createServer } from "./server.js";
 import { createDatabase } from "./database/database.js";
 import { seedInMemoryDatabase } from "./seed-in-memory-database.js";
@@ -44,8 +44,8 @@ function withServer(
 	}
 ): AsyncServerTest {
 	return async () => {
-		const clock = createDeterministicWallClock({
-			initialCurrentTimestampInMilliseconds: Date.parse("2025-07-24T09:10:20.153Z")
+		const clock = createDeterministicClock({
+			initialUnixEpochMicroseconds: BigInt(Date.parse("2025-07-24T09:10:20.153Z")) * 1000n
 		});
 		const database = createDatabase(":memory:");
 		await migrate(database, { migrationsFolder: "./drizzle" });

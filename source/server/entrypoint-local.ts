@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { serve } from "@hono/node-server";
-import { createDeterministicWallClock } from "@enormora/wall-clock/deterministic-wall-clock";
+import { createDeterministicClock } from "@enormora/clock/deterministic-clock";
 import { createDatabase } from "./database/database.js";
 import { createServer } from "./server.js";
 import { seedInMemoryDatabase } from "./seed-in-memory-database.js";
@@ -12,8 +12,8 @@ import { createTrpcRouter } from "./trpc/index.js";
 import { createTrpcApplicationRouter } from "./trpc/application-router.js";
 import { createSessionRepository } from "./session/session-repository.js";
 
-const clock = createDeterministicWallClock({
-	initialCurrentTimestampInMilliseconds: Date.parse("2025-07-24T09:10:20.153Z")
+const clock = createDeterministicClock({
+	initialUnixEpochMicroseconds: BigInt(Date.parse("2025-07-24T09:10:20.153Z")) * 1000n
 });
 
 const database = createDatabase(":memory:");
