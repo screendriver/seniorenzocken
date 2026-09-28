@@ -29,7 +29,7 @@ export const GameOver: FunctionComponent = () => {
 					return new Error("Could not determine winner team", { cause: error });
 				},
 				async () => {
-					return queryClient.fetchQuery(trpc.game.determineWinnerTeam.queryOptions({ team1, team2 }));
+					return queryClient.query(trpc.game.determineWinnerTeam.queryOptions({ team1, team2 }));
 				}
 			);
 

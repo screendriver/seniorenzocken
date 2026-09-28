@@ -54,7 +54,7 @@ export const RandomFunAudioNew = forwardRef<RandomFunAudioNewHandle>(
 					return;
 				}
 
-				const randomFunAudioUrl = await queryClient.fetchQuery(trpc.audio.getRandomFunAudio.queryOptions());
+				const randomFunAudioUrl = await queryClient.query(trpc.audio.getRandomFunAudio.queryOptions());
 				const audioElement = audioElementReference.current;
 				audioElement.src = randomFunAudioUrl;
 				await audioElement.play();

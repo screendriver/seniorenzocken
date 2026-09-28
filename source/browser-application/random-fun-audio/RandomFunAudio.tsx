@@ -69,7 +69,7 @@ export const RandomFunAudio = forwardRef<RandomFunAudioHandle>(
 				browserRuntime,
 				isGameRunning,
 				async queryRandomFunAudioUrl() {
-					return queryClient.fetchQuery(trpc.audio.getRandomFunAudio.queryOptions());
+					return queryClient.query(trpc.audio.getRandomFunAudio.queryOptions());
 				},
 				timeoutReference
 			};

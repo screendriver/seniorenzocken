@@ -31,13 +31,13 @@ export function createRouter(options: CreateRouterOptions): ReturnType<typeof cr
 	const { queryClient, trpc } = options;
 
 	async function requireAuthentication(): Promise<Response | null> {
-		const sessionToken = await queryClient.fetchQuery(trpc.session.token.queryOptions());
+		const sessionToken = await queryClient.query(trpc.session.token.queryOptions());
 
 		return redirectUnauthenticatedSession(sessionToken);
 	}
 
 	async function redirectSignedInUserAwayFromSignIn(): Promise<Response | null> {
-		const sessionToken = await queryClient.fetchQuery(trpc.session.token.queryOptions());
+		const sessionToken = await queryClient.query(trpc.session.token.queryOptions());
 
 		return redirectAuthenticatedSessionFromSignIn(sessionToken);
 	}
