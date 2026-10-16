@@ -11,8 +11,7 @@ import { Alert } from "../ui/alert.js";
 export const TeamsRoute: FunctionComponent = () => {
 	const randomFunAudioReference = useRef<RandomFunAudioHandle>(null);
 	const navigate = useNavigate();
-	const applicationContext = useApplicationContext();
-	const { gameStore } = applicationContext;
+	const { gameStore } = useApplicationContext();
 	const hasError = useStore(gameStore, (state) => {
 		return state.hasError;
 	});

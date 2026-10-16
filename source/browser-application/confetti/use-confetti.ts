@@ -7,8 +7,7 @@ export function shouldLaunchConfetti(previousShowConfetti: boolean, currentShowC
 }
 
 export function useConfetti(confetti: typeof canvasConfetti): void {
-	const applicationContext = useApplicationContext();
-	const { gameStore } = applicationContext;
+	const { gameStore } = useApplicationContext();
 
 	useEffect(() => {
 		async function launchConfetti(): Promise<void> {

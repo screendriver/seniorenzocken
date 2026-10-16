@@ -7,11 +7,7 @@ function hasEverySelectedPlayerAnId(selectedPlayerIds: readonly number[]): boole
 }
 
 export function areSelectedPlayerIdsValid(selectedPlayerIds: readonly number[]): boolean {
-	if (isEmptyArray(selectedPlayerIds)) {
-		return false;
-	}
-
-	if (!hasEverySelectedPlayerAnId(selectedPlayerIds)) {
+	if (isEmptyArray(selectedPlayerIds) || !hasEverySelectedPlayerAnId(selectedPlayerIds)) {
 		return false;
 	}
 

@@ -24,8 +24,7 @@ export function shouldRedirectFromGameRoute(input: ShouldRedirectFromGameRouteIn
 }
 
 export const GameRoute: FunctionComponent = () => {
-	const applicationContext = useApplicationContext();
-	const { gameStore } = applicationContext;
+	const { gameStore } = useApplicationContext();
 	useConfetti(canvasConfetti);
 	const isGameRunning = useStore(gameStore, (state) => {
 		return state.isGameRunning;

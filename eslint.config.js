@@ -26,6 +26,7 @@ export default [
 			"@stylistic/no-tabs": "off",
 			"dprint/typescript": "off",
 			"import/no-unused-modules": "off",
+			"no-continue": "off",
 			"restricted-syntax/no-unnecessary-arrow-function": "off",
 			"unicorn/consistent-arrow-return-style": "off",
 			"@stylistic/indent": [

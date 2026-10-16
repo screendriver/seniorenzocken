@@ -47,8 +47,7 @@ async function playAudioElement(audioElement: HTMLAudioElement, browserRuntime: 
 }
 
 export const GamePointsAudio: FunctionComponent = () => {
-	const applicationContext = useApplicationContext();
-	const { browserRuntime, audioElementFactory, gameStore } = applicationContext;
+	const { browserRuntime, audioElementFactory, gameStore } = useApplicationContext();
 	const isAudioPlaying = useStore(gameStore, (state) => {
 		return state.isAudioPlaying;
 	});

@@ -8,8 +8,7 @@ import { Button } from "../ui/button.js";
 
 export const GameOver: FunctionComponent = () => {
 	const navigate = useNavigate();
-	const applicationContext = useApplicationContext();
-	const { gameStore, trpc } = applicationContext;
+	const { gameStore, trpc } = useApplicationContext();
 	const queryClient = useQueryClient();
 	const team1 = useStore(gameStore, (state) => {
 		return state.team1;

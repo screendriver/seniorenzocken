@@ -10,8 +10,7 @@ import { Badge } from "../ui/badge.js";
 import { Button } from "../ui/button.js";
 
 export const SessionGameRoute: FunctionComponent = () => {
-	const applicationContext = useApplicationContext();
-	const { trpc } = applicationContext;
+	const { trpc } = useApplicationContext();
 	const randomFunAudioReference = useRef<RandomFunAudioNewHandle>(null);
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();

@@ -161,13 +161,15 @@ export function createSessionRepository(dependencies: SessionRepositoryDependenc
 								.values({ userSessionId })
 								.returning({ teamSessionId: teamSessionsDatabaseSchema.teamSessionId });
 
-							if (!isUndefined(teamSessionDatabaseRecord)) {
-								const teamMembers = teamMemberPlayerIds.map((playerId) => {
-									return { teamSessionId: teamSessionDatabaseRecord.teamSessionId, playerId };
-								});
-
-								await database.insert(teamMembersSessionsDatabaseSchema).values(teamMembers);
+							if (isUndefined(teamSessionDatabaseRecord)) {
+								continue;
 							}
+
+							const teamMembers = teamMemberPlayerIds.map((playerId) => {
+								return { teamSessionId: teamSessionDatabaseRecord.teamSessionId, playerId };
+							});
+
+							await database.insert(teamMembersSessionsDatabaseSchema).values(teamMembers);
 						}
 
 						return Unit;

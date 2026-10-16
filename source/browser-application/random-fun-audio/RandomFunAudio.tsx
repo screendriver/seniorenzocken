@@ -54,8 +54,7 @@ function scheduleRandomAudio(input: RandomAudioSchedulerInput): void {
 
 export const RandomFunAudio = forwardRef<RandomFunAudioHandle>(
 	function RandomFunAudioComponent(_properties, reference) {
-		const applicationContext = useApplicationContext();
-		const { browserRuntime, gameStore, trpc } = applicationContext;
+		const { browserRuntime, gameStore, trpc } = useApplicationContext();
 		const queryClient = useQueryClient();
 		const audioElementReference = useRef<HTMLAudioElement>(null);
 		const isGameRunning = useStore(gameStore, (state) => {

@@ -21,8 +21,7 @@ function isSubmitButtonEnabled(input: SubmitButtonEnabledInput): boolean {
 
 export const TeamsSelectionRoute: FunctionComponent = () => {
 	const navigate = useNavigate();
-	const applicationContext = useApplicationContext();
-	const { trpc } = applicationContext;
+	const { trpc } = useApplicationContext();
 	const [selectedPlayer1Id, setSelectedPlayer1Id] = useState(-1);
 	const [selectedPlayer2Id, setSelectedPlayer2Id] = useState(-1);
 	const [selectedPlayer3Id, setSelectedPlayer3Id] = useState(-1);

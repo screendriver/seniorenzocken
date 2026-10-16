@@ -6,8 +6,7 @@ import { ButtonGroup } from "../ui/button-group.js";
 import { GamePoint } from "./GamePoint.js";
 
 export const GamePointForm: FunctionComponent = () => {
-	const applicationContext = useApplicationContext();
-	const { gameStore } = applicationContext;
+	const { gameStore } = useApplicationContext();
 	const team1 = useStore(gameStore, (state) => {
 		return state.team1;
 	});

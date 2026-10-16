@@ -14,8 +14,7 @@ function isCurrentGameRoundGameOver(
 }
 
 export const GameOverRoute: FunctionComponent = () => {
-	const applicationContext = useApplicationContext();
-	const { trpc } = applicationContext;
+	const { trpc } = useApplicationContext();
 	const navigate = useNavigate();
 	const currentGameRoundQuery = useQuery(trpc.session.currentGameRound.queryOptions());
 	const currentGameRound = currentGameRoundQuery.data;

@@ -4,8 +4,7 @@ import { useApplicationContext } from "../context/app-context.js";
 
 export const NotFoundRoute: FunctionComponent = () => {
 	const navigate = useNavigate();
-	const applicationContext = useApplicationContext();
-	const { browserRuntime } = applicationContext;
+	const { browserRuntime } = useApplicationContext();
 
 	useEffect(() => {
 		const listener = (): void => {
