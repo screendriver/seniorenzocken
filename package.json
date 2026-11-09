@@ -42,7 +42,7 @@
 		"ts-pattern": "5.9.2",
 		"tslib": "2.9.1",
 		"valibot": "1.5.0",
-		"zustand": "5.0.16"
+		"zustand": "5.1.0"
 	},
 	"optionalDependencies": {
 		"@libsql/linux-arm64-musl": "0.5.29"
