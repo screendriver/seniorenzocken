@@ -18,7 +18,7 @@ steps:
           - npx just generate-database-migrations
 
     - name: fail-on-git-status
-      image: alpine/git:v2.54.0
+      image: alpine/git:v2.54.1
       commands:
           - git status
           - test -z "$(git status --porcelain)"
